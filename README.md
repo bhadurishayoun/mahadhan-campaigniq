@@ -4,8 +4,7 @@ Crop-nutrition campaign management tool: opportunity atlas, crop-stage nutrition
 studio, demand & channel readiness, execution control tower, impact & learning, and an AI co-pilot -
 with district-level India maps (790 districts, Government of India boundary).
 
-**Live site:** https://&lt;your-username&gt;.github.io/mahadhan-campaigniq/
-(replace `<your-username>` with your GitHub username once it is published - see [DEPLOYMENT.md](DEPLOYMENT.md))
+**Live site: [https://bhadurishayoun.github.io/mahadhan-campaigniq/](https://bhadurishayoun.github.io/mahadhan-campaigniq/)**
 
 All data in the tool is illustrative.
 

@@ -2,10 +2,10 @@
 
 You will end up with:
 
-* the website at `https://<your-username>.github.io/mahadhan-campaigniq/` (GitHub Pages)
+* the website at `https://bhadurishayoun.github.io/mahadhan-campaigniq/` (GitHub Pages)
 * optionally, the backend at `https://mahadhan-campaigniq-api.onrender.com` (Render, free)
 
-Replace `<your-username>` everywhere with your GitHub username.
+Replace `bhadurishayoun` everywhere with your GitHub username.
 
 ---
 
@@ -35,7 +35,7 @@ Replace `<your-username>` everywhere with your GitHub username.
    git init -b main
    git add .
    git commit -m "Initial version of Mahadhan CampaignIQ"
-   git remote add origin https://github.com/<your-username>/mahadhan-campaigniq.git
+   git remote add origin https://github.com/bhadurishayoun/mahadhan-campaigniq.git
    git push -u origin main
    ```
    The first `git push` opens a browser window to sign in to GitHub - approve it.
@@ -63,7 +63,7 @@ Replace `<your-username>` everywhere with your GitHub username.
 
 ### Your live link
 
-7. **Settings -> Pages** shows "Your site is live at **https://&lt;your-username&gt;.github.io/mahadhan-campaigniq/**".
+7. **Settings -> Pages** shows "Your site is live at **https://bhadurishayoun.github.io/mahadhan-campaigniq/**".
    It is also shown on the finished run in the Actions tab. Open it - the site works now as a static demo.
 
 ## Part C - Connect the backend on Render (optional, for the live engine)
@@ -71,7 +71,7 @@ Replace `<your-username>` everywhere with your GitHub username.
 8. Sign up free at https://render.com with **Sign in with GitHub**.
 9. **New -> Blueprint** -> choose the `mahadhan-campaigniq` repository -> **Apply**.
    Render reads `render.yaml` and creates the service `mahadhan-campaigniq-api`.
-10. When asked for **CAMPAIGNIQ_CORS_ORIGINS**, enter `https://<your-username>.github.io` (no slash, no path).
+10. When asked for **CAMPAIGNIQ_CORS_ORIGINS**, enter `https://bhadurishayoun.github.io` (no slash, no path).
     Leave **COPILOT_API_KEY** empty unless you have an AI key.
 11. Wait until the service says **Live**. Copy its address, e.g. `https://mahadhan-campaigniq-api.onrender.com`.
     Check it works: open `<that address>/api/health` - you should see `{"ok":true,...}`.
