@@ -1,0 +1,119 @@
+{
+  "_comment": "Dataset catalog: one entry per screen table/chart that can be fed with real data. The web app (web/src/data/datasets.ts) and the API (server/campaign_api/datasets.py) both read this file. Add an entry here, then call useDataset('<name>', DEMO_ROWS) in the screen. Optional scope columns on every dataset: season, state, district, taluka, crop, product, campaign_type.",
+  "datasets": [
+    {
+      "name": "portfolio.campaigns", "title": "Campaign portfolio", "screen": "s1.2", "screens": ["s1.1", "s1.2", "s1.3"],
+      "source_system": "Campaign planning DB / CRM", "refresh": "daily",
+      "description": "One row per active campaign with budget, execution progress, trial-to-adoption, risk and ROI.",
+      "columns": [
+        { "name": "name", "type": "string" }, { "name": "objective", "type": "string" }, { "name": "crop", "type": "string" },
+        { "name": "geography", "type": "string" }, { "name": "region", "type": "string" }, { "name": "budget", "type": "string", "description": "Display value, e.g. ₹0.80 Cr" },
+        { "name": "stage", "type": "string", "description": "Execute | Deploy | Scale | Review" }, { "name": "progress", "type": "number", "description": "0-100" },
+        { "name": "trial", "type": "string" }, { "name": "risk", "type": "string", "description": "Low | Medium | High" }, { "name": "roi", "type": "string" }, { "name": "next", "type": "string" }
+      ]
+    },
+    {
+      "name": "atlas.top_markets", "title": "Top opportunity markets", "screen": "s2.1", "screens": ["s2.1"],
+      "source_system": "Market sizing model (crop area × penetration)", "refresh": "seasonal",
+      "description": "Ranked district × crop opportunities shown on the Opportunity Atlas.",
+      "columns": [
+        { "name": "rank", "type": "number" }, { "name": "geo", "type": "string", "description": "District name" }, { "name": "crop", "type": "string" },
+        { "name": "score", "type": "number", "description": "Opportunity score 0-100" }, { "name": "potential", "type": "string" }, { "name": "gap", "type": "string" },
+        { "name": "readiness", "type": "string", "description": "High | Medium | Low" }
+      ]
+    },
+    {
+      "name": "atlas.taluka_ranking", "title": "Taluka opportunity ranking", "screen": "s2.2", "screens": ["s2.2"],
+      "source_system": "Market sizing model + retailer master", "refresh": "seasonal",
+      "description": "Taluka-level ranking inside the selected district.",
+      "columns": [
+        { "name": "rank", "type": "number" }, { "name": "taluka", "type": "string" }, { "name": "score", "type": "number" }, { "name": "potential", "type": "string" },
+        { "name": "gap", "type": "string" }, { "name": "retailers", "type": "number" }, { "name": "readiness", "type": "string" }
+      ]
+    },
+    {
+      "name": "nutrition.triggers", "title": "Campaign trigger queue", "screen": "s3.4", "screens": ["s3.4"],
+      "source_system": "Crop-stage calendar + weather feed + trigger rules", "refresh": "daily",
+      "description": "Prioritised campaign triggers. `campaign` is the index of the recommended campaign card (0-2).",
+      "columns": [
+        { "name": "n", "type": "number" }, { "name": "trigger", "type": "string" }, { "name": "geo", "type": "string" }, { "name": "audience", "type": "string" },
+        { "name": "intervention", "type": "string" }, { "name": "reach", "type": "string" }, { "name": "urgency", "type": "string", "description": "High | Medium | Conditional" },
+        { "name": "status", "type": "string" }, { "name": "campaign", "type": "number", "required": false }
+      ]
+    },
+    {
+      "name": "readiness.village_demand", "title": "Village demand projection", "screen": "s5.1", "screens": ["s5.1"],
+      "source_system": "Farmer registry + adoption forecast", "refresh": "weekly",
+      "description": "Baseline target farmers, adopters and demand (MT) per village; the screen scales it with the forecast assumptions.",
+      "columns": [
+        { "name": "village", "type": "string" }, { "name": "farmers", "type": "number" }, { "name": "adopters", "type": "number" }, { "name": "demand", "type": "number", "description": "MT" },
+        { "name": "retailer", "type": "string" }, { "name": "visibility", "type": "string", "description": "Adequate | Limited | Unverified" }, { "name": "arrival", "type": "string" }
+      ]
+    },
+    {
+      "name": "readiness.stock_heatmap", "title": "Village stock coverage", "screen": "s5.2", "screens": ["s5.2"],
+      "source_system": "ERP stock + dealer secondary sales", "refresh": "daily",
+      "description": "Demand vs. supply coverage per village.",
+      "columns": [
+        { "name": "village", "type": "string" }, { "name": "demand", "type": "number" }, { "name": "supply", "type": "number" }, { "name": "cov", "type": "number", "description": "Coverage %" },
+        { "name": "gap", "type": "number" }, { "name": "retailers", "type": "number" }, { "name": "vis", "type": "string" }, { "name": "risk", "type": "string" }
+      ]
+    },
+    {
+      "name": "readiness.dealers", "title": "Dealer & retailer readiness", "screen": "s5.3", "screens": ["s5.3"],
+      "source_system": "Dealer master (DMS) + ERP + training records", "refresh": "daily",
+      "description": "Dealer stock, demand gap, influence, licence, training and owner.",
+      "columns": [
+        { "name": "name", "type": "string" }, { "name": "village", "type": "string" }, { "name": "mapped", "type": "number" }, { "name": "stock", "type": "string" },
+        { "name": "demand", "type": "number" }, { "name": "gap", "type": "number" }, { "name": "influence", "type": "string" }, { "name": "licence", "type": "string" },
+        { "name": "training", "type": "string" }, { "name": "data", "type": "string", "description": "ERP-confirmed | Reported | Estimated | Unverified" },
+        { "name": "owner", "type": "string" }, { "name": "deadline", "type": "string" }, { "name": "action", "type": "string" }
+      ]
+    },
+    {
+      "name": "readiness.cluster_supply", "title": "Cluster supply status", "screen": "s5.3", "screens": ["s5.3"],
+      "source_system": "ERP stock + demand projection", "refresh": "daily",
+      "description": "Demand, supply and gap per village cluster.",
+      "columns": [
+        { "name": "village", "type": "string" }, { "name": "demand", "type": "number" }, { "name": "supply", "type": "number" }, { "name": "gap", "type": "number" },
+        { "name": "retailers", "type": "number" }, { "name": "status", "type": "string", "description": "Ready | Moderate | High Risk" }
+      ]
+    },
+    {
+      "name": "orchestration.owners", "title": "Field owner workload", "screen": "s6.1", "screens": ["s6.1"],
+      "source_system": "Field force app / HRMS", "refresh": "hourly",
+      "description": "Field owners, assigned cluster, current task, load and status.",
+      "columns": [
+        { "name": "owner", "type": "string" }, { "name": "role", "type": "string" }, { "name": "cluster", "type": "string" }, { "name": "task", "type": "string" },
+        { "name": "load", "type": "string" }, { "name": "status", "type": "string", "description": "On Track | At Risk | Delayed" }
+      ]
+    },
+    {
+      "name": "impact.cluster_conversion", "title": "Cluster trial-to-adoption", "screen": "s7.1", "screens": ["s7.1", "ai.1"],
+      "source_system": "Farmer callbacks + sales attribution", "refresh": "weekly",
+      "description": "Trials, adopters and conversion rate per cluster.",
+      "columns": [
+        { "name": "cluster", "type": "string" }, { "name": "trials", "type": "number" }, { "name": "rate", "type": "number", "description": "Conversion %" }, { "name": "adopters", "type": "number" },
+        { "name": "signal", "type": "string", "description": "ok | risk | moderate" }, { "name": "text", "type": "string" }
+      ]
+    },
+    {
+      "name": "impact.channel_effectiveness", "title": "Channel effectiveness", "screen": "s7.1", "screens": ["s7.1", "ai.1"],
+      "source_system": "Activity reports + callbacks", "refresh": "weekly",
+      "description": "Farmers reached, trials, conversion and cost-effectiveness index by channel.",
+      "columns": [
+        { "name": "channel", "type": "string" }, { "name": "reached", "type": "number" }, { "name": "trials", "type": "number" }, { "name": "conv", "type": "string" },
+        { "name": "cei", "type": "string" }, { "name": "rel", "type": "string", "description": "Highest | High | Medium" }
+      ]
+    },
+    {
+      "name": "impact.geo_performance", "title": "Geography performance vs. average", "screen": "s7.2", "screens": ["s7.2", "ai.1"],
+      "source_system": "Farmer callbacks + sales attribution", "refresh": "weekly",
+      "description": "Cluster conversion compared with the campaign average.",
+      "columns": [
+        { "name": "cluster", "type": "string" }, { "name": "trials", "type": "number" }, { "name": "adopters", "type": "number" }, { "name": "conv", "type": "string" },
+        { "name": "vs", "type": "string" }, { "name": "dir", "type": "string", "description": "up | down | flat | none" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+/*
+ * Enhancement layer - loaded after responsive.css (see main.tsx).
+ *
+ *  1. Nothing is cut: anything wider than its space gets a visible scrollbar (never clipped / hidden).
+ *  2. Interaction: tooltips, full-screen panels, sortable tables, hover states.
+ *  3. Motion: entrance animations for pages, bars, donuts, lines and numbers.
+ *     All motion is disabled for users who ask for reduced motion.
+ */
+
+/* ======================================================================== 1. nothing is cut: scroll, don't clip */
+
+/* The main content area scrolls whenever the content is taller than the screen. Everything inside is sized
+   to fit its width, so the page itself never scrolls sideways; wide widgets scroll inside their own box. */
+.main-scroll { overflow: auto; min-height: 0; overscroll-behavior: contain; }
+.main { min-height: 0; }
+
+/* Media never forces its container wider than the screen. */
+img, video, canvas, iframe { max-width: 100%; height: auto; }
+pre, code { white-space: pre-wrap; overflow-wrap: anywhere; }
+pre { overflow-x: auto; max-width: 100%; }
+
+/* Every panel scrolls sideways when its content is wider than the panel, on every screen size,
+   instead of clipping it or spilling over the neighbouring panel. */
+.panel { overflow: auto; }
+.s1-expected { height: auto; min-height: 120px; } /* was height:100% -> pushed past the panel and forced a vertical scrollbar */
+
+/* Wide widgets keep a readable size; on smaller screens they scroll sideways inside their own box
+   (.table-wrap for tables, .wide-scroll for timelines / gantt charts), never the whole page. */
+.table-wrap, .wide-scroll { overflow-x: auto; max-width: 100%; }
+.s3-timeline { padding-top: 6px; } /* room for the "Current Stage" marker inside the scroll box */
+.s3-timeline { min-width: 680px; }
+@media (max-width: 1199.98px) {
+  .gantt-labelled { min-width: 680px; }
+  .table-wrap > table { min-width: 520px; }
+  .s6-board { overflow-x: auto; }
+}
+
+/* Visible scrollbars (thin, brand-tinted) so it is obvious there is more to see. */
+.main-scroll, .panel, .table-wrap, .wide-scroll, .s6-cal, .s6-board {
+  scrollbar-width: thin; scrollbar-color: #9dbf8c #eef3ea;
+}
+.sidebar { scrollbar-width: thin; scrollbar-color: #9dbf8c transparent; }
+/* Same slim, themed look in Safari / older Chromium (they ignore scrollbar-color). */
+.main-scroll::-webkit-scrollbar, .panel::-webkit-scrollbar, .table-wrap::-webkit-scrollbar,
+.s6-cal::-webkit-scrollbar, .s6-board::-webkit-scrollbar, .sidebar::-webkit-scrollbar { width: 8px; height: 8px; }
+.main-scroll::-webkit-scrollbar-thumb, .panel::-webkit-scrollbar-thumb, .table-wrap::-webkit-scrollbar-thumb,
+.s6-cal::-webkit-scrollbar-thumb, .s6-board::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb { background: #9dbf8c; border-radius: 8px; }
+.main-scroll::-webkit-scrollbar-track, .panel::-webkit-scrollbar-track, .table-wrap::-webkit-scrollbar-track,
+.s6-cal::-webkit-scrollbar-track, .s6-board::-webkit-scrollbar-track { background: #eef3ea; border-radius: 8px; }
+
+/* Buttons may wrap their label instead of spilling out of a narrow panel. */
+.btn { max-width: 100%; white-space: normal; text-wrap: balance; }
+.btn > span { min-width: 0; overflow-wrap: anywhere; }
+.flow-step { white-space: normal; text-align: left; }
+
+/* S6.1 calendar: week labels wrap ("15-21 / Dec") and annotations stay inside the track (wrapping if long)
+   instead of running past the end of the calendar. The calendar keeps its 900 px width and scrolls. */
+.s6-week-row span { white-space: normal; overflow: visible; line-height: 1.15; overflow-wrap: anywhere; }
+.s6-track { height: auto; min-height: 22px; }
+.s6-annot {
+  position: relative; top: 0; display: block; width: fit-content; margin: 2px 0 2px var(--at, 0);
+  max-width: calc(100% - var(--at, 0px)); white-space: normal; line-height: 1.25;
+}
+.s6-bar, .s6-bar-done { z-index: 1; }
+
+/* SVG charts never clip their own labels. */
+.s1-chart, .s2-quad svg, .s5-wf-wrap svg { overflow: visible; }
+.s5-wf-wrap svg { width: 100%; height: auto; display: block; }
+
+/* ======================================================================== 2. interaction */
+
+/* Tooltip (TooltipLayer in ui.tsx) */
+.ui-tip {
+  position: fixed; z-index: 200; transform: translate(-50%, -100%); max-width: min(280px, calc(100vw - 24px));
+  background: #17361f; color: #fff; font-size: 11.5px; font-weight: 500; line-height: 1.35; padding: 6px 10px; border-radius: 7px;
+  box-shadow: 0 8px 22px rgba(10, 30, 15, .25); pointer-events: none; animation: ui-tip-in .12s ease-out;
+}
+.ui-tip::after { content: ''; position: absolute; left: 50%; bottom: -4px; width: 8px; height: 8px; background: #17361f; transform: translateX(-50%) rotate(45deg); }
+.ui-tip-below { transform: translate(-50%, 0); }
+.ui-tip-below::after { bottom: auto; top: -4px; }
+[data-tip] { cursor: help; }
+button[data-tip], .q-click[data-tip], .pt[data-tip], .donut-seg { cursor: pointer; }
+
+/* Panel header: actions + full-screen toggle */
+.panel-head-right { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; min-width: 0; margin-left: auto; }
+.panel-title { min-width: min(100%, 170px); flex: 1 1 0; flex-wrap: wrap; }
+.panel-info { display: inline-flex; }
+.panel-expand {
+  display: grid; place-items: center; width: 26px; height: 26px; flex-shrink: 0; border: 1px solid transparent; border-radius: 7px;
+  background: transparent; color: #8a978c; opacity: .55; transition: opacity .15s, background .15s, color .15s, border-color .15s;
+}
+.panel:hover > .panel-head .panel-expand, .panel-expand:focus-visible { opacity: 1; }
+.panel-expand:hover { background: var(--pale); color: var(--dark); border-color: #d4e8c4; }
+.panel.dark-head > .panel-head .panel-expand { color: #fff; }
+.panel.dark-head > .panel-head .panel-expand:hover { background: rgba(255, 255, 255, .14); border-color: transparent; }
+@media (hover: none) { .panel-expand { opacity: .9; } }
+
+.panel-backdrop { position: fixed; inset: 0; z-index: 79; background: rgba(12, 28, 16, .45); backdrop-filter: blur(2px); animation: ui-fade .2s ease-out; }
+.panel.panel-expanded {
+  position: fixed; inset: 18px; z-index: 80; overflow: auto; margin: 0; max-width: none; max-height: none;
+  box-shadow: 0 24px 70px rgba(10, 30, 15, .3); animation: ui-pop .22s ease-out; container-type: inline-size;
+}
+.panel.panel-expanded > .panel-head { position: sticky; top: -12px; z-index: 3; background: inherit; padding-top: 4px; }
+.panel.panel-expanded .panel-expand { opacity: 1; }
+.has-expanded-panel .main-scroll { overflow: hidden; }
+@media (max-width: 767.98px) { .panel.panel-expanded { inset: 6px; } }
+
+/* Sortable table headers */
+.dt th.th-sort { cursor: pointer; user-select: none; transition: color .15s, background .15s; }
+.dt th.th-sort:hover { color: var(--dark); background: #f0f6ea; }
+.dt th.th-sorted { color: var(--dark); }
+.th-sort-icon { display: inline-flex; margin-left: 3px; vertical-align: -1px; opacity: .4; }
+.th-sorted .th-sort-icon { opacity: 1; }
+.dt tbody tr { transition: background .15s; }
+.dt tbody tr:hover > td { background: #f7fbf3; }
+.dt .row-highlight:hover > td { background: #fbefc4; }
+
+/* Hover / press feedback */
+.kpi { transition: transform .18s ease, box-shadow .18s ease, border-color .18s; }
+.kpi:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(20, 60, 30, .08); border-color: #d4e3cb; }
+.panel { transition: box-shadow .2s ease, border-color .2s ease; }
+.panel:not(.panel-expanded):hover { box-shadow: 0 6px 18px rgba(20, 60, 30, .06); border-color: #d6e3cd; }
+.btn { transition: background .15s, box-shadow .15s, transform .08s, border-color .15s; }
+.btn:active:not(:disabled) { transform: scale(.97); }
+.btn-primary:hover { box-shadow: 0 4px 12px rgba(31, 95, 44, .28); }
+.btn-outline:hover { border-color: #b7cdab; }
+.mini-card { transition: border-color .15s, box-shadow .15s; }
+.mini-card:hover { border-color: #cfe0c4; box-shadow: 0 3px 10px rgba(20, 60, 30, .06); }
+.side-link, .side-sublink, .flow-step, .tab, .crumb button { transition: background .15s, color .15s; }
+.flow-step:not(:disabled):hover { border-color: var(--light); background: var(--paler); }
+.tab:hover { color: var(--dark); }
+.ai-item { transition: background .15s; border-radius: 6px; }
+.ai-item:hover { background: rgba(233, 244, 225, .45); }
+.hbar-track { cursor: help; transition: box-shadow .15s; }
+.hbar-row:hover .hbar-track { box-shadow: 0 0 0 2px var(--pale); }
+.hbar-row:hover .hbar-label { color: var(--dark); font-weight: 600; }
+.vbar-col { cursor: help; }
+.vbar { transition: filter .15s; }
+.vbar-col:hover .vbar { filter: brightness(1.12) saturate(1.1); }
+.progress { cursor: help; }
+.spark { cursor: help; }
+
+/* Donut: hover/tap a slice or legend item */
+.donut-seg { transition: opacity .2s ease, transform .2s ease; transform-box: view-box; transform-origin: 50% 50%; }
+.donut-seg.active { transform: scale(1.045); }
+.donut-has-active .donut-seg:not(.active) { opacity: .35; }
+.donut-center strong, .donut-center span { transition: opacity .15s; }
+.donut-center-label { max-width: 70%; line-height: 1.15; font-weight: 600; color: var(--ink) !important; }
+.legend-item { cursor: pointer; border-radius: 5px; padding: 1px 4px; margin: 0 -4px; transition: background .15s, opacity .15s; }
+.legend-item:hover, .legend-item.active { background: var(--paler); }
+.donut-has-active .legend-item:not(.active) { opacity: .5; }
+
+/* Chart hover states (s1 / s2 SVG charts) */
+.s1-band-hover { fill: rgba(31, 95, 44, .07); pointer-events: none; }
+.s1-combo-group { cursor: help; }
+.s1-dot { transition: r .15s; cursor: help; }
+.s1-dot:hover { r: 5.5; }
+.pt, .q-dot { transition: opacity .2s; }
+.pt circle, .q-dot circle { transition: r .15s; }
+.pt-dim, .q-dim { opacity: .35; }
+.s5-wf-bar { cursor: help; }
+.s5-wf-bar:hover rect:not([fill='transparent']) { filter: brightness(1.1); }
+.s6-bar { cursor: help; transition: filter .15s, transform .15s; }
+.s6-bar:hover { filter: brightness(1.12); box-shadow: 0 0 0 2px rgba(31, 95, 44, .18); }
+.gantt-bar { transition: filter .15s; cursor: help; }
+.gantt-bar:hover { filter: brightness(1.08); }
+
+/* ======================================================================== 3. motion */
+
+@keyframes ui-fade { from { opacity: 0; } }
+@keyframes ui-rise { from { opacity: 0; transform: translateY(8px); } }
+@keyframes ui-pop { from { opacity: 0; transform: scale(.97); } }
+@keyframes ui-tip-in { from { opacity: 0; } }
+@keyframes ui-grow-x { from { transform: scaleX(0); } }
+@keyframes ui-grow-y { from { transform: scaleY(0); } }
+@keyframes ui-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes ui-slide { from { opacity: 0; transform: translateX(-10px); } }
+@keyframes ui-toast { from { opacity: 0; transform: translateY(12px); } }
+
+/* Page sections rise in, lightly staggered (fill-mode backwards: nothing lingers after the animation, so fixed full-screen panels position correctly). */
+.page > * { animation: ui-rise .38s ease-out backwards; }
+.page > *:nth-child(2) { animation-delay: 40ms; }
+.page > *:nth-child(3) { animation-delay: 80ms; }
+.page > *:nth-child(4) { animation-delay: 120ms; }
+.page > *:nth-child(n + 5) { animation-delay: 160ms; }
+.page > * > .grid > *, .page > * > .kpi-row > * { animation: ui-rise .4s ease-out backwards; }
+
+.hbar-fill, .progress-fill { transform-origin: left center; animation: ui-grow-x .8s cubic-bezier(.2, .7, .2, 1) backwards; }
+.vbar { transform-origin: bottom center; animation: ui-grow-y .75s cubic-bezier(.2, .7, .2, 1) backwards; }
+.s1-grow { transform-box: fill-box; transform-origin: bottom center; animation: ui-grow-y .75s cubic-bezier(.2, .7, .2, 1) backwards; }
+.s6-bar { transform-origin: left center; animation: ui-grow-x .7s cubic-bezier(.2, .7, .2, 1) backwards; }
+.funnel-bar, .stack-funnel-step { animation: ui-slide .45s ease-out backwards; }
+.donut-seg { animation: ui-fade .5s ease-out backwards; }
+.pt, .q-dot { animation: ui-fade .5s ease-out backwards; }
+.spark-line, .s1-draw { stroke-dasharray: 1; animation: ui-draw 1.1s ease-out .15s backwards; }
+.toast { animation: ui-toast .25s ease-out; }
+.sidebar.open { box-shadow: 0 0 40px rgba(10, 30, 15, .28); }
+.nav-backdrop { animation: ui-fade .2s ease-out; }
+.filters.open { animation: ui-rise .2s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; }
+}

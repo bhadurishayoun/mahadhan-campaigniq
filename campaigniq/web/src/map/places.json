@@ -1,0 +1,32 @@
+{
+  "about": "Every place named on the tool's maps, at its real latitude/longitude. Coordinates: GeoNames (CC-BY 4.0, geonames.org, IN dump downloaded 2026-11-10) and OpenStreetMap via Nominatim (ODbL, (c) OpenStreetMap contributors). 'district' / 'taluka' are the polygons each point falls inside in public/geo/*.topo.json (checked by point-in-polygon). Village names in the tool are illustrative; where no village of that name exists inside Ambad taluka, the nearest real village of that name in Jalna district is used and 'note' says so.",
+  "places": [
+    { "id": "jalna", "name": "Jalna", "kind": "district-hq", "lat": 19.8410, "lon": 75.8864, "district": "Jalna", "state": "Maharashtra", "taluka": "Jalna", "ref": "geonames:1269395" },
+    { "id": "dhule", "name": "Dhule", "kind": "district-hq", "lat": 20.9013, "lon": 74.7774, "district": "Dhule", "state": "Maharashtra", "ref": "geonames:1272691" },
+    { "id": "nashik", "name": "Nashik", "kind": "district-hq", "lat": 19.9973, "lon": 73.7910, "district": "Nashik", "state": "Maharashtra", "ref": "geonames:1261731" },
+    { "id": "sangli", "name": "Sangli", "kind": "district-hq", "lat": 16.8544, "lon": 74.5642, "district": "Sangli", "state": "Maharashtra", "ref": "geonames:1257416" },
+    { "id": "anantapur", "name": "Anantapur", "kind": "district-hq", "lat": 14.6778, "lon": 77.6081, "district": "Ananthapuramu", "state": "Andhra Pradesh", "ref": "geonames:1278672" },
+
+    { "id": "t-jalna", "name": "Jalna", "kind": "taluka-hq", "lat": 19.8410, "lon": 75.8864, "district": "Jalna", "state": "Maharashtra", "taluka": "Jalna", "ref": "geonames:1269395" },
+    { "id": "t-ambad", "name": "Ambad", "kind": "taluka-hq", "lat": 19.6130, "lon": 75.7891, "district": "Jalna", "state": "Maharashtra", "taluka": "Ambad", "ref": "geonames:1278871" },
+    { "id": "t-badnapur", "name": "Badnapur", "kind": "taluka-hq", "lat": 19.8680, "lon": 75.7255, "district": "Jalna", "state": "Maharashtra", "taluka": "Badnapur", "ref": "geonames:1277971" },
+    { "id": "t-bhokardan", "name": "Bhokardan", "kind": "taluka-hq", "lat": 20.2583, "lon": 75.7700, "district": "Jalna", "state": "Maharashtra", "taluka": "Bhokardan", "ref": "geonames:1275863" },
+    { "id": "t-jafrabad", "name": "Jafrabad", "kind": "taluka-hq", "lat": 20.1866, "lon": 76.0081, "district": "Jalna", "state": "Maharashtra", "taluka": "Jafrabad", "ref": "geonames:1269613" },
+    { "id": "t-partur", "name": "Partur", "kind": "taluka-hq", "lat": 19.5993, "lon": 76.2154, "district": "Jalna", "state": "Maharashtra", "taluka": "Partur", "ref": "geonames:1260228" },
+    { "id": "t-ghansawangi", "name": "Ghansawangi", "kind": "taluka-hq", "lat": 19.5221, "lon": 75.9890, "district": "Jalna", "state": "Maharashtra", "taluka": "Ghansawangi", "ref": "geonames:1271377" },
+    { "id": "t-mantha", "name": "Mantha", "kind": "taluka-hq", "lat": 19.6494, "lon": 76.3872, "district": "Jalna", "state": "Maharashtra", "taluka": "Mantha", "ref": "geonames:1263611" },
+
+    { "id": "v-ambad", "name": "Ambad (HQ)", "kind": "village", "lat": 19.6130, "lon": 75.7891, "district": "Jalna", "state": "Maharashtra", "taluka": "Ambad", "ref": "geonames:1278871" },
+    { "id": "v-jamkhed", "name": "Jamkhed", "kind": "village", "lat": 19.6447, "lon": 75.6519, "district": "Jalna", "state": "Maharashtra", "taluka": "Ambad", "ref": "geonames:1269326" },
+    { "id": "v-shahagad", "name": "Shahagad", "kind": "village", "lat": 19.3597, "lon": 75.7111, "district": "Jalna", "state": "Maharashtra", "taluka": "Ambad", "ref": "osm:node/3605008530" },
+    { "id": "v-rohilagad", "name": "Rohilagad", "kind": "village", "lat": 19.6989, "lon": 75.6608, "district": "Jalna", "state": "Maharashtra", "taluka": "Ambad", "ref": "osm:node/9962245262" },
+    { "id": "v-kingaon", "name": "Kingaon", "kind": "village", "lat": 19.6759, "lon": 75.6861, "district": "Jalna", "state": "Maharashtra", "taluka": "Ambad", "ref": "osm:node/9962245074" },
+    { "id": "v-gondi", "name": "Gondi", "kind": "village", "lat": 19.4051, "lon": 75.7867, "district": "Jalna", "state": "Maharashtra", "taluka": "Ambad", "ref": "osm:node/9962401453" },
+    { "id": "v-sukapuri", "name": "Sukapuri", "kind": "village", "lat": 19.5209, "lon": 75.8080, "district": "Jalna", "state": "Maharashtra", "taluka": "Ambad", "ref": "osm:Sukhapuri (place=village)", "note": "Mapped to Sukhapuri village, Ambad taluka." },
+    { "id": "v-wadigaon", "name": "Wadi Gaon", "kind": "village", "lat": 19.4545, "lon": 75.7103, "district": "Jalna", "state": "Maharashtra", "taluka": "Ambad", "ref": "osm:node/3139490187", "note": "Mapped to Wadi Godri (Wadigodri), the only 'Wadi…' village in Ambad taluka - please confirm." },
+    { "id": "v-pimpalgaon", "name": "Pimpalgaon", "kind": "village", "lat": 19.7275, "lon": 75.7155, "district": "Jalna", "state": "Maharashtra", "taluka": "Ambad", "ref": "osm:Dhangar Pimpalgaon (place=village)", "note": "Two Pimpalgaons in Ambad taluka; mapped to Dhangar Pimpalgaon (nearest Ambad town) - please confirm." },
+    { "id": "v-golegaon", "name": "Golegaon", "kind": "village", "lat": 19.2886, "lon": 76.1619, "district": "Jalna", "state": "Maharashtra", "taluka": "Partur", "ref": "geonames:10432625", "note": "No Golegaon inside Ambad taluka; this is Golegaon in Partur taluka, Jalna district." },
+    { "id": "v-dhanora", "name": "Dhanora", "kind": "village", "lat": 19.7311, "lon": 76.1397, "district": "Jalna", "state": "Maharashtra", "taluka": "Jalna", "ref": "geonames:10432573", "note": "No Dhanora inside Ambad taluka; this is Dhanora in Jalna taluka, Jalna district." },
+    { "id": "v-tandulwadi", "name": "Tandulwadi", "kind": "village", "lat": 20.2308, "lon": 75.6932, "district": "Jalna", "state": "Maharashtra", "taluka": "Bhokardan", "ref": "geonames:11056090", "note": "No Tandulwadi inside Ambad taluka; this is Tandulwadi in Bhokardan taluka, Jalna district." }
+  ]
+}

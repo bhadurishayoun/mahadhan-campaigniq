@@ -1,0 +1,21 @@
+{
+  "_comment": "Crop, season and campaign-type masters used by the filter bar. Add entries as new crops / seasons / campaign types are introduced.",
+  "crops": [
+    { "id": "onion", "name": "Onion" },
+    { "id": "sugarcane", "name": "Sugarcane" },
+    { "id": "grapes", "name": "Grapes" },
+    { "id": "cotton", "name": "Cotton" },
+    { "id": "maize", "name": "Maize" }
+  ],
+  "seasons": [
+    { "id": "late-rabi-2026-27", "name": "Late Rabi 2026-27", "current": true },
+    { "id": "kharif-2026", "name": "Kharif 2026" },
+    { "id": "rabi-2025-26", "name": "Rabi 2025-26" }
+  ],
+  "campaign_types": [
+    { "id": "adoption", "name": "Adoption" },
+    { "id": "awareness", "name": "Awareness" },
+    { "id": "retention", "name": "Retention" },
+    { "id": "channel", "name": "Channel" }
+  ]
+}

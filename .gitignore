@@ -1,0 +1,36 @@
+# ---------------------------------------------------------------- dependencies
+node_modules/
+
+# ---------------------------------------------------------------- build output and caches
+dist/
+.vite/
+*.tsbuildinfo
+.cache/
+coverage/
+
+# ---------------------------------------------------------------- Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# ---------------------------------------------------------------- secrets / local configuration
+# Never commit real keys. Only the documented template (.env.example) is tracked.
+.env
+.env.*
+!.env.example
+
+# ---------------------------------------------------------------- local databases
+# The API re-creates and seeds its SQLite database automatically on startup.
+campaigniq/server/data/*.db
+campaigniq/server/data/*.db-*
+
+# ---------------------------------------------------------------- editor / OS / Office temp files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+*.log

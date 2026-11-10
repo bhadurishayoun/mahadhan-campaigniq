@@ -1,0 +1,171 @@
+/*
+ * Responsive layer - loaded last (main.tsx) so it overrides shared and per-screen styles.
+ *
+ *   >= 1200 px : desktop/laptop. The mockup layout is kept; main.tsx scales it with --app-zoom.
+ *   768-1199   : tablet. Slide-in menu, wrapped filter bar, panels reflow to 2 columns.
+ *   < 768      : phone. Slide-in menu, filters behind a "Filters" button, single column.
+ *
+ * Wide widgets that can't reflow (timelines, gantt charts, kanban, trees, tables) scroll sideways
+ * inside their own panel, never the whole page.
+ */
+
+.menu-btn, .filters-btn, .nav-backdrop, .nav-close, .topbar-title { display: none; }
+
+/* ======================================================================== tablet + phone */
+@media (max-width: 1199.98px) {
+  /* Shell: off-canvas navigation */
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .sidebar {
+    position: fixed; z-index: 60; inset: 0 auto 0 0; width: min(290px, 86vw);
+    transform: translateX(-105%); transition: transform .22s ease; box-shadow: 0 0 32px rgba(10, 30, 15, .22);
+  }
+  .sidebar.open { transform: none; }
+  .nav-backdrop { display: block; position: fixed; inset: 0; z-index: 55; background: rgba(12, 28, 16, .38); }
+  .nav-close { display: grid; place-items: center; position: absolute; top: 14px; right: 10px; width: 32px; height: 32px; border: 0; border-radius: 8px; background: var(--pale); color: var(--dark); }
+  .menu-btn { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--dark); flex-shrink: 0; }
+  .topbar-title { display: block; font-weight: 700; font-size: 13.5px; color: #1d3322; min-width: 0; flex: 1 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Top bar: title row, then filters on their own wrapped row */
+  .topbar { flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 8px 14px; }
+  .search { margin-left: 0; flex: 0 1 260px; min-width: 150px; }
+  .filters { order: 10; flex: 1 1 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px 8px; }
+  .filter { flex: none; }
+  .select-wrap select { max-width: none; }
+  .user-role { display: none; }
+
+  .page { padding: 12px 14px 20px; }
+  .kpi-row { grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+
+  /* Generic grids: as many >=320 px columns as fit (2 on most tablets) */
+  .grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)) !important; }
+  .panel { overflow-x: auto; }
+  .panel-head { flex-wrap: wrap; }
+  .page-header { flex-wrap: wrap; }
+  .page-actions { justify-content: flex-start; }
+  .stepper { flex-wrap: wrap; row-gap: 8px; }
+  .stepper li { flex: 0 0 auto; }
+  .stepper li:not(:last-child)::after { flex: 0 0 22px; }
+  .context-strip { flex-wrap: wrap; }
+  .context-item { flex: 1 1 220px; border-top: 1px solid var(--line); }
+  .source-bar { flex-wrap: wrap; }
+  .source-right { flex-wrap: wrap; }
+
+  /* Screen layouts */
+  .s6-layout { grid-template-columns: minmax(0, 1fr); }
+  .s6-board { grid-template-columns: repeat(5, minmax(190px, 1fr)); overflow-x: auto; padding-bottom: 4px; }
+  .s1-kpi-strip { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+  .s2-shortlist, .s4-res, .s5-detail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .s1-scen-grid, .s3-campaigns, .s3-ai-steps, .s4-tpl-grid, .s4-scen, .s5-scen { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+  .s7-hero { grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+  .s7-learn { grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); }
+  .ai1-grid { grid-template-columns: minmax(0, 1fr); }
+  .adm-table { min-width: 860px; }
+}
+
+/* ======================================================================== phone */
+@media (max-width: 767.98px) {
+  .topbar { padding: 8px 10px; }
+  .filters-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 7px 10px; font-weight: 600; font-size: 12px; color: var(--dark); }
+  .filters-btn.active { background: var(--pale); border-color: #cfe2c1; }
+  .filters { display: none; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .filters.open { display: grid; }
+  .topbar-title { order: 1; flex: 1 1 0; }
+  .topbar .icon-btn { order: 2; }
+  .user { order: 3; }
+  .user > svg { display: none; }
+  /* Row 1: menu, title, bell, avatar. Row 2: search + Filters (the basis forces the line break). */
+  .search { order: 4; flex: 1 1 calc(100% - 120px); min-width: 0; max-width: none; }
+  .filters-btn { order: 5; }
+  .icon-btn[aria-label='Help'] { display: none; }
+
+  .page { padding: 10px 10px 18px; gap: 10px; }
+  .page-title-row h1 { font-size: 18px; }
+  .page-header { flex-direction: column; gap: 8px; }
+  .panel { padding: 10px 11px; }
+  .panel.dark-head > .panel-head { margin: -10px -11px 10px; }
+
+  .grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .kpi-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .kpi { padding: 9px 10px; gap: 8px; }
+  .kpi-icon { width: 28px; height: 28px; }
+  .kpi-value { font-size: 18px; overflow-wrap: break-word; }
+  .kpi .spark { display: none; }
+  .context-item { flex-basis: 100%; }
+  .flow-next { margin-left: 0; flex-wrap: wrap; }
+  .ai-item { flex-wrap: wrap; }
+  .ai-item-action { width: 100%; padding-left: 35px; flex-wrap: wrap; }
+  .toast { left: 10px; right: 10px; bottom: 12px; }
+  .btn { white-space: normal; }
+
+  /* Two-column widgets become one column */
+  .s1-map-wrap, .s2-mapwrap, .s2-cov, .s3-logic, .s3-kpi-grid, .s3-insights, .s4-form, .s5-calc, .s5-waterfall,
+  .s5-map-wrap, .s7-split, .s7-insight-row, .ai1-split, .ai1-cta, .s1-approval, .s1-scen-grid, .s3-campaigns,
+  .s3-ai-steps, .s4-tpl-grid, .s4-scen, .s5-scen { grid-template-columns: minmax(0, 1fr); }
+  .s1-kpi-strip, .s4-res, .s5-detail, .s7-hero, .s7-learn { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .s2-shortlist { grid-template-columns: minmax(0, 1fr); }
+  .s5-stage-acts { grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); }
+  .s1-ctx select { min-width: 0; max-width: 100%; }
+  .hbar-row { grid-template-columns: minmax(90px, 1fr) 1.5fr 44px; }
+}
+
+/* ======================================================================== small phone (<= 480 px) */
+@media (max-width: 480px) {
+  /* Screen title wraps onto a second line instead of being cut off with "..." */
+  .topbar-title { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.25; font-size: 13px; }
+  .page { padding: 8px 8px 16px; }
+  .panel { padding: 10px; }
+  .panel.dark-head > .panel-head { margin: -10px -10px 10px; }
+  /* Remaining 2-column strips stack into a single column */
+  .s1-kpi-strip, .s4-res, .s5-detail, .s7-hero, .s7-learn, .s1-impact-cards { grid-template-columns: minmax(0, 1fr); }
+  .s1-kpi-strip > div { border-right: 0; border-bottom: 1px solid var(--line); }
+  .filters { grid-template-columns: minmax(0, 1fr); }
+  .kpi-value { font-size: 17px; }
+  .page-actions, .flow-next { width: 100%; }
+  .btn { min-height: 36px; } /* comfortable tap target */
+  .hbar-row { grid-template-columns: minmax(0, 1fr) 1.2fr 42px; gap: 6px; }
+  .donut-block { justify-content: center; }
+}
+
+/* ======================================================================== shared safety rules */
+@media (max-width: 1199.98px) {
+  select, input, textarea { max-width: 100%; }
+  .field { min-width: 0; }
+  .field select, .field input, .field textarea { width: 100%; min-width: 0; }
+  .page-header > * { min-width: 0; max-width: 100%; }
+  .panel-actions { max-width: 100%; }
+  .panel-actions > div { flex-wrap: wrap; }
+  .pill { white-space: normal; }
+  .kpi-value { overflow-wrap: break-word; }
+  .flow-label { white-space: normal; }
+  .ai-item { flex-wrap: wrap; }
+  .ai-item-body { min-width: 180px; }
+  .ai-item-action { flex-wrap: wrap; }
+  .s3-crop-card { flex-wrap: wrap; }
+  .s3-logic-flow { flex-wrap: wrap; }
+  .s3-logic-step { flex: 1 1 88px; }
+
+  /* Widgets react to the width of their own panel (container queries) */
+  .panel { container-type: inline-size; }
+}
+
+@container (max-width: 560px) {
+  .s7-split, .s5-calc, .s5-waterfall, .s2-cov, .s3-logic, .ai1-split, .s4-form, .s1-map-wrap,
+  .s5-map-wrap, .s7-insight-row, .ai1-cta { grid-template-columns: minmax(0, 1fr); }
+
+  /* Map with callouts on both sides -> map on top, callout lists side by side below */
+  .s2-mapwrap { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .s2-mapwrap > :not(.s2-callouts) { grid-column: 1 / -1; order: -1; }
+
+  /* Driver trees -> stacked */
+  .s1-tree, .s7-tree { grid-template-columns: minmax(0, 1fr); gap: 10px; min-height: 0; justify-items: stretch; }
+  .s1-tree-links, .s7-bracket { display: none; }
+  .s7-node-root { justify-self: center; }
+
+  .gantt-row, .gantt-head { grid-template-columns: 96px minmax(0, 1fr); }
+  .s5-tl-head, .s5-tl-row { grid-template-columns: 72px 70px minmax(0, 1fr); }
+}
+
+@container (max-width: 420px) {
+  .s2-mapwrap { grid-template-columns: minmax(0, 1fr); }
+  .gantt-row, .gantt-head { grid-template-columns: 78px minmax(0, 1fr); gap: 6px; }
+}

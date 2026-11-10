@@ -1,0 +1,8 @@
+{
+  "_comment": "Product master. Add Mahadhan products here (or PUT /api/reference/products). `id` is the filter key used in dataset rows (column `product`). Doses and prices are NOT stored here - agronomy-approved values belong in the backend product / crop_product_dose tables.",
+  "products": [
+    { "id": "croptek", "name": "Croptek", "family": "Speciality nutrition", "pack_sizes_kg": [50, 25, 20, 10], "crops": ["onion", "sugarcane", "cotton", "maize"], "active": true },
+    { "id": "solutek", "name": "Solutek", "family": "Water-soluble fertiliser", "pack_sizes_kg": [25, 1], "crops": ["grapes", "onion"], "active": true },
+    { "id": "smartek", "name": "Smartek", "family": "Speciality nutrition", "pack_sizes_kg": [50, 25], "crops": ["sugarcane"], "active": true }
+  ]
+}

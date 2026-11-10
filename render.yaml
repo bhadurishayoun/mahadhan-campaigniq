@@ -1,0 +1,26 @@
+# Render Blueprint for the CampaignIQ API (FastAPI + SQLite) on Render's free tier.
+# Render -> New -> Blueprint -> pick this repository. It creates the web service below.
+# Free-tier notes: the service sleeps after ~15 min idle (first request then takes up to ~1 min) and its
+# disk is temporary - the SQLite demo database is re-created and re-seeded automatically on every start.
+services:
+  - type: web
+    name: mahadhan-campaigniq-api
+    runtime: python
+    plan: free
+    rootDir: campaigniq/server
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m uvicorn campaign_api.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      # The GitHub Pages origin allowed to call the API, e.g. https://<your-username>.github.io (no path).
+      - key: CAMPAIGNIQ_CORS_ORIGINS
+        sync: false
+      # AI Co-pilot: "demo" needs no key. To use a real LLM set COPILOT_PROVIDER=openai and enter the key
+      # here in Render's dashboard (never in the code).
+      - key: COPILOT_PROVIDER
+        value: demo
+      - key: COPILOT_API_KEY
+        sync: false

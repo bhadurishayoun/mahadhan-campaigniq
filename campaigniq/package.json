@@ -1,0 +1,16 @@
+{
+  "name": "campaigniq",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Mahadhan CampaignIQ - automated crop-nutrition campaign management tool",
+  "workspaces": ["server", "web"],
+  "scripts": {
+    "dev": "concurrently -n api,web -c green,cyan \"npm run dev -w server\" \"npm run dev -w web\"",
+    "seed": "npm run seed -w server",
+    "test": "npm run test -w server",
+    "build": "npm run build -w server && npm run build -w web"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

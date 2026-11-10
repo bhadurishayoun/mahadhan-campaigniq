@@ -1,0 +1,33 @@
+// Global defaults. They are loaded into the `config` table by the seed and read back from there:
+// nothing below is hard-coded in business logic.
+
+export const CONFIG_DEFAULTS: Record<string, { value: unknown; description: string }> = {
+  max_activities_per_mdo_week: { value: 6, description: 'Capacity limit: activities per MDO per week' },
+  active_weeks: { value: 16, description: 'Active field weeks in a season' },
+  callback_sample_pct: { value: 0.1, description: 'Share of daily contacts sampled for call-back' },
+  envelope_split: { value: { proven: 0.7, scaling: 0.2, pilot: 0.1 }, description: 'Region / BU budget envelope split' },
+  envelope_tolerance_pp: { value: 5, description: 'Flag a bucket this many points off target' },
+  prior_strength: { value: 50, description: 'm in k_learned = (k*m + positives) / (m + calls)' },
+  retention_focus: { value: 0.2, description: 'Share of current farmers to retain in a retention plan' },
+  amber_factor: { value: 0.9, description: 'Spend ratio turns amber at this share of the cap' },
+  demo_farmers_per_village: { value: 3, description: 'Innovative farmers assumed per village if none mapped' },
+  dealer_lead_time_days: { value: 15, description: 'Dealer lead time for stock-needed-by' },
+  pre_window_days: { value: 120, description: 'Pre-season window before the anchor date' },
+  skip_sundays: { value: true, description: 'Do not schedule events on Sundays' },
+  stale_data_days: { value: 90, description: 'Market data older than this is marked stale' },
+  weather_rain_threshold_pct: { value: -30, description: 'Rainfall deviation that triggers a replan suggestion' },
+  weather_window_days: { value: 15, description: 'Days around the anchor in which weather risk applies' },
+  audit_min_attendance_ratio: { value: 0.5, description: 'Attendance below this share of r is flagged' },
+  audit_max_gps_km: { value: 10, description: 'Report farther than this from the MU centre is flagged' },
+  audit_max_cost_ratio: { value: 1.2, description: 'Cost above this share of the unit cost is flagged' },
+  audit_max_report_delay_days: { value: 3, description: 'Reports later than this are flagged' },
+  contribution_margin_pct: { value: 0.26, description: 'Contribution margin used for net ROI (placeholder)' },
+  planning_margin_pct: { value: 0.5, description: 'Margin used for the planning-stage ROI multiple (placeholder)' },
+  price_per_mt: { value: 24880, description: 'Campaign price per metric tonne for revenue estimates (placeholder)' },
+  qty_per_adopter_kg: { value: 393, description: 'Average product quantity per adopting farmer (placeholder)' },
+  scenario_multipliers: { value: { conservative: 0.83, base: 1, optimistic: 1.135 }, description: 'Scale on trial conversion for scenarios' },
+  funnel_defaults: { value: { reach_pct: 0.9, trial_pct: 0.4, adoption_pct: 0.81, repeat_pct: 0.8 }, description: 'Default forward-funnel assumptions' },
+  opportunity_weights: { value: { size: 0.3, gap: 0.3, channel: 0.2, conversion: 0.2 }, description: 'Weights of the opportunity score' },
+  trigger_window_days: { value: 10, description: 'Crop-stage transition within this many days raises a trigger' },
+  today_override: { value: '', description: 'Demo only: fixed "today" (YYYY-MM-DD). Empty = system date' },
+};

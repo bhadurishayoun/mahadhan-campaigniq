@@ -1,0 +1,45 @@
+{
+  "_comment": "Geography master. Add states / districts / talukas here (or upload via PUT /api/reference/geography). `id` values are the filter keys used in datasets (columns `state`, `district`, `taluka`). `has_data` is informational only - screens fall back to illustrative demo data until datasets are uploaded for the selected scope.",
+  "country": "India",
+  "states": [
+    {
+      "id": "maharashtra",
+      "name": "Maharashtra",
+      "districts": [
+        { "id": "jalna", "name": "Jalna", "talukas": ["Ambad", "Partur", "Badnapur", "Jalna", "Mantha", "Bhokardan", "Jafrabad", "Ghansawangi"], "has_data": true },
+        { "id": "dhule", "name": "Dhule", "talukas": ["Dhule", "Sakri", "Shirpur", "Shindkheda"], "has_data": false },
+        { "id": "nashik", "name": "Nashik", "talukas": ["Nashik", "Niphad", "Sinnar", "Yeola", "Malegaon"], "has_data": false },
+        { "id": "sangli", "name": "Sangli", "talukas": ["Miraj", "Tasgaon", "Walwa", "Jat"], "has_data": false }
+      ]
+    },
+    {
+      "id": "karnataka",
+      "name": "Karnataka",
+      "districts": [
+        { "id": "belagavi", "name": "Belagavi", "talukas": ["Belagavi", "Gokak", "Athani"], "has_data": false },
+        { "id": "mandya", "name": "Mandya", "talukas": ["Mandya", "Maddur", "Pandavapura"], "has_data": false }
+      ]
+    },
+    {
+      "id": "telangana",
+      "name": "Telangana",
+      "districts": [
+        { "id": "adilabad", "name": "Adilabad", "talukas": ["Adilabad", "Boath"], "has_data": false }
+      ]
+    },
+    {
+      "id": "andhra-pradesh",
+      "name": "Andhra Pradesh",
+      "districts": [
+        { "id": "anantapur", "name": "Anantapur", "talukas": ["Anantapur", "Dharmavaram", "Kadiri"], "has_data": false }
+      ]
+    },
+    {
+      "id": "gujarat",
+      "name": "Gujarat",
+      "districts": [
+        { "id": "bhavnagar", "name": "Bhavnagar", "talukas": ["Mahuva", "Talaja"], "has_data": false }
+      ]
+    }
+  ]
+}

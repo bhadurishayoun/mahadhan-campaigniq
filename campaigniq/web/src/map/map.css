@@ -1,0 +1,82 @@
+/* India district map (IndiaDistrictMap.tsx) */
+.imap { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+
+.imap-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.imap-search { position: relative; display: flex; align-items: center; gap: 6px; flex: 1 1 180px; min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: 4px 9px; background: #fff; color: var(--muted); }
+.imap-search input { border: 0; outline: 0; flex: 1; min-width: 0; font-size: 12px; background: transparent; color: var(--ink); }
+.imap-search:focus-within { border-color: var(--green); box-shadow: 0 0 0 3px var(--pale); }
+.imap-nomatch { font-size: 10.5px; color: var(--red); white-space: nowrap; }
+.imap-zoom-btns { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; flex-shrink: 0; }
+.imap-zoom-btns button { display: grid; place-items: center; width: 32px; height: 30px; border: 0; background: none; color: var(--dark); }
+.imap-zoom-btns button + button { border-left: 1px solid var(--line); }
+.imap-zoom-btns button:hover { background: var(--pale); }
+
+/* The stage is the map viewport: content outside it is reached by panning / zooming. */
+.imap-stage { position: relative; width: 100%; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #f4f8fb; }
+.imap-svg { display: block; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+.imap-svg:active { cursor: grabbing; }
+.imap-sea { fill: #f4f8fb; }
+
+.imap-districts path, .imap-talukas path { stroke: #ffffff; stroke-width: 0.6; vector-effect: non-scaling-stroke; cursor: pointer; transition: filter .12s; }
+.imap-districts path:hover, .imap-talukas path:hover { filter: brightness(0.95); }
+.imap-talukas path { stroke: none; }
+.imap-taluka-lines { fill: none; stroke: #7a8a7c; stroke-width: 0.9; stroke-dasharray: 3 2; vector-effect: non-scaling-stroke; pointer-events: none; }
+.imap-state-lines { fill: none; stroke: #5d6b60; stroke-width: 1.2; vector-effect: non-scaling-stroke; pointer-events: none; }
+.imap-outline { fill: none; stroke: #2f3b32; stroke-width: 1.4; vector-effect: non-scaling-stroke; pointer-events: none; }
+.imap-hover { fill: none; stroke: #1f5f2c; stroke-width: 2.4; vector-effect: non-scaling-stroke; pointer-events: none; }
+
+/* labels: halo keeps them readable on any fill */
+.imap-overlay text { paint-order: stroke; stroke: #ffffff; stroke-linejoin: round; pointer-events: none; font-family: inherit; }
+.imap-lbl-state { font-size: 10.5px; font-weight: 700; fill: #4c5a4f; stroke-width: 3px; letter-spacing: .02em; }
+.imap-lbl-district { font-size: 10px; font-weight: 600; fill: #3d4a40; stroke-width: 2.6px; }
+.imap-lbl-taluka { font-size: 10.5px; font-weight: 700; fill: #344236; stroke-width: 3px; font-style: italic; }
+.imap-lbl-place { font-size: 11px; font-weight: 700; fill: #14301b; stroke-width: 3.2px; pointer-events: auto !important; cursor: pointer; }
+.imap-lbl-place.sel { fill: #7a4b00; }
+
+.imap-marker { cursor: pointer; }
+.imap-marker-hit { fill: transparent; }
+.imap-marker-dot { stroke: #ffffff; stroke-width: 2px; filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, .35)); }
+.imap-marker-halo { fill: none; stroke: #e8a317; stroke-width: 3px; }
+.imap-marker:hover .imap-marker-dot { stroke: #f5cf63; }
+
+.imap-status { position: absolute; inset: 0; display: grid; place-content: center; gap: 8px; justify-items: center; color: var(--muted); font-size: 12px; text-align: center; padding: 12px; }
+.imap-error { color: var(--red); }
+.imap-hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); background: rgba(23, 54, 31, .88); color: #fff; font-size: 11.5px; padding: 6px 12px; border-radius: 999px; pointer-events: none; white-space: nowrap; max-width: calc(100% - 20px); overflow-wrap: anywhere; white-space: normal; text-align: center; }
+
+.imap-tip {
+  position: absolute; z-index: 5; width: max-content; max-width: min(260px, calc(100% - 16px)); background: #fff; border: 1px solid #d6e3cd;
+  border-radius: 9px; padding: 8px 10px; font-size: 11.5px; line-height: 1.4; color: var(--ink); box-shadow: 0 10px 26px rgba(15, 40, 20, .18);
+  pointer-events: none; display: flex; flex-direction: column; gap: 3px;
+}
+.imap-tip.pinned { pointer-events: auto; padding-right: 26px; }
+.imap-tip strong { font-size: 12.5px; color: #17271b; }
+.imap-tip-sub { color: var(--muted); font-size: 11px; }
+.imap-tip-note { background: #fff7e2; border: 1px solid #f1dfa4; border-radius: 6px; padding: 3px 6px; font-size: 10.5px; color: #6b5310; }
+.imap-tip-coord { font-size: 10.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.imap-tip-hint { font-size: 10px; color: #8a978c; }
+.imap-tip-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.imap-tip-close { position: absolute; top: 5px; right: 5px; display: grid; place-items: center; width: 20px; height: 20px; border: 0; border-radius: 5px; background: none; color: var(--muted); }
+.imap-tip-close:hover { background: var(--pale); color: var(--dark); }
+
+.imap-places { display: flex; flex-wrap: wrap; gap: 5px; }
+.imap-place { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 3px 9px; font-size: 11px; color: var(--ink); }
+.imap-place i { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.imap-place:hover { border-color: var(--light); background: var(--paler); }
+.imap-place.sel { border-color: #e8a317; background: #fff7e2; font-weight: 700; }
+
+.imap-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 10.5px; color: #4a574d; }
+.imap-legend li { display: inline-flex; align-items: center; gap: 5px; }
+.imap-legend .sw { width: 14px; height: 10px; border-radius: 2px; border: 1px solid #c9d1c4; flex-shrink: 0; }
+.imap-legend .ln { width: 16px; height: 0; flex-shrink: 0; }
+.imap-legend .ln-state { border-top: 2px solid #5d6b60; }
+.imap-legend .ln-district { border-top: 1px solid #b4bdb0; }
+.imap-legend .ln-taluka { border-top: 1.5px dashed #7a8a7c; }
+.imap-legend .mk { width: 10px; height: 10px; border-radius: 50%; background: #1f5f2c; border: 2px solid #fff; box-shadow: 0 0 0 1px #1f5f2c; flex-shrink: 0; }
+.imap-legend-scale { flex-wrap: wrap; }
+.imap-legend-scale > span:first-child { font-weight: 700; }
+.imap-legend-step { display: inline-flex; align-items: center; gap: 3px; }
+.imap-attrib { margin: 0; font-size: 9.5px; color: #8a978c; }
+
+@media (max-width: 480px) {
+  .imap-zoom-btns button { width: 36px; height: 34px; } /* comfortable tap targets */
+}

@@ -1,0 +1,73 @@
+# Builds the web app (campaigniq/web) and publishes it to GitHub Pages on every push to main.
+# One-time setup: Settings -> Pages -> Source: "GitHub Actions".
+# Optional: Settings -> Secrets and variables -> Actions -> Variables -> VITE_API_URL
+#   (e.g. https://mahadhan-campaigniq-api.onrender.com/api) to connect the live backend.
+#   Without it the site is published as a static demo (all dashboards and maps work).
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # allows "Run workflow" from the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: campaigniq
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: campaigniq/package-lock.json
+
+      - name: Install web app dependencies
+        run: npm ci --workspace web
+
+      - name: Build static site
+        run: npm run build --workspace web
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+
+      - name: Check the build contains the page and the map data
+        run: |
+          test -s web/dist/index.html
+          test -s web/dist/geo/india-districts.topo.json
+          test -s web/dist/geo/jalna-talukas.topo.json
+          echo "Backend: ${VITE_API_URL:-none (static demo)}"
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: campaigniq/web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
