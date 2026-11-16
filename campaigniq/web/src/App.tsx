@@ -1,11 +1,14 @@
-import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react';
+﻿import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
-  BarChart3, Bell, CalendarDays, ChevronDown, Database, Presentation, HelpCircle, Home, Layers, MapPin, Menu, Radio, Search, ShoppingCart, SlidersHorizontal, Sparkles, Sprout, X,
+  BarChart3, Bell, CalendarDays, CheckSquare, ChevronDown, ClipboardCheck, Database, Gauge, Presentation, HelpCircle, Home, Inbox, Layers, MapPin, Menu, Radio, Search, ShoppingCart, SlidersHorizontal, Sparkles, Sprout, User, X,
 } from 'lucide-react';
 import {
-  MODULES, NavContext, SCREENS, screenMeta, type Filters, type ModuleId, type ScreenId,
+  MODULES, NavContext, PERSONAS, SCREENS, personaOf, screenMeta, type Filters, type ModuleId, type ModuleScreenId, type ScreenId, type PersonaId,
 } from './nav';
+import { PM_SCREENS, PM_TABS, PmScreen, isPmScreen, pmMeta, type PmTabId } from './pm';
+import { TM_SCREENS, TM_TABS, TmScreen, isTmScreen, tmMeta, type TmTabId } from './tm';
+import { MH_SCREENS, MH_TABS, MhScreen, isMhScreen, mhMeta, type MhTabId } from './mh';
 import { filterOptions, normalizeFilters, scopeOf, useReference } from './data/reference';
 import { DataSources } from './screens/admin';
 import * as P from './screens/prototype';
@@ -19,8 +22,10 @@ import * as S5 from './screens/s5';
 import * as S6 from './screens/s6';
 import * as S7 from './screens/s7';
 import * as AI from './screens/ai';
+import { LoginPage } from './login';
+import { loadSession, saveSession, type Session } from './session';
 
-const REGISTRY: Record<ScreenId, ComponentType> = {
+const REGISTRY: Record<ModuleScreenId, ComponentType> = {
   'p.1': P.PrototypeOverview,
   'p.2': P.LivePlanner,
   'p.3': P.LiveOperations,
@@ -67,6 +72,37 @@ const MODULE_ICONS: Record<ModuleId, LucideIcon> = {
   copilot: Sparkles,
   admin: Database,
   prototype: Presentation,
+  pm: Gauge,
+  tm: User,
+  mh: User,
+};
+
+const PM_TAB_ICONS: Record<PmTabId, LucideIcon> = {
+  perf: Gauge,
+  reviews: ClipboardCheck,
+  themes: Inbox,
+  studio: Layers,
+  approvals: CheckSquare,
+  impact: BarChart3,
+  copilot: Sparkles,
+};
+
+const TM_TAB_ICONS: Record<TmTabId, LucideIcon> = {
+  plan: Gauge,
+  campaigns: Layers,
+  execution: Radio,
+  impact: BarChart3,
+  copilot: Sparkles,
+};
+
+const MH_TAB_ICONS: Record<MhTabId, LucideIcon> = {
+  national: Home,
+  opportunity: MapPin,
+  reviews: ClipboardCheck,
+  studio: Layers,
+  rollout: CheckSquare,
+  performance: BarChart3,
+  copilot: Sparkles,
 };
 
 const FILTER_LABELS: Record<keyof Filters, string> = {
@@ -93,6 +129,9 @@ const DEFAULT_FILTERS: Record<ModuleId, Filters> = {
   copilot: JALNA_ONION,
   admin: NATIONAL,
   prototype: NATIONAL,
+  pm: JALNA_ONION,
+  tm: JALNA_ONION,
+  mh: JALNA_ONION,
 };
 
 function readHash(): ScreenId {
@@ -102,13 +141,21 @@ function readHash(): ScreenId {
 }
 
 export default function App() {
+  const [session, setSession] = useState<Session | null>(() => loadSession());
+  const [loginPersona, setLoginPersona] = useState<PersonaId | undefined>(undefined);
   const [screen, setScreen] = useState<ScreenId>(readHash);
   const [filtersByModule, setFiltersByModule] = useState(DEFAULT_FILTERS);
   const [query, setQuery] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [navOpen, setNavOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [personaOpen, setPersonaOpen] = useState(false);
   const meta = screenMeta(screen);
+  const persona = personaOf(meta.module);
+  const personaMeta = PERSONAS.find((item) => item.id === persona)!;
+  const pm = isPmScreen(screen) ? pmMeta(screen) : null;
+  const tm = isTmScreen(screen) ? tmMeta(screen) : null;
+  const mh = isMhScreen(screen) ? mhMeta(screen) : null;
   const filters = filtersByModule[meta.module];
   const { reference } = useReference();
   const options = useMemo(() => filterOptions(reference, filters), [reference, filters]);
@@ -119,6 +166,10 @@ export default function App() {
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
+
+  useEffect(() => {
+    saveSession(session);
+  }, [session]);
 
   useEffect(() => {
     document.title = `${meta.code} ${meta.title} · Mahadhan CampaignIQ`;
@@ -153,7 +204,117 @@ export default function App() {
     return SCREENS.filter((item) => `${item.code} ${item.title}`.toLowerCase().includes(text)).slice(0, 6);
   }, [query]);
 
-  const Screen = REGISTRY[screen];
+  const Screen = pm ? PmScreen : tm ? TmScreen : mh ? MhScreen : REGISTRY[screen as ModuleScreenId];
+
+  const pmSidebar = pm && (
+    <nav className="side-nav">
+      <div className="pm-side-persona">Product Manager</div>
+      {PM_TABS.map((tab) => {
+        const Icon = PM_TAB_ICONS[tab.id];
+        const active = tab.id === pm.tab;
+        return (
+          <div key={tab.id} className={tab.id === 'copilot' ? 'side-copilot' : undefined}>
+            <button type="button" className={active ? 'side-link active' : 'side-link'} onClick={() => { go(tab.home); setNavOpen(true); }}>
+              <Icon size={17} />
+              <span>{tab.label}</span>
+            </button>
+            {active && tab.id !== 'copilot' && (
+              <div className="side-sub">
+                {PM_SCREENS.filter((item) => item.tab === tab.id).map((item) => (
+                  <button
+                    type="button"
+                    key={item.id}
+                    className={[item.id === screen ? 'side-sublink active' : 'side-sublink', item.parent ? 'overlay' : ''].join(' ').trim()}
+                    onClick={() => go(item.id)}
+                  >
+                    <b>{item.code}</b> {item.parent ? '↳ ' : ''}{item.title}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </nav>
+  );
+
+  const tmSidebar = tm && (
+    <nav className="side-nav">
+      <div className="pm-side-persona">Territory Manager</div>
+      {TM_TABS.map((tab) => {
+        const Icon = TM_TAB_ICONS[tab.id];
+        const active = tab.id === tm.tab;
+        return (
+          <div key={tab.id} className={tab.id === 'copilot' ? 'side-copilot' : undefined}>
+            <button type="button" className={active ? 'side-link active' : 'side-link'} onClick={() => { go(tab.home); setNavOpen(true); }}>
+              <Icon size={17} />
+              <span>{tab.label}</span>
+            </button>
+            {active && tab.id !== 'copilot' && (
+              <div className="side-sub">
+                {TM_SCREENS.filter((item) => item.tab === tab.id).map((item) => (
+                  <button
+                    type="button"
+                    key={item.id}
+                    className={item.id === screen ? 'side-sublink active' : 'side-sublink'}
+                    onClick={() => go(item.id)}
+                  >
+                    <b>{item.code}</b> {item.title}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </nav>
+  );
+
+  const mhSidebar = mh && (
+    <nav className="side-nav">
+      <div className="pm-side-persona">Marketing Head</div>
+      {MH_TABS.map((tab) => {
+        const Icon = MH_TAB_ICONS[tab.id];
+        const active = tab.id === mh.tab;
+        return (
+          <div key={tab.id} className={tab.id === 'copilot' ? 'side-copilot' : undefined}>
+            <button type="button" className={active ? 'side-link active' : 'side-link'} onClick={() => { go(tab.home); setNavOpen(true); }}>
+              <Icon size={17} />
+              <span>{tab.label}</span>
+            </button>
+            {active && tab.id !== 'copilot' && (
+              <div className="side-sub">
+                {MH_SCREENS.filter((item) => item.tab === tab.id).map((item) => (
+                  <button
+                    type="button"
+                    key={item.id}
+                    className={item.id === screen ? 'side-sublink active' : 'side-sublink'}
+                    onClick={() => go(item.id)}
+                  >
+                    <b>{item.code}</b> {item.title}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </nav>
+  );
+
+  if (!session) {
+    return (
+      <LoginPage
+        initialPersona={loginPersona}
+        onLogin={(payload) => {
+          setSession({ name: payload.name, persona: payload.persona, userId: payload.userId });
+          const dest = PERSONAS.find((p) => p.id === payload.persona)?.home ?? 's1.1';
+          go(dest);
+          setLoginPersona(undefined);
+        }}
+      />
+    );
+  }
 
   return (
     <NavContext.Provider value={{ screen, go, filters, setFilters, scope, reference, toast }}>
@@ -164,34 +325,36 @@ export default function App() {
             <span>Mahadhan<br />CampaignIQ</span>
           </button>
           <button type="button" className="nav-close" aria-label="Close menu" onClick={() => setNavOpen(false)}><X size={18} /></button>
-          <nav className="side-nav">
-            {MODULES.filter((module) => module.id !== 'admin').map((module) => {
-              const Icon = MODULE_ICONS[module.id];
-              const active = module.id === meta.module;
-              return (
-                <div key={module.id} className={module.id === 'copilot' ? 'side-copilot' : undefined}>
-                  <button type="button" className={active ? 'side-link active' : 'side-link'} onClick={() => { go(module.home); setNavOpen(true); }}>
-                    <Icon size={17} />
-                    <span>{module.label}</span>
-                  </button>
-                  {active && module.id !== 'copilot' && (
-                    <div className="side-sub">
-                      {SCREENS.filter((item) => item.module === module.id).map((item) => (
-                        <button
-                          type="button"
-                          key={item.id}
-                          className={item.id === screen ? 'side-sublink active' : 'side-sublink'}
-                          onClick={() => go(item.id)}
-                        >
-                          <b>{item.code}</b> {item.title}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </nav>
+          {pmSidebar || tmSidebar || mhSidebar || (
+            <nav className="side-nav">
+              {MODULES.filter((module) => module.id !== 'admin').map((module) => {
+                const Icon = MODULE_ICONS[module.id];
+                const active = module.id === meta.module;
+                return (
+                  <div key={module.id} className={module.id === 'copilot' ? 'side-copilot' : undefined}>
+                    <button type="button" className={active ? 'side-link active' : 'side-link'} onClick={() => { go(module.home); setNavOpen(true); }}>
+                      <Icon size={17} />
+                      <span>{module.label}</span>
+                    </button>
+                    {active && module.id !== 'copilot' && (
+                      <div className="side-sub">
+                        {SCREENS.filter((item) => item.module === module.id).map((item) => (
+                          <button
+                            type="button"
+                            key={item.id}
+                            className={item.id === screen ? 'side-sublink active' : 'side-sublink'}
+                            onClick={() => go(item.id)}
+                          >
+                            <b>{item.code}</b> {item.title}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </nav>
+          )}
           <div className="side-admin">
             <button type="button" className={meta.module === 'admin' ? 'side-link active' : 'side-link'} onClick={() => go('admin.1')}>
               <Database size={16} /><span>Data Sources & Integrations</span>
@@ -204,22 +367,46 @@ export default function App() {
           <header className="topbar">
             <button type="button" className="menu-btn" aria-label="Open menu" aria-expanded={navOpen} onClick={() => setNavOpen(true)}><Menu size={20} /></button>
             <span className="topbar-title">{meta.code} · {meta.title}</span>
-            <button type="button" className={filtersOpen ? 'filters-btn active' : 'filters-btn'} aria-expanded={filtersOpen} onClick={() => setFiltersOpen((open) => !open)}>
-              <SlidersHorizontal size={15} /> Filters
-            </button>
-            <div className={filtersOpen ? 'filters open' : 'filters'}>
-              {(Object.keys(FILTER_LABELS) as (keyof Filters)[]).map((key) => (
-                <label key={key} className="filter">
-                  <span>{FILTER_LABELS[key]}</span>
-                  <div className="select-wrap">
-                    <select value={filters[key]} onChange={(event) => setFilters({ ...filters, [key]: event.target.value })}>
-                      {(options[key].includes(filters[key]) ? options[key] : [filters[key], ...options[key]]).map((option) => <option key={option}>{option}</option>)}
-                    </select>
-                    <ChevronDown size={14} />
-                  </div>
-                </label>
-              ))}
-            </div>
+
+            {pm ? (
+              <div className="pm-topctx">
+                <span><b>Product Manager</b></span>
+                <span>{pm.period}</span>
+                <span>Crop Nutrition Portfolio</span>
+              </div>
+            ) : tm ? (
+              <div className="pm-topctx">
+                <span><b>Territory Manager</b></span>
+                <span>{tm.period}</span>
+                <span>Territory workspace</span>
+              </div>
+            ) : mh ? (
+              <div className="pm-topctx">
+                <span><b>Marketing Head</b></span>
+                <span>{mh.period}</span>
+                <span>Regional marketing workspace</span>
+              </div>
+            ) : (
+              <>
+                <button type="button" className={filtersOpen ? 'filters-btn active' : 'filters-btn'} aria-expanded={filtersOpen} onClick={() => setFiltersOpen((open) => !open)}>
+                  <SlidersHorizontal size={15} /> Filters
+                </button>
+                <div className={filtersOpen ? 'filters open' : 'filters'}>
+                  {(Object.keys(FILTER_LABELS) as (keyof Filters)[]).map((key) => (
+                    <label key={key} className="filter">
+                      <span>{FILTER_LABELS[key]}</span>
+                      <div className="select-wrap">
+                        <select value={filters[key]} onChange={(event) => setFilters({ ...filters, [key]: event.target.value })}>
+                          {(options[key].includes(filters[key]) ? options[key] : [filters[key], ...options[key]]).map((option) => <option key={option}>{option}</option>)}
+                        </select>
+                        <ChevronDown size={14} />
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </>
+            )}
+
             <div className="search">
               <Search size={15} />
               <input
@@ -244,7 +431,46 @@ export default function App() {
               <Bell size={17} /><i className="dot" />
             </button>
             <button type="button" className="icon-btn" aria-label="Help"><HelpCircle size={17} /></button>
-            <div className="user"><span className="avatar">PS</span><span className="user-role">Strategy Head</span><ChevronDown size={14} /></div>
+            <div className="persona-menu">
+              <button type="button" aria-haspopup="menu" aria-expanded={personaOpen} onClick={() => setPersonaOpen((open) => !open)}>
+                <span className="avatar">{personaMeta.initials}</span>
+                <span className="user-role">{session.name} · {personaMeta.label} · {session.userId}</span>
+                <ChevronDown size={14} />
+              </button>
+              {personaOpen && (
+                <div className="persona-list" role="menu">
+                  <h5>Switch persona</h5>
+                  {PERSONAS.map((item) => (
+                    <button
+                      type="button"
+                      key={item.id}
+                      role="menuitem"
+                      className={[item.id === persona ? 'active' : '', item.available ? '' : 'soon'].join(' ').trim()}
+                      onClick={() => {
+                        if (!item.available) return;
+                        setLoginPersona(item.id);
+                        setPersonaOpen(false);
+                        setSession(null);
+                      }}
+                    >
+                      <b>{item.label}</b><small>{item.sub}</small>
+                    </button>
+                  ))}
+                  <div className="persona-actions">
+                    <button
+                      type="button"
+                      className="persona-logout"
+                      onClick={() => {
+                        setPersonaOpen(false);
+                        setSession(null);
+                      }}
+                    >
+                      Log out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </header>
           <main className="main-scroll">
             <div className="page" key={screen}>
@@ -253,6 +479,7 @@ export default function App() {
           </main>
         </div>
         {navOpen && <div className="nav-backdrop" onClick={() => setNavOpen(false)} />}
+        {personaOpen && <div className="nav-backdrop" style={{ background: 'transparent' }} onClick={() => setPersonaOpen(false)} />}
         {message && <div className="toast" role="status" key={message}>{message}</div>}
         <TooltipLayer />
       </div>

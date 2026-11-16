@@ -147,6 +147,7 @@ campaigniq/
 ├── .env.example              all settings (copy to server/.env)
 ├── docs/
 │   ├── screen-inventory.md   every screen, its route and source mockup photo
+│   ├── product-manager-persona.md  V2 persona layer + the 48 Product Manager screens (routes, overlays, conventions)
 │   ├── screen-api-map.md     which API serves which screen
 │   ├── engine.md             planning-engine equations + worked example
 │   └── gaps.md               open data/product questions
@@ -185,6 +186,7 @@ campaigniq/
         │   ├── reference.ts  useReference(), filter options, filter → scope ids
         │   ├── datasets.ts   useDataset(name, demoRows), refreshDatasets()
         │   └── copilot.ts    getCopilotStatus(), askCopilot()
+        ├── pm/               Product Manager persona (V2): 48 screens PM.1 – PM.AI1, see docs/product-manager-persona.md
         └── screens/
             ├── prototype.tsx/.css  P.1–P.3 Prototype Showcase (overview, live planner, live execution)
             ├── s1.tsx/.css   S1.1–S1.5 Strategy Command Centre

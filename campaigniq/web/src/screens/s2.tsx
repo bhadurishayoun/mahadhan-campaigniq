@@ -1,4 +1,4 @@
-import './s2.css';
+﻿import './s2.css';
 import { useState, type ReactNode } from 'react';
 import {
   AlertTriangle, ArrowRightLeft, BarChart3, Boxes, Check as CheckIcon, Coins, FlaskConical, Info, Landmark, LayoutGrid,
@@ -692,7 +692,7 @@ export function DistrictIntelligence() {
         steps={[
           { label: 'Source: S2.1 Crop × Geography Opportunity Atlas', to: 's2.1' },
           { label: 'Current: S2.2 Jalna District / Taluka Intelligence', current: true },
-          { label: "On click of 'Explore Target Segments' → Next: S2.3 Micro-Market Segmentation", to: 's2.3' },
+          { label: "On click of 'Explore Target Segments' → S2.3 Micro-Market Segmentation", to: 's2.3' },
         ]}
         nextLabel="Recommended Next Screen:"
         next={{ label: 'S2.3 — Micro-Market Segmentation', to: 's2.3' }}
@@ -1364,3 +1364,4 @@ export function CampaignRecommendations() {
     </div>
   );
 }
+

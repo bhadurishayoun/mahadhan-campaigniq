@@ -1,7 +1,11 @@
-import { createContext, useContext } from 'react';
+﻿import { createContext, useContext } from 'react';
 import type { Filters, ReferenceData, Scope } from './data/reference';
+import { PM_SCREENS, type PmScreenId } from './pm/nav';
+import { TM_SCREENS, type TmScreenId } from './tm/nav';
+import { MH_SCREENS, type MhScreenId } from './mh/nav';
 
-export type ScreenId =
+/** Screens of the original module-based view (the "Strategy Head" persona). */
+export type ModuleScreenId =
   | 'p.1' | 'p.2' | 'p.3'
   | 's1.1' | 's1.2' | 's1.3' | 's1.4' | 's1.5'
   | 's2.1' | 's2.2' | 's2.3' | 's2.4' | 's2.5'
@@ -13,7 +17,47 @@ export type ScreenId =
   | 'ai.1'
   | 'admin.1';
 
-export type ModuleId = 'prototype' | 'command' | 'atlas' | 'nutrition' | 'studio' | 'readiness' | 'orchestration' | 'control' | 'impact' | 'copilot' | 'admin';
+export type ScreenId = ModuleScreenId | PmScreenId | TmScreenId | MhScreenId;
+
+/**
+ * Modules used by the app.
+ *
+ * - Strategy persona uses the module view (prototype, atlas, ...)
+ * - V2 personas are grouped under their own module keys (pm, tm, mh)
+ */
+export type ModuleId =
+  | 'prototype'
+  | 'command'
+  | 'atlas'
+  | 'nutrition'
+  | 'studio'
+  | 'readiness'
+  | 'orchestration'
+  | 'control'
+  | 'impact'
+  | 'copilot'
+  | 'admin'
+  | 'pm'
+  | 'tm'
+  | 'mh';
+
+export type StrategyModuleId = Exclude<ModuleId, 'pm' | 'tm' | 'mh'>;
+
+export type PersonaId = 'strategy' | 'pm' | 'tm' | 'mh';
+
+export const PERSONAS: { id: PersonaId; label: string; sub: string; home: ScreenId; initials: string; available: boolean }[] = [
+  { id: 'strategy', label: 'Strategy Head', sub: 'Module view · command centre, atlas, studio, control tower', home: 's1.1', initials: 'SH', available: true },
+  { id: 'pm', label: 'Product Manager', sub: 'Crop Nutrition Portfolio · V2 persona journey', home: 'pm.1', initials: 'PM', available: true },
+  { id: 'tm', label: 'Territory Manager', sub: 'Territory plan, campaigns, execution and impact', home: 'tm.1', initials: 'TM', available: true },
+  { id: 'mh', label: 'Marketing Head', sub: 'Regional strategy, approvals & rollout, performance learning', home: 'mh.1', initials: 'MH', available: true },
+];
+
+export const personaOf = (module: ModuleId): PersonaId => {
+  if (module === 'pm') return 'pm';
+  if (module === 'tm') return 'tm';
+  if (module === 'mh') return 'mh';
+  return 'strategy';
+};
 
 export interface ScreenMeta {
   id: ScreenId;
@@ -22,7 +66,7 @@ export interface ScreenMeta {
   module: ModuleId;
 }
 
-export const MODULES: { id: ModuleId; label: string; home: ScreenId }[] = [
+export const MODULES: { id: StrategyModuleId; label: string; home: ScreenId }[] = [
   { id: 'prototype', label: 'Prototype Showcase', home: 'p.1' },
   { id: 'command', label: 'Strategy Command Centre', home: 's1.1' },
   { id: 'atlas', label: 'Opportunity Atlas', home: 's2.1' },
@@ -69,6 +113,9 @@ export const SCREENS: ScreenMeta[] = [
   { id: 's7.2', code: 'S7.2', title: 'Campaign Diagnostics & Learning Studio', module: 'impact' },
   { id: 'ai.1', code: 'AI.1', title: 'Intelligent Copilot Workspace', module: 'copilot' },
   { id: 'admin.1', code: 'ADM', title: 'Data Sources & Integrations', module: 'admin' },
+  ...PM_SCREENS.map((screen) => ({ id: screen.id, code: screen.code, title: screen.title, module: 'pm' as const })),
+  ...TM_SCREENS.map((screen) => ({ id: screen.id, code: screen.code, title: screen.title, module: 'tm' as const })),
+  ...MH_SCREENS.map((screen) => ({ id: screen.id, code: screen.code, title: screen.title, module: 'mh' as const })),
 ];
 
 export const screenMeta = (id: ScreenId) => SCREENS.find((screen) => screen.id === id)!;

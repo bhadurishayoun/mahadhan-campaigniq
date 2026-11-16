@@ -18,7 +18,11 @@ All data in the tool is illustrative.
 | `campaigniq/README.md` | Detailed technical documentation of the app |
 | `.github/workflows/deploy.yml` | Builds the web app and publishes it to GitHub Pages on every push to `main` |
 | `render.yaml` | One-click setup of the backend on Render's free tier |
-| `*.docx`, `*.pptx`, `*.md`, `ui-mockups/` | Product briefs, analysis and UI mockups |
+| `*.docx`, `*.pptx`, `*.md`, `ui-mockups/` | Product briefs, analysis and UI mockups (`ui-mockups/V2-persona-mockup-specs.md` holds the V2 persona-wise screen specs) |
+
+**Personas (V2):** the avatar menu at the top-right switches between the *Strategy Head* module view and the
+*Product Manager* journey (PM.1 – PM.AI1, 48 screens). Further personas (Territory Manager, Marketing Head, Business Head)
+follow the same pattern; see `campaigniq/docs/product-manager-persona.md`.
 
 ## How it is hosted
 

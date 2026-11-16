@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+﻿import { useState, type ReactNode } from 'react';
 import {
   AlertTriangle, ArrowLeft, ArrowRight, BarChart3, Boxes, Calendar, CalendarClock, CheckCircle2, ChevronRight, CircleDollarSign,
   ClipboardCheck, CloudRain, Download, ExternalLink, FileText, Filter, Info, Layers, LineChart, Megaphone,
@@ -561,7 +561,7 @@ export function PortfolioDashboard() {
           <span>Showing {rows.length} of 28 campaigns{showAll ? ' · sample view' : ''}</span>
         </div>
         <div className="row" style={{ justifyContent: 'flex-end', marginTop: 6 }}>
-          <Btn variant="primary" small to="s1.3">Next: S1.3 →</Btn>
+          <Btn variant="primary" small to="s1.3">S1.3 →</Btn>
         </div>
       </Panel>
 
@@ -1342,3 +1342,4 @@ export function RecoveryReplanning() {
     </div>
   );
 }
+

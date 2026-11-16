@@ -834,9 +834,10 @@ export function ActivityWorkspace() {
           { label: '‹ Return to S6.1 Unified Campaign Execution Control Tower', to: 's6.1' },
           { label: 'Current: S6.2 Activity Execution & Action Workspace', current: true },
         ]}
-        nextLabel="Recommended Next: S7.1 Campaign Impact & Learning Dashboard"
+        nextLabel=""
         next={{ label: 'Proceed to Impact Review', to: 's7.1' }}
       />
     </div>
   );
 }
+

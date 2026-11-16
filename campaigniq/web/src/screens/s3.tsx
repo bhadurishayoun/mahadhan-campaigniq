@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+﻿import { useState, type ReactNode } from 'react';
 import './s3.css';
 import {
   AlertTriangle,
@@ -660,7 +660,7 @@ export function ProgrammeBuilder() {
 
       <div className="s3-footer">
         <Btn variant="outline" small to="s3.2" icon={<ArrowLeft size={13} />}>Back to S3.2</Btn>
-        <span className="s3-footer-mid">Recommended Next: S3.4 Campaign Trigger &amp; Recommendation Engine</span>
+        <span className="s3-footer-mid">S3.4 Campaign Trigger &amp; Recommendation Engine</span>
         <div className="s3-action-bar">
           <Btn variant="outline" onClick={save}>Save Draft</Btn>
           <Btn variant="gold" onClick={submit} disabled={submitted}>{submitted ? 'Submitted for Agronomy Review' : 'Submit for Agronomy Review'}</Btn>
@@ -868,7 +868,7 @@ export function TriggerEngine() {
         <span className="s3-footer-mid">
           Source: S3.3 Complete Crop Nutrition Programme Builder <ArrowRight size={12} />
           <strong style={{ color: COLORS.dark }}>Current: S3.4 Campaign Trigger &amp; Recommendation Engine</strong> <ArrowRight size={12} />
-          Recommended Next: S4.2 Campaign Creation Wizard
+          S4.2 Campaign Creation Wizard
         </span>
         <div className="s3-footer-right">
           <Btn
@@ -887,3 +887,4 @@ export function TriggerEngine() {
     </div>
   );
 }
+

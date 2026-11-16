@@ -1,4 +1,4 @@
-import './s5.css';
+﻿import './s5.css';
 import { useState } from 'react';
 import {
   AlertTriangle, ArrowRight, BarChart3, Boxes, Building2, CalendarDays, CheckCircle2, ClipboardCheck, Clock, Coins,
@@ -892,7 +892,7 @@ export function DealerReadiness() {
       <FlowFooter label="Source:" steps={[
         { label: 'S5.2 Campaign Stock Readiness & Supply Gap Intelligence', to: 's5.2' },
         { label: 'Current: S5.3 Dealer & Retailer Readiness Intelligence', current: true },
-      ]} nextLabel="Recommended Next: S5.4 Supply Risk & Replenishment Planner" next={{ label: 'Create Replenishment Plan', to: 's5.4', sub: ' → S5.4' }} />
+      ]} nextLabel="" next={{ label: 'Create Replenishment Plan', to: 's5.4', sub: ' → S5.4' }} />
     </div>
   );
 }
@@ -1090,3 +1090,4 @@ export function SupplyRiskPlanner() {
     </div>
   );
 }
+
