@@ -251,11 +251,16 @@ function Workspace(spec: Spec) {
 
       {MH_CHARTS[spec.code]}
 
-      <div className="pm-two">
+      {view.visual && (
+        <div className="pm-box iq-visual-card">
+          <div className="tm-map-wrap">{view.visual}</div>
+          {view.visualNote && <div className="tm-map-note">{view.visualNote}</div>}
+        </div>
+      )}
+
+      <div className="pm-two pm-two-balanced">
         <div className="pm-box">
           <div className="pm-box-head"><h3>Workspace</h3></div>
-          {view.visual && <div className="tm-map-wrap">{view.visual}</div>}
-          {view.visualNote && <div className="tm-map-note">{view.visualNote}</div>}
           <table className="pm-table">
             <tbody>
               {spec.board.map(([label, value, to]) => (

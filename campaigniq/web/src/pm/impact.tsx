@@ -60,7 +60,7 @@ export function Pm10() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.9">← Back to Activity Approvals Territory Activity Plan Review & Approval</Btn><Btn to="pm.10b">View Territory Results</Btn></>}
+        left={<><Btn to="pm.9">← Back to Activity Approvals</Btn><Btn to="pm.10b">View Territory Results</Btn></>}
         right={<Cta to="pm.11">Investigate Crop-wise Uplift & Learning</Cta>}
       />
     </PmPage>

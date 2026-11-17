@@ -620,7 +620,7 @@ export function DistrictIntelligence() {
               { key: 'gap', label: 'Penetration Gap', align: 'right' },
               { key: 'retailers', label: 'Active Retailers', align: 'right' },
               { key: 'readiness', label: 'Campaign Readiness', render: (row) => <Pill tone={row.readiness === 'High' ? 'green' : 'amber'}>{row.readiness}</Pill> },
-              { key: 'next', label: 'Next Action', render: () => <Btn small to="s2.3">Open Ambad Micro-Market Segmentation ›</Btn> },
+              { key: 'next', label: 'Next Action', render: () => <Btn small to="s2.3">View segments ›</Btn> },
             ]}
             total={{
               rank: <strong>District Total (Jalna)</strong>,

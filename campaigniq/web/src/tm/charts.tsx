@@ -53,7 +53,7 @@ function Tm3Charts() {
   return (
     <div className="iq-grid-2">
       <ChartCard icon={BarChart3} title="Which outlets carry the biggest targets?" hint="ABP target, ₹ Cr"><RankBars series={[{ key: 'v', name: '₹ Cr' }]} highlightFirst fmt={(v) => `₹${v}`} data={[{ name: 'Shiv Traders', v: 1.25 }, { name: 'Cluster B', v: 1.14 }, { name: 'Mahalaxmi Agro', v: 1.05 }, { name: 'Cluster A', v: 0.76 }]} /></ChartCard>
-      <ChartCard icon={Target} title="How far is each outlet from its target?" hint="Allocated target vs last-year base (₹ Cr)"><Bullets unit="" max={1.5} rows={[{ label: 'Shiv Traders', actual: 0.96, target: 1.25 }, { label: 'Mahalaxmi Agro', actual: 0.82, target: 1.05 }, { label: 'Cluster A', actual: 0.58, target: 0.76 }, { label: 'Cluster B', actual: 0.84, target: 1.14 }]} /></ChartCard>
+      <ChartCard icon={Target} title="How far is each outlet from its target?" hint="Allocated target vs last-year base (₹ Cr)"><Bullets neutral unit="" max={1.5} rows={[{ label: 'Shiv Traders', actual: 0.96, target: 1.25 }, { label: 'Mahalaxmi Agro', actual: 0.82, target: 1.05 }, { label: 'Cluster A', actual: 0.58, target: 0.76 }, { label: 'Cluster B', actual: 0.84, target: 1.14 }]} /></ChartCard>
     </div>
   );
 }

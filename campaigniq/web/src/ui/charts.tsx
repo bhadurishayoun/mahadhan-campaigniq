@@ -9,7 +9,7 @@ const color = (s: Series, i: number) => s.color ?? SERIES[i % SERIES.length];
 /** time -> line */
 export function TrendLine({ data, x, series, height = 220, fmt }: { data: Row[]; x: string; series: Series[]; height?: number; fmt?: (v: number) => string }) {
   return (
-    <ResponsiveContainer width="100%" height={height}>
+    <div className="iq-fill" style={{ minHeight: height }}><ResponsiveContainer width="100%" height="100%" minHeight={height}>
       <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
         <CartesianGrid {...gridStyle} vertical={false} />
         <XAxis dataKey={x} tick={axisStyle} tickLine={false} axisLine={false} />
@@ -18,7 +18,7 @@ export function TrendLine({ data, x, series, height = 220, fmt }: { data: Row[];
         {series.length > 1 && <Legend iconType="plainline" wrapperStyle={{ fontSize: 11 }} />}
         {series.map((s, i) => <Line key={s.key} type="monotone" dataKey={s.key} name={s.name ?? s.key} stroke={color(s, i)} strokeWidth={2} strokeDasharray={i === 1 && series.length === 2 ? '5 4' : undefined} dot={{ r: 3 }} />)}
       </LineChart>
-    </ResponsiveContainer>
+    </ResponsiveContainer></div>
   );
 }
 
@@ -28,20 +28,20 @@ export function RankBars({ data, label = 'name', series, stacked, height, fmt, h
 }) {
   const h = height ?? Math.max(120, data.length * 30 + 30);
   return (
-    <ResponsiveContainer width="100%" height={h}>
-      <BarChart data={data} layout="vertical" margin={{ top: 0, right: 16, bottom: 0, left: 0 }}>
+    <div className="iq-fill" style={{ minHeight: h }}><ResponsiveContainer width="100%" height="100%" minHeight={h}>
+      <BarChart data={data} layout="vertical" barCategoryGap="28%" margin={{ top: 0, right: 16, bottom: 0, left: 0 }}>
         <CartesianGrid {...gridStyle} horizontal={false} />
         <XAxis type="number" tick={axisStyle} tickLine={false} axisLine={false} tickFormatter={fmt} />
         <YAxis type="category" dataKey={label} tick={axisStyle} tickLine={false} axisLine={false} width={104} />
         <Tooltip {...tooltipStyle} formatter={(v: number) => (fmt ? fmt(v) : v)} />
         {series.length > 1 && <Legend iconType="square" wrapperStyle={{ fontSize: 11 }} />}
         {series.map((s, i) => (
-          <Bar key={s.key} dataKey={s.key} name={s.name ?? s.key} fill={color(s, i)} stackId={stacked ? 's' : undefined} radius={stacked ? 0 : [0, 4, 4, 0]} barSize={series.length > 1 && !stacked ? 10 : 16}>
+          <Bar key={s.key} dataKey={s.key} name={s.name ?? s.key} fill={color(s, i)} stackId={stacked ? 's' : undefined} radius={stacked ? 0 : [0, 4, 4, 0]} maxBarSize={series.length > 1 && !stacked ? 14 : 26}>
             {highlightFirst && series.length === 1 && data.map((_, di) => <Cell key={di} fill={di === 0 ? SERIES[0] : '#9fd27f'} />)}
           </Bar>
         ))}
       </BarChart>
-    </ResponsiveContainer>
+    </ResponsiveContainer></div>
   );
 }
 
@@ -50,7 +50,7 @@ export function ColumnBars({ data, x, series, stacked, height = 220, fmt, target
   data: Row[]; x: string; series: Series[]; stacked?: boolean; height?: number; fmt?: (v: number) => string; target?: number;
 }) {
   return (
-    <ResponsiveContainer width="100%" height={height}>
+    <div className="iq-fill" style={{ minHeight: height }}><ResponsiveContainer width="100%" height="100%" minHeight={height}>
       <BarChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
         <CartesianGrid {...gridStyle} vertical={false} />
         <XAxis dataKey={x} tick={axisStyle} tickLine={false} axisLine={false} />
@@ -60,12 +60,12 @@ export function ColumnBars({ data, x, series, stacked, height = 220, fmt, target
         {target !== undefined && <ReferenceLine y={target} stroke="#d7a62f" strokeDasharray="4 3" label={{ value: 'Target', fontSize: 10, fill: '#6b5310', position: 'right' }} />}
         {series.map((s, i) => <Bar key={s.key} dataKey={s.key} name={s.name ?? s.key} fill={color(s, i)} stackId={stacked ? 's' : undefined} radius={stacked ? 0 : [4, 4, 0, 0]} />)}
       </BarChart>
-    </ResponsiveContainer>
+    </ResponsiveContainer></div>
   );
 }
 
 /** target vs actual -> bullet / progress rows */
-export function Bullets({ rows, unit = '%', max }: { rows: { label: string; actual: number; target: number; note?: string }[]; unit?: string; max?: number }) {
+export function Bullets({ rows, unit = '%', max, neutral }: { rows: { label: string; actual: number; target: number; note?: string }[]; unit?: string; max?: number; neutral?: boolean }) {
   return (
     <div className="iq-bullets">
       {rows.map((r) => {
@@ -75,7 +75,7 @@ export function Bullets({ rows, unit = '%', max }: { rows: { label: string; actu
           <div key={r.label} className="iq-bullet">
             <span className="iq-bullet-label">{r.label}</span>
             <div className="iq-bullet-track" role="img" aria-label={`${r.label}: ${r.actual}${unit} of ${r.target}${unit} target`}>
-              <i className={ratio >= 0.95 ? 'ok' : ratio >= 0.8 ? 'warn' : 'risk'} style={{ width: `${(r.actual / ceil) * 100}%` }} />
+              <i className={neutral || ratio >= 0.95 ? 'ok' : ratio >= 0.8 ? 'warn' : 'risk'} style={{ width: `${(r.actual / ceil) * 100}%` }} />
               <b style={{ left: `${(r.target / ceil) * 100}%` }} />
             </div>
             <span className="iq-bullet-val">{r.actual}{unit} <small>/ {r.target}{unit}</small></span>
@@ -91,7 +91,7 @@ export function ScatterPlot({ points, xLabel, yLabel, height = 240, xFmt, yFmt }
   points: { name: string; x: number; y: number; z?: number }[]; xLabel: string; yLabel: string; height?: number; xFmt?: (v: number) => string; yFmt?: (v: number) => string;
 }) {
   return (
-    <ResponsiveContainer width="100%" height={height}>
+    <div className="iq-fill" style={{ minHeight: height }}><ResponsiveContainer width="100%" height="100%" minHeight={height}>
       <ScatterChart margin={{ top: 8, right: 16, bottom: 18, left: 0 }}>
         <CartesianGrid {...gridStyle} />
         <XAxis type="number" dataKey="x" name={xLabel} tick={axisStyle} tickLine={false} tickFormatter={xFmt} label={{ value: xLabel, position: 'insideBottom', offset: -10, fontSize: 11, fill: '#66736a' }} />
@@ -103,7 +103,7 @@ export function ScatterPlot({ points, xLabel, yLabel, height = 240, xFmt, yFmt }
         }} />
         <Scatter data={points} fill={SERIES[0]} fillOpacity={0.8} />
       </ScatterChart>
-    </ResponsiveContainer>
+    </ResponsiveContainer></div>
   );
 }
 
@@ -158,7 +158,7 @@ export function Waterfall({ steps, height = 220, fmt }: { steps: { label: string
     return { name: s.label, base: Math.min(start, run), up: s.value >= 0 ? s.value : 0, down: s.value < 0 ? -s.value : 0, total: 0 };
   });
   return (
-    <ResponsiveContainer width="100%" height={height}>
+    <div className="iq-fill" style={{ minHeight: height }}><ResponsiveContainer width="100%" height="100%" minHeight={height}>
       <BarChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
         <CartesianGrid {...gridStyle} vertical={false} />
         <XAxis dataKey="name" tick={axisStyle} tickLine={false} axisLine={false} />
@@ -169,7 +169,7 @@ export function Waterfall({ steps, height = 220, fmt }: { steps: { label: string
         <Bar dataKey="up" stackId="w" fill="#5fae4c" />
         <Bar dataKey="down" stackId="w" fill="#d9534f" />
       </BarChart>
-    </ResponsiveContainer>
+    </ResponsiveContainer></div>
   );
 }
 

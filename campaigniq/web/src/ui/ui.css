@@ -147,3 +147,49 @@
 .iq-drawer-summary { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; margin-bottom: 10px; border: 1px solid var(--n200); border-radius: var(--radius-lg); background: var(--n25); }
 .iq-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
 .bh-chips button svg { margin-right: 4px; vertical-align: -2px; }
+
+/* ---------------------------------------------------------------- layout balance (no empty gaps) */
+/* Chart cards: the body fills the card, charts stretch to the row height, small visuals sit centred. */
+.iq-card { display: flex; flex-direction: column; }
+.iq-card-body { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
+.iq-fill { flex: 1; width: 100%; }
+.iq-visual-card { padding: 12px; }
+
+/* Two-column workspaces: equal-height columns; the side pane's content is spread evenly. */
+.pm-two.pm-two-balanced { align-items: stretch; }
+.pm-two-balanced > .pm-box { display: flex; flex-direction: column; }
+.pm-two-balanced > .pm-ai .pm-ai-list { flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; }
+
+/* Other two-column screens: the shorter column stays in view while the longer one scrolls. */
+.pm-two:not(.pm-two-balanced) > *, .pm-two-even > * { position: sticky; top: 12px; }
+
+/* Business Head cards: equal heights with bars spread to fill. */
+.bh-grid > .bh-card { display: flex; flex-direction: column; }
+.bh-grid > .bh-card > .bh-bars { flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; }
+.bh-grid > .bh-card > .bh-table-wrap { flex: 1; }
+
+/* Legacy panels: body fills the panel so footers and actions align along the row. */
+.grid > .panel { display: flex; flex-direction: column; }
+.grid > .panel > .panel-body { flex: 1; }
+
+/* Consistent surfaces */
+.pm-box, .bh-card, .panel { border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+
+.pm-ai-list .pm-ai-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.pm-ai-list li { gap: 4px; }
+/* Buttons inside table cells never wrap letter-by-letter */
+td .btn, td .iq-btn, td .pm-btn { white-space: nowrap; }
+
+/* Legacy dashboards: cards hug their content (no stretched empty boxes). */
+div.grid { align-items: start; }
+/* Business Head wide + side layouts: the side card stays in view while the main card scrolls. */
+.bh-grid.wide-side > * { position: sticky; top: 12px; }
+
+/* Business Head side panels */
+.bh-side-section { border-top: 1px solid var(--n200); margin-top: 12px; padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.bh-side-section h3 { font-size: 12.5px; color: var(--n900); }
+.bh-next { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--n700); }
+.pm-sources { padding: 8px 10px; border: 1px dashed var(--n300); border-radius: var(--radius-md); background: var(--n25); }
+.pm-bars-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 11px; color: var(--n700); }
+.pm-bars-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.pm-bars-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }

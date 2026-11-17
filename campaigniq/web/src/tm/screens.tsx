@@ -47,13 +47,18 @@ function Workspace({
 
       {TM_CHARTS[code]}
 
-      <div className="pm-two">
+      {left.visual && (
+        <div className="pm-box iq-visual-card">
+          <div className="tm-map-wrap">{left.visual}</div>
+          {left.visualNote && <div className="tm-map-note">{left.visualNote}</div>}
+        </div>
+      )}
+
+      <div className="pm-two pm-two-balanced">
         <div className="pm-box">
           <div className="pm-box-head">
             <h3>{left.title}</h3>
           </div>
-          {left.visual && <div className="tm-map-wrap">{left.visual}</div>}
-          {left.visualNote && <div className="tm-map-note">{left.visualNote}</div>}
           <table className="pm-table">
             <tbody>
               {left.rows.map((row) => (

@@ -249,7 +249,7 @@ export function AiBox({ title = 'AI Insight', items, children, className }: {
     <Box className={cx('pm-ai', className)} title={<><Sparkles size={14} /> {title}</>}>
       {items && (
         <ul className="pm-ai-list">
-          {items.map((item, index) => <li key={index}>{item.title ? <b>{item.title}</b> : null}<Status tone={item.tone ?? 'grey'}>{item.tone ?? 'Info'}</Status><span>{item.text}</span></li>)}
+          {items.map((item, index) => <li key={index} className={`pm-ai-${item.tone ?? 'grey'}`}><span className="pm-ai-row"><StatusChip kind={item.tone === 'red' ? 'risk' : item.tone === 'amber' ? 'warn' : item.tone === 'green' ? 'ok' : 'info'}>{item.tone === 'red' ? 'Risk' : item.tone === 'amber' ? 'Watch' : item.tone === 'green' ? 'On track' : 'Note'}</StatusChip>{item.title ? <b>{item.title}</b> : null}</span><span>{item.text}</span></li>)}
         </ul>
       )}
       {children}
@@ -261,15 +261,10 @@ export function Sources({ items, label = 'Sources' }: { items: { label: string; 
   const { go } = useNav();
   return (
     <div className="pm-sources">
-      <b>{label}</b>
-      <ul>
-        {items.map((item) => (
-          <li key={item.label}>
-            {item.to ? <button type="button" onClick={() => go(item.to!)}>{item.label}</button> : <span>{item.label}</span>}
-            {item.note && <small>{item.note}</small>}
-          </li>
-        ))}
-      </ul>
+      <span className="pm-sources-label">{label}</span>
+      {items.map((item) => item.to
+        ? <button type="button" key={item.label} className="pm-source-chip" onClick={() => go(item.to!)} title={item.note}>{item.label}</button>
+        : <span key={item.label} className="pm-source-chip" title={item.note}>{item.label}</span>)}
     </div>
   );
 }
@@ -387,11 +382,18 @@ export function Bars({ data, series, height = 120, format = (value: number) => S
   const max = Math.max(1, ...data.flatMap((item) => item.values));
   return (
     <div className="pm-bars">
-      <div className="pm-bars-plot" style={{ height }}>
+      <div className="pm-bars-plot" style={{ height, marginBottom: 22 }}>
         {data.map((item) => (
-          <div key={item.label} className="pm-bars-cols">
-            {item.values.map((value, index) => <i key={index} style={{ height: `${(value / max) * 100}%`, background: series[index]?.color ?? '#7aa56a' }} title={`${series[index]?.name ?? series[index]?.label ?? `Series ${index + 1}`}: ${format(value)}`} />)}
-            <small>{item.label}</small>
+          <div key={item.label} className="pm-bars-group">
+            <div className="pm-bars-cols" style={{ height: '100%', flex: 'none' }}>
+              {item.values.map((value, index) => (
+                <div key={index} className="pm-bar-col" title={`${series[index]?.name ?? series[index]?.label ?? `Series ${index + 1}`}: ${format(value)}`}>
+                  <span>{format(value)}</span>
+                  <i style={{ height: `${(value / max) * 100}%`, background: series[index]?.color ?? '#7aa56a' }} />
+                </div>
+              ))}
+            </div>
+            <span className="pm-bars-label">{item.label}</span>
           </div>
         ))}
       </div>

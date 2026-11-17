@@ -176,7 +176,7 @@ export function Btn({ children, variant = 'outline', to, onClick, icon, small, c
     >
       {icon}
       <span>{children}</span>
-      {to && !icon && <ArrowRight size={14} strokeWidth={1.75} aria-hidden="true" />}
+      {to && !icon && !(typeof children === 'string' && /[←→‹›]/.test(children)) && <ArrowRight size={14} strokeWidth={1.75} aria-hidden="true" />}
     </button>
   );
 }
