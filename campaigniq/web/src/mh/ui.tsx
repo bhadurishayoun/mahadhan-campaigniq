@@ -36,7 +36,7 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
 }) {
   const { go } = useNav();
   return (
-    <div className={cx('pm-page', 'persona-page persona-page-mh', className)}>
+    <div className={cx('pm-page', 'persona-page persona-page-mh', className)} data-screen={code}>
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         <Home size={13} />
         <span className="crumb">
@@ -53,7 +53,6 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
       <div className="page-header">
         <div className="page-title-block">
           <div className="page-title-row">
-            <span className="code-chip">{code}</span>
             <h1>{title}</h1>
             {status && <Status>{status}</Status>}
           </div>

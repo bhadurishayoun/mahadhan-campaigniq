@@ -24,7 +24,7 @@ export function Pm7() {
       status="Draft / Not Approved"
       actions={<Btn to="pm.7b" icon={<Wand2 size={13} />}>Add Asset / Generate with AI</Btn>}
     >
-      <Source>PM.6 Product Proposition & Intervention Designer.</Source>
+      <Source>Product Proposition & Intervention Designer.</Source>
       <Strip items={[
         { label: 'Parent theme', value: THEME.name },
         { label: 'Product · Crop', value: 'Croptek · Maharashtra Onion' },
@@ -81,7 +81,7 @@ export function Pm7() {
       </div>
 
       <Actions
-        left={<><Btn to="pm.6">← Back to PM.6</Btn><Act message="Collateral drafts saved">Save Collateral Drafts</Act></>}
+        left={<><Btn to="pm.6">← Back to Product Proposition & Intervention Designer</Btn><Act message="Collateral drafts saved">Save Collateral Drafts</Act></>}
         right={<Cta to="pm.8">Develop Campaign Business Case</Cta>}
       />
     </PmPage>
@@ -101,7 +101,7 @@ export function Pm7a() {
       title="AI Collateral Designer & Content Approval Workspace"
       status="v0.3 Draft — Not Approved"
     >
-      <Source>PM.7 — <b>Open / Edit</b> on Retailer Product Detailer. {THEME.name} · {C1.name} · Maharashtra Onion.</Source>
+      <Source><b>Open / Edit</b> on Retailer Product Detailer. {THEME.name} · {C1.name} · Maharashtra Onion.</Source>
       <div className="pm-two">
         <Box title="Design canvas" icon={<LayoutTemplate size={15} />} actions={<Muted>Page {page} of 4 · {lang}</Muted>}>
           <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr', gap: 12 }}>
@@ -142,8 +142,8 @@ export function Pm7a() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7">← Back to PM.7</Btn><Act message="Draft v0.3 saved">Save Draft</Act><Btn to="pm.7c">Preview</Btn></>}
-        right={<><Btn to="pm.7d">Submit for Technical Review</Btn><Cta to="pm.8">PM.8 Business Case</Cta></>}
+        left={<><Btn to="pm.7">← Back to Campaign Collateral & Content Studio</Btn><Act message="Draft v0.3 saved">Save Draft</Act><Btn to="pm.7c">Preview</Btn></>}
+        right={<><Btn to="pm.7d">Submit for Technical Review</Btn><Cta to="pm.8">Business Case</Cta></>}
       />
     </PmPage>
   );
@@ -160,7 +160,7 @@ export function Pm7b() {
       title="AI Campaign Collateral Template Selection & Draft Generation"
       status="Draft / Not Approved"
     >
-      <Source>PM.7 — <b>Add Asset / Generate with AI</b>. PM.6B product claims drafted and sent for technical validation, not yet approved.</Source>
+      <Source><b>Add Asset / Generate with AI</b>. product claims drafted and sent for technical validation, not yet approved.</Source>
       <div className="pm-two">
         <Box title="Template gallery" icon={<LayoutTemplate size={15} />}>
           <div className="creative-grid">
@@ -183,14 +183,14 @@ export function Pm7b() {
               <Field label="Design style"><Select options={['Mahadhan corporate · white / green / yellow', 'Field-friendly high contrast']} /></Field>
               <Field label="Output format"><Select options={[COLLATERALS[selected].format, 'PDF', 'PNG']} key={`f${selected}`} /></Field>
             </div>
-            <Facts rows={[['Source inputs', 'Product Master · PM.6B Draft Claims · PM.6 Intervention Design · authorized imagery library'], ['Supporting evidence status', <P />]]} />
+            <Facts rows={[['Source inputs', 'Product Master Draft Claims Intervention Design · authorized imagery library'], ['Supporting evidence status', <P />]]} />
           </Box>
-          <p className="pm-callout">PM.6B claims ("{CLAIMS[1]}", "{CLAIMS[2]}", "{CLAIMS[3]}") are still technically <b>unvalidated</b>. AI drafts use neutral placeholder content with explicit pending-review tags, never approved claims or invented dosages.</p>
-          <Workflow compact steps={[{ label: 'Select Template', state: 'active' }, { label: 'Configure Inputs', state: 'active' }, { label: 'Generate Draft' }, { label: 'Edit in PM.7A' }, { label: 'Technical Approval PM.7D' }]} />
+          <p className="pm-callout">claims ("{CLAIMS[1]}", "{CLAIMS[2]}", "{CLAIMS[3]}") are still technically <b>unvalidated</b>. AI drafts use neutral placeholder content with explicit pending-review tags, never approved claims or invented dosages.</p>
+          <Workflow compact steps={[{ label: 'Select Template', state: 'active' }, { label: 'Configure Inputs', state: 'active' }, { label: 'Generate Draft' }, { label: 'Edit' }, { label: 'Technical Approval Collateral Approval Tracker' }]} />
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7">← Back to PM.7</Btn><Btn to="pm.7c">Preview Template</Btn><Act message="Draft setup saved">Save Draft Setup</Act></>}
+        left={<><Btn to="pm.7">← Back to Campaign Collateral & Content Studio</Btn><Btn to="pm.7c">Preview Template</Btn><Act message="Draft setup saved">Save Draft Setup</Act></>}
         right={<Cta to="pm.7a" message="Draft generated with pending-review tags — opening editor">Generate Draft & Open Editor</Cta>}
       />
     </PmPage>
@@ -224,7 +224,7 @@ export function Pm7c() {
         <button type="button" className={cx('pm-chip', mode === 'Overlay' && 'active')} onClick={() => setMode('Overlay')}>Overlay</button>
       </div>}
     >
-      <Source>PM.7A — <b>Preview / View Version History</b> for the Retailer Product Detailer. C1 {C1.name} · Maharashtra Onion.</Source>
+      <Source><b>Preview / View Version History</b> for the Retailer Product Detailer. C1 {C1.name} · Maharashtra Onion.</Source>
       <div className="pm-two">
         <Box title={`${mode} comparison · v0.2 vs v0.3`} icon={<Eye size={15} />}>
           <div className={mode === 'Side-by-side' ? 'pm-two-even' : undefined} style={mode === 'Overlay' ? { position: 'relative' } : undefined}>
@@ -252,7 +252,7 @@ export function Pm7c() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7a">← Back to PM.7A Editor</Btn><Btn onClick={() => toast('Restore v0.2? Confirmation required (demo: no change made)')}>Restore Previous Draft</Btn><Btn to="pm.7a">Edit Current Version</Btn><Act message="Version comparison saved">Save Version Comparison</Act></>}
+        left={<><Btn to="pm.7a">← Back to Editor</Btn><Btn onClick={() => toast('Restore v0.2? Confirmation required (demo: no change made)')}>Restore Previous Draft</Btn><Btn to="pm.7a">Edit Current Version</Btn><Act message="Version comparison saved">Save Version Comparison</Act></>}
         right={<Cta to="pm.7d">Submit Current Version for Technical Review</Cta>}
       />
     </PmPage>
@@ -280,7 +280,7 @@ export function Pm7d() {
       title="Collateral Technical, Brand & Language Approval Tracker"
       status="Submitted — Technical Review Pending"
     >
-      <Source>PM.7C — <b>Submit Current Version for Technical Review</b> (v0.3 English). Later illustrative state after submission, not an actual approval.</Source>
+      <Source><b>Submit Current Version for Technical Review</b> (v0.3 English). Later illustrative state after submission, not an actual approval.</Source>
       <div className="pm-two">
         <Box title="Claim-wise & content-wise review tracker">
           <Table
@@ -305,7 +305,7 @@ export function Pm7d() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7c">← Back to PM.7C</Btn><Btn to="pm.7a">Open in PM.7A to Create Corrected v0.4</Btn><Act message="Approval tracking subscribed">Track Approval</Act></>}
+        left={<><Btn to="pm.7c">← Back to Collateral Version Comparison</Btn><Btn to="pm.7a">Open in to Create Corrected v0.4</Btn><Act message="Approval tracking subscribed">Track Approval</Act></>}
         right={<><Btn to="pm.7e">Playbook release readiness (later state)</Btn><Cta locked="Disabled until technical and required brand / language approvals are complete and campaign release authorization permits publishing">Release Approved Asset to Campaign Playbook</Cta></>}
       />
     </PmPage>
@@ -322,7 +322,7 @@ export function Pm7e() {
       title="Approved Collateral Packaging & Campaign Playbook Release Readiness"
       status="Release Readiness — Pending"
     >
-      <Source>PM.7D Approval Tracker — later hypothetical preparation stage. It does <b>not</b> claim PM.7D's pending reviews were completed.</Source>
+      <Source>Approval Tracker — later hypothetical preparation stage. It does <b>not</b> claim pending reviews were completed.</Source>
       <div className="pm-two">
         <Box title="Collateral library & playbook assembly">
           <div className="creative-grid">
@@ -354,19 +354,19 @@ export function Pm7e() {
             <Checklist items={[
               { label: 'Approved product claims', status: 'Pending' },
               { label: 'Authorized asset version validation', status: 'Pending' },
-              { label: 'Campaign MH.8 approval', status: 'Pending' },
-              { label: 'MH.8A recommendation publication', status: 'Pending' },
+              { label: 'Campaign approval', status: 'Pending' },
+              { label: 'Recommendation publication', status: 'Pending' },
               { label: 'Eligible Territory Manager recipient mapping', status: 'Pending' },
               { label: 'Language / rights checks', status: 'Pending' },
             ]} />
           </Box>
-          <Workflow compact steps={[{ label: 'Asset Technical / Brand Approval' }, { label: 'Select Authorized Versions' }, { label: 'Assemble Campaign Playbook' }, { label: 'MH Campaign Approval / MH.8A Release' }, { label: 'Publish to Eligible TM My Campaigns (CW.1)' }]} />
+          <Workflow compact steps={[{ label: 'Asset Technical / Brand Approval' }, { label: 'Select Authorized Versions' }, { label: 'Assemble Campaign Playbook' }, { label: 'MH Campaign Approval / Release' }, { label: 'Publish to Eligible TM My Campaigns' }]} />
           <p className="pm-note"><b>Roles:</b> PM maintains approved content versions · MH authorizes campaign rollout · TM consumes authorized material and never modifies master claims.</p>
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7d">← Back to PM.7D</Btn><Act message="Authorized version preview (registry match pending)">Preview Authorized Version</Act><Btn to="pm.7d">View PM.7D Approval Records</Btn><Act message="Playbook draft saved">Save Playbook Draft</Act></>}
-        right={<><Btn to="pm.8b">PM.8B Financial Assumptions</Btn><Cta locked="Disabled until all required approvals and recipient checks pass">Publish Approved Assets to Eligible Territory Managers</Cta></>}
+        left={<><Btn to="pm.7d">← Back to Collateral Approval Tracker</Btn><Act message="Authorized version preview (registry match pending)">Preview Authorized Version</Act><Btn to="pm.7d">View Approval Records</Btn><Act message="Playbook draft saved">Save Playbook Draft</Act></>}
+        right={<><Btn to="pm.8b">Financial Assumptions</Btn><Cta locked="Disabled until all required approvals and recipient checks pass">Publish Approved Assets to Eligible Territory Managers</Cta></>}
       />
     </PmPage>
   );

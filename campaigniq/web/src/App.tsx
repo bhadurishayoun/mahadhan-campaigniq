@@ -187,7 +187,7 @@ export default function App() {
   }, [session]);
 
   useEffect(() => {
-    document.title = `${meta.code} ${meta.title} · Mahadhan CampaignIQ`;
+    document.title = `${meta.title} · Mahadhan CampaignIQ`;
   }, [meta]);
 
   const go = useCallback((id: ScreenId) => {
@@ -216,7 +216,7 @@ export default function App() {
   const matches = useMemo(() => {
     const text = query.trim().toLowerCase();
     if (!text) return [];
-    return SCREENS.filter((item) => `${item.code} ${item.title}`.toLowerCase().includes(text)).slice(0, 6);
+    return SCREENS.filter((item) => item.title.toLowerCase().includes(text)).slice(0, 6);
   }, [query]);
 
   const Screen = pm ? PmScreen : tm ? TmScreen : mh ? MhScreen : bh ? () => <BhScreen screen={bh.id} /> : REGISTRY[screen as ModuleScreenId];
@@ -338,7 +338,7 @@ export default function App() {
         <div className="main">
           <header className="topbar">
             <button type="button" className="menu-btn" aria-label="Open menu" aria-expanded={navOpen} onClick={() => setNavOpen(true)}><Menu size={20} /></button>
-            <span className="topbar-title">{meta.code} · {meta.title}</span>
+            <span className="topbar-title">{meta.title}</span>
 
             {pm ? (
               <div className="pm-topctx">
@@ -398,7 +398,7 @@ export default function App() {
                   {matches.map((item) => (
                     <li key={item.id}>
                       <button type="button" onClick={() => { go(item.id); setQuery(''); }}>
-                        <b>{item.code}</b> {item.title}
+                        {item.title}
                       </button>
                     </li>
                   ))}

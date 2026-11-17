@@ -165,9 +165,9 @@ export function NutritionCalendar() {
 
   return (
     <div className="stack">
-      <Breadcrumbs items={[{ label: 'S2.2 Jalna District Intelligence', to: 's2.2' }, { label: 'S3.1 Crop Nutrition Calendar & Growth Stage Tracker' }]} />
+      <Breadcrumbs items={[{ label: 'Jalna District Intelligence', to: 's2.2' }, { label: 'Crop Nutrition Calendar & Growth Stage Tracker' }]} />
       <PageHeader
-        title="S3.1 — Crop Nutrition Calendar & Growth Stage Tracker"
+        title="Crop Nutrition Calendar & Growth Stage Tracker"
         subtitle="Understand current and upcoming onion crop stages and approaching nutrition windows for Ambad/Jalna."
       />
 
@@ -176,7 +176,7 @@ export function NutritionCalendar() {
         <Kpi icon={<CalendarDays size={20} />} label="Clusters Approaching Next Window" value="3 of 5" sub="(in 6–9 days)" />
         <Kpi icon={<Target size={20} />} label="Timing Confidence" value="~85%" sub="(illustrative estimate)" />
         <div className="s3-kpi-cta">
-          <Btn variant="primary" to="s3.2" icon={<ArrowRight size={14} />}>Explore Stage-wise Nutrition Needs → S3.2</Btn>
+          <Btn variant="primary" to="s3.2" icon={<ArrowRight size={14} />}>Explore Stage-wise Nutrition Needs</Btn>
         </div>
       </div>
 
@@ -307,11 +307,11 @@ export function NutritionCalendar() {
 
       <FlowFooter
         steps={[
-          { label: 'S2.2 Jalna District Intelligence', to: 's2.2' },
-          { label: 'S3.1 Crop Nutrition Calendar', current: true },
-          { label: 'S3.2 Stage-wise Nutrition Intelligence', to: 's3.2' },
+          { label: 'Jalna District Intelligence', to: 's2.2' },
+          { label: 'Crop Nutrition Calendar', current: true },
+          { label: 'Stage-wise Nutrition Intelligence', to: 's3.2' },
         ]}
-        next={{ label: 'S3.2 Stage-wise Nutrition Intelligence', to: 's3.2', sub: 'Explore stage-wise nutrition needs for onion in Ambad/Jalna, aligned to the upcoming windows.' }}
+        next={{ label: 'Stage-wise Nutrition Intelligence', to: 's3.2', sub: 'Explore stage-wise nutrition needs for onion in Ambad/Jalna, aligned to the upcoming windows.' }}
       />
     </div>
   );
@@ -334,7 +334,7 @@ type InputState = {
 
 const INITIAL_INPUTS: InputState[] = [
   { key: 'soil', title: 'Soil nutrient status', desc: 'Recent soil tests unavailable in some target clusters', status: 'Needs data', action: 'Request results', doneStatus: 'Results requested', doneDesc: 'Soil test results requested for Dhanora, Wadi Gaon and Other Villages', done: false },
-  { key: 'stage', title: 'Crop-stage verification', desc: 'Onion bulb-initiation timing requires field confirmation', status: 'Pending', action: 'Review observations', doneStatus: 'Observations reviewed', doneDesc: 'Field observations reviewed; bulb-initiation timing broadly consistent with S3.1', done: false },
+  { key: 'stage', title: 'Crop-stage verification', desc: 'Onion bulb-initiation timing requires field confirmation', status: 'Pending', action: 'Review observations', doneStatus: 'Observations reviewed', doneDesc: 'Field observations reviewed; bulb-initiation timing broadly consistent with Crop Nutrition Calendar', done: false },
   { key: 'moisture', title: 'Moisture / irrigation', desc: 'Local field observations not yet fully validated', status: 'Needs review', action: 'Assign field check', doneStatus: 'Field check assigned', doneDesc: 'Field check assigned to Ambad field team', done: false },
 ];
 
@@ -351,7 +351,7 @@ export function StageNutrition() {
 
   return (
     <div className="stack">
-      <Breadcrumbs items={[{ label: 'S3.1 Crop Nutrition Calendar', to: 's3.1' }, { label: 'S3.2 Stage-wise Crop Nutrition Intelligence' }]} />
+      <Breadcrumbs items={[{ label: 'Crop Nutrition Calendar', to: 's3.1' }, { label: 'Stage-wise Crop Nutrition Intelligence' }]} />
       <PageHeader
         code="S3.2"
         title="Stage-wise Crop Nutrition Intelligence"
@@ -359,7 +359,7 @@ export function StageNutrition() {
         back="s3.1"
       />
       <SourceBar right={<span>→ Selected: Onion / Bulb Initiation</span>}>
-        <strong>SOURCE</strong> • S3.1 Crop Nutrition Calendar
+        <strong>SOURCE</strong> • Crop Nutrition Calendar
       </SourceBar>
 
       <Panel>
@@ -431,7 +431,7 @@ export function StageNutrition() {
         <Panel className="ai-panel">
           <AiItem title="AI Decision Brief">
             <strong>Confirm field-stage and soil evidence before selecting the {fit === 'croptek' ? 'Croptek programme' : 'complementary nutrient options'}.</strong>
-            <div className="small muted">Carry validated product options into S3.3; no unapproved dosage or claims.</div>
+            <div className="small muted">Carry validated product options into Complete Crop Nutrition Programme Builder; no unapproved dosage or claims.</div>
             {resolved < inputs.length && (
               <div className="small" style={{ marginTop: 4 }}>{inputs.length - resolved} field input(s) still open — the programme can be configured as a draft only.</div>
             )}
@@ -442,15 +442,15 @@ export function StageNutrition() {
             <span className="s3-eyebrow">Next step</span>
             <strong>Nutrition programme configuration</strong>
             <span className="small muted">{resolved === inputs.length ? 'Field checks actioned — ready for programme review' : 'Field checks pending before programme review'}</span>
-            <Btn variant="primary" to="s3.3" icon={<ArrowRight size={14} />}>Configure Nutrition Programme → S3.3</Btn>
+            <Btn variant="primary" to="s3.3" icon={<ArrowRight size={14} />}>Configure Nutrition Programme</Btn>
           </div>
         </Panel>
       </Grid>
 
       <div className="s3-footer">
-        <Btn variant="outline" small to="s3.1" icon={<ArrowLeft size={13} />}>Back to S3.1 Crop Nutrition Calendar</Btn>
-        <span className="s3-footer-mid">RECOMMENDED NEXT: S3.3 Complete Crop Nutrition Programme Builder</span>
-        <Btn variant="primary" to="s3.3" icon={<ArrowRight size={14} />}>Configure Nutrition Programme → S3.3</Btn>
+        <Btn variant="outline" small to="s3.1" icon={<ArrowLeft size={13} />}>Back to Crop Nutrition Calendar</Btn>
+        <span className="s3-footer-mid">RECOMMENDED NEXT: Complete Crop Nutrition Programme Builder</span>
+        <Btn variant="primary" to="s3.3" icon={<ArrowRight size={14} />}>Configure Nutrition Programme</Btn>
       </div>
     </div>
   );
@@ -546,11 +546,11 @@ export function ProgrammeBuilder() {
       />
       <FlowStrip
         items={[
-          { label: 'S3.1 Crop Nutrition Calendar', to: 's3.1' },
-          { label: 'S3.2 Stage-wise Crop Nutrition Intelligence', to: 's3.2' },
-          { label: 'S3.3 Complete Crop Nutrition Programme Builder', current: true },
+          { label: 'Crop Nutrition Calendar', to: 's3.1' },
+          { label: 'Stage-wise Crop Nutrition Intelligence', to: 's3.2' },
+          { label: 'Complete Crop Nutrition Programme Builder', current: true },
         ]}
-        source="Source: S3.2 → Configure Nutrition Programme"
+        source="Source: Stage-wise Nutrition Intelligence → Configure Nutrition Programme"
       />
 
       <Panel>
@@ -639,7 +639,7 @@ export function ProgrammeBuilder() {
           </Panel>
           <Panel title="AI Programme Validation" icon={<Sparkles size={16} />} subtitle="Automated checks and action points before agronomy review." className="ai-panel">
             <Check status={selectedRow.stage === 'Bulb Initiation' ? 'done' : 'warn'}>
-              {selectedRow.stage === 'Bulb Initiation' ? 'Bulb initiation stage selected correctly from S3.2.' : `Selected stage (${selectedRow.stage}) differs from the S3.2 selection (Bulb Initiation).`}
+              {selectedRow.stage === 'Bulb Initiation' ? 'Bulb initiation stage selected correctly.' : `Selected stage (${selectedRow.stage}) differs from the selection (Bulb Initiation).`}
             </Check>
             <Check status="done">Confirm local soil / crop advisory before final approval.</Check>
             <Check status={pendingOthers.length ? 'pending' : 'done'}>
@@ -659,12 +659,12 @@ export function ProgrammeBuilder() {
       </Grid>
 
       <div className="s3-footer">
-        <Btn variant="outline" small to="s3.2" icon={<ArrowLeft size={13} />}>Back to S3.2</Btn>
-        <span className="s3-footer-mid">S3.4 Campaign Trigger &amp; Recommendation Engine</span>
+        <Btn variant="outline" small to="s3.2" icon={<ArrowLeft size={13} />}>Back to Stage-wise Nutrition Intelligence</Btn>
+        <span className="s3-footer-mid">Campaign Trigger &amp; Recommendation Engine</span>
         <div className="s3-action-bar">
           <Btn variant="outline" onClick={save}>Save Draft</Btn>
           <Btn variant="gold" onClick={submit} disabled={submitted}>{submitted ? 'Submitted for Agronomy Review' : 'Submit for Agronomy Review'}</Btn>
-          <Btn variant="primary" to="s3.4" icon={<ArrowRight size={14} />}>Identify Campaign Opportunities → S3.4</Btn>
+          <Btn variant="primary" to="s3.4" icon={<ArrowRight size={14} />}>Identify Campaign Opportunities</Btn>
         </div>
       </div>
     </div>
@@ -742,12 +742,12 @@ export function TriggerEngine() {
       />
       <FlowStrip
         items={[
-          { label: 'S3.1 Crop Nutrition Calendar', to: 's3.1' },
-          { label: 'S3.2 Stage-wise Nutrition Intelligence', to: 's3.2' },
-          { label: 'S3.3 Complete Crop Nutrition Programme Builder', to: 's3.3' },
-          { label: 'S3.4 Campaign Trigger & Recommendation Engine', current: true },
+          { label: 'Crop Nutrition Calendar', to: 's3.1' },
+          { label: 'Stage-wise Nutrition Intelligence', to: 's3.2' },
+          { label: 'Complete Crop Nutrition Programme Builder', to: 's3.3' },
+          { label: 'Campaign Trigger & Recommendation Engine', current: true },
         ]}
-        source="Source click: S3.3 → Identify Campaign Opportunities"
+        source="Source click: Complete Crop Nutrition Programme Builder → Identify Campaign Opportunities"
       />
 
       <ContextStrip
@@ -864,11 +864,11 @@ export function TriggerEngine() {
       </Grid>
 
       <div className="s3-footer">
-        <Btn variant="outline" small to="s3.3" icon={<ArrowLeft size={13} />}>Back to S3.3</Btn>
+        <Btn variant="outline" small to="s3.3" icon={<ArrowLeft size={13} />}>Back to Complete Crop Nutrition Programme Builder</Btn>
         <span className="s3-footer-mid">
-          Source: S3.3 Complete Crop Nutrition Programme Builder <ArrowRight size={12} />
-          <strong style={{ color: COLORS.dark }}>Current: S3.4 Campaign Trigger &amp; Recommendation Engine</strong> <ArrowRight size={12} />
-          S4.2 Campaign Creation Wizard
+          Source: Complete Crop Nutrition Programme Builder <ArrowRight size={12} />
+          <strong style={{ color: COLORS.dark }}>Current: Campaign Trigger &amp; Recommendation Engine</strong> <ArrowRight size={12} />
+          Campaign Creation Wizard
         </span>
         <div className="s3-footer-right">
           <Btn
@@ -879,7 +879,7 @@ export function TriggerEngine() {
               go('s4.2');
             }}
           >
-            Create Recommended Campaign → S4.2 Campaign Creation Wizard
+            Create Recommended Campaign Campaign Creation Wizard
           </Btn>
           <span className="small muted">Campaign can be drafted, but will not be auto-published.</span>
         </div>

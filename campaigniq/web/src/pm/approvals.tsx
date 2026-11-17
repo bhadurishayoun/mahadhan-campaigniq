@@ -7,7 +7,7 @@ import { Btn } from '../ui';
 import { Act, Actions, AiBox, Box, Checklist, Chips, Cta, Drawer, Facts, Field, Input, Modal, Muted, P, PmPage, Select, Source, Sources, Status, Strip, Table, Workflow } from './kit';
 import { ACTIVITIES, ACTIVITY_TOTAL, C1, INVESTMENT, LOCAL_PLAN, THEME } from './data';
 
-const APPROVED_CAMPAIGN = `${C1.name} (approved via MH.8, released via MH.8A)`;
+const APPROVED_CAMPAIGN = `${C1.name} (approved, released)`;
 
 /* ------------------------------------------------------------------ PM.9B */
 
@@ -19,7 +19,7 @@ export function Pm9b() {
       code="PM.9B"
       title="Territory Campaign Activity Plan Approval Inbox & Submission Tracking"
     >
-      <Source>Separate later hypothetical state: the PM campaign was approved by Marketing Head (MH.8), released via MH.8A, and at least one Territory Manager submitted a local plan via TM.CW4. Publication does not automatically authorize execution.</Source>
+      <Source>Separate later hypothetical state: the PM campaign was approved by Marketing Head, released, and at least one Territory Manager submitted a local plan. Publication does not automatically authorize execution.</Source>
       <Chips items={['All', 'Pending PM Review', 'Returned to TM', 'Approved', 'Awaiting Submission']} active={filter} onSelect={setFilter} />
       <div className="pm-two">
         <Box title="Territory Campaign Approval Queue" icon={<Inbox size={15} />}>
@@ -37,7 +37,7 @@ export function Pm9b() {
         <div className="pm-stack">
           <Box title="Selected submission · Ambad" tone="soft">
             <Facts rows={ACTIVITIES.map((item) => [item.activity, item.units] as [string, string])} />
-            <Facts cols={2} rows={[['Total activities', '13'], ['Local budget', <>₹3 L <Muted>within approved regional {INVESTMENT} envelope (not additive)</Muted></>]]} />
+            <Facts cols={2} rows={[['Total activities', '13'], ['Local budget', <>₹3 L <Muted>Within approved regional {INVESTMENT} envelope (not additive)</Muted></>]]} />
           </Box>
           <Box title="Readiness checks">
             <Checklist items={[
@@ -45,7 +45,7 @@ export function Pm9b() {
               { label: 'Stock feasibility', status: 'Verify' }, { label: 'Eligible audience / consent', status: 'Pending' }, { label: 'Allocation remaining in envelope', status: 'Verify' },
             ]} />
           </Box>
-          <Sources items={[{ label: 'MH.8A PM-approved playbook' }, { label: 'TM.CW4 submitted local plan' }, { label: 'PM.9 plan review', to: 'pm.9' }]} />
+          <Sources items={[{ label: 'PM-approved playbook' }, { label: 'Submitted local plan' }, { label: 'Plan review', to: 'pm.9' }]} />
         </div>
       </div>
       <Actions
@@ -67,7 +67,7 @@ export function Pm9() {
       title="Territory Campaign Activity Plan Review & Approval"
       status={LOCAL_PLAN.status}
     >
-      <Source>Later hypothetical workflow after PM.8 validations, Marketing Head approval (MH.7–MH.8), MH.8A release and TM submission via CW.1–CW.4. PM.8's pending checks are not implicitly completed.</Source>
+      <Source>Later hypothetical workflow after validations, Marketing Head approval (related screens), release and TM submission via related screens. pending checks are not implicitly completed.</Source>
       <Strip items={[
         { label: 'Parent approved campaign', value: C1.name, sub: `${THEME.name} · Maharashtra Onion` },
         { label: 'Selected local TM plan', value: LOCAL_PLAN.name, sub: `${LOCAL_PLAN.villages} · ${LOCAL_PLAN.retailers}` },
@@ -106,8 +106,8 @@ export function Pm9() {
           <Box title="Approval">
             <Field label="Review comments"><Input rows={3} placeholder="Comments for the Territory Manager…" /></Field>
             <div className="pm-stack" style={{ gap: 6 }}>
-              <Act message="Approved PM campaign playbook (MH.8A) opened read-only">View Approved PM Campaign Playbook (MH.8A)</Act>
-              <Act message="Submitted TM CW.4 plan opened read-only">View Submitted TM CW.4 Plan</Act>
+              <Act message="Approved PM campaign playbook opened read-only">View Approved PM Campaign Playbook</Act>
+              <Act message="Submitted TM plan opened read-only">View Submitted TM Plan</Act>
               <Btn to="pm.9c" icon={<MessageSquare size={13} />}>Request Changes</Btn>
               <Btn to="pm.9d" icon={<AlertTriangle size={13} />}>Escalate Exception</Btn>
               <Act message="Review saved — plan not approved">Save Review</Act>
@@ -136,7 +136,7 @@ export function Pm9a() {
       </>}
     >
       <Facts cols={3} rows={[
-        ['Planned', '4 demonstrations'], ['Split', 'Dhanora 2 · Wadi Gaon 2'], ['Proposed local allocation', <>₹1.05 L <Muted>within ₹3 L local plan and ₹12 L regional envelope</Muted></>],
+        ['Planned', '4 demonstrations'], ['Split', 'Dhanora 2 · Wadi Gaon 2'], ['Proposed local allocation', <>₹1.05 L <Muted>Within ₹3 L local plan and ₹12 L regional envelope</Muted></>],
         ['Planned dates', <Status>To Confirm</Status>], ['Assigned owner', <>R. Jadhav (proposed) <Status>Confirmation Pending</Status></>], ['Double counting', 'None — one allocation'],
       ]} />
       <Box title="Validation checklist">
@@ -151,7 +151,7 @@ export function Pm9a() {
         ]} />
       </Box>
       <AiBox title="AI Activity Review Insight" items={[{ text: 'Check timing, stock, approved content version and owner confirmation before accepting. Nothing is approved or executed yet.', tone: 'amber' }]} />
-      <Sources items={[{ label: 'View Source TM.CW4 Activity Plan' }, { label: 'View PM Approved Campaign Playbook (MH.8A)' }]} />
+      <Sources items={[{ label: 'View Source Activity Plan' }, { label: 'View PM Approved Campaign Playbook' }]} />
       <Field label="PM review comments"><Input rows={3} placeholder="Comments…" /></Field>
       <Muted>The PM reviews source information and does not edit TM dates, targets or owners. Activity approval does not mean launched.</Muted>
     </Drawer>
@@ -175,7 +175,7 @@ export function Pm9c() {
       footer={<>
         <Act message="Original TM plan v1 opened read-only">View Original TM Plan</Act>
         <Act message="Draft request saved — not sent">Save Draft Request</Act>
-        <Btn to="pm.9">Back to PM.9</Btn>
+        <Btn to="pm.9">Back to Territory Activity Plan Review & Approval</Btn>
         <span className="pm-foot-right"><Cta message="Correction request drafted — send requires confirmation (not sent)">Send Correction Request to Territory Manager</Cta></span>
       </>}
     >
@@ -194,12 +194,12 @@ export function Pm9c() {
           <Field label="Due date" hint="No committed date"><Input placeholder="Select date" /></Field>
           <Field label="Priority"><Select options={['High', 'Medium', 'Low']} /></Field>
         </div>
-        <Sources items={[{ label: 'TM.CW4 local plan' }, { label: 'MH.8A approved PM campaign playbook' }, { label: 'PM.9A activity review', to: 'pm.9a' }]} />
+        <Sources items={[{ label: 'Local plan' }, { label: 'Approved PM campaign playbook' }, { label: 'Activity review', to: 'pm.9a' }]} />
       </Box>
       <Workflow compact steps={[{ label: 'Draft', state: 'active' }, { label: 'Sent to TM' }, { label: 'Revised Plan Submitted' }, { label: 'PM Revalidation' }, { label: 'Resolved' }]} />
       <Facts cols={2} rows={[['Version control', 'Original TM submission v1'], ['Revised v2', <P>Pending (comparison after resubmission)</P>]]} />
       <AiBox title="AI Review Prompt" items={[{ text: 'Confirm timing, stock, owner and approved material before plan endorsement.', tone: 'green' }]} />
-      <Muted>PM reviews and requests changes; the TM owns local plan edits. After validated resubmission: PM.9E Consolidated Approval, then separately controlled TM.EX1 execution authorization.</Muted>
+      <Muted>PM reviews and requests changes; the TM owns local plan edits. After validated resubmission: Consolidated Approval, then separately controlled execution authorization.</Muted>
     </Drawer>
   );
 }
@@ -209,7 +209,7 @@ export function Pm9c() {
 const EXCEPTIONS = [
   { category: 'Local allocation availability', activity: 'Whole local plan ₹3.00 L', deviation: 'Remaining regional allocation not yet verified', authority: 'Finance / Marketing Head (policy-dependent)', status: 'Pending Determination' },
   { category: 'Field demonstration crop-stage deviation', activity: 'Field Demonstrations', deviation: 'Only if proposed timing is outside the validated agronomic window', authority: 'Agronomy review', status: 'Review Required' },
-  { category: 'Stock and activity owner missing', activity: 'Field Demonstrations · Retailer Activation', deviation: 'Ordinary TM correction — not an authorization exception', authority: 'Territory Manager (correction)', status: 'Correction (PM.9C)' },
+  { category: 'Stock and activity owner missing', activity: 'Field Demonstrations · Retailer Activation', deviation: 'Ordinary TM correction — not an authorization exception', authority: 'Territory Manager (correction)', status: 'Correction' },
 ];
 
 export function Pm9d() {
@@ -218,7 +218,7 @@ export function Pm9d() {
   return (
     <Drawer title="Campaign Exception & Authorization Review" status="Exception Draft / Not Escalated" width="50%" back="pm.9" subtitle={`Maharashtra Onion / Croptek · 13 local units · ₹3.00 L within approved ₹12.00 L regional envelope · remaining allocation not yet verified`}
       footer={<>
-        <Btn to="pm.9">Back to PM.9</Btn>
+        <Btn to="pm.9">Back to Territory Activity Plan Review & Approval</Btn>
         <Act message="Policy & authority matrix opened">View Policy & Authority</Act>
         <Btn to="pm.9c">Request TM Clarification</Btn>
         <Act message="Exception draft saved — not escalated">Save Exception Draft</Act>
@@ -235,7 +235,7 @@ export function Pm9d() {
       <Box title={`Selected exception · ${row.category}`} tone="soft">
         <div className="pm-form pm-form-2">
           <Field label="Issue type"><Input value={row.category} key={selected} /></Field>
-          <Field label="Submitted vs authorized reference"><Input value="TM.CW4 v1 vs MH.8A approved playbook" /></Field>
+          <Field label="Submitted vs authorized reference"><Input value="v1 vs approved playbook" /></Field>
           <Field label="Scope of proposed variation"><Input value={row.deviation} key={`d${selected}`} /></Field>
           <Field label="Justification from TM"><Input placeholder="Pending" /></Field>
           <Field label="Supporting evidence"><Input placeholder="Attach" /></Field>
@@ -245,8 +245,8 @@ export function Pm9d() {
       </Box>
       <Workflow title="Approval routing (dynamic by exception)" compact steps={[{ label: 'PM technical / commercial review', state: 'active' }, { label: 'Authorized Agronomy / Marketing Head / Business Head decision' }]} />
       <Workflow compact steps={[{ label: 'Exception Draft', state: 'active' }, { label: 'Submitted for Authorization' }, { label: 'Reviewer Assessment' }, { label: 'Approved or Returned / Rejected' }, { label: 'PM Revalidation' }]} />
-      <Sources items={[{ label: 'MH.8A approved PM Campaign Playbook' }, { label: 'PM.9 submitted local plan', to: 'pm.9' }, { label: 'PM.9A activity detail', to: 'pm.9a' }, { label: 'PM.9C correction request', to: 'pm.9c' }]} />
-      <p className="pm-callout">A correction (PM.9C) is not an exception, and exception authorization is not local campaign plan approval or launch. Proceed to PM.9E only after mandatory checks and applicable exception decisions.</p>
+      <Sources items={[{ label: 'Approved PM Campaign Playbook' }, { label: 'Submitted local plan', to: 'pm.9' }, { label: 'Activity detail', to: 'pm.9a' }, { label: 'Correction request', to: 'pm.9c' }]} />
+      <p className="pm-callout">A correction is not an exception, and exception authorization is not local campaign plan approval or launch. Proceed to only after mandatory checks and applicable exception decisions.</p>
     </Drawer>
   );
 }
@@ -257,14 +257,14 @@ export function Pm9e() {
   return (
     <Modal title="Consolidated Territory Campaign Plan Approval" status="PM Approval Pending" width="75%" back="pm.9" subtitle={`Ambad, Jalna · Maharashtra Onion · parent approved ${C1.name} · local plan submitted by Territory Manager`}
       footer={<>
-        <Btn to="pm.9">Back to PM.9</Btn>
+        <Btn to="pm.9">Back to Territory Activity Plan Review & Approval</Btn>
         <Btn to="pm.9d">View Activity Exceptions</Btn>
         <Act message="Approval review saved — plan not approved">Save Approval Review</Act>
         <Btn to="pm.9c">Request Further Changes</Btn>
         <span className="pm-foot-right"><Cta locked="Disabled until mandatory checks pass or valid authorized exceptions are recorded">Approve Consolidated Local Campaign Plan</Cta></span>
       </>}
     >
-      <p className="pm-note">Future illustrative pre-approval checkpoint after MH.8 approved the parent campaign and MH.8A published the recommendation. Local approval and launch have <b>not</b> occurred. Local budget ₹3.00 L is allocated <b>within</b> the regional ₹12.00 L envelope, never added to it.</p>
+      <p className="pm-note">Future illustrative pre-approval checkpoint after approved the parent campaign and published the recommendation. Local approval and launch have <b>not</b> occurred. Local budget ₹3.00 L is allocated <b>within</b> the regional ₹12.00 L envelope, never added to it.</p>
       <div className="pm-two">
         <Table
           compact
@@ -275,18 +275,18 @@ export function Pm9e() {
         />
         <Box title="Final Approval Readiness" tone="soft">
           <Checklist items={[
-            { label: 'Authorized crop / product / geography scope', status: 'Validated', note: 'Source: MH.8A playbook' },
+            { label: 'Authorized crop / product / geography scope', status: 'Validated', note: 'Source: playbook' },
             { label: 'Agronomy & crop-stage suitability', status: 'Outstanding' },
             { label: 'Confirmed activity ownership', status: 'Outstanding' },
             { label: 'Stock feasibility', status: 'Unverified' },
             { label: 'Latest authorized collateral versions & consent', status: 'Outstanding' },
             { label: 'Local ₹3 L within remaining regional ₹12 L envelope', status: 'Unverified' },
-            { label: 'Closure of PM.9C corrections & PM.9D exceptions', status: 'Outstanding' },
+            { label: 'Closure of corrections & exceptions', status: 'Outstanding' },
           ]} />
         </Box>
       </div>
-      <Sources items={[{ label: 'MH.8A Approved Playbook' }, { label: 'TM.CW4 Source Plan' }, { label: 'PM.9A Detailed Activity Review', to: 'pm.9a' }, { label: 'PM.9C Corrections', to: 'pm.9c' }, { label: 'PM.9D Exception Decisions', to: 'pm.9d' }]} />
-      <Workflow compact steps={[{ label: 'TM Plan Submitted', state: 'done' }, { label: 'PM Consolidated Review', state: 'active' }, { label: 'PM Local Plan Approval' }, { label: 'TM Launch Readiness' }, { label: 'TM.EX1 Execution' }]} />
+      <Sources items={[{ label: 'Approved Playbook' }, { label: 'Source Plan' }, { label: 'Detailed Activity Review', to: 'pm.9a' }, { label: 'Corrections', to: 'pm.9c' }, { label: 'Exception Decisions', to: 'pm.9d' }]} />
+      <Workflow compact steps={[{ label: 'TM Plan Submitted', state: 'done' }, { label: 'PM Consolidated Review', state: 'active' }, { label: 'PM Local Plan Approval' }, { label: 'TM Launch Readiness' }, { label: 'Execution' }]} />
       <Field label="PM review comments"><Input rows={2} placeholder="Comments…" /></Field>
       <Muted>An approval records the exact local plan version and approved budget allocation but does not start the campaign; the TM still needs separately governed launch readiness / authorization.</Muted>
     </Modal>

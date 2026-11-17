@@ -54,7 +54,6 @@ export function PmPage({ crumbs, code, title, status, subtitle, actions, childre
       <div className="page-header">
         <div className="page-title-block">
           <div className="page-title-row">
-            <span className="code-chip">{code}</span>
             <h1>{title}</h1>
             {status && <Status>{status}</Status>}
           </div>

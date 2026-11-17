@@ -165,7 +165,7 @@ export function Tm2() {
                 {
                   id: 'v-ambad',
                   info: 'Ambad HQ · 22 retailers linked · 1 duplicate outlet',
-                  action: { label: 'Allocate outlets in TM.3', run: () => go('tm.3') },
+                  action: { label: 'Allocate outlets', run: () => go('tm.3') },
                 },
                 { id: 'v-dhanora', info: 'Dhanora · 14 retailers linked · 2 inactive mappings' },
                 { id: 'v-wadigaon', info: 'Wadi Gaon · 11 retailers linked · no blockers' },
@@ -195,7 +195,7 @@ export function Tm2() {
         rows: [
           { label: 'Missing links', value: 'Prioritize dealer-retailer mapping closure in Dhanora before target allocation.' },
           { label: 'Data quality', value: 'Two outlets flagged for missing verification; keep forecast assumptions provisional.' },
-          { label: 'Action', value: 'Move to TM.3 to assign outlet-level targets after mapping corrections.' },
+          { label: 'Action', value: 'Move to to assign outlet-level targets after mapping corrections.' },
         ],
       }}
     />
@@ -237,7 +237,7 @@ export function Tm3() {
                 {
                   id: 'v-kingaon',
                   info: 'Retail outlet cluster B · planned allocation ₹1.14 Cr · review concentration risk',
-                  action: { label: 'Validate crop fit in TM.4', run: () => go('tm.4') },
+                  action: { label: 'Validate crop fit', run: () => go('tm.4') },
                 },
               ]}
               scale={{
@@ -264,7 +264,7 @@ export function Tm3() {
         rows: [
           { label: 'Stretch balancing', value: 'Keep dealer growth within 28–32% to avoid unrealistic downstream retail pressure.' },
           { label: 'Exception', value: 'Cluster B growth >35% should be backed by campaign and crop coverage assumptions.' },
-          { label: 'Hand-off', value: 'Validate crop-product fit in TM.4 before final approval workflow.' },
+          { label: 'Hand-off', value: 'Validate crop-product fit in before final approval workflow.' },
         ],
       }}
     />
@@ -304,7 +304,7 @@ export function Tm4() {
                 {
                   id: 'v-pimpalgaon',
                   info: 'Pimpalgaon · 280 acres · Retailer education pending · Needs action',
-                  action: { label: 'Track readiness in TM.5', run: () => go('tm.5') },
+                  action: { label: 'Track readiness', run: () => go('tm.5') },
                 },
               ]}
               scale={{
@@ -318,7 +318,7 @@ export function Tm4() {
             />
           </div>
         ),
-        visualNote: 'Map highlights crop coverage villages and readiness hotspots before final TM.5 approval submission.',
+        visualNote: 'Map highlights crop coverage villages and readiness hotspots before final approval submission.',
         rows: [
           { label: 'Dhanora', value: 'Onion 420 acres · Croptek + NutriBoost bundle', status: 'Ready' },
           { label: 'Wadi Gaon', value: 'Onion 360 acres · Croptek focus + demo plots', status: 'Conditional' },
@@ -331,7 +331,7 @@ export function Tm4() {
         rows: [
           { label: 'Gap flag', value: 'Pimpalgaon readiness gap may constrain conversion if activation slips by >2 weeks.' },
           { label: 'Resource cue', value: 'Deploy one additional field demo day in Wadi Gaon to support planned uplift.' },
-          { label: 'Approval readiness', value: 'Proceed to TM.5 once readiness blockers are explicitly tracked.' },
+          { label: 'Approval readiness', value: 'Proceed to once readiness blockers are explicitly tracked.' },
         ],
       }}
     />
@@ -355,10 +355,10 @@ export function Tm5() {
       left={{
         title: 'Approval Checklist',
         rows: [
-          { label: 'Territory target consistency', value: 'Matched with TM.1 totals', status: 'Verified' },
-          { label: 'Outlet and crop mapping', value: 'Aligned with TM.2–TM.4', status: 'Verified' },
+          { label: 'Territory target consistency', value: 'Matched with totals', status: 'Verified' },
+          { label: 'Outlet and crop mapping', value: 'Aligned with related screens', status: 'Verified' },
           { label: 'Campaign support assumptions', value: '2 assumptions require validation', status: 'Pending' },
-          { label: 'Submission package', value: 'Ready for MH workflow', cta: { label: 'Submit in CW.1', to: 'cw.1' } },
+          { label: 'Submission package', value: 'Ready for MH workflow', cta: { label: 'Submit', to: 'cw.1' } },
         ],
       }}
       right={{
@@ -401,7 +401,7 @@ export function Cw1() {
         rows: [
           { label: 'Segment precision', value: 'Avoid over-broad audience settings; keep crop-season alignment strict.' },
           { label: 'Scope control', value: 'Start with verified readiness villages for higher early activation confidence.' },
-          { label: 'Data cue', value: 'Tag uncertain assumptions for later diagnostics in TM.IM2.' },
+          { label: 'Data cue', value: 'Tag uncertain assumptions for later diagnostics.' },
         ],
       }}
     />
@@ -436,7 +436,7 @@ export function Cw2() {
         rows: [
           { label: 'Efficiency', value: 'Keep demo-to-follow-up ratio tight in high-opportunity villages.' },
           { label: 'Control', value: 'Cap non-performing channels until first two-week signal check.' },
-          { label: 'Readiness', value: 'Move to CW.3 scenario testing before final submission.' },
+          { label: 'Readiness', value: 'Move to scenario testing before final submission.' },
         ],
       }}
     />
@@ -463,7 +463,7 @@ export function Cw3() {
           { label: 'Conservative', value: 'Lower spend · slower reach · lower risk' },
           { label: 'Base', value: 'Balanced spend · moderate reach · planned ROI' },
           { label: 'Stretch', value: 'Higher activation push · tighter execution dependency' },
-          { label: 'Recommended', value: 'Base with controlled stretch add-ons', cta: { label: 'Finalize in CW.4', to: 'cw.4' } },
+          { label: 'Recommended', value: 'Base with controlled stretch add-ons', cta: { label: 'Finalize', to: 'cw.4' } },
         ],
       }}
       right={{
@@ -497,7 +497,7 @@ export function Cw4() {
         rows: [
           { label: 'Objective alignment', value: 'Aligned to approved ABP and crop plan' },
           { label: 'Budget and timeline', value: 'Validated against activity mix' },
-          { label: 'Evidence references', value: 'TM.1, TM.4, CW.3 attached' },
+          { label: 'Evidence references', value: 'My Performance & Annual Business Plan, Village-wise Crop, Product & Coverage Planning, attached' },
           { label: 'Final action', value: 'Ready to submit for rollout', cta: { label: 'Go Live Control Tower', to: 'tm.ex1' } },
         ],
       }}
@@ -506,7 +506,7 @@ export function Cw4() {
         rows: [
           { label: 'Completeness', value: 'Ensure all provisional assumptions are clearly tagged in request notes.' },
           { label: 'Governance', value: 'No budget unlock until approval confirmation is visible in rollout screen.' },
-          { label: 'Transition', value: 'Move to TM.EX1 once submission is confirmed.' },
+          { label: 'Transition', value: 'Move to once submission is confirmed.' },
         ],
       }}
     />
@@ -533,7 +533,7 @@ export function TmEx1() {
           { label: 'Dealer meets', value: '14 / 18 completed', status: 'Behind plan' },
           { label: 'Village demos', value: '17 / 24 completed', status: 'Needs acceleration' },
           { label: 'Field follow-ups', value: '228 / 310 completed', status: 'On track' },
-          { label: 'Escalations', value: '2 villages require immediate intervention', cta: { label: 'Handle in TM.EX2', to: 'tm.ex2' } },
+          { label: 'Escalations', value: '2 villages require immediate intervention', cta: { label: 'Handle', to: 'tm.ex2' } },
         ],
       }}
       right={{
@@ -576,7 +576,7 @@ export function TmEx2() {
         rows: [
           { label: 'Priority logic', value: 'Resolve issues that directly impact activation first, then efficiency optimizations.' },
           { label: 'Ownership', value: 'Each action requires owner, due date and evidence note for auditability.' },
-          { label: 'Learning loop', value: 'Feed resolved patterns into TM.IM2 diagnostics for repeat prevention.' },
+          { label: 'Learning loop', value: 'Feed resolved patterns into diagnostics for repeat prevention.' },
         ],
       }}
     />
@@ -646,7 +646,7 @@ export function TmIm2() {
         rows: [
           { label: 'Playbook update', value: 'Codify high-conversion sequence as standard rollout guidance.' },
           { label: 'Data request', value: 'Capture missing retailer follow-up logs before confirming root causes.' },
-          { label: 'Decision support', value: 'Use TM.AI1 for scenario-based corrective planning.' },
+          { label: 'Decision support', value: 'Use for scenario-based corrective planning.' },
         ],
       }}
     />
@@ -661,7 +661,7 @@ export function TmAi1() {
       title="Territory Business & Campaign Copilot Workspace"
       subtitle="Conversational planning and diagnostics assistant for territory execution"
       metrics={[
-        { label: 'Context loaded', value: 'TM.1–TM.IM2' },
+        { label: 'Context loaded', value: 'All territory screens' },
         { label: 'Suggested actions', value: '6 ranked options' },
         { label: 'Decision mode', value: 'Assistive (no auto-change)' },
       ]}

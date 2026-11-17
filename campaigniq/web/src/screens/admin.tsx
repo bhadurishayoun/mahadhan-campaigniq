@@ -167,7 +167,7 @@ export function DataSources() {
 
         <Panel title="AI Co-pilot (LLM)" icon={<Bot size={16} />} actions={<Pill tone={copilot?.mode === 'llm' ? 'green' : 'amber'}>{copilot?.mode === 'llm' ? 'LLM connected' : 'Demo answers'}</Pill>}>
           <p className="small" style={{ marginTop: 0 }}>
-            The copilot sends the question, the filter scope and matching rows from uploaded datasets to the configured LLM and renders the JSON answer on AI.1.
+            The copilot sends the question, the filter scope and matching rows from uploaded datasets to the configured LLM and renders the JSON answer.
             Without an LLM it shows the built-in illustrative answers.
           </p>
           <p className="small"><b>Provider:</b> {copilot?.provider ?? 'unknown'} {copilot?.model && <>· <b>Model:</b> {copilot.model}</>}</p>

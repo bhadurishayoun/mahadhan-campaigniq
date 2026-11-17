@@ -38,10 +38,10 @@ export function BhPage({ screen, children, subtitle, actions, className }: {
         <Home size={13} />
         <span className="crumb"><ChevronRight size={12} /><button type="button" onClick={() => go('bh.1')}>Business Head</button></span>
         {crumb && <span className="crumb"><ChevronRight size={12} />{crumb.to ? <button type="button" onClick={() => go(crumb.to!)}>{crumb.label}</button> : crumb.label}</span>}
-        <span className="crumb crumb-current"><ChevronRight size={12} />{meta.code}</span>
+        <span className="crumb crumb-current"><ChevronRight size={12} />{meta.title}</span>
       </nav>
       <header className="bh-page-head">
-        <div><div className="bh-title-row"><span className="code-chip">{meta.code}</span><h1>{meta.title}</h1><Pill tone="amber">Illustrative data</Pill></div>{subtitle && <p className="page-subtitle">{subtitle}</p>}</div>
+        <div><div className="bh-title-row"><h1>{meta.title}</h1><Pill tone="amber">Illustrative data</Pill></div>{subtitle && <p className="page-subtitle">{subtitle}</p>}</div>
         {actions && <div className="page-actions">{actions}</div>}
       </header>
       {children}

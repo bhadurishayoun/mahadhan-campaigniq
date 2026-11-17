@@ -64,14 +64,14 @@ const ANSWERS: Record<AnswerId, Answer> = {
     },
     factors: ['Pending stock receipt in Dhanora.', 'Delayed demonstration plot activity.'],
     confidence: { level: 'Medium', text: 'Observed timing and stock issues likely contributed to weaker conversion; causal attribution not yet verified.' },
-    sources: [{ label: 'From S5.2 Stock Readiness', to: 's5.2' }, { label: 'From S6.2 Activity Execution', to: 's6.2' }, { label: 'From S7.1 Impact Dashboard', to: 's7.1' }],
+    sources: [{ label: 'From Stock Readiness', to: 's5.2' }, { label: 'From Activity Execution', to: 's6.2' }, { label: 'From Impact Dashboard', to: 's7.1' }],
     actions: [
       'Prioritize stock validation for Croptek in Dhanora and confirm receipt timeline.',
       'Complete the delayed demonstration plot activity in Dhanora at the earliest.',
       'Assign targeted trial-user follow-up in Dhanora to drive adoption.',
     ],
-    primary: { label: 'Create Corrective Action → S6.2', to: 's6.2' },
-    secondary: { label: 'View Diagnostics → S7.2', to: 's7.2' },
+    primary: { label: 'Create Corrective Action', to: 's6.2' },
+    secondary: { label: 'View Diagnostics', to: 's7.2' },
   },
   underperforming: {
     question: 'Which campaigns are underperforming?',
@@ -100,19 +100,19 @@ const ANSWERS: Record<AnswerId, Answer> = {
     },
     factors: ['Croptek stock receipt pending in Dhanora (update Jan 12).', 'Retailer meetings delayed in Pimpalgaon and Other Villages.'],
     confidence: { level: 'Medium', text: 'Plan attainment is measured; drivers of the gap are inferred from execution logs and not yet verified.' },
-    sources: [{ label: 'From S1.2 Portfolio Dashboard', to: 's1.2' }, { label: 'From S6.1 Control Tower', to: 's6.1' }, { label: 'From S7.1 Impact Dashboard', to: 's7.1' }],
+    sources: [{ label: 'From Portfolio Dashboard', to: 's1.2' }, { label: 'From Control Tower', to: 's6.1' }, { label: 'From Impact Dashboard', to: 's7.1' }],
     actions: [
       'Open a recovery plan for the Dhanora conversion workstream.',
       'Re-sequence retailer meetings, starting with the 18 high-influence retailers.',
       'Keep the Wadi Gaon and Ambad HQ follow-up cadence unchanged.',
     ],
-    primary: { label: 'Open Recovery & Replanning → S1.5', to: 's1.5' },
-    secondary: { label: 'View Diagnostics → S7.2', to: 's7.2' },
+    primary: { label: 'Open Recovery & Replanning', to: 's1.5' },
+    secondary: { label: 'View Diagnostics', to: 's7.2' },
   },
   priorities: {
     question: 'What should I prioritize this week?',
     title: 'AI Analysis: Weekly Priorities — Ambad / Jalna',
-    summary: 'Four actions carry the most adoption risk this week. Onion bulb initiation is ~6–9 days away (S3.1), so stock validation and the delayed demo plots in Dhanora should be resolved first, followed by trial-user follow-up and retailer briefings.',
+    summary: 'Four actions carry the most adoption risk this week. Onion bulb initiation is ~6–9 days away, so stock validation and the delayed demo plots in Dhanora should be resolved first, followed by trial-user follow-up and retailer briefings.',
     table: {
       columns: ['#', 'Priority Action', 'Owner', 'Due'],
       rows: [
@@ -136,19 +136,19 @@ const ANSWERS: Record<AnswerId, Answer> = {
     },
     factors: ['Bulb-initiation window opens ~Feb 21 (illustrative).', 'Demonstration plot activity is ~7 days behind plan.'],
     confidence: { level: 'High', text: 'Priorities follow recorded plan delays and the crop-stage calendar; impact estimates are illustrative.' },
-    sources: [{ label: 'From S3.1 Crop Calendar', to: 's3.1' }, { label: 'From S6.2 Activity Execution', to: 's6.2' }, { label: 'From S5.2 Stock Readiness', to: 's5.2' }],
+    sources: [{ label: 'From Crop Calendar', to: 's3.1' }, { label: 'From Activity Execution', to: 's6.2' }, { label: 'From Stock Readiness', to: 's5.2' }],
     actions: [
       'Confirm stock receipt with the channel manager by Monday.',
       'Reschedule demonstration plot activity with R. Jadhav.',
       'Assign trial-user follow-up (~49 farmers) to the field team.',
     ],
-    primary: { label: 'Create Corrective Action → S6.2', to: 's6.2' },
-    secondary: { label: 'Open Control Tower → S6.1', to: 's6.1' },
+    primary: { label: 'Create Corrective Action', to: 's6.2' },
+    secondary: { label: 'Open Control Tower', to: 's6.1' },
   },
   jalna: {
     question: 'Create an onion nutrition awareness campaign for Jalna',
     title: 'AI Draft: Onion Nutrition Awareness Campaign — Jalna',
-    summary: 'Draft outline aligned to the bulb-initiation window (21 Feb – 4 Mar 2027). It targets conventional NPK onion farmers in Ambad/Jalna through farmer meetings, demo plots and retailer-led education. Product content stays subject to agronomy approval (S3.3); nothing is published automatically.',
+    summary: 'Draft outline aligned to the bulb-initiation window (21 Feb – 4 Mar 2027). It targets conventional NPK onion farmers in Ambad/Jalna through farmer meetings, demo plots and retailer-led education. Product content stays subject to agronomy approval; nothing is published automatically.',
     table: {
       columns: ['Element', 'Draft Recommendation'],
       rows: [
@@ -171,15 +171,15 @@ const ANSWERS: Record<AnswerId, Answer> = {
       ],
     },
     factors: ['Market opportunity of ~₹52 Lakh in Ambad (illustrative).', '43 MT supply gap should be closed before activation.'],
-    confidence: { level: 'Medium', text: 'Audience and window are well supported; channel mix is a starting point and should be tested in the S4.4 Scenario Simulator.' },
-    sources: [{ label: 'From S3.4 Trigger Engine', to: 's3.4' }, { label: 'From S2.5 Prioritization', to: 's2.5' }, { label: 'From S5.2 Stock Readiness', to: 's5.2' }],
+    confidence: { level: 'Medium', text: 'Audience and window are well supported; channel mix is a starting point and should be tested in the Scenario Simulator.' },
+    sources: [{ label: 'From Trigger Engine', to: 's3.4' }, { label: 'From Prioritization', to: 's2.5' }, { label: 'From Stock Readiness', to: 's5.2' }],
     actions: [
       'Review the draft in the Campaign Creation Wizard.',
       'Confirm advisory content with agronomy before launch.',
       'Check stock coverage against 209 MT projected demand.',
     ],
-    primary: { label: 'Open Campaign Wizard → S4.2', to: 's4.2' },
-    secondary: { label: 'Simulate Scenario → S4.4', to: 's4.4' },
+    primary: { label: 'Open Campaign Wizard', to: 's4.2' },
+    secondary: { label: 'Simulate Scenario', to: 's4.4' },
   },
   strongest: {
     question: 'Which activities delivered the strongest conversion?',
@@ -209,14 +209,14 @@ const ANSWERS: Record<AnswerId, Answer> = {
     },
     factors: ['Demo plots concentrated in Wadi Gaon and Ambad HQ.', 'Digital advisory lacked follow-up field visits.'],
     confidence: { level: 'Medium', text: 'Single-touch attribution; farmers often see multiple activities, so effects overlap.' },
-    sources: [{ label: 'From S7.1 Impact Dashboard', to: 's7.1' }, { label: 'From S7.2 Diagnostics', to: 's7.2' }, { label: 'From S4.3 Activity Mix', to: 's4.3' }],
+    sources: [{ label: 'From Impact Dashboard', to: 's7.1' }, { label: 'From Diagnostics', to: 's7.2' }, { label: 'From Activity Mix', to: 's4.3' }],
     actions: [
       'Shift part of the digital budget to demo plots in Dhanora.',
       'Pair digital advisory with retailer follow-up.',
       'Capture multi-touch data for the next review.',
     ],
-    primary: { label: 'View Diagnostics → S7.2', to: 's7.2' },
-    secondary: { label: 'Adjust Activity Mix → S4.3', to: 's4.3' },
+    primary: { label: 'View Diagnostics', to: 's7.2' },
+    secondary: { label: 'Adjust Activity Mix', to: 's4.3' },
   },
   supply: {
     question: 'What is the Croptek supply gap in Ambad?',
@@ -243,15 +243,15 @@ const ANSWERS: Record<AnswerId, Answer> = {
       ],
     },
     factors: ['Stock receipt pending in Dhanora.', 'Replenishment lead time not yet confirmed.'],
-    confidence: { level: 'High', text: 'Demand and stock positions come from S5.1/S5.2; the timing of replenishment remains uncertain.' },
-    sources: [{ label: 'From S5.1 Demand Projection', to: 's5.1' }, { label: 'From S5.2 Stock Readiness', to: 's5.2' }, { label: 'From S5.4 Replenishment', to: 's5.4' }],
+    confidence: { level: 'High', text: 'Demand and stock positions come from Campaign Demand Projection/Stock Readiness & Supply Gap Intelligence; the timing of replenishment remains uncertain.' },
+    sources: [{ label: 'From Demand Projection', to: 's5.1' }, { label: 'From Stock Readiness', to: 's5.2' }, { label: 'From Replenishment', to: 's5.4' }],
     actions: [
       'Raise a replenishment request for 43 MT.',
       'Prioritize allocation to Dhanora retailers.',
       'Confirm dispatch dates before bulb initiation.',
     ],
-    primary: { label: 'Plan Replenishment → S5.4', to: 's5.4' },
-    secondary: { label: 'Stock Readiness → S5.2', to: 's5.2' },
+    primary: { label: 'Plan Replenishment', to: 's5.4' },
+    secondary: { label: 'Stock Readiness', to: 's5.2' },
   },
   retailer: {
     question: 'How ready are retailers for the Croptek campaign?',
@@ -278,14 +278,14 @@ const ANSWERS: Record<AnswerId, Answer> = {
     },
     factors: ['POS material not yet delivered to 11 retailers.', 'Stock receipt pending at Dhanora retailers.'],
     confidence: { level: 'Medium', text: 'Readiness is self-reported in field visits; stock positions are verified only for high-influence retailers.' },
-    sources: [{ label: 'From S5.3 Dealer Readiness', to: 's5.3' }, { label: 'From S2.4 Channel Intelligence', to: 's2.4' }, { label: 'From S5.2 Stock Readiness', to: 's5.2' }],
+    sources: [{ label: 'From Dealer Readiness', to: 's5.3' }, { label: 'From Channel Intelligence', to: 's2.4' }, { label: 'From Stock Readiness', to: 's5.2' }],
     actions: [
       'Dispatch POS kits to the 11 pending retailers.',
       'Confirm stock with Dhanora retailers.',
       'Schedule briefings for the 4 unready high-influence retailers.',
     ],
-    primary: { label: 'Open Dealer Readiness → S5.3', to: 's5.3' },
-    secondary: { label: 'Create Corrective Action → S6.2', to: 's6.2' },
+    primary: { label: 'Open Dealer Readiness', to: 's5.3' },
+    secondary: { label: 'Create Corrective Action', to: 's6.2' },
   },
   fallback: {
     question: '',
@@ -294,11 +294,11 @@ const ANSWERS: Record<AnswerId, Answer> = {
     table: {
       columns: ['Topic', 'Best Screen', 'Current Signal'],
       rows: [
-        ['Campaign health', 'S1.1 Command Centre', status('In progress', 'green')],
-        ['Crop timing', 'S3.1 Crop Nutrition Calendar', status('Bulb initiation in 6–9 days', 'amber')],
-        ['Demand & stock', 'S5.2 Stock Readiness', status('43 MT gap', 'red')],
-        ['Execution', 'S6.1 Control Tower', status('Demo plots delayed', 'amber')],
-        ['Impact', 'S7.1 Impact Dashboard', status('532 adopters', 'green')],
+        ['Campaign health', 'Command Centre', status('In progress', 'green')],
+        ['Crop timing', 'Crop Nutrition Calendar', status('Bulb initiation in 6–9 days', 'amber')],
+        ['Demand & stock', 'Stock Readiness', status('43 MT gap', 'red')],
+        ['Execution', 'Control Tower', status('Demo plots delayed', 'amber')],
+        ['Impact', 'Impact Dashboard', status('532 adopters', 'green')],
       ],
     },
     chart: {
@@ -309,10 +309,10 @@ const ANSWERS: Record<AnswerId, Answer> = {
     },
     factors: ['No prepared analysis matched the question keywords.'],
     confidence: { level: 'Low', text: 'Response is a navigation suggestion only, not an analysis.' },
-    sources: [{ label: 'S1.1 Command Centre', to: 's1.1' }, { label: 'S5.2 Stock Readiness', to: 's5.2' }, { label: 'S7.1 Impact Dashboard', to: 's7.1' }],
+    sources: [{ label: 'Command Centre', to: 's1.1' }, { label: 'Stock Readiness', to: 's5.2' }, { label: 'Impact Dashboard', to: 's7.1' }],
     actions: ['Rephrase the question using a campaign, cluster or activity name.', 'Open the most relevant screen from the evidence sources above.'],
-    primary: { label: 'Open Command Centre → S1.1', to: 's1.1' },
-    secondary: { label: 'View Diagnostics → S7.2', to: 's7.2' },
+    primary: { label: 'Open Command Centre', to: 's1.1' },
+    secondary: { label: 'View Diagnostics', to: 's7.2' },
   },
 };
 
@@ -457,9 +457,9 @@ export function CopilotWorkspace() {
 
   return (
     <div className="stack">
-      <Breadcrumbs items={[{ label: 'Strategy Command Centre', to: 's1.1' }, { label: 'AI Copilot' }, { label: 'AI.1 — Intelligent Copilot Workspace' }]} />
+      <Breadcrumbs items={[{ label: 'Strategy Command Centre', to: 's1.1' }, { label: 'AI Copilot' }, { label: 'Intelligent Copilot Workspace' }]} />
       <PageHeader
-        title="AI.1 — Intelligent Copilot Workspace"
+        title="Intelligent Copilot Workspace"
         badge={<Pill tone="amber">Product-detailer Version 1</Pill>}
         subtitle="AI-powered campaign decision workspace for product-detailers to diagnose, prioritize, and take action with evidence from across CampaignIQ."
         actions={llmMode
@@ -513,7 +513,7 @@ export function CopilotWorkspace() {
               <h3>{thinking ? 'Analysing evidence across CampaignIQ…' : answer.title}</h3>
             </div>
             {thinking ? (
-              <p className="ai1-thinking">Reading S5.2, S6.2 and S7.1 signals for Croptek Onion Conversion — Ambad, Jalna…</p>
+              <p className="ai1-thinking">Reading Stock Readiness & Supply Gap Intelligence, and signals for Croptek Onion Conversion — Ambad, Jalna…</p>
             ) : (
               <>
                 <p className="ai1-summary">{answer.summary}</p>
@@ -661,7 +661,7 @@ export function CopilotWorkspace() {
 
       <div className="ai1-footer">
         <Layers size={16} color={COLORS.dark} />
-        <span>Current: <strong>AI.1 Intelligent Copilot Workspace</strong></span>
+        <span>Current: <strong>Intelligent Copilot Workspace</strong></span>
         <span className="sep" />
         <span className="muted">Recommended actions:</span>
         <Btn small variant="outline" to={answer.primary.to} icon={<Zap size={12} />}>{answer.primary.label}</Btn>

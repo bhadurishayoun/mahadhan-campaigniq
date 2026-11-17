@@ -96,14 +96,14 @@ const FEATURES: { module: string; screens: string; to: ScreenId; what: string; b
     what: 'Upload CSV/JSON to replace demo data on any screen; geography & product masters; LLM status.', backend: '/datasets · /reference' },
   { module: 'AI Co-pilot', screens: 'AI.1', to: 'ai.1', icon: <Bot size={16} />, status: 'live',
     what: 'Grounded Q&A over CampaignIQ data. Pluggable LLM (OpenAI / Azure / local); demo answers until a key is set.', backend: 'POST /copilot/ask · GET /copilot/status' },
-  { module: 'Strategy Command Centre', screens: 'S1.1–S1.5', to: 's1.1', icon: <Gauge size={16} />, status: 'ready',
+  { module: 'Strategy Command Centre', screens: 'related screens', to: 's1.1', icon: <Gauge size={16} />, status: 'ready',
     what: 'National portfolio, campaign scorecard, strategic risk root-cause and recovery replanning.', backend: '/dashboard · /risks · /reports/weekly|monthly · /plans/{id}/replan' },
-  { module: 'Opportunity Atlas', screens: 'S2.1–S2.5', to: 's2.1', icon: <MapPin size={16} />, status: 'ready',
+  { module: 'Opportunity Atlas', screens: 'related screens', to: 's2.1', icon: <MapPin size={16} />, status: 'ready',
     what: 'Crop × geography opportunity, district/taluka intelligence, micro-market segments, competition, recommendations.', backend: '/market/mus · /segments/summary · PATCH /mus/{id}/segment-override' },
-  { module: 'Crop Nutrition Intelligence', screens: 'S3.1–S3.4', to: 's3.1', icon: <Sprout size={16} />, status: 'ready',
+  { module: 'Crop Nutrition Intelligence', screens: 'related screens', to: 's3.1', icon: <Sprout size={16} />, status: 'ready',
     what: 'Crop-stage calendar, stage-wise nutrition, programme builder and campaign trigger engine.', backend: 'Crop stages & dose schedule in DB; trigger rules engine proposed' },
-  { module: 'Campaign Strategy Studio', screens: 'S4.1–S4.5', to: 's4.1', icon: <Layers size={16} />, status: 'ready',
-    what: 'Templates, creation wizard, activity & channel mix, scenario simulator, approval routing.', backend: 'Same engine & workflow as P.2 (/plans/*, /activities, /playbooks)' },
+  { module: 'Campaign Strategy Studio', screens: 'related screens', to: 's4.1', icon: <Layers size={16} />, status: 'ready',
+    what: 'Templates, creation wizard, activity & channel mix, scenario simulator, approval routing.', backend: 'Same engine & workflow as Live Campaign Planning Engine (/plans/*, /activities, /playbooks)' },
   { module: 'Demand & Channel Readiness', screens: 'S5.1–S5.4', to: 's5.1', icon: <Truck size={16} />, status: 'ready',
     what: 'Demand projection, stock readiness, dealer/retailer readiness, supply risk & replenishment.', backend: '/plans/{id}/stock-needs · POST /import/sales; ERP feed proposed' },
   { module: 'Orchestration & Control Tower', screens: 'S6.1–S6.2', to: 's6.1', icon: <CalendarDays size={16} />, status: 'ready',
@@ -473,7 +473,7 @@ export function LivePlanner() {
         subtitle="Every number on this screen is computed by the Python backend from the database. Change the market or target and watch the engine, guardrails and workflow respond."
         badge={<Pill tone="green"><span className="proto-live-dot" />Live backend</Pill>}
         back="p.1"
-        actions={<Btn icon={<Layers size={14} />} to="s4.3">See designed planner (S4.3)</Btn>}
+        actions={<Btn icon={<Layers size={14} />} to="s4.3">See designed planner</Btn>}
       />
 
       <Grid cols="320px 1fr">
@@ -606,7 +606,7 @@ export function LivePlanner() {
                         <dt>Crop stage</dt><dd>{stock.stage}: {stock.stage_window.from} → {stock.stage_window.to}</dd>
                         <dt>Stock at dealers by</dt><dd><strong>{stock.stock_needed_by}</strong> ({stock.lead_time_days}-day lead time)</dd>
                       </dl>
-                      <Btn small variant="ghost" to="s5.2" icon={<ArrowRight size={12} />}>Readiness view (S5.2)</Btn>
+                      <Btn small variant="ghost" to="s5.2" icon={<ArrowRight size={12} />}>Readiness view</Btn>
                     </Panel>
                   )}
                   {events && (
@@ -703,7 +703,7 @@ export function LiveOperations() {
         back="p.2"
         actions={<>
           <Btn icon={<RefreshCw size={14} />} onClick={reloadAll}>Refresh all</Btn>
-          <Btn icon={<LineChart size={14} />} to="s7.1">Designed impact view (S7.1)</Btn>
+          <Btn icon={<LineChart size={14} />} to="s7.1">Designed impact view</Btn>
         </>}
       />
       {perf.error && <div className="danger-box small">Backend unreachable: {perf.error}{backendHint}</div>}

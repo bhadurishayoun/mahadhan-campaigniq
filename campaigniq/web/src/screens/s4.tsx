@@ -70,8 +70,8 @@ let studio: StudioState = {
   scenario: 'base',
   status: 'Draft for Approval',
   audit: [
-    { when: '15 Dec 2026, 11:24 AM', user: 'Strategy Head', action: 'Scenario selected from S4.4 (Base Case, ROI 0.71×)' },
-    { when: '15 Dec 2026, 10:41 AM', user: 'Strategy Head', action: 'Budget revised in S4.3 (₹8.0 Lakh; activity mix finalized)' },
+    { when: '15 Dec 2026, 11:24 AM', user: 'Strategy Head', action: 'Scenario selected from Campaign Scenario Simulator (Base Case, ROI 0.71×)' },
+    { when: '15 Dec 2026, 10:41 AM', user: 'Strategy Head', action: 'Budget revised in Activity & Channel Mix Planner (₹8.0 Lakh; activity mix finalized)' },
     { when: '14 Dec 2026, 04:32 PM', user: 'Field Manager', action: 'Risk note added: moderate weather risk (Feb–Mar)' },
     { when: '14 Dec 2026, 03:10 PM', user: 'Strategy Head', action: 'Ready for approval draft created (CAMP-R26-AMB-014)' },
   ],
@@ -146,7 +146,7 @@ function useStepNav(current: number) {
   return (index: number) => {
     if (index === current) return;
     const target: ScreenId | null = index <= 2 ? 's4.2' : index === 3 ? 's4.3' : index === 4 ? 's4.4' : 's4.5';
-    if (index === 1 || index === 2) toast(`${WIZARD_STEPS[index]} is pre-filled from S2.5 / S3.3 recommendations`);
+    if (index === 1 || index === 2) toast(`${WIZARD_STEPS[index]} is pre-filled from Campaign Recommendations / recommendations`);
     if (target) go(target);
   };
 }
@@ -175,10 +175,10 @@ interface Template {
 }
 
 const TEMPLATES: Template[] = [
-  { id: 'crop-stage', title: 'Crop-Stage Awareness', desc: 'Engage farmers approaching priority crop nutrition windows with approved guidance.', tag: '★ Recommended from S3.4', tagTone: 'green', audience: 'Conventional NPK onion farmers', channels: 'Farmer education · Retailer meetings · Advisory', foot: 'Agronomy sign-off required', footTone: 'amber', icon: <Clock size={16} />, recommended: true, geo: 'Onion · Ambad / Jalna', cohort: 'Conventional NPK farmers', window: '21 Feb – 4 Mar 2027', programme: 'Croptek Onion · Draft', note: 'Agronomy and advisory-content approvals pending. Create as draft; publish only after checks.' },
-  { id: 'retailer', title: 'Retailer-Led Conversion', desc: 'Build adoption through influential retailers and locally relevant value propositions.', tag: 'Conversion', tagTone: 'blue', audience: 'Conventional product users', channels: 'Retailer activation · Farmer meetings · Demos', foot: 'Channel-led', footTone: 'blue', icon: <Store size={16} />, recommended: true, geo: 'Onion · Ambad / Jalna', cohort: '1,832 conventional NPK users', window: '15 Dec 2026 – 15 Mar 2027', programme: 'Croptek Onion · Approved', note: 'Recommended in S2.5 for Ambad; 18 high-influence retailers identified in S2.4.' },
+  { id: 'crop-stage', title: 'Crop-Stage Awareness', desc: 'Engage farmers approaching priority crop nutrition windows with approved guidance.', tag: '★ Recommended', tagTone: 'green', audience: 'Conventional NPK onion farmers', channels: 'Farmer education · Retailer meetings · Advisory', foot: 'Agronomy sign-off required', footTone: 'amber', icon: <Clock size={16} />, recommended: true, geo: 'Onion · Ambad / Jalna', cohort: 'Conventional NPK farmers', window: '21 Feb – 4 Mar 2027', programme: 'Croptek Onion · Draft', note: 'Agronomy and advisory-content approvals pending. Create as draft; publish only after checks.' },
+  { id: 'retailer', title: 'Retailer-Led Conversion', desc: 'Build adoption through influential retailers and locally relevant value propositions.', tag: 'Conversion', tagTone: 'blue', audience: 'Conventional product users', channels: 'Retailer activation · Farmer meetings · Demos', foot: 'Channel-led', footTone: 'blue', icon: <Store size={16} />, recommended: true, geo: 'Onion · Ambad / Jalna', cohort: '1,832 conventional NPK users', window: '15 Dec 2026 – 15 Mar 2027', programme: 'Croptek Onion · Approved', note: 'Recommended in for Ambad; 18 high-influence retailers identified.' },
   { id: 'repeat', title: 'Trial-to-Repeat Adoption', desc: 'Help previously engaged farmers progress from initial trial to repeat adoption.', tag: 'Retention', tagTone: 'purple', audience: 'Existing trial farmers', channels: 'Field follow-ups · Consented advisory', foot: 'Lifecycle-led', footTone: 'purple', icon: <RefreshCw size={16} />, recommended: true, geo: 'Onion · Pimpalgaon', cohort: 'Trial farmers (Kharif 2026)', window: '1 Jan – 31 Mar 2027', programme: 'Croptek Onion · Planned', note: 'Requires consented contact list; follow-up cadence of 2–3 visits per farmer.' },
-  { id: 'champion', title: 'Retailer Champion Activation', desc: 'Equip high-influence retailers with stock, PoS and incentive to champion the product.', tag: 'Channel', tagTone: 'blue', audience: 'High-influence retailers', channels: 'Retailer training · PoS · Incentive', foot: 'Channel-led', footTone: 'blue', icon: <Megaphone size={16} />, geo: 'Onion · Jalna', cohort: '18 high-influence retailers', window: '1 Dec 2026 – 31 Jan 2027', programme: 'Retailer programme · Draft', note: 'Stock readiness to be confirmed in S5.3 before launch.' },
+  { id: 'champion', title: 'Retailer Champion Activation', desc: 'Equip high-influence retailers with stock, PoS and incentive to champion the product.', tag: 'Channel', tagTone: 'blue', audience: 'High-influence retailers', channels: 'Retailer training · PoS · Incentive', foot: 'Channel-led', footTone: 'blue', icon: <Megaphone size={16} />, geo: 'Onion · Jalna', cohort: '18 high-influence retailers', window: '1 Dec 2026 – 31 Jan 2027', programme: 'Retailer programme · Draft', note: 'Stock readiness to be confirmed in before launch.' },
   { id: 'advisory', title: 'Stage-wise Digital Advisory', desc: 'Deliver crop-stage nutrition advisories over WhatsApp, SMS and IVR to consented farmers.', tag: 'Awareness', tagTone: 'lime', audience: 'Consented farmers', channels: 'WhatsApp · SMS · IVR', foot: 'Digital-led', footTone: 'lime', icon: <Smartphone size={16} />, geo: 'Onion · Ambad / Jalna', cohort: '~3,000 consented farmers', window: 'Nov 2026 – Mar 2027', programme: 'Advisory calendar · Draft', note: 'Advisory content needs agronomy sign-off before each burst.' },
 ];
 const SAVED_TEMPLATES = ['crop-stage', 'retailer'];
@@ -209,7 +209,7 @@ export function TemplateLibrary() {
 
   return (
     <div className="stack">
-      <Breadcrumbs items={[{ label: 'Campaign Strategy Studio', to: 's4.1' }, { label: 'S4.1 Campaign Portfolio & Template Library' }]} />
+      <Breadcrumbs items={[{ label: 'Campaign Strategy Studio', to: 's4.1' }, { label: 'Campaign Portfolio & Template Library' }]} />
       <PageHeader
         title="Campaign Portfolio & Template Library"
         subtitle="Manage campaigns, resume drafts and start new crop nutrition campaigns using recommended templates."
@@ -218,7 +218,7 @@ export function TemplateLibrary() {
           <Btn variant="primary" icon={<Plus size={14} />} to="s4.2">Create New Campaign</Btn>
         </>}
       />
-      <SourceBar right="S3.4 recommendations can also open S4.2 directly · Illustrative workspace">✓ Source: Campaign Strategy Studio → Campaign Portfolio &amp; Templates</SourceBar>
+      <SourceBar right="recommendations can also open directly · Illustrative workspace">✓ Source: Campaign Strategy Studio → Campaign Portfolio &amp; Templates</SourceBar>
       <KpiRow className="s4-kpi-big">
         <Kpi icon={<LayoutList size={18} />} label="Campaigns in Portfolio" value="04" sub="Across selected crop, region and season" />
         <Kpi icon={<CheckCircle2 size={18} />} label="Approved Campaign" value="01" sub="Croptek Onion Conversion — Ambad" />
@@ -257,7 +257,7 @@ export function TemplateLibrary() {
           <div className="stack">
             <div className="highlight-box">
               <strong>{sel.title}</strong>
-              <div className="small muted">{sel.recommended ? 'AI-recommended from S3.4 Campaign Trigger Engine' : 'From template library'}</div>
+              <div className="small muted">{sel.recommended ? 'AI-recommended from Campaign Trigger Engine' : 'From template library'}</div>
             </div>
             <dl className="kv">
               <dt>Crop / Geography</dt><dd>{sel.geo}</dd>
@@ -266,7 +266,7 @@ export function TemplateLibrary() {
               <dt>Current Programme</dt><dd>{sel.programme}</dd>
             </dl>
             <div className="warn-box small">◷ {sel.note}</div>
-            <Btn variant="primary" to="s4.2" onClick={() => toast(`Creating campaign from "${sel.title}"`)}>Create Campaign from Template → S4.2</Btn>
+            <Btn variant="primary" to="s4.2" onClick={() => toast(`Creating campaign from "${sel.title}"`)}>Create Campaign from Template</Btn>
           </div>
         </Panel>
       </Grid>
@@ -298,11 +298,11 @@ export function TemplateLibrary() {
         />
         {rows.length === 0 && <Note>No campaigns match the current search / filter.</Note>}
       </Panel>
-      <Note>* Illustrative records and dates; approval controls remain in S4.5.</Note>
+      <Note>* Illustrative records and dates; approval controls remain.</Note>
       <FlowFooter
         label="Navigation:"
-        steps={[{ label: 'Campaign Strategy Studio' }, { label: 'S4.1 Portfolio & Templates (Current)', current: true }, { label: 'S4.2 Campaign Creation Wizard', to: 's4.2' }]}
-        next={{ label: 'Create Campaign → S4.2', to: 's4.2' }}
+        steps={[{ label: 'Campaign Strategy Studio' }, { label: 'Portfolio & Templates (Current)', current: true }, { label: 'Campaign Creation Wizard', to: 's4.2' }]}
+        next={{ label: 'Create Campaign', to: 's4.2' }}
       />
     </div>
   );
@@ -343,10 +343,10 @@ export function CreationWizard() {
 
   return (
     <div className="stack">
-      <Breadcrumbs items={[{ label: 'S2.5 Campaign Recommendations', to: 's2.5' }, { label: 'S4.2 Campaign Creation Wizard' }]} />
+      <Breadcrumbs items={[{ label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard' }]} />
       <PageHeader back="s2.5" title="Campaign Creation Wizard" subtitle="Configure a targeted campaign based on recommended strategy for Croptek (Onion) in Ambad, Jalna" />
       <SourceBar>
-        <strong>Source Click:</strong> S2.5 Opportunity Prioritization &amp; Campaign Recommendations → Create Campaign
+        <strong>Source Click:</strong> Opportunity Prioritization &amp; Campaign Recommendations → Create Campaign
       </SourceBar>
       <Stepper steps={WIZARD_STEPS} active={0} onSelect={stepNav} />
       <Grid cols="2.6fr 1fr">
@@ -403,7 +403,7 @@ export function CreationWizard() {
             </Grid>
           </Panel>
           <Grid cols="1.1fr 1fr">
-            <Panel title={<>Target Audience <span className="muted small">(Pre-filled from S2.5)</span></>} icon={<Users size={16} />}>
+            <Panel title={<>Target Audience <span className="muted small">(Pre-filled)</span></>} icon={<Users size={16} />}>
               <div className="s4-cohort s4-cohort-head"><span /><span /><span>No. of Farmers</span><span>Estimated Acreage</span></div>
               <label className="s4-cohort">
                 <input type="checkbox" checked={primary} onChange={(e) => setPrimary(e.target.checked)} />
@@ -419,7 +419,7 @@ export function CreationWizard() {
                 <span /><strong>Selected target audience</strong><strong>{inr(farmers)}</strong><strong>{inr(acres)} Acres</strong>
               </div>
             </Panel>
-            <Panel title={<>Key Adoption Barriers <span className="muted small">(from S2.4)</span></>} icon={<AlertTriangle size={16} />}>
+            <Panel title={<>Key Adoption Barriers <span className="muted small">(from Ambad Competition & Channel Intelligence)</span></>} icon={<AlertTriangle size={16} />}>
               <HBars rows={BARRIERS} max={45} valueSuffix="%" />
             </Panel>
           </Grid>
@@ -456,8 +456,8 @@ export function CreationWizard() {
         <Btn variant="primary" disabled={!segmentsOk || !durationOk} onClick={() => go('s4.3')}>Configure Activity Mix →</Btn>
       </div>
       <FlowFooter
-        steps={[{ label: 'S2.5 Campaign Recommendations', to: 's2.5' }, { label: 'S4.2 Campaign Creation Wizard (Current)', current: true }]}
-        next={{ label: 'S4.3 Activity & Channel Mix Planner', to: 's4.3' }}
+        steps={[{ label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard (Current)', current: true }]}
+        next={{ label: 'Activity & Channel Mix Planner', to: 's4.3' }}
       />
     </div>
   );
@@ -513,7 +513,7 @@ export function ActivityMixPlanner() {
   const canApply = !s.optimizerApplied && s.counts.cont >= 1;
   const applySuggestion = () => {
     setStudio((st) => ({ counts: { ...st.counts, cont: st.counts.cont - 1, demo: st.counts.demo + 2 }, optimizerApplied: true, sens: null }));
-    addAudit('AI mix optimizer applied in S4.3: ₹0.40 L contingency → 2 demo plots');
+    addAudit('AI mix optimizer applied in ₹0.40 L contingency → 2 demo plots');
     toast('Reallocated ₹0.40 L from Contingency to 2 additional demo plots');
   };
   const eff = plan.rows.filter((r) => r.def.key !== 'cont');
@@ -521,9 +521,9 @@ export function ActivityMixPlanner() {
 
   return (
     <div className="stack">
-      <Breadcrumbs items={[{ label: 'S2.5 Campaign Recommendations', to: 's2.5' }, { label: 'S4.2 Campaign Creation Wizard', to: 's4.2' }, { label: 'S4.3 Activity & Channel Mix Planner' }]} />
+      <Breadcrumbs items={[{ label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard', to: 's4.2' }, { label: 'Activity & Channel Mix Planner' }]} />
       <PageHeader back="s4.2" title="Activity & Channel Mix Planner" subtitle="Design and optimize the intervention mix, budget and execution plan for Croptek (Onion) adoption in Ambad, Jalna" />
-      <SourceBar><strong>Source Click:</strong> S4.2 Campaign Creation Wizard → Configure Activity Mix</SourceBar>
+      <SourceBar><strong>Source Click:</strong> Campaign Creation Wizard → Configure Activity Mix</SourceBar>
       <Stepper steps={WIZARD_STEPS} active={3} onSelect={stepNav} />
       <ContextStrip items={[
         { icon: <Target size={20} />, label: 'Campaign', value: 'Croptek Onion Conversion – Ambad' },
@@ -639,8 +639,8 @@ export function ActivityMixPlanner() {
         <Btn variant="primary" to="s4.4">Simulate Campaign Outcomes →</Btn>
       </div>
       <FlowFooter
-        steps={[{ label: 'S2.5 Campaign Recommendations', to: 's2.5' }, { label: 'S4.2 Campaign Creation Wizard', to: 's4.2' }, { label: 'S4.3 Activity & Channel Mix Planner (Current)', current: true }]}
-        next={{ label: 'Simulate Campaign Outcomes', to: 's4.4', sub: 'S4.4 Campaign Scenario Simulator' }}
+        steps={[{ label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard', to: 's4.2' }, { label: 'Activity & Channel Mix Planner (Current)', current: true }]}
+        next={{ label: 'Simulate Campaign Outcomes', to: 's4.4', sub: 'Campaign Scenario Simulator' }}
       />
     </div>
   );
@@ -689,11 +689,11 @@ export function ScenarioSimulator() {
   return (
     <div className="stack">
       <Breadcrumbs items={[
-        { label: 'S2.5 Campaign Recommendations', to: 's2.5' }, { label: 'S4.2 Campaign Creation Wizard', to: 's4.2' },
-        { label: 'S4.3 Activity & Channel Mix Planner', to: 's4.3' }, { label: 'S4.4 Campaign Scenario Simulator' },
+        { label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard', to: 's4.2' },
+        { label: 'Activity & Channel Mix Planner', to: 's4.3' }, { label: 'Campaign Scenario Simulator' },
       ]} />
       <PageHeader back="s4.3" title="Campaign Scenario Simulator" subtitle="Simulate and compare campaign outcomes by adjusting assumptions and activity mix for Croptek (Onion) in Ambad, Jalna" />
-      <SourceBar><strong>Source Click:</strong> S4.3 Activity &amp; Channel Mix Planner → Simulate Campaign Outcomes</SourceBar>
+      <SourceBar><strong>Source Click:</strong> Activity &amp; Channel Mix Planner → Simulate Campaign Outcomes</SourceBar>
       <ContextStrip items={[
         { icon: <Target size={20} />, label: 'Campaign', value: 'Croptek Onion Conversion – Ambad' },
         { icon: <MapPin size={20} />, label: 'Geography', value: 'Ambad, Jalna', sub: 'Maharashtra' },
@@ -806,14 +806,14 @@ export function ScenarioSimulator() {
         </div>
       </Grid>
       <div className="s4-actionbar">
-        <Btn variant="primary" to="s4.5" onClick={() => addAudit(`Scenario selected from S4.4 (${SCENARIO_LABEL[s.scenario]}, ROI ${sel.roi.toFixed(2)}×)`)}>Proceed to Approval →</Btn>
+        <Btn variant="primary" to="s4.5" onClick={() => addAudit(`Scenario selected from Campaign Scenario Simulator (${SCENARIO_LABEL[s.scenario]}, ROI ${sel.roi.toFixed(2)}×)`)}>Proceed to Approval →</Btn>
       </div>
       <FlowFooter
         steps={[
-          { label: 'S2.5 Campaign Recommendations', to: 's2.5' }, { label: 'S4.2 Campaign Creation Wizard', to: 's4.2' },
-          { label: 'S4.3 Activity & Channel Mix Planner', to: 's4.3' }, { label: 'S4.4 Campaign Scenario Simulator (Current)', current: true },
+          { label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard', to: 's4.2' },
+          { label: 'Activity & Channel Mix Planner', to: 's4.3' }, { label: 'Campaign Scenario Simulator (Current)', current: true },
         ]}
-        next={{ label: 'Proceed to Approval', to: 's4.5', sub: 'S4.5 Campaign Approval & Review' }}
+        next={{ label: 'Proceed to Approval', to: 's4.5', sub: 'Campaign Approval & Review' }}
       />
     </div>
   );
@@ -869,12 +869,12 @@ export function ApprovalReview() {
   return (
     <div className="stack">
       <Breadcrumbs items={[
-        { label: 'S2.5 Campaign Recommendations', to: 's2.5' }, { label: 'S4.2 Campaign Creation Wizard', to: 's4.2' },
-        { label: 'S4.3 Activity & Channel Mix Planner', to: 's4.3' }, { label: 'S4.4 Campaign Scenario Simulator', to: 's4.4' },
-        { label: 'S4.5 Campaign Approval & Review' },
+        { label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard', to: 's4.2' },
+        { label: 'Activity & Channel Mix Planner', to: 's4.3' }, { label: 'Campaign Scenario Simulator', to: 's4.4' },
+        { label: 'Campaign Approval & Review' },
       ]} />
       <PageHeader back="s4.4" title="Campaign Approval & Review" subtitle="Validate the recommended Ambad Croptek campaign, review outstanding dependencies, and route the plan for authorization before deployment." />
-      <SourceBar>Opened from S4.4: Clicked 'Proceed to Approval'</SourceBar>
+      <SourceBar>Opened from Clicked 'Proceed to Approval'</SourceBar>
       <ContextStrip items={[
         { icon: <ClipboardList size={20} />, label: 'Campaign ID', value: <>CAMP-R26-AMB-014 <Pill tone={STATUS_TONE[status]}>{status}</Pill></> },
         { icon: <Users size={20} />, label: 'Target Farmers', value: '1,832' },
@@ -1038,17 +1038,17 @@ export function ApprovalReview() {
               <Btn small variant="primary" icon={<ThumbsUp size={12} />} disabled={!submitted} onClick={() => act('Approved', 'Campaign approved for deployment', 'Campaign approved', 'Regional Marketing Head')}>Approve</Btn>
               <Btn small icon={<RotateCcw size={12} />} disabled={!submitted} onClick={() => act('Sent Back', 'Rejected / sent back to campaign owner', 'Campaign sent back to owner', 'Regional Marketing Head')}>Reject / Send Back</Btn>
             </div>
-            <Note>{submitted ? 'Awaiting approver decision.' : approved ? 'Approved — proceed to S5.1 Campaign Demand Projection.' : 'Visible to approvers based on your role; enabled after submission.'}</Note>
+            <Note>{submitted ? 'Awaiting approver decision.' : approved ? 'Approved — proceed to Campaign Demand Projection.' : 'Visible to approvers based on your role; enabled after submission.'}</Note>
           </Panel>
         </div>
       </Grid>
       <FlowFooter
         steps={[
-          { label: 'S2.5 Campaign Recommendations', to: 's2.5' }, { label: 'S4.2 Campaign Creation Wizard', to: 's4.2' },
-          { label: 'S4.3 Activity & Channel Mix Planner', to: 's4.3' }, { label: 'S4.4 Campaign Scenario Simulator', to: 's4.4' },
-          { label: 'S4.5 Campaign Approval & Review (Current)', current: true },
+          { label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard', to: 's4.2' },
+          { label: 'Activity & Channel Mix Planner', to: 's4.3' }, { label: 'Campaign Scenario Simulator', to: 's4.4' },
+          { label: 'Campaign Approval & Review (Current)', current: true },
         ]}
-        next={{ label: 'S5.1 Campaign Demand Projection', to: 's5.1', sub: 'After approval, open S5.1' }}
+        next={{ label: 'Campaign Demand Projection', to: 's5.1', sub: 'After approval, open Campaign Demand Projection' }}
       />
     </div>
   );

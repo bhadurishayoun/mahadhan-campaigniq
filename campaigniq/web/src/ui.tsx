@@ -653,11 +653,11 @@ export function PageHeader({ code, title, subtitle, badge, actions, back }: {
 }) {
   const { go } = useNav();
   return (
-    <div className="page-header">
+    <div className="page-header" data-screen={code}>
       <div className="page-title-block">
         <div className="page-title-row">
           {back && <button type="button" className="back-btn" aria-label="Back" onClick={() => go(back)}><ChevronLeft size={18} /></button>}
-          {code && <span className="code-chip">{code}</span>}
+          
           <h1>{title}</h1>
           {badge}
         </div>

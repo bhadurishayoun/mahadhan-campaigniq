@@ -61,7 +61,7 @@ const TODAY_WEEK = 7.5;
 const wk = (w: number) => `${(w / WEEKS.length) * 100}%`;
 
 const INITIAL_ACTIVITIES: CalActivity[] = [
-  { id: 'retail', name: 'Retailer Activation', icon: <Store size={14} />, status: 'On Track', progress: 62, segs: [{ from: 0.2, to: 6.9, kind: 'actual' }], done: 6.9, annot: [{ at: 8.7, text: 'View Activity → S6.2 Activity Execution & Action Workspace', tone: 'link' }] },
+  { id: 'retail', name: 'Retailer Activation', icon: <Store size={14} />, status: 'On Track', progress: 62, segs: [{ from: 0.2, to: 6.9, kind: 'actual' }], done: 6.9, annot: [{ at: 8.7, text: 'View Activity Activity Execution & Action Workspace', tone: 'link' }] },
   { id: 'demo', name: 'Demonstration Plots', icon: <Sprout size={14} />, status: 'Delayed', progress: 40, segs: [{ from: 1.2, to: 4.6, kind: 'actual' }, { from: 4.6, to: 6.6, kind: 'plan' }, { from: 6.6, to: 8.6, kind: 'risk' }], annot: [{ at: 8.9, text: '▲ Delayed – Stock not yet arrived (Dhanora)', tone: 'red' }] },
   { id: 'meet', name: 'Farmer Meetings', icon: <Users size={14} />, status: 'On Track', progress: 58, segs: [{ from: 2.0, to: 6.6, kind: 'actual' }], done: 6.6 },
   { id: 'digital', name: 'Digital Advisory', icon: <Smartphone size={14} />, status: 'Ahead', progress: 78, segs: [{ from: 2.1, to: 9.4, kind: 'actual' }], done: 9.4 },
@@ -208,9 +208,9 @@ export function ControlTower() {
 
   return (
     <div className="s6-page">
-      <Breadcrumbs items={[{ label: 'S5.4 Supply Risk & Replenishment Planner', to: 's5.4' }, { label: 'S6.1 Unified Campaign Execution Control Tower' }]} />
+      <Breadcrumbs items={[{ label: 'Supply Risk & Replenishment Planner', to: 's5.4' }, { label: 'Unified Campaign Execution Control Tower' }]} />
       <PageHeader
-        title="S6.1 — Unified Campaign Execution Control Tower"
+        title="Unified Campaign Execution Control Tower"
         badge={VERSION_BADGE}
         subtitle="Live execution control, campaign orchestration, supply alignment and field operations for Ambad Croptek Onion Conversion"
         actions={<>
@@ -219,12 +219,12 @@ export function ControlTower() {
           <Btn variant="gold" icon={<Shuffle size={14} />} onClick={() => openReplan()}>Open Replanning</Btn>
         </>}
       />
-      <SourceBar><Link2 size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />Opened from S5.4 by clicking <b>Confirm Supply Plan &amp; Open Campaign Calendar</b></SourceBar>
+      <SourceBar><Link2 size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />Opened by clicking <b>Confirm Supply Plan &amp; Open Campaign Calendar</b></SourceBar>
 
       <div className="s6-layout">
         <div className="stack">
           <KpiRow>
-            <Kpi icon={<CalendarDays size={18} />} label="Planned Activities" value="209" sub="+8% vs. plan (S5.4: 194)" trend="up" spark={[4, 5, 5, 6, 6, 7, 8, 8, 9]} />
+            <Kpi icon={<CalendarDays size={18} />} label="Planned Activities" value="209" sub="+8% vs. plan (194)" trend="up" spark={[4, 5, 5, 6, 6, 7, 8, 8, 9]} />
             <Kpi icon={<CheckCircle2 size={18} />} label="Completed Activities" value="66" sub="32% of plan" trend="up" spark={[2, 3, 3, 4, 5, 5, 6, 7, 8]} />
             <Kpi icon={<AlertTriangle size={18} />} label="Overdue / At Risk Activities" value="27" sub="13% of plan (▲ +5 pp)" trend="down" tone="red" spark={[3, 4, 3, 5, 4, 6, 5, 7, 8]} />
             <Kpi icon={<Users size={18} />} label="Verified Farmer Reach" value="3.2 Lakh" sub="+18% vs. previous season" trend="up" spark={[3, 4, 4, 5, 6, 6, 7, 8, 9]} />
@@ -280,11 +280,11 @@ export function ControlTower() {
                 onRowClick={(r) => { setForm((f) => ({ ...f, owner: `${r.owner} (Field Owner)`, cluster: r.cluster })); toast(`${r.owner} (${r.cluster}) loaded into Replanning`); }}
               />
             </Panel>
-            <Panel icon={<Truck size={16} />} title={<>Supply Commitments &amp; Dependencies <span className="muted">(from S5.4)</span></>}>
+            <Panel icon={<Truck size={16} />} title={<>Supply Commitments &amp; Dependencies <span className="muted">(from Supply Risk & Replenishment Planner)</span></>}>
               <DataTable<SupplyRow>
                 compact
                 columns={[
-                  { key: 'action', label: 'Replenishment Action (S5.4)' },
+                  { key: 'action', label: 'Replenishment Action' },
                   { key: 'qty', label: 'Qty (MT)', align: 'right' },
                   { key: 'status', label: 'Status', render: (r) => <StatusPill s={r.status} /> },
                   { key: 'milestone', label: 'Next Milestone' },
@@ -421,10 +421,10 @@ export function ControlTower() {
 
       <FlowFooter
         steps={[
-          { label: 'Source: S5.4 Supply Risk & Replenishment Planner', to: 's5.4' },
-          { label: 'Current: S6.1 Unified Campaign Execution Control Tower', current: true },
+          { label: 'Source: Supply Risk & Replenishment Planner', to: 's5.4' },
+          { label: 'Current: Unified Campaign Execution Control Tower', current: true },
         ]}
-        next={{ label: 'S6.2 Activity Execution & Action Workspace', to: 's6.2' }}
+        next={{ label: 'Activity Execution & Action Workspace', to: 's6.2' }}
       />
     </div>
   );
@@ -570,12 +570,12 @@ export function ActivityWorkspace() {
   return (
     <div className="s6-page">
       <Breadcrumbs items={[
-        { label: 'S5.4 Supply Risk & Replenishment Planner', to: 's5.4' },
-        { label: 'S6.1 Unified Campaign Execution Control Tower', to: 's6.1' },
-        { label: 'S6.2 Activity Execution & Action Workspace' },
+        { label: 'Supply Risk & Replenishment Planner', to: 's5.4' },
+        { label: 'Unified Campaign Execution Control Tower', to: 's6.1' },
+        { label: 'Activity Execution & Action Workspace' },
       ]} />
       <PageHeader
-        title="S6.2 — Activity Execution & Action Workspace"
+        title="Activity Execution & Action Workspace"
         badge={VERSION_BADGE}
         subtitle="Execute, monitor and resolve field activities for Ambad Croptek Onion Conversion campaign"
         actions={<>
@@ -589,12 +589,12 @@ export function ActivityWorkspace() {
           <Btn variant="gold" icon={<Shuffle size={14} />} onClick={() => { setReplanOpen(true); toast('Replanning panel opened for selected activity'); }}>Open Replanning</Btn>
         </>}
       />
-      <SourceBar><Link2 size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />Opened from S6.1 by clicking <b><i>View Activity</i></b> on delayed Dhanora Demonstration Plot</SourceBar>
+      <SourceBar><Link2 size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />Opened by clicking <b><i>View Activity</i></b> on delayed Dhanora Demonstration Plot</SourceBar>
 
       <div className="s6-layout">
         <div className="stack">
           <KpiRow>
-            <Kpi icon={<CalendarDays size={18} />} label="Planned Activities" value="209" sub="+8% vs. plan (S5.4: 194)" trend="up" spark />
+            <Kpi icon={<CalendarDays size={18} />} label="Planned Activities" value="209" sub="+8% vs. plan (194)" trend="up" spark />
             <Kpi icon={<CheckCircle2 size={18} />} label="Completed Activities" value={String(count('completed'))} sub="+32% of plan" trend="up" spark={[2, 3, 3, 4, 5, 5, 6, 7, 8]} />
             <Kpi icon={<AlertTriangle size={18} />} label="Delayed Activities" value={String(count('delayed'))} sub="13% of plan (▲ +5 pp)" trend="down" tone="red" spark={[3, 4, 3, 5, 4, 6, 5, 7, 8]} />
             <Kpi icon={<Users size={18} />} label="Verified Farmer Reach" value="3.2 Lakh" sub="+18% vs. previous season" trend="up" spark />
@@ -831,8 +831,8 @@ export function ActivityWorkspace() {
 
       <FlowFooter
         steps={[
-          { label: '‹ Return to S6.1 Unified Campaign Execution Control Tower', to: 's6.1' },
-          { label: 'Current: S6.2 Activity Execution & Action Workspace', current: true },
+          { label: '‹ Return to Unified Campaign Execution Control Tower', to: 's6.1' },
+          { label: 'Current: Activity Execution & Action Workspace', current: true },
         ]}
         nextLabel=""
         next={{ label: 'Proceed to Impact Review', to: 's7.1' }}

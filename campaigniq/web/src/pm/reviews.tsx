@@ -80,9 +80,9 @@ export function Pm2() {
       crumbs={[{ label: 'My Performance', to: 'pm.1' }, { label: 'Territory Plan Reviews' }, { label: 'Consolidated Territory Plans' }]}
       code="PM.2"
       title="Consolidated Territory Business & Crop Plans vs Portfolio ABP"
-      actions={<Act icon={<RefreshCw size={13} />} message="Source submissions refreshed from TM.3 / TM.4 (no TM plan was edited)">Import / Refresh Source Submissions</Act>}
+      actions={<Act icon={<RefreshCw size={13} />} message="Source submissions refreshed from Outlet Business Planning & Target Allocation / Village-wise Crop, Product & Coverage Planning (no TM plan was edited)">Import / Refresh Source Submissions</Act>}
     >
-      <Source>Opened from PM.1 by clicking <b>Review Consolidated Territory Plans</b>. Territory Managers prepare the plans; this screen only reviews and consolidates them.</Source>
+      <Source>Opened by clicking <b>Review Consolidated Territory Plans</b>. Territory Managers prepare the plans; this screen only reviews and consolidates them.</Source>
 
       <Strip items={[
         { label: 'Previous-year portfolio sales', value: '₹4.80 Cr' },
@@ -108,7 +108,7 @@ export function Pm2() {
             onRow={setSelected}
           />
           <p className="pm-callout">All-product territory figures (₹4.20 Cr ABP, ₹3.80 Cr submitted) are <b>not</b> summed into the ₹6.00 Cr product portfolio target. The product-specific roll-up needs validated SKU-to-portfolio mapping first.</p>
-          <Sources items={[{ label: 'TM.3 Outlet Planning', note: 'Territory Manager outlet-wise plan (source, read-only)' }, { label: 'TM.4 Crop / Product Coverage Planning', note: 'Village-wise crop coverage plan (source, read-only)' }]} />
+          <Sources items={[{ label: 'Outlet Planning', note: 'Territory Manager outlet-wise plan (source, read-only)' }, { label: 'Crop / Product Coverage Planning', note: 'Village-wise crop coverage plan (source, read-only)' }]} />
         </Box>
 
         <div className="pm-stack">
@@ -128,7 +128,7 @@ export function Pm2() {
       </div>
 
       <Actions
-        left={<Btn to="pm.1">← Back to PM.1</Btn>}
+        left={<Btn to="pm.1">← Back to My Performance & Product Portfolio ABP</Btn>}
         right={<Cta to="pm.3">Review Selected Territory Plan</Cta>}
        
       />
@@ -148,7 +148,7 @@ export function Pm2a() {
       code="PM.2A"
       title="SKU-to-Portfolio ABP Reconciliation"
     >
-      <Source>Opened from PM.2 by clicking <b>Pending SKU Mapping</b> on the Ambad, Jalna submission.</Source>
+      <Source>Opened by clicking <b>Pending SKU Mapping</b> on the Ambad, Jalna submission.</Source>
       <Strip items={[
         { label: 'PM Portfolio ABP', value: '₹6.00 Cr', tone: 'green' },
         { label: 'Validated contribution', value: <P />, tone: 'amber' },
@@ -180,15 +180,15 @@ export function Pm2a() {
             { label: 'Primary vs secondary sales basis', status: 'To Verify', note: 'Territory plan is primary (dealer) sales' },
             { label: 'Validity period', status: 'To Verify', note: 'FY 2025–26' },
             { label: 'Duplicate mapping check', status: 'Pending' },
-            { label: 'Source lineage', status: 'Unverified Input', note: 'TM.3 / TM.4 submission v1' },
+            { label: 'Source lineage', status: 'Unverified Input', note: 'Outlet Business Planning & Target Allocation / submission v1' },
           ]} />
-          <Sources items={[{ label: 'View Submitted TM Plan', note: 'TM.3 / TM.4 (read-only)' }, { label: 'Product / SKU Master' }, { label: 'ERP / DMS', note: 'Integration verification pending' }]} />
+          <Sources items={[{ label: 'View Submitted TM Plan', note: 'Outlet Business Planning & Target Allocation / Village-wise Crop, Product & Coverage Planning (read-only)' }, { label: 'Product / SKU Master' }, { label: 'ERP / DMS', note: 'Integration verification pending' }]} />
         </Box>
       </div>
 
       <Actions
-        left={<><Btn to="pm.2">← Back to PM.2</Btn><Btn to="pm.2b" icon={<MessageSquare size={13} />}>Request Mapping Correction</Btn><Cta locked="Validate Mapping is enabled when all mandatory checks pass">Validate Mapping</Cta></>}
-        right={<Cta locked="Proceed to PM.3 once valid mapping records exist (PM.3 remains reachable from PM.2)">Proceed to Territory Plan Review</Cta>}
+        left={<><Btn to="pm.2">← Back to Consolidated Territory Business & Crop Plans</Btn><Btn to="pm.2b" icon={<MessageSquare size={13} />}>Request Mapping Correction</Btn><Cta locked="Validate Mapping is enabled when all mandatory checks pass">Validate Mapping</Cta></>}
+        right={<Cta locked="Proceed to once valid mapping records exist (remains reachable)">Proceed to Territory Plan Review</Cta>}
       />
     </PmPage>
   );
@@ -202,7 +202,7 @@ export function Pm2b() {
       footer={<>
         <Act message="Source record (TM submitted plan v1) opened read-only">View Source Record</Act>
         <Act message="Correction request saved as draft — not sent">Save Draft</Act>
-        <Btn to="pm.2a">Back to PM.2A</Btn>
+        <Btn to="pm.2a">Back to SKU-to-Portfolio ABP Reconciliation</Btn>
         <span className="pm-foot-right"><Cta message="Correction request created as draft — not sent to the owner">Create Mapping Correction Request</Cta></span>
       </>}
     >
@@ -238,7 +238,7 @@ export function Pm2b() {
         { label: 'Draft', state: 'active' }, { label: 'Assigned' }, { label: 'Source Corrected' }, { label: 'Submitted for Validation' }, { label: 'Validated' }, { label: 'ABP Reconciled' },
       ]} />
 
-      <AiBox title="AI Data Quality Insight" items={[{ text: 'Do not count all-product territory figures as portfolio-specific SKU contributions. After source correction and validation, return to PM.2A, recalculate the in-scope contribution and only then proceed to PM.3 plan review.', tone: 'amber' }]} />
+      <AiBox title="AI Data Quality Insight" items={[{ text: 'Do not count all-product territory figures as portfolio-specific SKU contributions. After source correction and validation, return to SKU-to-Portfolio ABP Reconciliation, recalculate the in-scope contribution and only then proceed to plan review.', tone: 'amber' }]} />
     </Drawer>
   );
 }
@@ -254,7 +254,7 @@ export function Pm3() {
       title="Territory Business & Crop Plan Validation & Endorsement"
       status="Submitted — PM Review Required"
     >
-      <Source>PM.2 — selected the Ambad / Jalna Territory Manager submission (plan v1, pre-approval).</Source>
+      <Source>Selected the Ambad / Jalna Territory Manager submission (plan v1, pre-approval).</Source>
       <Strip items={[
         { label: 'All-product Ambad ABP', value: AMBAD.abp },
         { label: 'Originally submitted primary business', value: AMBAD.submitted },
@@ -309,8 +309,8 @@ export function Pm3() {
             <Field label="Review comments"><Input rows={4} placeholder="Add review comments for the Territory Manager…" /></Field>
             <div className="pm-stack" style={{ gap: 6 }}>
               <Btn to="pm.3b" icon={<MessageSquare size={13} />}>Request Changes to Territory Manager</Btn>
-              <Act icon={<FileText size={13} />} message="TM.3 Outlet Plan opened read-only">View Original TM.3 Outlet Plan</Act>
-              <Act icon={<FileText size={13} />} message="TM.4 Coverage Plan opened read-only">View Original TM.4 Coverage Plan</Act>
+              <Act icon={<FileText size={13} />} message="Outlet Plan opened read-only">View Original Outlet Plan</Act>
+              <Act icon={<FileText size={13} />} message="Coverage Plan opened read-only">View Original Coverage Plan</Act>
               <Act message="Review saved (plan not endorsed)">Save Review</Act>
               <Cta locked="Disabled until mandatory validations and the ₹0.40 Cr planning gap are resolved, or an authorized exception is accepted">Endorse & Forward to Marketing Head</Cta>
             </div>
@@ -323,7 +323,7 @@ export function Pm3() {
       </div>
 
       <Actions
-        left={<Btn to="pm.2">← Back to PM.2</Btn>}
+        left={<Btn to="pm.2">← Back to Consolidated Territory Business & Crop Plans</Btn>}
         right={<><Btn to="pm.3c" icon={<History size={13} />}>Revised plan review (after TM resubmission)</Btn><Cta to="pm.4">Assigned Marketing Themes</Cta></>}
        
       />
@@ -338,7 +338,7 @@ const EXCEPTIONS = [
   { exception: 'Dhanora proposed volume growth', value: '10 → 15 MT (+50%)', fix: 'Evidence for volume drivers', status: 'Clarification Required' },
   { exception: 'Implied realization', value: '₹100 → ₹80/kg (−20%)', fix: 'Confirm price / mix assumption', status: 'Clarification Required' },
   { exception: 'Application-rate assumption', value: '20 kg/acre', fix: 'Agronomy validation of rate', status: 'Unvalidated' },
-  { exception: 'Source completeness', value: 'TM.4 v1', fix: 'Attach historical sales / acreage records', status: 'Pending' },
+  { exception: 'Source completeness', value: 'v1', fix: 'Attach historical sales / acreage records', status: 'Pending' },
 ];
 
 export function Pm3b() {
@@ -349,7 +349,7 @@ export function Pm3b() {
       footer={<>
         <Act message="Original TM plan v1 opened read-only">View Original TM Plan</Act>
         <Act message="Correction request saved as draft — not sent">Save Draft</Act>
-        <Btn to="pm.3">Back to PM.3</Btn>
+        <Btn to="pm.3">Back to Territory Plan Validation & Endorsement</Btn>
         <span className="pm-foot-right"><Cta message="Correction request drafted — sending requires confirmation (not sent)">Send Correction Request to Territory Manager</Cta></span>
       </>}
     >
@@ -363,18 +363,18 @@ export function Pm3b() {
       <Box title={`Selected correction · ${row.exception}`} tone="soft">
         <div className="pm-form pm-form-2">
           <Field label="Reason"><Input rows={2} value={`${row.fix}. Current value: ${row.value}.`} /></Field>
-          <Field label="Supporting source reference"><Input value="TM.4 Village-wise Crop, Product & Coverage Planning (v1)" /></Field>
+          <Field label="Supporting source reference"><Input value="Village-wise Crop, Product & Coverage Planning (v1)" /></Field>
           <Field label="Assigned to"><Select options={['Territory Manager — Jalna Cluster']} /></Field>
           <Field label="Due date" hint="No committed date"><Input placeholder="Select due date" /></Field>
           <Field label="Required evidence"><Input placeholder="e.g. historical sales records, agronomy note" /></Field>
           <Field label="Optional PM technical reviewer"><Select options={['None', 'Agronomy Lead', 'Pricing Analyst']} /></Field>
         </div>
       </Box>
-      <p className="pm-callout">SKU mapping (PM.2A / PM.2B) is a separate issue from this all-product planning gap. Any previously validated mapping stays untouched by this request.</p>
+      <p className="pm-callout">SKU mapping is a separate issue from this all-product planning gap. Any previously validated mapping stays untouched by this request.</p>
       <Workflow title="Correction workflow" compact steps={[{ label: 'Draft', state: 'active' }, { label: 'Sent to TM' }, { label: 'Revised Plan Submitted' }, { label: 'PM Revalidation' }, { label: 'Resolved' }]} />
       <Facts cols={2} rows={[['Version tracking', 'Original plan v1 (submitted)'], ['Revised version', <P>Pending TM resubmission</P>]]} />
       <AiBox title="AI Planning Review Insight" items={[{ text: 'Validate volume-growth drivers, realization and acreage before endorsement.', tone: 'amber' }]} />
-      <Muted>After TM resubmission: PM.3 revalidation → PM.3C Endorse & Forward to Marketing Head, only once mandatory checks are resolved or authorized exceptions accepted.</Muted>
+      <Muted>After TM resubmission: revalidation Endorse & Forward to Marketing Head, only once mandatory checks are resolved or authorized exceptions accepted.</Muted>
     </Drawer>
   );
 }
@@ -397,7 +397,7 @@ export function Pm3c() {
       title="Revised Territory Plan Comparison, Revalidation & Endorsement"
       status="Revised Plan v2 Received — Revalidation Pending"
     >
-      <Source>PM.3B — hypothetical future state: correction request sent, revised plan v2 received from the Territory Manager. PM revalidation and endorsement are <b>not yet complete</b>.</Source>
+      <Source>Hypothetical future state: correction request sent, revised plan v2 received from the Territory Manager. PM revalidation and endorsement are <b>not yet complete</b>.</Source>
 
       <div className="pm-two">
         <div className="pm-stack">
@@ -422,7 +422,7 @@ export function Pm3c() {
         <Box title="PM Endorsement" icon={<ClipboardCheck size={15} />}>
           <Field label="Review comments"><Input rows={3} placeholder="Revalidation notes…" /></Field>
           <Facts rows={[['Source attachments', <Sources label="" items={[{ label: 'TM Plan v1' }, { label: 'TM Plan v2' }]} />], ['Endorsed crop / product scope', 'Onion · Maize · Other Crops (all-product)'], ['Authorized-exception check', <P>Not recorded</P>]]} />
-          <Workflow title="Approval routing" compact steps={[{ label: 'TM Resubmission', state: 'done' }, { label: 'PM Revalidation', state: 'active' }, { label: 'PM Endorsement' }, { label: 'MH.3 Marketing Head Review' }]} />
+          <Workflow title="Approval routing" compact steps={[{ label: 'TM Resubmission', state: 'done' }, { label: 'PM Revalidation', state: 'active' }, { label: 'PM Endorsement' }, { label: 'Marketing Head Review' }]} />
           <div className="pm-stack" style={{ gap: 6 }}>
             <Act message="Original TM plan v1 opened read-only">View Original TM Plan</Act>
             <Act message="Revised TM plan v2 opened read-only">View Revised TM Plan</Act>
@@ -434,7 +434,7 @@ export function Pm3c() {
         </Box>
       </div>
 
-      <Actions left={<Btn to="pm.3">← Back to PM.3</Btn>} right={<Btn to="pm.3d" icon={<MessageSquare size={13} />}>Marketing Head clarification (later state)</Btn>} />
+      <Actions left={<Btn to="pm.3">← Back to Territory Plan Validation & Endorsement</Btn>} right={<Btn to="pm.3d" icon={<MessageSquare size={13} />}>Marketing Head clarification (later state)</Btn>} />
     </PmPage>
   );
 }
@@ -442,9 +442,9 @@ export function Pm3c() {
 /* ------------------------------------------------------------------ PM.3D (drawer over PM.3C) */
 
 const MH_QUESTIONS = [
-  { q: 'Justify the Onion opportunity and growth requirement', evidence: 'MH.3B review note · PM.3C endorsed plan' },
-  { q: 'Evidence for planned volume, acreage and realization assumptions', evidence: 'TM.4 coverage plan · agronomy note' },
-  { q: 'What marketing intervention support is recommended?', evidence: 'Market evidence · PM.3C comments' },
+  { q: 'Justify the Onion opportunity and growth requirement', evidence: 'review note endorsed plan' },
+  { q: 'Evidence for planned volume, acreage and realization assumptions', evidence: 'coverage plan · agronomy note' },
+  { q: 'What marketing intervention support is recommended?', evidence: 'Market evidence comments' },
 ];
 
 export function Pm3d() {
@@ -459,7 +459,7 @@ export function Pm3d() {
         <span className="pm-foot-right"><Cta message="Clarification response saved as draft — not yet submitted">Submit Clarification Response to Marketing Head</Cta></span>
       </>}
     >
-      <p className="pm-note">Later hypothetical state: PM.3C validations were completed, the plan was endorsed and forwarded, and the Marketing Head (MH.3A / MH.3B) raised a clarification. Original v1: ₹3.80 Cr submitted vs ₹4.20 Cr ABP, Onion ₹1.65 Cr. Any ₹1.90 Cr Onion figure requires a verified approved source version.</p>
+      <p className="pm-note">Later hypothetical state: validations were completed, the plan was endorsed and forwarded, and the Marketing Head raised a clarification. Original v1: ₹3.80 Cr submitted vs ₹4.20 Cr ABP, Onion ₹1.65 Cr. Any ₹1.90 Cr Onion figure requires a verified approved source version.</p>
       <Table
         compact
         head={['#', 'Marketing Head question', 'Status', 'Source / evidence', '']}
@@ -477,7 +477,7 @@ export function Pm3d() {
         </div>
         <Chipsy onPick={setType} />
       </Box>
-      <Sources items={[{ label: 'View MH.3B Review Note' }, { label: 'View Endorsed PM.3C Source Plan', to: 'pm.3c' }, { label: 'View Relevant Market Evidence' }]} />
+      <Sources items={[{ label: 'View Review Note' }, { label: 'View Endorsed Source Plan', to: 'pm.3c' }, { label: 'View Relevant Market Evidence' }]} />
       <Workflow title="Resolution tracker" compact steps={[{ label: 'MH Feedback Received', state: 'done' }, { label: 'PM Response Draft', state: 'active' }, { label: 'Submitted to MH' }, { label: 'MH Re-review' }, { label: 'Closed / Returned' }]} />
       <p className="pm-callout">Answering a clarification is not the same as modifying an endorsed business plan. Modifications must return to TM revision, PM revalidation and the applicable approvals.</p>
     </Drawer>

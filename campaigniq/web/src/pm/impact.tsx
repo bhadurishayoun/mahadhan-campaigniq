@@ -22,7 +22,7 @@ export function Pm10() {
         <Select options={['Onion', 'All Crops']} /><Select options={['Croptek', 'All Products']} /><Select options={['West Region', 'Maharashtra']} /><Select options={[C1.name, 'All Campaigns']} /><Select options={['Jan–Feb 2027', 'FY 2026–27']} />
       </div>}
     >
-      <Source>Later illustrative interim checkpoint after Marketing Head authorization, local TM approvals and execution progress. PM.9 approval checks are not portrayed as approved without that transition.</Source>
+      <Source>Later illustrative interim checkpoint after Marketing Head authorization, local TM approvals and execution progress. approval checks are not portrayed as approved without that transition.</Source>
       <Strip items={[
         { label: 'Product Portfolio ABP', value: '₹6.00 Cr' },
         { label: 'Campaign rollout progress', value: <>{IMPACT.activities} activities <Muted>(Ambad, source-linked)</Muted></> },
@@ -40,7 +40,7 @@ export function Pm10() {
             ]}
             highlight={0}
           />
-          <Muted>Ambad figures are local interim data from TM.IM1, not West Region totals. {IMPACT.linkedSales} is not verified incremental sales; all-product Onion allocation is not Croptek revenue.</Muted>
+          <Muted>Ambad figures are local interim data, not West Region totals. {IMPACT.linkedSales} is not verified incremental sales; all-product Onion allocation is not Croptek revenue.</Muted>
         </Box>
         <div className="pm-stack">
           <Box title="Planned vs completed local activities" tone="soft">
@@ -56,11 +56,11 @@ export function Pm10() {
             { text: 'Investigate execution and trial-to-purchase changes by village before drawing conclusions.', tone: 'amber' },
             { text: 'Identify data gaps before attributing any sales uplift.', tone: 'amber' },
           ]} />
-          <Sources items={[{ label: 'TM.IM1 Campaign Impact' }, { label: 'TM.IM2 Diagnostics' }, { label: 'PM.8 Forecast Assumptions', to: 'pm.8' }, { label: 'MH.9 Portfolio Performance' }]} />
+          <Sources items={[{ label: 'Campaign Impact' }, { label: 'Diagnostics' }, { label: 'Forecast Assumptions', to: 'pm.8' }, { label: 'Portfolio Performance' }]} />
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.9">← Back to Activity Approvals PM.9</Btn><Btn to="pm.10b">View Territory Results</Btn></>}
+        left={<><Btn to="pm.9">← Back to Activity Approvals Territory Activity Plan Review & Approval</Btn><Btn to="pm.10b">View Territory Results</Btn></>}
         right={<Cta to="pm.11">Investigate Crop-wise Uplift & Learning</Cta>}
       />
     </PmPage>
@@ -76,7 +76,7 @@ export function Pm10a() {
       code="PM.10A"
       title="Crop × Product × Geography Performance Detail"
     >
-      <Source>PM.10 — <b>View Performance</b> on Onion × Croptek × Ambad. Future illustrative checkpoint; no real Mahadhan performance.</Source>
+      <Source><b>View Performance</b> on Onion × Croptek × Ambad. Future illustrative checkpoint; no real Mahadhan performance.</Source>
       <Strip items={[{ label: 'Crop', value: 'Onion' }, { label: 'Product', value: 'Croptek' }, { label: 'Geography', value: 'Ambad / Jalna' }, { label: 'Campaign', value: C1.name }]} />
       <div className="pm-two">
         <div className="pm-stack">
@@ -91,8 +91,8 @@ export function Pm10a() {
                 [<b>Documented trials</b>, '—', IMPACT.trials, 'TM.IM1', <Status>Recorded</Status>, ''],
                 [<b>Recorded adopters</b>, '—', IMPACT.adopters, 'TM.IM1', <Status>Recorded — not incremental</Status>, ''],
                 [<b>Trial-to-adoption (observed)</b>, '—', `${IMPACT.adopters} / ${IMPACT.trials} = ${IMPACT.rate}`, 'Derived', <Status>Observed rate, not intervention effect</Status>, ''],
-                [<b>Provisional campaign-linked sales</b>, '—', IMPACT.linkedSales, 'TM.IM1 / DMS', <Status>Provisional — not verified incremental</Status>, <Btn small to="pm.10c">Validate</Btn>],
-                [<b>Incremental commercial uplift & ROI</b>, '—', <Status>Pending Attribution</Status>, 'PM.10C method', <Status>Not Established</Status>, <Btn small to="pm.10c">Method</Btn>],
+                [<b>Provisional campaign-linked sales</b>, '—', IMPACT.linkedSales, 'Campaign Impact & Business Performance / DMS', <Status>Provisional — not verified incremental</Status>, <Btn small to="pm.10c">Validate</Btn>],
+                [<b>Incremental commercial uplift & ROI</b>, '—', <Status>Pending Attribution</Status>, 'method', <Status>Not Established</Status>, <Btn small to="pm.10c">Method</Btn>],
               ]}
             />
           </Box>
@@ -112,11 +112,11 @@ export function Pm10a() {
               { label: 'Intervention attribution', status: 'Pending' },
             ]} />
           </Box>
-          <Sources items={[{ label: 'TM.IM1' }, { label: 'TM.IM2' }, { label: 'PM.8 forecast assumptions', to: 'pm.8' }, { label: 'PM.10 portfolio', to: 'pm.10' }, { label: 'ERP / CRM candidate data' }]} />
+          <Sources items={[{ label: 'TM.IM1' }, { label: 'TM.IM2' }, { label: 'Forecast assumptions', to: 'pm.8' }, { label: 'Portfolio', to: 'pm.10' }, { label: 'ERP / CRM candidate data' }]} />
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.10">← Back to PM.10</Btn><Btn to="pm.10b">View Territory Impact</Btn><Btn to="pm.10c">View Source & Attribution Method</Btn></>}
+        left={<><Btn to="pm.10">← Back to Campaign Performance & Crop-wise Uplift</Btn><Btn to="pm.10b">View Territory Impact</Btn><Btn to="pm.10c">View Source & Attribution Method</Btn></>}
         right={<Cta to="pm.11">Investigate Conversion & Learning</Cta>}
       />
     </PmPage>
@@ -151,11 +151,11 @@ export function Pm10b() {
       )}
       <Box title="Drill down (read-only for Product Manager)">
         <div className="pm-stack" style={{ gap: 6 }}>
-          <Act message="TM.IM1 Territory Campaign Impact opened read-only">Open Territory Campaign Impact → TM.IM1 · reach, trials, adoption, linked sales</Act>
-          <Act message="TM.IM2 Territory Campaign Diagnostics opened read-only">Open Territory Campaign Diagnostics → TM.IM2 · conversion variation, exceptions, drivers</Act>
+          <Act message="Territory Campaign Impact opened read-only">Open Territory Campaign Impact · reach, trials, adoption, linked sales</Act>
+          <Act message="Territory Campaign Diagnostics opened read-only">Open Territory Campaign Diagnostics · conversion variation, exceptions, drivers</Act>
         </div>
       </Box>
-      <Sources items={[{ label: 'PM.10A', to: 'pm.10a' }, { label: 'TM.IM1' }, { label: 'TM.IM2' }, { label: 'PM.10C Source & Attribution', to: 'pm.10c' }]} />
+      <Sources items={[{ label: 'PM.10A', to: 'pm.10a' }, { label: 'TM.IM1' }, { label: 'TM.IM2' }, { label: 'Source & Attribution', to: 'pm.10c' }]} />
       <Muted>Cohort linkage and source confidence subject to validation; actual incremental commercial uplift and ROI <b>pending attribution</b>. The TM owns local corrective actions.</Muted>
     </Drawer>
   );
@@ -178,7 +178,7 @@ export function Pm10c() {
         [<b>Documented trials</b>, IMPACT.trials, 'Field App', <P>Pending</P>, <Act small message="Drilldown opened">Drill</Act>],
         [<b>Recorded adopters</b>, IMPACT.adopters, 'CRM', <P>Purchase matching pending</P>, <Act small message="Drilldown opened">Drill</Act>],
         [<b>Campaign-linked sales</b>, <>{IMPACT.linkedSales} <Status>Provisional</Status></>, 'DMS', <P>Pending</P>, <Act small message="Drilldown opened">Drill</Act>],
-        [<b>Completed activities</b>, `${ACTIVITY_TOTAL.done} / ${ACTIVITY_TOTAL.units}`, 'TM.EX logs', <Status>Recorded</Status>, ''],
+        [<b>Completed activities</b>, `${ACTIVITY_TOTAL.done} / ${ACTIVITY_TOTAL.units}`, 'logs', <Status>Recorded</Status>, ''],
         [<b>Attributable incremental sales & ROI</b>, <Status>Not Established</Status>, 'Method below', <Status>Missing Baseline</Status>, ''],
       ]} />
       <Box title="Purchase verification" tone="soft">
@@ -195,7 +195,7 @@ export function Pm10c() {
         <Muted>{IMPACT.linkedSales} linked sales are not treated as incremental benefit; the 36% illustrative historical conversion is not causal lift.</Muted>
       </Box>
       <Box title="Data quality & sources" tone="soft">
-        <Sources label="" items={[{ label: 'TM.IM1' }, { label: 'TM.IM2' }, { label: 'PM.10A', to: 'pm.10a' }, { label: 'CRM / Farmer Master' }, { label: 'ERP / DMS sales' }, { label: 'PM.8 forecast assumptions', to: 'pm.8' }]} />
+        <Sources label="" items={[{ label: 'TM.IM1' }, { label: 'TM.IM2' }, { label: 'PM.10A', to: 'pm.10a' }, { label: 'CRM / Farmer Master' }, { label: 'ERP / DMS sales' }, { label: 'Forecast assumptions', to: 'pm.8' }]} />
         <Muted>Provenance preserved; integration statuses unknown. Product-specific sales stay distinct from the all-product Onion ABP {ONION_APPROVED_LATER}.</Muted>
       </Box>
     </Drawer>
@@ -212,7 +212,7 @@ export function Pm11() {
       code="PM.11"
       title="Campaign Diagnostics & Next-Season Learning Studio"
     >
-      <Source>PM.10 — selected Onion / Croptek / Ambad campaign impact. Future illustrative interim reporting, not real Mahadhan results.</Source>
+      <Source>Selected Onion / Croptek / Ambad campaign impact. Future illustrative interim reporting, not real Mahadhan results.</Source>
       <Strip items={[
         { label: 'Reached', value: IMPACT.reached }, { label: 'Trials', value: IMPACT.trials }, { label: 'Recorded adopters', value: IMPACT.adopters },
         { label: 'Activities complete', value: IMPACT.activities }, { label: 'Provisional campaign-linked sales', value: IMPACT.linkedSales },
@@ -257,7 +257,7 @@ export function Pm11() {
           ]}>
             <Muted>Each item: Recommendation Pending PM Review.</Muted>
           </AiBox>
-          <Sources items={[{ label: 'PM.10', to: 'pm.10' }, { label: 'TM.IM1' }, { label: 'TM.IM2' }, { label: 'PM.7 Collaterals', to: 'pm.7' }]} />
+          <Sources items={[{ label: 'PM.10', to: 'pm.10' }, { label: 'TM.IM1' }, { label: 'TM.IM2' }, { label: 'Collaterals', to: 'pm.7' }]} />
           <Box title="Actions" tone="soft">
             <div className="pm-stack" style={{ gap: 6 }}>
               <Btn to="pm.10c">View Source Evidence</Btn>
@@ -267,7 +267,7 @@ export function Pm11() {
           </Box>
         </div>
       </div>
-      <Actions left={<Btn to="pm.10">← Back to PM.10</Btn>} right={<Cta to="pm.ai1">Ask Product & Campaign Copilot</Cta>} />
+      <Actions left={<Btn to="pm.10">← Back to Campaign Performance & Crop-wise Uplift</Btn>} right={<Cta to="pm.ai1">Ask Product & Campaign Copilot</Cta>} />
     </PmPage>
   );
 }
@@ -305,7 +305,7 @@ export function Pm11a() {
       <AiBox title="AI Diagnostic Checks" items={[
         { text: 'Validate Dhanora follow-up / contact evidence.' }, { text: 'Compare retailer and stock readiness across villages.' }, { text: 'Verify recorded purchase matching and collateral exposure.' },
       ]} />
-      <Sources items={[{ label: 'PM.11 village table', to: 'pm.11' }, { label: 'TM.IM1 recorded impact' }, { label: 'TM.IM2 territory diagnostics' }, { label: 'PM.10C source / attribution', to: 'pm.10c' }, { label: 'PM.7 approved collateral records', to: 'pm.7' }]} />
+      <Sources items={[{ label: 'Village table', to: 'pm.11' }, { label: 'Recorded impact' }, { label: 'Territory diagnostics' }, { label: 'Source / attribution', to: 'pm.10c' }, { label: 'Approved collateral records', to: 'pm.7' }]} />
     </Drawer>
   );
 }
@@ -318,7 +318,7 @@ export function Pm11b() {
   return (
     <Drawer title="Intervention Effectiveness & Execution Diagnostics" status="PM Read-Only" width="50%" back="pm.11" subtitle={`${C1.name} · Onion / Croptek · Ambad / Jalna`}
       footer={<>
-        <Btn to="pm.11">Back to PM.11</Btn>
+        <Btn to="pm.11">Back to Campaign Diagnostics & Learning Studio</Btn>
         <Act message="Activity source evidence opened">View Activity Source Evidence</Act>
         <Act message="Territory clarification requested">Request Territory Clarification</Act>
         <span className="pm-foot-right"><Cta to="pm.11c">Investigate Collateral Effectiveness</Cta></span>
@@ -343,7 +343,7 @@ export function Pm11b() {
       <AiBox title="AI Investigation Checks" items={[
         { text: 'Verify owner and completion logs.' }, { text: 'Match farmer contacts and follow-up exposure.' }, { text: 'Compare verified exposure with subsequent recorded purchases and a suitable baseline before impact claims.' },
       ]} />
-      <Sources items={[{ label: 'PM.11A Village Diagnostics', to: 'pm.11a' }, { label: 'PM.10C Attribution Evidence', to: 'pm.10c' }, { label: 'TM.IM2 Execution Diagnostics' }, { label: 'PM.6A KPI Definitions', to: 'pm.6a' }, { label: 'PM.7 Authorized Collateral Records', to: 'pm.7' }]} />
+      <Sources items={[{ label: 'Village Diagnostics', to: 'pm.11a' }, { label: 'Attribution Evidence', to: 'pm.10c' }, { label: 'Execution Diagnostics' }, { label: 'KPI Definitions', to: 'pm.6a' }, { label: 'Authorized Collateral Records', to: 'pm.7' }]} />
       <Muted>{IMPACT.adopters} recorded adopters across Ambad are distinct from intervention-attributed adopters, which remain unknown.</Muted>
     </Drawer>
   );
@@ -357,7 +357,7 @@ export function Pm11c() {
   return (
     <Drawer title="Campaign Collateral & Creative Effectiveness" status="Evidence Analysis — Pending" width="50%" back="pm.11" subtitle={`${C1.name} · Croptek / Onion · Ambad / Jalna · future illustrative interim reporting`}
       footer={<>
-        <Btn to="pm.11">Back to PM.11</Btn>
+        <Btn to="pm.11">Back to Campaign Diagnostics & Learning Studio</Btn>
         <Act message="Authorized asset record opened (registry match pending)">View Authorized Asset Record</Act>
         <Act message="Territory usage evidence requested">Request Territory Usage Evidence</Act>
         <Btn to="pm.7c">View Creative Version History</Btn>
@@ -380,7 +380,7 @@ export function Pm11c() {
       <AiBox title="AI Collateral Learning" items={[
         { text: 'Verify asset version and retailer usage.' }, { text: 'Reconcile Marathi digital delivery with consent / engagement.' }, { text: 'Compare documented exposure with recorded purchases using a suitable baseline before claiming effect.' },
       ]} />
-      <Sources items={[{ label: 'PM.7A Editor', to: 'pm.7a' }, { label: 'PM.7D Asset Approval', to: 'pm.7d' }, { label: 'PM.7E Playbook Release', to: 'pm.7e' }, { label: 'PM.11B Intervention Diagnostics', to: 'pm.11b' }, { label: 'PM.10C Evidence / Attribution', to: 'pm.10c' }, { label: 'TM.IM2 Source Records' }]} />
+      <Sources items={[{ label: 'Editor', to: 'pm.7a' }, { label: 'Asset Approval', to: 'pm.7d' }, { label: 'Playbook Release', to: 'pm.7e' }, { label: 'Intervention Diagnostics', to: 'pm.11b' }, { label: 'Evidence / Attribution', to: 'pm.10c' }, { label: 'Source Records' }]} />
       <Muted>The PM may inspect asset evidence and propose next-season revisions, but cannot alter field activity logs or bypass technical / brand reapproval.</Muted>
     </Drawer>
   );
@@ -406,7 +406,7 @@ export function Pm11d() {
       title="Next-Season Campaign Learning & Strategic Recommendation Studio"
       status="Draft Recommendations / Not Submitted"
     >
-      <Source>PM.11C — <b>Consolidate Next-Season Learnings</b>, after PM.11A village diagnostics and PM.11B intervention effectiveness. Future illustrative interim learning checkpoint, not season-end impact.</Source>
+      <Source><b>Consolidate Next-Season Learnings</b>, after village diagnostics and intervention effectiveness. Future illustrative interim learning checkpoint, not season-end impact.</Source>
       <div className="pm-kpi-row">
         <div className="pm-kpi"><span>Recorded adopters</span><strong>{IMPACT.adopters}</strong><small>Ambad local, recorded</small></div>
         <div className="pm-kpi"><span>Local activity progress</span><strong>{IMPACT.activities}</strong><small>{ACTIVITY_TOTAL.completion} complete</small></div>
@@ -435,13 +435,13 @@ export function Pm11d() {
               <Cta locked="Conditionally disabled while mandatory evidence governance is unmet">Submit Strategic Recommendations for Marketing Head Review</Cta>
             </div>
           </Box>
-          <Sources items={[{ label: 'PM.11A Village', to: 'pm.11a' }, { label: 'PM.11B Intervention', to: 'pm.11b' }, { label: 'PM.11C Collateral', to: 'pm.11c' }, { label: 'PM.10C Attribution', to: 'pm.10c' }, { label: 'TM.IM2 Diagnostic' }, { label: 'PM.8 Forecast', to: 'pm.8' }]} />
+          <Sources items={[{ label: 'Village', to: 'pm.11a' }, { label: 'Intervention', to: 'pm.11b' }, { label: 'Collateral', to: 'pm.11c' }, { label: 'Attribution', to: 'pm.10c' }, { label: 'Diagnostic' }, { label: 'Forecast', to: 'pm.8' }]} />
           <AiBox title="AI Next-Season Guidance" items={[{ text: 'Validate exposure and purchase linkage.' }, { text: 'Test intervention / retailer readiness hypotheses.' }, { text: 'Update campaign measurement and collateral controls.' }]} />
-          <Workflow compact steps={[{ label: 'PM Learning Draft', state: 'active' }, { label: 'PM Review' }, { label: 'Submit to Marketing Head' }, { label: 'MH Strategic Theme Alignment' }, { label: 'PM.5 New Concept Draft' }]} />
+          <Workflow compact steps={[{ label: 'PM Learning Draft', state: 'active' }, { label: 'PM Review' }, { label: 'Submit to Marketing Head' }, { label: 'MH Strategic Theme Alignment' }, { label: 'New Concept Draft' }]} />
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.11">← Back to PM.11</Btn><Btn to="pm.10c">View Source Evidence</Btn><Act message="Learning draft saved">Save Learning Draft</Act><Act message="Missing evidence requested">Request Missing Evidence</Act></>}
+        left={<><Btn to="pm.11">← Back to Campaign Diagnostics & Learning Studio</Btn><Btn to="pm.10c">View Source Evidence</Btn><Act message="Learning draft saved">Save Learning Draft</Act><Act message="Missing evidence requested">Request Missing Evidence</Act></>}
         right={<Cta locked="Submitting does not approve a new campaign, modify the current programme or launch next-season activities; disabled while evidence governance is unmet">Submit Strategic Recommendations to Marketing Head</Cta>}
       />
     </PmPage>
@@ -461,7 +461,7 @@ export function PmAi1() {
       code="PM.AI1"
       title="Product & Campaign Intelligence Copilot"
     >
-      <Source>PM.11 — <b>Ask Product & Campaign Copilot</b>. Final Product Manager persona screen.</Source>
+      <Source><b>Ask Product & Campaign Copilot</b>. Final Product Manager persona screen.</Source>
       <div className="pm-chat">
         <div className="pm-chat-thread">
           <div className="pm-msg pm-msg-user">
@@ -497,11 +497,11 @@ export function PmAi1() {
               <li>Review approved collateral exposure before proposing a revised intervention design.</li>
             </ol>
           </Box>
-          <Sources items={[{ label: 'PM.10', to: 'pm.10' }, { label: 'PM.11', to: 'pm.11' }, { label: 'TM.IM2' }, { label: 'PM.7 collateral versions', to: 'pm.7c' }, { label: 'PM.8 forecast assumptions', to: 'pm.8' }]} />
+          <Sources items={[{ label: 'PM.10', to: 'pm.10' }, { label: 'PM.11', to: 'pm.11' }, { label: 'TM.IM2' }, { label: 'Collateral versions', to: 'pm.7c' }, { label: 'Forecast assumptions', to: 'pm.8' }]} />
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.11">← Back to PM.11</Btn><Btn to="pm.10c">View Source Evidence</Btn><Act message="Territory clarification requested">Request Territory Clarification</Act></>}
+        left={<><Btn to="pm.11">← Back to Campaign Diagnostics & Learning Studio</Btn><Btn to="pm.10c">View Source Evidence</Btn><Act message="Territory clarification requested">Request Territory Clarification</Act></>}
         right={<Cta to="pm.5">Create Draft Next-Season Campaign Recommendation</Cta>}
       />
     </PmPage>

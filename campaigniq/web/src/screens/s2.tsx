@@ -206,11 +206,11 @@ export function OpportunityAtlas() {
     <div className="stack">
       <TopLine
         crumbs={[
-          { label: 'S1.1 Executive Strategy Command Centre', to: 's1.1' },
+          { label: 'Executive Strategy Command Centre', to: 's1.1' },
           { label: 'Opportunity Atlas' },
-          { label: 'S2.1 Crop × Geography Opportunity Atlas' },
+          { label: 'Crop × Geography Opportunity Atlas' },
         ]}
-        opened="Opened from S1.1: Opportunity Atlas / Explore Opportunity"
+        opened="Opened from Opportunity Atlas / Explore Opportunity"
       />
       <PageHeader
         title="Crop × Geography Opportunity Atlas"
@@ -277,7 +277,7 @@ export function OpportunityAtlas() {
           </div>
           <div className="row-between" style={{ marginTop: 8 }}>
             <span className="small muted">Opportunity Intensity (Market Potential, ₹ Cr)</span>
-            <span className="s2-hint"><MousePointerClick size={14} />Click district to open S2.2 District / Taluka Intelligence</span>
+            <span className="s2-hint"><MousePointerClick size={14} />Click district to open District / Taluka Intelligence</span>
           </div>
         </Panel>
 
@@ -322,7 +322,7 @@ export function OpportunityAtlas() {
               { key: 'potential', label: 'Market Potential (₹ Cr)', align: 'right' },
               { key: 'gap', label: 'Penetration Gap (pp)', align: 'right' },
               { key: 'readiness', label: 'Campaign Readiness', render: (row) => <Pill tone={row.readiness === 'High' ? 'green' : 'amber'}>{row.readiness}</Pill> },
-              { key: 'next', label: 'Next Action', render: (row) => <Btn small to={row.to}>Open S2.2 ›</Btn> },
+              { key: 'next', label: 'Next Action', render: (row) => <Btn small to={row.to}>Open Jalna District / Taluka Intelligence ›</Btn> },
             ]}
           />
         </Panel>
@@ -383,7 +383,7 @@ export function OpportunityAtlas() {
                   <li>Readiness Score: <strong>{market.readiness}</strong></li>
                 </ul>
               </div>
-              <Btn small variant="primary" to="s2.2">Open S2.2 District View ›</Btn>
+              <Btn small variant="primary" to="s2.2">Open District View ›</Btn>
             </div>
           ))}
         </div>
@@ -391,11 +391,11 @@ export function OpportunityAtlas() {
 
       <FlowFooter
         steps={[
-          { label: 'Source: S1.1 Executive Strategy Command Centre', to: 's1.1' },
-          { label: 'Current: S2.1 Crop × Geography Opportunity Atlas', current: true },
-          { label: 'On click of Jalna / Dhule: Next S2.2 District / Taluka Intelligence', to: 's2.2' },
+          { label: 'Source: Executive Strategy Command Centre', to: 's1.1' },
+          { label: 'Current: Crop × Geography Opportunity Atlas', current: true },
+          { label: 'On click of Jalna / Dhule: Next District / Taluka Intelligence', to: 's2.2' },
         ]}
-        next={{ label: 'S2.2 — District / Taluka Intelligence', to: 's2.2', sub: ' Opens when clicking a district / taluka such as Jalna or Dhule' }}
+        next={{ label: 'District / Taluka Intelligence', to: 's2.2', sub: ' Opens when clicking a district / taluka such as Jalna or Dhule' }}
       />
     </div>
   );
@@ -488,12 +488,12 @@ export function DistrictIntelligence() {
     <div className="stack">
       <TopLine
         crumbs={[
-          { label: 'S1.1 Executive Strategy Command Centre', to: 's1.1' },
+          { label: 'Executive Strategy Command Centre', to: 's1.1' },
           { label: 'Opportunity Atlas', to: 's2.1' },
-          { label: 'S2.1 Crop × Geography Opportunity Atlas', to: 's2.1' },
-          { label: 'S2.2 Jalna District / Taluka Intelligence' },
+          { label: 'Crop × Geography Opportunity Atlas', to: 's2.1' },
+          { label: 'Jalna District / Taluka Intelligence' },
         ]}
-        opened="Opened from S2.1: Clicked Jalna / Open S2.2 District View"
+        opened="Opened from Clicked Jalna / Open District View"
       />
       <PageHeader
         title="Jalna District / Taluka Intelligence"
@@ -532,7 +532,7 @@ export function DistrictIntelligence() {
               selected={`t-${taluka.toLowerCase()}`}
               talukas={Object.fromEntries(JALNA_TALUKA_MAP.map((t) => [t.name, {
                 tone: t.tone,
-                info: <>Opportunity score <b>{t.score}</b>{t.name === 'Ambad' ? ' · click to open S2.3 Micro-Market Segmentation' : ''}</>,
+                info: <>Opportunity score <b>{t.score}</b>{t.name === 'Ambad' ? ' · click to open Micro-Market Segmentation' : ''}</>,
                 onSelect: () => pickTaluka(t.name),
               }]))}
               markers={JALNA_TALUKA_MAP.map((t) => ({
@@ -553,7 +553,7 @@ export function DistrictIntelligence() {
           </div>
           <div className="row-between" style={{ marginTop: 8 }}>
             <span className="small muted">Opportunity Intensity (Taluka Potential, ₹ Lakh)</span>
-            <span className="s2-hint"><MousePointerClick size={14} />Click taluka to open S2.3 Micro-Market Segmentation</span>
+            <span className="s2-hint"><MousePointerClick size={14} />Click taluka to open Micro-Market Segmentation</span>
           </div>
         </Panel>
 
@@ -620,7 +620,7 @@ export function DistrictIntelligence() {
               { key: 'gap', label: 'Penetration Gap', align: 'right' },
               { key: 'retailers', label: 'Active Retailers', align: 'right' },
               { key: 'readiness', label: 'Campaign Readiness', render: (row) => <Pill tone={row.readiness === 'High' ? 'green' : 'amber'}>{row.readiness}</Pill> },
-              { key: 'next', label: 'Next Action', render: () => <Btn small to="s2.3">Open S2.3 ›</Btn> },
+              { key: 'next', label: 'Next Action', render: () => <Btn small to="s2.3">Open Ambad Micro-Market Segmentation ›</Btn> },
             ]}
             total={{
               rank: <strong>District Total (Jalna)</strong>,
@@ -649,7 +649,7 @@ export function DistrictIntelligence() {
             ]}
           />
           <div style={{ marginTop: 10 }}>
-            <Btn variant="primary" className="s2-cta" icon={<Users size={15} />} to="s2.3">Explore Target Segments → S2.3</Btn>
+            <Btn variant="primary" className="s2-cta" icon={<Users size={15} />} to="s2.3">Explore Target Segments</Btn>
           </div>
         </Panel>
 
@@ -689,11 +689,11 @@ export function DistrictIntelligence() {
 
       <FlowFooter
         steps={[
-          { label: 'Source: S2.1 Crop × Geography Opportunity Atlas', to: 's2.1' },
-          { label: 'Current: S2.2 Jalna District / Taluka Intelligence', current: true },
-          { label: "On click of 'Explore Target Segments' → S2.3 Micro-Market Segmentation", to: 's2.3' },
+          { label: 'Source: Crop × Geography Opportunity Atlas', to: 's2.1' },
+          { label: 'Current: Jalna District / Taluka Intelligence', current: true },
+          { label: "On click of 'Explore Target Segments' Micro-Market Segmentation", to: 's2.3' },
         ]}
-        next={{ label: 'S2.3 — Micro-Market Segmentation', to: 's2.3' }}
+        next={{ label: 'Micro-Market Segmentation', to: 's2.3' }}
       />
     </div>
   );
@@ -746,12 +746,12 @@ export function MicroMarketSegmentation() {
     <div className="stack">
       <TopLine
         crumbs={[
-          { label: 'S1.1 Executive Command Centre', to: 's1.1' },
-          { label: 'S2.1 Opportunity Atlas', to: 's2.1' },
-          { label: 'S2.2 Jalna District Intelligence', to: 's2.2' },
-          { label: 'S2.3 Ambad Segmentation' },
+          { label: 'Executive Command Centre', to: 's1.1' },
+          { label: 'Opportunity Atlas', to: 's2.1' },
+          { label: 'Jalna District Intelligence', to: 's2.2' },
+          { label: 'Ambad Segmentation' },
         ]}
-        opened="From S2.2: Ambad / Explore Target Segments"
+        opened="From Ambad / Explore Target Segments"
       />
       <PageHeader
         title="Ambad — Micro-Market Segmentation & Campaign Targeting"
@@ -888,13 +888,13 @@ export function MicroMarketSegmentation() {
 
       <FlowFooter
         steps={[
-          { label: 'Source: S2.2 Jalna District Intelligence', to: 's2.2' },
+          { label: 'Source: Jalna District Intelligence', to: 's2.2' },
           { label: 'Ambad → Explore Target Segments', to: 's2.2' },
-          { label: 'Current Screen: S2.3 Ambad Segmentation', current: true },
+          { label: 'Current Screen: Ambad Segmentation', current: true },
         ]}
-        next={{ label: 'S2.4 Competition & Channel Intelligence', to: 's2.4' }}
+        next={{ label: 'Competition & Channel Intelligence', to: 's2.4' }}
       />
-      <p className="s2-footnote">Illustrative concept data | S2.2 → S2.3 → S2.4 connected user journey</p>
+      <p className="s2-footnote">Illustrative concept data connected user journey</p>
     </div>
   );
 }
@@ -961,10 +961,10 @@ export function CompetitionChannel() {
     <div className="stack">
       <TopLine
         crumbs={[
-          { label: 'S2.1 Crop × Geography Opportunity Atlas', to: 's2.1' },
-          { label: 'S2.2 Jalna District / Taluka Intelligence', to: 's2.2' },
-          { label: 'S2.3 Ambad Micro-Market Segmentation & Campaign Targeting', to: 's2.3' },
-          { label: 'S2.4 Ambad Competition & Channel Intelligence' },
+          { label: 'Crop × Geography Opportunity Atlas', to: 's2.1' },
+          { label: 'Jalna District / Taluka Intelligence', to: 's2.2' },
+          { label: 'Ambad Micro-Market Segmentation & Campaign Targeting', to: 's2.3' },
+          { label: 'Ambad Competition & Channel Intelligence' },
         ]}
       />
       <PageHeader
@@ -972,7 +972,7 @@ export function CompetitionChannel() {
         subtitle="Understand competitive pressure, retailer influence and channel readiness to improve Croptek onion conversion in Ambad."
         actions={
           <>
-            <span className="s2-opened">Opened from S2.3: Clicked 'Analyze Competition &amp; Channel Barriers'</span>
+            <span className="s2-opened">Opened from Clicked 'Analyze Competition &amp; Channel Barriers'</span>
             <Btn variant="primary" icon={<Plus size={14} />} to="s2.5">Generate Conversion Strategy</Btn>
             <Btn variant="gold" icon={<Sparkles size={14} />} onClick={() => toast('AI Conversion Brief for Ambad generated')}>Open AI Conversion Brief</Btn>
           </>
@@ -980,12 +980,12 @@ export function CompetitionChannel() {
       />
 
       <KpiRow>
-        <Kpi icon={<Coins size={18} />} label="Estimated Opportunity" value="₹52 Lakh" sub="+8% vs. S2.2 (₹48 Lakh)" trend="up" spark />
-        <Kpi icon={<Target size={18} />} label="Penetration Gap" value="28 pp" sub="-2 pp vs. S2.2 (30 pp)" trend="down" spark={[8, 7, 7, 6, 6, 5, 5, 4]} />
-        <Kpi icon={<Store size={18} />} label="Active Retailers" value="74" sub="+5 vs. S2.2 (69)" trend="up" spark />
-        <Kpi icon={<Users size={18} />} label="Conventional NPK Users" value="1,832" sub="+1% vs. S2.2 (1,820)" trend="up" spark />
-        <Kpi icon={<MapPin size={18} />} label="Retailer-ready Villages" value="18" sub="+2 vs. S2.2 (16)" trend="up" spark />
-        <Kpi icon={<BarChart3 size={18} />} label="Channel Readiness Score" value="79" sub="+4 vs. S2.2 (75)" trend="up" spark />
+        <Kpi icon={<Coins size={18} />} label="Estimated Opportunity" value="₹52 Lakh" sub="+8% vs. Jalna District / Taluka Intelligence (₹48 Lakh)" trend="up" spark />
+        <Kpi icon={<Target size={18} />} label="Penetration Gap" value="28 pp" sub="-2 pp vs. Jalna District / Taluka Intelligence (30 pp)" trend="down" spark={[8, 7, 7, 6, 6, 5, 5, 4]} />
+        <Kpi icon={<Store size={18} />} label="Active Retailers" value="74" sub="+5 vs. Jalna District / Taluka Intelligence (69)" trend="up" spark />
+        <Kpi icon={<Users size={18} />} label="Conventional NPK Users" value="1,832" sub="+1% vs. Jalna District / Taluka Intelligence (1,820)" trend="up" spark />
+        <Kpi icon={<MapPin size={18} />} label="Retailer-ready Villages" value="18" sub="+2 vs. Jalna District / Taluka Intelligence (16)" trend="up" spark />
+        <Kpi icon={<BarChart3 size={18} />} label="Channel Readiness Score" value="79" sub="+4 vs. Jalna District / Taluka Intelligence (75)" trend="up" spark />
       </KpiRow>
 
       <Grid cols="1.3fr 1fr 1fr">
@@ -1121,11 +1121,11 @@ export function CompetitionChannel() {
 
       <FlowFooter
         steps={[
-          { label: 'Source: S2.3 Ambad Micro-Market Segmentation & Campaign Targeting', to: 's2.3' },
-          { label: 'S2.4 Ambad Competition & Channel Intelligence (Current Screen)', current: true },
-          { label: "On click of 'Generate Conversion Strategy' → S2.5", to: 's2.5' },
+          { label: 'Source: Ambad Micro-Market Segmentation & Campaign Targeting', to: 's2.3' },
+          { label: 'Ambad Competition & Channel Intelligence (Current Screen)', current: true },
+          { label: "On click of 'Generate Conversion Strategy'", to: 's2.5' },
         ]}
-        next={{ label: 'S2.5 — Opportunity Prioritization & Campaign Recommendations', to: 's2.5' }}
+        next={{ label: 'Opportunity Prioritization & Campaign Recommendations', to: 's2.5' }}
       />
     </div>
   );
@@ -1192,11 +1192,11 @@ export function CampaignRecommendations() {
     <div className="stack">
       <Breadcrumbs
         items={[
-          { label: 'S2.1 Opportunity Atlas', to: 's2.1' },
-          { label: 'S2.2 District Intelligence', to: 's2.2' },
-          { label: 'S2.3 Micro-Market Segmentation', to: 's2.3' },
-          { label: 'S2.4 Competition & Channel Intelligence', to: 's2.4' },
-          { label: 'S2.5 Campaign Recommendations' },
+          { label: 'Opportunity Atlas', to: 's2.1' },
+          { label: 'District Intelligence', to: 's2.2' },
+          { label: 'Micro-Market Segmentation', to: 's2.3' },
+          { label: 'Competition & Channel Intelligence', to: 's2.4' },
+          { label: 'Campaign Recommendations' },
         ]}
       />
       <PageHeader
@@ -1207,7 +1207,7 @@ export function CampaignRecommendations() {
       <SourceBar>
         <MousePointerClick size={14} />
         <strong>Source Click:</strong>
-        <span className="code-chip">S2.4 Competition &amp; Channel Intelligence → Generate Conversion Strategy</span>
+        <span className="code-chip">Competition &amp; Channel Intelligence → Generate Conversion Strategy</span>
       </SourceBar>
 
       <KpiRow>
@@ -1343,19 +1343,19 @@ export function CampaignRecommendations() {
           <div style={{ marginTop: 10 }}>
             <Btn variant="primary" className="s2-cta" icon={<Wand2 size={16} />} to="s4.2">Create Campaign →</Btn>
           </div>
-          <p className="s2-footnote" style={{ marginTop: 6 }}>On clicking Create Campaign → Open S4.2 Campaign Creation Wizard</p>
+          <p className="s2-footnote" style={{ marginTop: 6 }}>On clicking Create Campaign → Open Campaign Creation Wizard</p>
         </Panel>
       </Grid>
 
       <FlowFooter
         steps={[
-          { label: 'S2.1 Opportunity Atlas', to: 's2.1' },
-          { label: 'S2.2 District Intelligence', to: 's2.2' },
-          { label: 'S2.3 Micro-Market Segmentation', to: 's2.3' },
-          { label: 'S2.4 Competition & Channel Intelligence', to: 's2.4' },
-          { label: 'S2.5 Campaign Recommendations (Current)', current: true },
+          { label: 'Opportunity Atlas', to: 's2.1' },
+          { label: 'District Intelligence', to: 's2.2' },
+          { label: 'Micro-Market Segmentation', to: 's2.3' },
+          { label: 'Competition & Channel Intelligence', to: 's2.4' },
+          { label: 'Campaign Recommendations (Current)', current: true },
         ]}
-        next={{ label: 'S4.2 Campaign Creation Wizard', to: 's4.2' }}
+        next={{ label: 'Campaign Creation Wizard', to: 's4.2' }}
       />
     </div>
   );

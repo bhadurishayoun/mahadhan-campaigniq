@@ -439,11 +439,11 @@ export function CommandCentre() {
 
       <FootNote />
       <FlowFooter label="Story Flow:" steps={[
-        { label: 'S1.1 Executive Command Centre', to: 's1.1', current: true },
-        { label: 'S1.2 Campaign Portfolio', to: 's1.2' },
-        { label: 'S1.3 Campaign Executive Summary', to: 's1.3' },
-        { label: 'S1.4 Strategic Risk Analysis', to: 's1.4' },
-      ]} next={{ label: 'S1.2 Campaign Portfolio Dashboard', to: 's1.2' }} />
+        { label: 'Executive Command Centre', to: 's1.1', current: true },
+        { label: 'Campaign Portfolio', to: 's1.2' },
+        { label: 'Campaign Executive Summary', to: 's1.3' },
+        { label: 'Strategic Risk Analysis', to: 's1.4' },
+      ]} next={{ label: 'Campaign Portfolio Dashboard', to: 's1.2' }} />
     </div>
   );
 }
@@ -486,12 +486,12 @@ export function PortfolioDashboard() {
 
   return (
     <div className="s1-page">
-      <Breadcrumbs items={[{ label: 'Strategy Command Centre (S1.1)', to: 's1.1' }, { label: 'Campaign Portfolio Dashboard (S1.2)' }]} />
+      <Breadcrumbs items={[{ label: 'Strategy Command Centre', to: 's1.1' }, { label: 'Campaign Portfolio Dashboard' }]} />
       <PageHeader
         title="Campaign Portfolio Dashboard"
         subtitle="Review every active crop nutrition campaign, compare performance and open the next business decision"
         actions={<>
-          <Btn icon={<ArrowLeft size={14} />} to="s1.1">Back to S1.1</Btn>
+          <Btn icon={<ArrowLeft size={14} />} to="s1.1">Back to Executive Strategy Command Centre</Btn>
           <Btn variant="gold" icon={<AlertTriangle size={14} />} to="s1.4">Review Campaign Risks</Btn>
           <Btn variant="primary" icon={<Plus size={14} />} to="s4.2">Create Campaign</Btn>
         </>}
@@ -524,12 +524,12 @@ export function PortfolioDashboard() {
             <div className="warn-box small">
               <div className="row"><Pill tone="amber" solid>STOCK RISK</Pill><strong>Croptek Onion · Dhule &amp; Jalna</strong></div>
               <p style={{ margin: '6px 0' }} className="muted">Strong farmer reach but conversion below potential. Check retailer stock availability.</p>
-              <button type="button" className="s1-link" onClick={() => go('s1.4')}>View Root Cause → S1.4</button>
+              <button type="button" className="s1-link" onClick={() => go('s1.4')}>View Root Cause</button>
             </div>
             <div className="highlight-box small">
               <div className="row"><Pill tone="green" solid>SCALE</Pill><strong>Smartek Sugarcane · Karnataka</strong></div>
               <p style={{ margin: '6px 0' }} className="muted">Highest sample ROI at 3.0x. Explore adjacent target clusters.</p>
-              <button type="button" className="s1-link" onClick={() => go('s1.3')}>Open Campaign Summary → S1.3</button>
+              <button type="button" className="s1-link" onClick={() => go('s1.3')}>Open Campaign Summary</button>
             </div>
           </div>
         </Panel>
@@ -561,16 +561,16 @@ export function PortfolioDashboard() {
           <span>Showing {rows.length} of 28 campaigns{showAll ? ' · sample view' : ''}</span>
         </div>
         <div className="row" style={{ justifyContent: 'flex-end', marginTop: 6 }}>
-          <Btn variant="primary" small to="s1.3">S1.3 →</Btn>
+          <Btn variant="primary" small to="s1.3">Campaign Executive Summary →</Btn>
         </div>
       </Panel>
 
-      <p className="s1-hint">Click the <b>Croptek Onion Adoption</b> row above to open its campaign-level scorecard; click a risk badge for S1.4 Root Cause.</p>
+      <p className="s1-hint">Click the <b>Croptek Onion Adoption</b> row above to open its campaign-level scorecard; click a risk badge for Root Cause.</p>
       <FlowFooter label="Story Flow:" steps={[
-        { label: 'S1.1 Executive Command Centre', to: 's1.1' },
-        { label: 'S1.2 Campaign Portfolio', to: 's1.2', current: true },
-        { label: 'S1.3 Campaign Executive Summary', to: 's1.3' },
-      ]} next={{ label: 'S1.3 Campaign Executive Summary', to: 's1.3' }} />
+        { label: 'Executive Command Centre', to: 's1.1' },
+        { label: 'Campaign Portfolio', to: 's1.2', current: true },
+        { label: 'Campaign Executive Summary', to: 's1.3' },
+      ]} next={{ label: 'Campaign Executive Summary', to: 's1.3' }} />
     </div>
   );
 }
@@ -619,7 +619,7 @@ export function ExecutiveSummary() {
         title="Campaign Executive Summary"
         subtitle="Detailed view of campaign performance, execution, adoption and business impact"
         back="s1.2"
-        badge={<Pill tone="lime">Opened from S1.2: Clicked ‘Croptek Onion Adoption’</Pill>}
+        badge={<Pill tone="lime">Opened from Clicked ‘Croptek Onion Adoption’</Pill>}
         actions={<>
           <Btn icon={<Target size={14} />} to="s1.4">View Root Cause</Btn>
           <Btn variant="gold" icon={<Sparkles size={14} />} to="s2.2">Open Opportunity Context</Btn>
@@ -636,10 +636,10 @@ export function ExecutiveSummary() {
         <span>Stage: <Pill tone="green">Execute</Pill></span>
       </div>
       <FlowStrip items={[
-        { small: 'Source:', label: 'S1.2 Campaign Portfolio Dashboard', to: 's1.2', icon: <Layers size={16} /> },
-        { small: 'Current:', label: 'S1.3 Campaign Executive Summary', current: true, icon: <Target size={16} /> },
-        { small: 'On click of “View Root Cause”', label: 'S1.4 Strategic Risk Analysis', to: 's1.4', icon: <BarChart3 size={16} /> },
-        { small: 'On click of “Open Opportunity Context”', label: 'S2.2 District / Taluka Intelligence', to: 's2.2', icon: <MapPin size={16} /> },
+        { small: 'Source:', label: 'Campaign Portfolio Dashboard', to: 's1.2', icon: <Layers size={16} /> },
+        { small: 'Current:', label: 'Campaign Executive Summary', current: true, icon: <Target size={16} /> },
+        { small: 'On click of “View Root Cause”', label: 'Strategic Risk Analysis', to: 's1.4', icon: <BarChart3 size={16} /> },
+        { small: 'On click of “Open Opportunity Context”', label: 'District / Taluka Intelligence', to: 's2.2', icon: <MapPin size={16} /> },
       ]} />
 
       <KpiRow>
@@ -773,7 +773,7 @@ export function ExecutiveSummary() {
                 { key: 'urgency', label: 'Urgency', render: (r) => <Pill tone={riskTone(r.urgency)}>{r.urgency}</Pill> },
               ]} />
             <div className="row" style={{ marginTop: 10 }}>
-              <Btn variant="primary" small to="s1.4">Open S1.4 Strategic Risk Analysis</Btn>
+              <Btn variant="primary" small to="s1.4">Open Strategic Risk Analysis</Btn>
             </div>
           </Panel>
         </div>
@@ -781,11 +781,11 @@ export function ExecutiveSummary() {
 
       <FootNote />
       <FlowFooter label="Story Flow:" steps={[
-        { label: 'S1.1 Executive Command Centre', to: 's1.1' },
-        { label: 'S1.2 Campaign Portfolio', to: 's1.2' },
-        { label: 'S1.3 Campaign Executive Summary', to: 's1.3', current: true },
-        { label: 'S1.4 Strategic Risk Analysis', to: 's1.4' },
-      ]} next={{ label: 'S1.4 Strategic Risk Analysis', to: 's1.4' }} />
+        { label: 'Executive Command Centre', to: 's1.1' },
+        { label: 'Campaign Portfolio', to: 's1.2' },
+        { label: 'Campaign Executive Summary', to: 's1.3', current: true },
+        { label: 'Strategic Risk Analysis', to: 's1.4' },
+      ]} next={{ label: 'Strategic Risk Analysis', to: 's1.4' }} />
     </div>
   );
 }
@@ -924,7 +924,7 @@ export function RiskAnalysis() {
         subtitle="Croptek Onion Adoption / Diagnose low conversion in Jalna"
         back="s1.3"
         actions={<>
-          <Pill tone="lime">Opened from S1.3: View Root Cause</Pill>
+          <Pill tone="lime">Opened from View Root Cause</Pill>
           <label className="field" style={{ flexDirection: 'row', alignItems: 'center' }}>Campaign:
             <select defaultValue="Croptek – Onion Adoption" onChange={(e) => toast(`Risk model for ${e.target.value} uses portfolio sample data`)}>
               <option>Croptek – Onion Adoption</option>
@@ -996,7 +996,7 @@ export function RiskAnalysis() {
               ))}
               <div className="row-between">
                 <span className="small muted">Recommended: Combined Recovery Plan (best ROI 3.6x)</span>
-                <Btn variant="primary" icon={<ArrowRight size={14} />} to="s1.5">Open Recovery &amp; Replanning (S1.5)</Btn>
+                <Btn variant="primary" icon={<ArrowRight size={14} />} to="s1.5">Open Recovery &amp; Replanning</Btn>
               </div>
             </div>
           )}
@@ -1054,11 +1054,11 @@ export function RiskAnalysis() {
       </Grid>
 
       <FlowFooter label="Story Flow:" steps={[
-        { label: 'S1.1 Command Centre', to: 's1.1' },
-        { label: 'S1.2 Campaign Portfolio', to: 's1.2' },
-        { label: 'S1.3 Executive Summary', to: 's1.3' },
-        { label: 'S1.4 Risk Analysis (Current)', to: 's1.4', current: true },
-      ]} nextLabel="Next Recommended Screen:" next={{ label: 'S1.5 Recovery & Replanning', to: 's1.5' }} />
+        { label: 'Command Centre', to: 's1.1' },
+        { label: 'Campaign Portfolio', to: 's1.2' },
+        { label: 'Executive Summary', to: 's1.3' },
+        { label: 'Risk Analysis (Current)', to: 's1.4', current: true },
+      ]} nextLabel="Next Recommended Screen:" next={{ label: 'Recovery & Replanning', to: 's1.5' }} />
     </div>
   );
 }
@@ -1182,7 +1182,7 @@ export function RecoveryReplanning() {
     setSelected(key);
     setApproved(key);
     const s = SCENARIOS.find((x) => x.key === key)!;
-    toast(`Replan approved: ${s.short} (${s.cost}). Orchestration update queued for S6.1.`);
+    toast(`Replan approved: ${s.short} (${s.cost}). Orchestration update queued for Unified Campaign Execution Control Tower.`);
   };
 
   return (
@@ -1196,13 +1196,13 @@ export function RecoveryReplanning() {
         subtitle="Simulate corrective scenarios, assess business impact, and approve the best recovery plan for campaign performance."
         back="s1.4"
         badge={approved ? <Pill tone="green" solid>Replan Approved · Scenario {approved}</Pill> : undefined}
-        actions={<Pill tone="lime">Opened from S1.4: Clicked ‘Recovery Options’ for Croptek Onion Adoption</Pill>}
+        actions={<Pill tone="lime">Opened from Clicked ‘Recovery Options’ for Croptek Onion Adoption</Pill>}
       />
       <FlowStrip items={[
-        { small: 'Previous', label: 'S1.4 Strategic Risk Analysis', to: 's1.4' },
-        { small: 'Current', label: 'S1.5 Recovery & Replanning', current: true },
-        { small: 'On click of “Approve Replan” →', label: 'S6.1 Campaign Action Plan / Orchestration Update', to: 's6.1' },
-        { small: 'Open Demand & Channel View →', label: 'S5.2 Stock Readiness Dashboard', to: 's5.2', icon: <ExternalLink size={14} /> },
+        { small: 'Previous', label: 'Strategic Risk Analysis', to: 's1.4' },
+        { small: 'Current', label: 'Recovery & Replanning', current: true },
+        { small: 'On click of “Approve Replan” →', label: 'Campaign Action Plan / Orchestration Update', to: 's6.1' },
+        { small: 'Open Demand & Channel View →', label: 'Stock Readiness Dashboard', to: 's5.2', icon: <ExternalLink size={14} /> },
       ]} />
       <SourceBar tone="plain">
         <div className="s1-ctxline">
@@ -1323,19 +1323,19 @@ export function RecoveryReplanning() {
             <Btn icon={<ArrowLeft size={14} />} to="s1.4">Return to Risk Analysis</Btn>
           </div>
           <div className="row">
-            <Btn variant={approved ? 'primary' : 'outline'} to="s6.1" icon={<ArrowRight size={14} />}>S6.1 Campaign Action Plan / Orchestration Update</Btn>
+            <Btn variant={approved ? 'primary' : 'outline'} to="s6.1" icon={<ArrowRight size={14} />}>Campaign Action Plan / Orchestration Update</Btn>
           </div>
         </div>
       </Panel>
 
       <FootNote />
       <FlowFooter label="Story Flow:" steps={[
-        { label: 'S1.1 Command Centre', to: 's1.1' },
-        { label: 'S1.2 Campaign Portfolio', to: 's1.2' },
-        { label: 'S1.3 Executive Summary', to: 's1.3' },
-        { label: 'S1.4 Strategic Risk Analysis', to: 's1.4' },
-        { label: 'S1.5 Recovery & Replanning', to: 's1.5', current: true },
-      ]} next={{ label: 'S6.1 Orchestration Update', to: 's6.1' }} />
+        { label: 'Command Centre', to: 's1.1' },
+        { label: 'Campaign Portfolio', to: 's1.2' },
+        { label: 'Executive Summary', to: 's1.3' },
+        { label: 'Strategic Risk Analysis', to: 's1.4' },
+        { label: 'Recovery & Replanning', to: 's1.5', current: true },
+      ]} next={{ label: 'Orchestration Update', to: 's6.1' }} />
     </div>
   );
 }

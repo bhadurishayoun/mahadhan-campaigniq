@@ -50,12 +50,12 @@ export function ImpactDashboard() {
   return (
     <div className="s7-page">
       <Breadcrumbs items={[
-        { label: 'S6.2 Activity Execution & Action Workspace', to: 's6.2' },
+        { label: 'Activity Execution & Action Workspace', to: 's6.2' },
         { label: 'Proceed to Impact Review', to: 's6.2' },
-        { label: 'S7.1 Campaign Impact & Effectiveness Dashboard' },
+        { label: 'Campaign Impact & Effectiveness Dashboard' },
       ]} />
       <PageHeader
-        title="S7.1 — Campaign Impact & Effectiveness Dashboard"
+        title="Campaign Impact & Effectiveness Dashboard"
         badge={<Pill tone="grey">Product- detailer version 1</Pill>}
         subtitle="Measure campaign performance, farmer conversion, commercial impact, and effectiveness for Croptek Onion Conversion — Ambad, Jalna"
         actions={<>
@@ -64,7 +64,7 @@ export function ImpactDashboard() {
           <Btn variant="gold" icon={<Sparkles size={14} />} to="ai.1">Open AI Brief</Btn>
         </>}
       />
-      <SourceBar><CheckCircle2 size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />Opened from S6.2 by clicking <b>“Proceed to Impact Review”</b> on 26 Jan 2027, 11:18 AM</SourceBar>
+      <SourceBar><CheckCircle2 size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />Opened by clicking <b>“Proceed to Impact Review”</b> on 26 Jan 2027, 11:18 AM</SourceBar>
 
       <ContextStrip items={[
         { icon: <Target size={16} />, label: 'Campaign', value: 'Croptek Onion Conversion — Ambad, Jalna' },
@@ -186,7 +186,7 @@ export function ImpactDashboard() {
 
         <Panel icon={<Network size={16} />} title="Next Action" info className="ai-panel">
           <button type="button" className="s7-next" onClick={() => go('s7.2')}>
-            <span>Investigate Conversion &amp; ROI Drivers<small>S7.2 Campaign Diagnostics &amp; Learning Studio</small></span>
+            <span>Investigate Conversion &amp; ROI Drivers<small>Campaign Diagnostics &amp; Learning Studio</small></span>
             <ArrowRight size={16} />
           </button>
           <p className="muted small" style={{ marginTop: 10 }}>Focus cluster: <b>{cluster}</b> · Channel in view: <b>{channel}</b></p>
@@ -195,10 +195,10 @@ export function ImpactDashboard() {
 
       <FlowFooter
         steps={[
-          { label: '‹ Source: S6.2 Activity Execution & Action Workspace', to: 's6.2' },
-          { label: 'Current: S7.1 Campaign Impact & Effectiveness Dashboard', current: true },
+          { label: '‹ Source: Activity Execution & Action Workspace', to: 's6.2' },
+          { label: 'Current: Campaign Impact & Effectiveness Dashboard', current: true },
         ]}
-        next={{ label: 'S7.2 Campaign Diagnostics & Learning Studio', to: 's7.2' }}
+        next={{ label: 'Campaign Diagnostics & Learning Studio', to: 's7.2' }}
       />
     </div>
   );
@@ -226,8 +226,8 @@ const ROI_ROWS: RoiRow[] = [
 ];
 
 const FACTORS: { icon: ReactNode; title: string; text: string; chip: 'Verified' | 'Probable'; evidence: string }[] = [
-  { icon: <Package size={16} />, title: 'Stock Receipt Delay', text: 'Replenishment (14 MT) pending vs. planned date', chip: 'Verified', evidence: 'S5.4 transfer log: Dhanora transfer in transit; retailer receipt not confirmed on planned date.' },
-  { icon: <Calendar size={16} />, title: 'Demonstration Delay', text: "Demo planned on 22 Jan '27 rescheduled to 26 Jan '27", chip: 'Verified', evidence: 'S6.2 activity record: Demonstration Plot – Dhanora moved from 22 Jan to 26 Jan 2027.' },
+  { icon: <Package size={16} />, title: 'Stock Receipt Delay', text: 'Replenishment (14 MT) pending vs. planned date', chip: 'Verified', evidence: 'transfer log: Dhanora transfer in transit; retailer receipt not confirmed on planned date.' },
+  { icon: <Calendar size={16} />, title: 'Demonstration Delay', text: "Demo planned on 22 Jan '27 rescheduled to 26 Jan '27", chip: 'Verified', evidence: 'activity record: Demonstration Plot – Dhanora moved from 22 Jan to 26 Jan 2027.' },
   { icon: <Users size={16} />, title: 'Farmer Engagement', text: 'Lower field interaction pre-demo (−15% vs. other clusters)', chip: 'Probable', evidence: 'Field visit and meeting counts per farmer are ~15% below cluster average before the demo.' },
   { icon: <Sprout size={16} />, title: 'Adoption Behaviour', text: 'Higher price sensitivity and need for stronger local advocacy', chip: 'Probable', evidence: 'Farmer response notes mention price and request peer/champion validation more often than other clusters.' },
 ];
@@ -260,15 +260,15 @@ export function DiagnosticsStudio() {
   return (
     <div className="s7-page">
       <Breadcrumbs items={[
-        { label: 'S7.1 Campaign Impact & Effectiveness', to: 's7.1' },
-        { label: 'S7.2 Campaign Diagnostics & Learning Studio' },
+        { label: 'Campaign Impact & Effectiveness', to: 's7.1' },
+        { label: 'Campaign Diagnostics & Learning Studio' },
       ]} />
       <PageHeader
         back="s7.1"
-        title="S7.2 Campaign Diagnostics & Learning Studio"
+        title="Campaign Diagnostics & Learning Studio"
         subtitle="Understand performance drivers, quantify impact and capture learnings for future campaigns"
       />
-      <SourceBar><CheckCircle2 size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />Source: S7.1 Campaign Impact &amp; Effectiveness Dashboard <ArrowRight size={12} style={{ verticalAlign: 'middle', margin: '0 6px' }} /> <b>Investigate Conversion &amp; ROI Drivers</b></SourceBar>
+      <SourceBar><CheckCircle2 size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />Source: Campaign Impact &amp; Effectiveness Dashboard <ArrowRight size={12} style={{ verticalAlign: 'middle', margin: '0 6px' }} /> <b>Investigate Conversion &amp; ROI Drivers</b></SourceBar>
 
       <Panel>
         <div className="s7-hero">
@@ -311,7 +311,7 @@ export function DiagnosticsStudio() {
               { key: 'trials', label: 'Trials', align: 'right' },
               { key: 'adopters', label: 'Adopters', align: 'right' },
               { key: 'conv', label: 'Trial → Adoption', align: 'right' },
-              { key: 'vs', label: 'vs. Cluster Avg.', align: 'right', render: (r) => <span style={{ color: dirColor(r), fontWeight: 600 }}>{dirArrow(r)}{r.vs}</span> },
+              { key: 'vs', label: 'Vs. Cluster Avg.', align: 'right', render: (r) => <span style={{ color: dirColor(r), fontWeight: 600 }}>{dirArrow(r)}{r.vs}</span> },
             ]}
             rows={geoData.rows}
             highlight={(r) => r.cluster === geoSel}
@@ -407,8 +407,8 @@ export function DiagnosticsStudio() {
             ))}
           </div>
           <div className="row" style={{ marginTop: 10, justifyContent: 'flex-end' }}>
-            <Btn icon={<Wrench size={14} />} to="s6.2" onClick={() => toast('Corrective action drafted for Dhanora — opening S6.2')}>Create Corrective Action → S6.2</Btn>
-            <Btn variant="primary" icon={<Target size={14} />} to="s2.5">Create Next-Season Campaign Strategy → S2.5</Btn>
+            <Btn icon={<Wrench size={14} />} to="s6.2" onClick={() => toast('Corrective action drafted for Dhanora — opening Activity Execution & Action Workspace')}>Create Corrective Action</Btn>
+            <Btn variant="primary" icon={<Target size={14} />} to="s2.5">Create Next-Season Campaign Strategy</Btn>
           </div>
         </Panel>
       </Grid>
@@ -434,10 +434,10 @@ export function DiagnosticsStudio() {
 
       <FlowFooter
         steps={[
-          { label: '‹ Back to S7.1 Campaign Impact & Effectiveness Dashboard', to: 's7.1' },
-          { label: 'Current: S7.2 Campaign Diagnostics & Learning Studio', current: true },
+          { label: '‹ Back to Campaign Impact & Effectiveness Dashboard', to: 's7.1' },
+          { label: 'Current: Campaign Diagnostics & Learning Studio', current: true },
         ]}
-        next={{ label: 'S2.5 Next-Season Campaign Recommendations', to: 's2.5' }}
+        next={{ label: 'Next-Season Campaign Recommendations', to: 's2.5' }}
       />
     </div>
   );

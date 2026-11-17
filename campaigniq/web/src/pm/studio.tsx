@@ -23,7 +23,7 @@ export function Pm5() {
       title="Campaign Concept Development & Selection Studio"
       status="Campaign Concepts in Draft"
     >
-      <Source>PM.4 — the Marketing Head-assigned <b>{THEME.name}</b> theme has been acknowledged. Hypothetical development state, not an approved programme.</Source>
+      <Source>The Marketing Head-assigned <b>{THEME.name}</b> theme has been acknowledged. Hypothetical development state, not an approved programme.</Source>
       <Strip items={[
         { label: 'Parent theme', value: THEME.name, sub: 'West Region · priority Maharashtra Onion' },
         { label: 'Strategic objective', value: 'Improve eligible first-purchase conversion' },
@@ -60,7 +60,7 @@ export function Pm5() {
           <div className="row">
             <Btn to="pm.5a" icon={<Plus size={13} />}>Add New Concept</Btn>
             <Btn to="pm.5c" icon={<GitCompare size={13} />}>Compare Concepts</Btn>
-            <Btn onClick={() => toast('Combine is conditional on audience-overlap checks (PM.5C)')}>Combine Concepts</Btn>
+            <Btn onClick={() => toast('Combine is conditional on audience-overlap checks')}>Combine Concepts</Btn>
           </div>
           <AiBox title="AI Concept Insight" items={[{ text: 'The two interventions may be complementary, but target audiences and commercial benefits may overlap. No established cause or validated campaign effectiveness is claimed.', tone: 'amber' }]} />
         </div>
@@ -81,7 +81,7 @@ export function Pm5() {
       </div>
 
       <Actions
-        left={<><Btn to="pm.4">← Back to PM.4</Btn><Act message="Draft concepts saved">Save Draft Concepts</Act></>}
+        left={<><Btn to="pm.4">← Back to Assigned Marketing Themes & Brief Review</Btn><Act message="Draft concepts saved">Save Draft Concepts</Act></>}
         right={<Cta to="pm.6">Develop Selected Campaign Proposition</Cta>}
        
       />
@@ -120,7 +120,7 @@ export function Pm5a() {
         <Field label="Open validations"><Input value="Retailer influence · benchmark · audience overlap · stock / channel" /></Field>
       </div>
       <AiBox title="AI Concept Guidance" items={[{ text: `Indicative penetration ${EVIDENCE.penetration}, a positive illustrative quarterly secondary-sales trend and a hypothetical ${EVIDENCE.trialToPurchase} trial-to-purchase rate support exploring this concept. None of it claims underperformance or causation; audience overlap and stock / channel validation are unresolved.` }]} />
-      <Sources items={[{ label: 'MH.5 Strategic Brief', to: 'pm.4a' }, { label: 'MH.4A-I4 Investigation' }, { label: 'PM.4A Evidence Review', to: 'pm.4a' }]} />
+      <Sources items={[{ label: 'Strategic Brief', to: 'pm.4a' }, { label: 'Investigation' }, { label: 'Evidence Review', to: 'pm.4a' }]} />
       <Muted>Save creates an editable draft only. Not a submission or Marketing approval.</Muted>
     </Drawer>
   );
@@ -134,7 +134,7 @@ export function Pm5b() {
       footer={<>
         <Act message="Source analysis opened read-only">View Source Analysis</Act>
         <Btn to="pm.4b">Request Further Evidence / Clarification</Btn>
-        <Btn to="pm.5a">Back to PM.5A</Btn>
+        <Btn to="pm.5a">Back to Campaign Concept Builder</Btn>
         <span className="pm-foot-right"><Cta to="pm.5c">Add to Concept Comparison</Cta></span>
       </>}
     >
@@ -144,9 +144,9 @@ export function Pm5b() {
         rows={[
           [<b>Market attractiveness</b>, '', '', ''],
           ['Croptek penetration, Maharashtra Onion', EVIDENCE.penetration, 'MH.2', <Status>Indicative</Status>],
-          ['Historical secondary sales Q1–Q4', EVIDENCE.quarterly.join(' → '), 'MH.2 (illustrative)', <Status>Observed / Indicative</Status>],
+          ['Historical secondary sales Q1–Q4', EVIDENCE.quarterly.join(' → '), 'Regional Market Opportunity & Product Sales Intelligence (illustrative)', <Status>Observed / Indicative</Status>],
           [<b>Intervention suitability</b>, '', '', ''],
-          ['Pilot trial-to-purchase', `${EVIDENCE.trials} trials / ${EVIDENCE.purchases} purchases = ${EVIDENCE.trialToPurchase}`, 'MH.4A-I4 (hypothetical)', <Status>No benchmark</Status>],
+          ['Pilot trial-to-purchase', `${EVIDENCE.trials} trials / ${EVIDENCE.purchases} purchases = ${EVIDENCE.trialToPurchase}`, 'Updated Farmer Conversion Investigation & Diagnosis (hypothetical)', <Status>No benchmark</Status>],
           ['Historical comparable benchmark', 'Unavailable', '—', <Status>Required Validation</Status>],
           ['Retailer recommendation influence', 'Unverified', '—', <Status>Unverified Hypothesis</Status>],
           ['Stock / channel readiness', 'Awaiting validation', 'DMS', <Status>Required Validation</Status>],
@@ -158,7 +158,7 @@ export function Pm5b() {
         <div className="pm-callout"><b>Retailer-led intervention evidence:</b> Conditional / Incomplete</div>
       </div>
       <AiBox title="AI inference" items={[{ text: 'Retailer-led education is a plausible draft concept, not a proven optimal intervention. The alternative Trial-to-Purchase Farmer Nurture concept remains equally plausible.', tone: 'green' }]} />
-      <Sources items={[{ label: 'MH.2 Market Intelligence' }, { label: 'MH.4A-I4 Farmer Investigation' }, { label: 'MH.4B AI Recommendations' }, { label: 'MH.5 Theme Brief', to: 'pm.4a' }, { label: 'PM.4A Evidence', to: 'pm.4a' }]} />
+      <Sources items={[{ label: 'Market Intelligence' }, { label: 'Farmer Investigation' }, { label: 'AI Recommendations' }, { label: 'Theme Brief', to: 'pm.4a' }, { label: 'Evidence', to: 'pm.4a' }]} />
     </Drawer>
   );
 }
@@ -172,9 +172,9 @@ const COMPARE_ROWS: [string, string, string][] = [
   ['Intervention direction', C1.intervention, C2.intervention],
   ['Supporting evidence', 'Penetration headroom, sales momentum; retailer influence unverified', `Hypothetical pilot ${EVIDENCE.purchases} / ${EVIDENCE.trials} = ${EVIDENCE.trialToPurchase}; no benchmark`],
   ['Channel readiness', 'Retailer stock / participation unverified', 'CRM matching and contact evidence require validation'],
-  ['Technical / agronomy dependencies', 'Claims validation (PM.6B)', 'Claims validation (PM.6B)'],
+  ['Technical / agronomy dependencies', 'Claims validation', 'Claims validation'],
   ['Potential audience overlap', 'Both support first purchase — duplicate targeting / attribution risk', 'Both support first purchase — duplicate targeting / attribution risk'],
-  ['Next development action', 'Proposition & intervention design (PM.6)', 'Proposition & intervention design (PM.6)'],
+  ['Next development action', 'Proposition & intervention design', 'Proposition & intervention design'],
 ];
 
 export function Pm5c() {
@@ -186,14 +186,14 @@ export function Pm5c() {
       title="Campaign Concept Comparison & Consolidation Studio"
       status="PM Draft / Not Submitted / Not Approved"
     >
-      <Source>PM.5B — <b>Add to Concept Comparison</b>, or PM.5 — <b>Compare Concepts</b>. Theme {THEME.name}, Maharashtra Onion priority.</Source>
+      <Source><b>Add to Concept Comparison</b>, or <b>Compare Concepts</b>. Theme {THEME.name}, Maharashtra Onion priority.</Source>
       <div className="pm-two">
         <Box title="C1 vs C2" icon={<GitCompare size={15} />}>
           <Table
             head={['', <>C1 · {C1.name}</>, <>C2 · {C2.name}</>]}
             rows={COMPARE_ROWS.map(([label, a, b]) => [<b>{label}</b>, a, b])}
           />
-          <Muted>No overlap percentages or financial benefits are invented here; business-case benefit overlap is reconciled later in PM.8D.</Muted>
+          <Muted>No overlap percentages or financial benefits are invented here; business-case benefit overlap is reconciled later.</Muted>
         </Box>
         <div className="pm-stack">
           <AiBox title="AI Strategic Comparison" items={[{ text: 'The concepts may be complementary, but causality, audience separation and readiness are not verified.', tone: 'amber' }]} />
@@ -228,7 +228,7 @@ export function Pm6() {
       status="Draft — Not Approved"
       actions={<div className="row"><span className="small muted">Concept</span>{CONCEPTS.map((item) => <button type="button" key={item.id} className={cx('pm-chip', item.id === concept.id && 'active')} onClick={() => setConcept(item)}>{item.id} · {item.name}</button>)}</div>}
     >
-      <Source>PM.5 — selected draft concept <b>{concept.name}</b> under the {THEME.name} theme. Switching concepts does not merge audiences or business cases.</Source>
+      <Source>Selected draft concept <b>{concept.name}</b> under the {THEME.name} theme. Switching concepts does not merge audiences or business cases.</Source>
       <Strip items={[
         { label: 'Parent theme', value: THEME.name },
         { label: 'Selected campaign', value: concept.name },
@@ -264,8 +264,8 @@ export function Pm6() {
                 <Field label="Target participants"><Input key={stage + 'p'} value={stage === 0 ? 'Eligible Croptek retailers (validation pending)' : 'Eligible farmers (eligibility & consent pending)'} /></Field>
                 <Field label="Proposed channels"><Input value={stage === 0 ? 'Retailer briefing, product education' : 'Field, consent-based digital'} key={stage + 'c'} /></Field>
                 <Field label="Expected action"><Input value={stage === 0 ? 'Accurate communication of approved product information' : 'Farmer progresses to next stage'} key={stage + 'e'} /></Field>
-                <Field label="Required collateral"><Input value="Approved retailer detailer (PM.7)" /></Field>
-                <Field label="Measurement KPI"><Input value={stage === 0 ? 'Retailers trained ÷ assigned eligible retailers' : 'To be defined in PM.6A'} key={stage + 'k'} /></Field>
+                <Field label="Required collateral"><Input value="Approved retailer detailer" /></Field>
+                <Field label="Measurement KPI"><Input value={stage === 0 ? 'Retailers trained ÷ assigned eligible retailers' : 'To be defined'} key={stage + 'k'} /></Field>
               </div>
             </Box>
           </Box>
@@ -293,7 +293,7 @@ export function Pm6() {
       </div>
 
       <Actions
-        left={<><Btn to="pm.5">← Back to PM.5</Btn><Act message="Draft proposition saved">Save Draft Proposition</Act><Btn to="pm.4a">View Source Strategic Brief</Btn></>}
+        left={<><Btn to="pm.5">← Back to Campaign Concept Development Studio</Btn><Act message="Draft proposition saved">Save Draft Proposition</Act><Btn to="pm.4a">View Source Strategic Brief</Btn></>}
         right={<Cta to="pm.7">Develop Campaign Collaterals</Cta>}
        
       />
@@ -307,10 +307,10 @@ export function Pm6a() {
   return (
     <Drawer title="Retailer Enablement — Intervention Configuration" status="Draft / Not Approved" width="50%" back="pm.6" subtitle={`C1 ${C1.name} · ${THEME.name} · Maharashtra Onion · C2 remains distinct`}
       footer={<>
-        <Btn to="pm.5b">View PM.5B Concept Evidence</Btn>
-        <Btn to="pm.7">View PM.7 Collateral Requirements</Btn>
+        <Btn to="pm.5b">View Concept Evidence</Btn>
+        <Btn to="pm.7">View Collateral Requirements</Btn>
         <Act message="Draft intervention saved">Save Draft Intervention</Act>
-        <Btn to="pm.6">Back to PM.6</Btn>
+        <Btn to="pm.6">Back to Product Proposition & Intervention Designer</Btn>
         <span className="pm-foot-right"><Cta to="pm.6b">Validate Product Proposition & Agronomy</Cta></span>
       </>}
     >
@@ -322,7 +322,7 @@ export function Pm6a() {
         <Field label="Proposed channel"><Input value="Retailer-led" /></Field>
         <Field label="Target crop / geography"><Input value="Onion · Maharashtra" /></Field>
         <Field label="Agronomy-aligned activation window"><Input placeholder="Pending agronomy validation" /></Field>
-        <Field label="Required resources"><Input value="Approved retailer detailer (PM.7) · product information · retailer eligibility · stock / readiness · consent checks" /></Field>
+        <Field label="Required resources"><Input value="Approved retailer detailer · product information · retailer eligibility · stock / readiness · consent checks" /></Field>
       </div>
       <Box title="KPI Configuration">
         <Table
@@ -360,8 +360,8 @@ export function Pm6b() {
         <Act message="Claim editing enabled for draft text">Edit Draft Claim</Act>
         <Act message="Draft saved">Save Draft</Act>
         <Act message="Technical review requested from authorized agronomy reviewer">Request Technical Review</Act>
-        <Btn to="pm.6a">Back to PM.6A</Btn>
-        <span className="pm-foot-right"><Cta to="pm.7">PM.7 Collateral Studio</Cta></span>
+        <Btn to="pm.6a">Back to Intervention Configuration & KPI Design</Btn>
+        <span className="pm-foot-right"><Cta to="pm.7">Collateral Studio</Cta></span>
       </>}
     >
       <Table
@@ -393,9 +393,9 @@ export function Pm6b() {
           ]} />
         <Muted>No dosage or stage-specific approval is invented. Only designated technical reviewers can change claim validation status.</Muted>
       </Box>
-      <Workflow compact steps={[{ label: 'PM Draft Claim', state: 'active' }, { label: 'Agronomy / Technical Review' }, { label: 'Returned or Accepted' }, { label: 'Approved Claim Library' }, { label: 'PM.7 Collateral Version Review' }]} />
+      <Workflow compact steps={[{ label: 'PM Draft Claim', state: 'active' }, { label: 'Agronomy / Technical Review' }, { label: 'Returned or Accepted' }, { label: 'Approved Claim Library' }, { label: 'Collateral Version Review' }]} />
       <AiBox title="AI Technical Validation Guidance" items={[{ text: 'Use authorized product evidence and review current crop-stage applicability. Edits to approved claims require versioned reapproval.', tone: 'green' }]} />
-      <Sources items={[{ label: 'PM.7 Collateral Studio', to: 'pm.7' }, { label: 'PM.7D Content Approval', to: 'pm.7d' }]} label="Next" />
+      <Sources items={[{ label: 'Collateral Studio', to: 'pm.7' }, { label: 'Content Approval', to: 'pm.7d' }]} label="Next" />
     </Drawer>
   );
 }
