@@ -70,7 +70,7 @@ export function DataSources() {
   const live = items?.filter((item) => item.status === 'live').length ?? 0;
   const districts = reference.states.reduce((sum, state) => sum + state.districts.length, 0);
   const withData = reference.states.reduce((sum, state) => sum + state.districts.filter((district) => district.has_data).length, 0);
-  const screenLabel = (id: string) => SCREENS.find((screen) => screen.id === id)?.code ?? id.toUpperCase();
+  const screenLabel = (id: string) => SCREENS.find((screen) => screen.id === id)?.title ?? id;
 
   return (
     <div className="stack">
