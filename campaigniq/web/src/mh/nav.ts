@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Marketing Head persona (CampaignIQ V2) - screen registry.
  */
 

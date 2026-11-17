@@ -1,4 +1,4 @@
-﻿import { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import type { Filters, ReferenceData, Scope } from './data/reference';
 import { PM_SCREENS, type PmScreenId } from './pm/nav';
 import { TM_SCREENS, type TmScreenId } from './tm/nav';

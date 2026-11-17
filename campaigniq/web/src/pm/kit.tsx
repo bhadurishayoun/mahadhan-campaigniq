@@ -1,7 +1,10 @@
-﻿import { useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ArrowRight, ChevronRight, ExternalLink, Home, Lock, Sparkles, X } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import { Btn, Pill, cx, type Tone } from '../ui';
+import { PulseStrip, type PulseItem } from '../ui/index';
+import { PM_CHARTS, PM_DRAWER_CHARTS, PM_PULSE as PM_PULSE_BY_CODE } from './charts';
+import { StatusChip } from '../ui/index';
 import type { CreativeKind } from './data';
 
 export function toneOf(text: string): Tone {
@@ -17,18 +20,14 @@ export function Status({ children, tone, solid }: { children: string; tone?: Ton
   return <Pill tone={tone ?? toneOf(children)} solid={solid}>{children}</Pill>;
 }
 
-function PersonaPulsePm() {
-  return (
-    <section className="persona-pulse persona-pulse-pm" aria-label="Product Manager visual summary">
-      <div className="persona-pulse-chip">Portfolio Signals</div>
-      <div className="persona-pulse-row"><span>Revenue readiness</span><i style={{ width: '82%' }} /><b>82%</b></div>
-      <div className="persona-pulse-row persona-pulse-amber"><span>Intervention confidence</span><i style={{ width: '68%' }} /><b>68%</b></div>
-      <div className="persona-pulse-row"><span>Execution coverage</span><i style={{ width: '76%' }} /><b>76%</b></div>
-    </section>
-  );
-}
 
-export function PmPage({ crumbs, code, title, status, subtitle, actions, children, className }: {
+export const PM_PULSE: PulseItem[] = [
+  { label: 'Revenue readiness', value: 82 },
+  { label: 'Intervention confidence', value: 68, tone: 'amber' },
+  { label: 'Execution coverage', value: 76 },
+];
+
+export function PmPage({ crumbs, code, title, status, subtitle, actions, children, className, pulse }: {
   crumbs: { label: string; to?: ScreenId }[];
   code: string;
   title: string;
@@ -37,6 +36,7 @@ export function PmPage({ crumbs, code, title, status, subtitle, actions, childre
   actions?: ReactNode;
   children: ReactNode;
   className?: string;
+  pulse?: PulseItem[];
 }) {
   const { go } = useNav();
   return (
@@ -62,7 +62,8 @@ export function PmPage({ crumbs, code, title, status, subtitle, actions, childre
         </div>
         {actions && <div className="page-actions">{actions}</div>}
       </div>
-      <PersonaPulsePm />
+      <PulseStrip title="Portfolio Signals" ariaLabel="Product Manager visual summary" items={pulse ?? PM_PULSE_BY_CODE[code] ?? PM_PULSE} />
+      {PM_CHARTS[code]}
       {children}
     </div>
   );
@@ -75,6 +76,20 @@ export function Source({ children, right }: { children: ReactNode; right?: React
       <span className="pm-source-text">{children}</span>
       {right && <span className="pm-source-right">{right}</span>}
     </div>
+  );
+}
+
+function DrawerSummary({ title, status, back }: { title: string; status?: string; back: ScreenId }) {
+  const kind = !status ? 'info' : /approved|complete|validated/i.test(status) ? 'ok' : /not|pending|draft/i.test(status) ? 'warn' : 'info';
+  return (
+    <section className="iq-drawer-summary" aria-label="Summary">
+      <b>{title}</b>
+      <div className="iq-chip-row">
+        {status && <StatusChip kind={kind}>{status}</StatusChip>}
+        <StatusChip kind="info">Returns to {back.toUpperCase()}</StatusChip>
+        <StatusChip kind="pending">Illustrative data</StatusChip>
+      </div>
+    </section>
   );
 }
 
@@ -97,7 +112,7 @@ export function Drawer({ title, status, width = '45%', back, children, footer, s
           <button type="button" className="pm-close" aria-label="Close" onClick={() => go(back)}><X size={16} /></button>
         </div>
       </header>
-      <div className="pm-drawer-body">{children}</div>
+      <div className="pm-drawer-body"><DrawerSummary title={title} status={status} back={back} />{PM_DRAWER_CHARTS[title]}{children}</div>
       {footer && <footer className="pm-drawer-foot">{footer}</footer>}
     </aside>
   );
@@ -122,7 +137,7 @@ export function Modal({ title, status, width = '65%', back, children, footer, su
           <button type="button" className="pm-close" aria-label="Close" onClick={() => go(back)}><X size={16} /></button>
         </div>
       </header>
-      <div className="pm-drawer-body">{children}</div>
+      <div className="pm-drawer-body"><DrawerSummary title={title} status={status} back={back} />{PM_DRAWER_CHARTS[title]}{children}</div>
       {footer && <footer className="pm-drawer-foot">{footer}</footer>}
     </div>
   );

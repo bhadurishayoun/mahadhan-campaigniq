@@ -3,6 +3,8 @@ import { ChevronRight, Home } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import { cx, Pill, type Tone } from '../ui';
 import { bhMeta, type BhScreenId } from './nav';
+import { KpiCard } from '../ui/index';
+import { ClipboardCheck, IndianRupee, Megaphone, Target, Users, Wallet } from '../icons';
 
 export function BhPage({ screen, children, subtitle, actions, className }: {
   screen: BhScreenId; children: ReactNode; subtitle?: string; actions?: ReactNode; className?: string;
@@ -51,8 +53,10 @@ export function BhCard({ title, children, className = '', action }: { title: str
   return <section className={`bh-card ${className}`}><div className="bh-card-head"><h2>{title}</h2>{action}</div>{children}</section>;
 }
 
+const metricIcon = (label: string) => (/invest|budget|spend|unspent/i.test(label) ? Wallet : /achiev|abp|business|sales|roi/i.test(label) ? IndianRupee : /adopt|farmer/i.test(label) ? Users : /campaign/i.test(label) ? Megaphone : /execut|plan/i.test(label) ? Target : ClipboardCheck);
+
 export function BhMetric({ label, value, note, tone = 'green' }: { label: string; value: string; note?: string; tone?: Tone }) {
-  return <div className={`bh-metric bh-metric-${tone}`}><span>{label}</span><strong>{value}</strong>{note && <small>{note}</small>}</div>;
+  return <KpiCard icon={metricIcon(label)} label={label} value={value} note={note} tone={tone === 'amber' ? 'amber' : tone === 'red' ? 'red' : tone === 'blue' ? 'blue' : 'green'} />;
 }
 
 export function BhBars({ title, items, max }: { title?: string; items: { label: string; value: number; note?: string; tone?: 'green' | 'amber' | 'muted' }[]; max?: number }) {

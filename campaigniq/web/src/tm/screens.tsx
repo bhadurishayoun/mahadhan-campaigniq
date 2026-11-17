@@ -1,8 +1,12 @@
-﻿import type { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useNav } from '../nav';
 import { TmPage } from './ui';
 import type { ScreenId } from '../nav';
 import { IndiaDistrictMap } from '../map/IndiaDistrictMap';
+import { ActionButton, StatusChip, type StatusKind } from '../ui/index';
+import { TM_CHARTS, TM_KPIS, TM_PULSE } from './charts';
+
+const statusKind = (t: string): StatusKind => (/verified|ready|on track|complete|resolved/i.test(t) ? 'ok' : /needs|behind|risk|blocked|accelerat/i.test(t) ? 'risk' : 'warn');
 
 type Metric = { label: string; value: string; sub?: string; tone?: 'green' | 'amber' | 'red' | 'grey' };
 type GridRow = { label: string; value: string; status?: string; cta?: { label: string; to: ScreenId } };
@@ -30,8 +34,8 @@ function Workspace({
   const { go } = useNav();
 
   return (
-    <TmPage crumbs={crumbs} code={code} title={title} subtitle={subtitle} actions={actions}>
-      <div className="pm-strip">
+    <TmPage crumbs={crumbs} code={code} title={title} subtitle={subtitle} actions={actions} pulse={TM_PULSE[code]}>
+      {code === 'TM.1' ? TM_KPIS() : <div className="pm-strip">
         {metrics.map((item) => (
           <div key={item.label} className={`pm-strip-item ${item.tone ? `pm-strip-${item.tone}` : ''}`}>
             <span>{item.label}</span>
@@ -39,7 +43,9 @@ function Workspace({
             {item.sub && <small>{item.sub}</small>}
           </div>
         ))}
-      </div>
+      </div>}
+
+      {TM_CHARTS[code]}
 
       <div className="pm-two">
         <div className="pm-box">
@@ -54,12 +60,10 @@ function Workspace({
                 <tr key={row.label}>
                   <th>{row.label}</th>
                   <td>{row.value}</td>
-                  <td>{row.status ? <span className="pill pill-amber">{row.status}</span> : null}</td>
+                  <td>{row.status ? <StatusChip kind={statusKind(row.status)}>{row.status}</StatusChip> : null}</td>
                   <td style={{ textAlign: 'right' }}>
                     {row.cta && (
-                      <button type="button" className="pm-btn" onClick={() => go(row.cta!.to)}>
-                        {row.cta.label}
-                      </button>
+                      <ActionButton label={row.cta.label} onClick={() => go(row.cta!.to)} />
                     )}
                   </td>
                 </tr>
@@ -83,9 +87,7 @@ function Workspace({
           {right.rows.some((row) => row.cta) && (
             <div className="pm-box-actions">
               {right.rows.filter((row) => row.cta).map((row) => (
-                <button key={row.label} type="button" className="pm-btn pm-btn-soft" onClick={() => go(row.cta!.to)}>
-                  {row.cta!.label}
-                </button>
+                <ActionButton key={row.label} kind="primary" label={row.cta!.label} onClick={() => go(row.cta!.to)} />
               ))}
             </div>
           )}
@@ -102,26 +104,26 @@ export function Tm1() {
       crumbs={[{ label: 'My Plan' }, { label: 'My Performance (Active)' }]}
       code="TM.1"
       title="My Performance & Annual Business Plan"
-      subtitle="Ambad Cluster Â· FY 2025â€“26 Â· Illustrative planning baseline"
-      actions={<button type="button" className="pm-btn" onClick={() => go('tm.2')}>Plan Territory â†’ TM.2</button>}
+      subtitle="Ambad Cluster · FY 2025–26 · Illustrative planning baseline"
+      actions={<ActionButton kind="primary" label="Plan Territory" onClick={() => go('tm.2')} />}
       metrics={[
-        { label: 'Last-year sales', value: 'â‚¹8.0 Cr' },
-        { label: 'Current-year ABP target', value: 'â‚¹10.0 Cr' },
+        { label: 'Last-year sales', value: '₹8.0 Cr' },
+        { label: 'Current-year ABP target', value: '₹10.0 Cr' },
         { label: 'Required growth', value: '+25%', tone: 'amber' },
       ]}
       left={{
         title: 'Territory Planning Table',
         rows: [
-          { label: 'Ambad', value: 'â‚¹3.2 Cr â†’ â‚¹4.2 Cr (+31.3%)', cta: { label: 'Plan Territory', to: 'tm.2' } },
-          { label: 'Ghansawangi', value: 'â‚¹2.8 Cr â†’ â‚¹3.4 Cr (+21.4%)' },
-          { label: 'Badnapur', value: 'â‚¹2.0 Cr â†’ â‚¹2.4 Cr (+20.0%)' },
-          { label: 'Total', value: 'â‚¹8.0 Cr â†’ â‚¹10.0 Cr (+25.0%)' },
+          { label: 'Ambad', value: '₹3.2 Cr → ₹4.2 Cr (+31.3%)', cta: { label: 'Plan Territory', to: 'tm.2' } },
+          { label: 'Ghansawangi', value: '₹2.8 Cr → ₹3.4 Cr (+21.4%)' },
+          { label: 'Badnapur', value: '₹2.0 Cr → ₹2.4 Cr (+20.0%)' },
+          { label: 'Total', value: '₹8.0 Cr → ₹10.0 Cr (+25.0%)' },
         ],
       }}
       right={{
         title: 'AI Planning Insight',
         rows: [
-          { label: 'Largest uplift', value: 'Ambad contributes the highest absolute gap (+â‚¹1.0 Cr).' },
+          { label: 'Largest uplift', value: 'Ambad contributes the highest absolute gap (+₹1.0 Cr).' },
           { label: 'Stability check', value: 'Maintain Ghansawangi/Badnapur growth trajectory with controlled variance.' },
           { label: 'Incentive readiness', value: 'Prior-year achievement trend indicates feasible +25% aggregate stretch.' },
         ],
@@ -138,7 +140,7 @@ export function Tm2() {
       code="TM.2"
       title="Territory Network & Channel Mapping"
       subtitle="My Plan > My Performance > Ambad > Territory Network"
-      actions={<button type="button" className="pm-btn" onClick={() => go('tm.3')}>Proceed to Outlet Planning â†’ TM.3</button>}
+      actions={<ActionButton kind="primary" label="Proceed to Outlet Planning" onClick={() => go('tm.3')} />}
       metrics={[
         { label: 'District / Territory', value: 'Jalna / Ambad' },
         { label: 'Mapped dealers', value: '8 (illustrative)' },
@@ -162,12 +164,12 @@ export function Tm2() {
               markers={[
                 {
                   id: 'v-ambad',
-                  info: 'Ambad HQ Â· 22 retailers linked Â· 1 duplicate outlet',
+                  info: 'Ambad HQ · 22 retailers linked · 1 duplicate outlet',
                   action: { label: 'Allocate outlets in TM.3', run: () => go('tm.3') },
                 },
-                { id: 'v-dhanora', info: 'Dhanora Â· 14 retailers linked Â· 2 inactive mappings' },
-                { id: 'v-wadigaon', info: 'Wadi Gaon Â· 11 retailers linked Â· no blockers' },
-                { id: 'v-pimpalgaon', info: 'Pimpalgaon Â· 9 retailers linked Â· 2 pending verifications' },
+                { id: 'v-dhanora', info: 'Dhanora · 14 retailers linked · 2 inactive mappings' },
+                { id: 'v-wadigaon', info: 'Wadi Gaon · 11 retailers linked · no blockers' },
+                { id: 'v-pimpalgaon', info: 'Pimpalgaon · 9 retailers linked · 2 pending verifications' },
               ]}
               scale={{
                 title: 'Channel depth score',
@@ -182,10 +184,10 @@ export function Tm2() {
         ),
         visualNote: 'Interactive map sourced from the built-in district/taluka datasets for TM network validation.',
         rows: [
-          { label: 'Dhanora', value: '14 retailers linked Â· 2 inactive mappings', status: 'Needs mapping clean-up' },
-          { label: 'Wadi Gaon', value: '11 retailers linked Â· no blockers' },
-          { label: 'Ambad HQ', value: '22 retailers linked Â· one duplicate outlet' },
-          { label: 'Pimpalgaon', value: '9 retailers linked Â· data pending in 2 outlets' },
+          { label: 'Dhanora', value: '14 retailers linked · 2 inactive mappings', status: 'Needs mapping clean-up' },
+          { label: 'Wadi Gaon', value: '11 retailers linked · no blockers' },
+          { label: 'Ambad HQ', value: '22 retailers linked · one duplicate outlet' },
+          { label: 'Pimpalgaon', value: '9 retailers linked · data pending in 2 outlets' },
         ],
       }}
       right={{
@@ -208,7 +210,7 @@ export function Tm3() {
       code="TM.3"
       title="Outlet Business Planning & Target Allocation"
       subtitle="Ambad cluster dealer and retailer allocation with editable target assumptions"
-      actions={<button type="button" className="pm-btn" onClick={() => go('tm.4')}>Proceed to Crop & Product Plan → TM.4</button>}
+      actions={<ActionButton kind="primary" label="Proceed to Crop & Product Plan" onClick={() => go('tm.4')} />}
       metrics={[
         { label: 'Previous-year primary', value: '₹3.2 Cr' },
         { label: 'ABP target', value: '₹4.2 Cr' },
@@ -276,8 +278,8 @@ export function Tm4() {
       crumbs={[{ label: 'My Plan' }, { label: 'Crop & Product Plan (Active)' }]}
       code="TM.4"
       title="Village-wise Crop, Product & Coverage Planning"
-      subtitle="Ambad Onion season planning Â· product mix and field coverage readiness"
-      actions={<button type="button" className="pm-btn" onClick={() => go('tm.5')}>Proceed to Review & Approval â†’ TM.5</button>}
+      subtitle="Ambad Onion season planning · product mix and field coverage readiness"
+      actions={<ActionButton kind="primary" label="Proceed to Review & Approval" onClick={() => go('tm.5')} />}
       metrics={[
         { label: 'Primary crop focus', value: 'Onion' },
         { label: 'Coverage villages', value: '5 selected' },
@@ -296,12 +298,12 @@ export function Tm4() {
                 Ambad: { tone: 4, info: 'Core execution taluka' },
               }}
               markers={[
-                { id: 'v-dhanora', info: 'Dhanora Â· 420 acres Â· Croptek + NutriBoost bundle Â· Ready' },
-                { id: 'v-wadigaon', info: 'Wadi Gaon Â· 360 acres Â· Croptek focus + demo plots Â· Conditional' },
-                { id: 'v-ambad', info: 'Ambad HQ belt Â· 510 acres Â· Balanced portfolio Â· Ready' },
+                { id: 'v-dhanora', info: 'Dhanora · 420 acres · Croptek + NutriBoost bundle · Ready' },
+                { id: 'v-wadigaon', info: 'Wadi Gaon · 360 acres · Croptek focus + demo plots · Conditional' },
+                { id: 'v-ambad', info: 'Ambad HQ belt · 510 acres · Balanced portfolio · Ready' },
                 {
                   id: 'v-pimpalgaon',
-                  info: 'Pimpalgaon Â· 280 acres Â· Retailer education pending Â· Needs action',
+                  info: 'Pimpalgaon · 280 acres · Retailer education pending · Needs action',
                   action: { label: 'Track readiness in TM.5', run: () => go('tm.5') },
                 },
               ]}
@@ -318,10 +320,10 @@ export function Tm4() {
         ),
         visualNote: 'Map highlights crop coverage villages and readiness hotspots before final TM.5 approval submission.',
         rows: [
-          { label: 'Dhanora', value: 'Onion 420 acres Â· Croptek + NutriBoost bundle', status: 'Ready' },
-          { label: 'Wadi Gaon', value: 'Onion 360 acres Â· Croptek focus + demo plots', status: 'Conditional' },
-          { label: 'Ambad HQ belt', value: 'Onion 510 acres Â· balanced portfolio', status: 'Ready' },
-          { label: 'Pimpalgaon', value: 'Onion 280 acres Â· retailer education pending', status: 'Needs action' },
+          { label: 'Dhanora', value: 'Onion 420 acres · Croptek + NutriBoost bundle', status: 'Ready' },
+          { label: 'Wadi Gaon', value: 'Onion 360 acres · Croptek focus + demo plots', status: 'Conditional' },
+          { label: 'Ambad HQ belt', value: 'Onion 510 acres · balanced portfolio', status: 'Ready' },
+          { label: 'Pimpalgaon', value: 'Onion 280 acres · retailer education pending', status: 'Needs action' },
         ],
       }}
       right={{
@@ -344,7 +346,7 @@ export function Tm5() {
       code="TM.5"
       title="Business & Crop Plan Review and Approval"
       subtitle="Final reconciliation of sales targets, crop coverage and campaign assumptions"
-      actions={<button type="button" className="pm-btn" onClick={() => go('cw.1')}>Start Campaign Wizard â†’ CW.1</button>}
+      actions={<ActionButton kind="primary" label="Start Campaign Wizard" onClick={() => go('cw.1')} />}
       metrics={[
         { label: 'Plan status', value: 'Draft v3' },
         { label: 'Reconciliation checks', value: '11 / 14 complete' },
@@ -354,7 +356,7 @@ export function Tm5() {
         title: 'Approval Checklist',
         rows: [
           { label: 'Territory target consistency', value: 'Matched with TM.1 totals', status: 'Verified' },
-          { label: 'Outlet and crop mapping', value: 'Aligned with TM.2â€“TM.4', status: 'Verified' },
+          { label: 'Outlet and crop mapping', value: 'Aligned with TM.2–TM.4', status: 'Verified' },
           { label: 'Campaign support assumptions', value: '2 assumptions require validation', status: 'Pending' },
           { label: 'Submission package', value: 'Ready for MH workflow', cta: { label: 'Submit in CW.1', to: 'cw.1' } },
         ],
@@ -379,7 +381,7 @@ export function Cw1() {
       code="CW.1"
       title="Campaign Objective & Targeting"
       subtitle="Define objective, audience and territory focus for approved plan"
-      actions={<button type="button" className="pm-btn" onClick={() => go('cw.2')}>Open CW.2</button>}
+      actions={<button type="button" className="pm-btn" onClick={() => go('cw.2')}>Continue to activity mix</button>}
       metrics={[
         { label: 'Wizard progress', value: 'Step 1 of 4' },
         { label: 'Primary objective', value: 'Retail conversion uplift' },
@@ -414,19 +416,19 @@ export function Cw2() {
       code="CW.2"
       title="Campaign Activity & Budget Mix Planner"
       subtitle="Allocate spend and activities by channel with realistic execution bandwidth"
-      actions={<button type="button" className="pm-btn" onClick={() => go('cw.3')}>Open CW.3</button>}
+      actions={<button type="button" className="pm-btn" onClick={() => go('cw.3')}>Continue to scenarios</button>}
       metrics={[
         { label: 'Wizard progress', value: 'Step 2 of 4' },
-        { label: 'Indicative budget', value: 'â‚¹18.5 Lakh' },
+        { label: 'Indicative budget', value: '₹18.5 Lakh' },
         { label: 'Budget variance', value: '+3.2%', tone: 'amber' },
       ]}
       left={{
         title: 'Activity Mix',
         rows: [
-          { label: 'Dealer meets', value: '18 events Â· â‚¹5.2 Lakh' },
-          { label: 'Village demos', value: '24 events Â· â‚¹7.8 Lakh' },
-          { label: 'Field follow-ups', value: '310 visits Â· â‚¹3.6 Lakh' },
-          { label: 'Digital nudges', value: 'Targeted reminders Â· â‚¹1.9 Lakh', cta: { label: 'Validate outcomes', to: 'cw.3' } },
+          { label: 'Dealer meets', value: '18 events · ₹5.2 Lakh' },
+          { label: 'Village demos', value: '24 events · ₹7.8 Lakh' },
+          { label: 'Field follow-ups', value: '310 visits · ₹3.6 Lakh' },
+          { label: 'Digital nudges', value: 'Targeted reminders · ₹1.9 Lakh', cta: { label: 'Validate outcomes', to: 'cw.3' } },
         ],
       }}
       right={{
@@ -449,7 +451,7 @@ export function Cw3() {
       code="CW.3"
       title="Campaign Scenario & Expected Outcomes"
       subtitle="Compare conservative, base and stretch scenarios before final submission"
-      actions={<button type="button" className="pm-btn" onClick={() => go('cw.4')}>Open CW.4</button>}
+      actions={<button type="button" className="pm-btn" onClick={() => go('cw.4')}>Continue to final review</button>}
       metrics={[
         { label: 'Wizard progress', value: 'Step 3 of 4' },
         { label: 'Base conversion', value: '18.4%' },
@@ -458,9 +460,9 @@ export function Cw3() {
       left={{
         title: 'Scenario Comparison',
         rows: [
-          { label: 'Conservative', value: 'Lower spend Â· slower reach Â· lower risk' },
-          { label: 'Base', value: 'Balanced spend Â· moderate reach Â· planned ROI' },
-          { label: 'Stretch', value: 'Higher activation push Â· tighter execution dependency' },
+          { label: 'Conservative', value: 'Lower spend · slower reach · lower risk' },
+          { label: 'Base', value: 'Balanced spend · moderate reach · planned ROI' },
+          { label: 'Stretch', value: 'Higher activation push · tighter execution dependency' },
           { label: 'Recommended', value: 'Base with controlled stretch add-ons', cta: { label: 'Finalize in CW.4', to: 'cw.4' } },
         ],
       }}
@@ -484,7 +486,7 @@ export function Cw4() {
       code="CW.4"
       title="Campaign Review & Submit"
       subtitle="Final package review before approval workflow submission"
-      actions={<button type="button" className="pm-btn" onClick={() => go('tm.ex1')}>Submit & Open Execution â†’ TM.EX1</button>}
+      actions={<ActionButton kind="primary" label="Submit & Open Execution" onClick={() => go('tm.ex1')} />}
       metrics={[
         { label: 'Wizard progress', value: 'Step 4 of 4' },
         { label: 'Submission status', value: 'Draft not submitted', tone: 'amber' },
@@ -519,7 +521,7 @@ export function TmEx1() {
       code="TM.EX1"
       title="Campaign Execution & Live Control Tower"
       subtitle="Track live execution vs plan and identify immediate field deviations"
-      actions={<button type="button" className="pm-btn" onClick={() => go('tm.ex2')}>Open Corrective Workspace â†’ TM.EX2</button>}
+      actions={<ActionButton kind="primary" label="Open Corrective Workspace" onClick={() => go('tm.ex2')} />}
       metrics={[
         { label: 'Execution progress', value: '72%' },
         { label: 'Planned progress', value: '80%' },
@@ -554,7 +556,7 @@ export function TmEx2() {
       code="TM.EX2"
       title="Activity Execution & Corrective Action Workspace"
       subtitle="Issue triage, owner assignment and closure tracking"
-      actions={<button type="button" className="pm-btn" onClick={() => go('tm.im1')}>Proceed to Impact Review â†’ TM.IM1</button>}
+      actions={<ActionButton kind="primary" label="Proceed to Impact Review" onClick={() => go('tm.im1')} />}
       metrics={[
         { label: 'Open issues', value: '9' },
         { label: 'High-priority issues', value: '3', tone: 'amber' },
@@ -566,7 +568,7 @@ export function TmEx2() {
           { label: 'Dhanora follow-up lag', value: 'Assign extra field rep for 10 days', status: 'In progress' },
           { label: 'Wadi Gaon dealer stock-out', value: 'Escalated to channel support', status: 'Pending closure' },
           { label: 'Pimpalgaon demo attendance', value: 'Reschedule + local mobilization', status: 'Planned' },
-          { label: 'Weekly review', value: 'Consolidate closed actions and impact signals', cta: { label: 'Open TM.IM1', to: 'tm.im1' } },
+          { label: 'Weekly review', value: 'Consolidate closed actions and impact signals', cta: { label: 'View impact summary', to: 'tm.im1' } },
         ],
       }}
       right={{
@@ -589,7 +591,7 @@ export function TmIm1() {
       code="TM.IM1"
       title="Campaign Impact & Business Performance"
       subtitle="Qualified impact summary with evidence-linked interpretation"
-      actions={<button type="button" className="pm-btn" onClick={() => go('tm.im2')}>Open Diagnostics â†’ TM.IM2</button>}
+      actions={<ActionButton kind="primary" label="Open Diagnostics" onClick={() => go('tm.im2')} />}
       metrics={[
         { label: 'Qualified reach', value: '68%' },
         { label: 'Trial conversion', value: '19.4%' },
@@ -601,7 +603,7 @@ export function TmIm1() {
           { label: 'Reach and engagement', value: 'Improved in Ambad HQ and Wadi Gaon clusters' },
           { label: 'Adoption signal', value: 'Strongest in dealer-supported villages' },
           { label: 'Sales effect', value: 'Positive trend where follow-up completion >80%' },
-          { label: 'Diagnostic drilldown', value: 'Open village-level differences and exceptions', cta: { label: 'Open TM.IM2', to: 'tm.im2' } },
+          { label: 'Diagnostic drilldown', value: 'Open village-level differences and exceptions', cta: { label: 'View diagnostics', to: 'tm.im2' } },
         ],
       }}
       right={{
@@ -624,7 +626,7 @@ export function TmIm2() {
       code="TM.IM2"
       title="Campaign Diagnostics & Learning Studio"
       subtitle="Village conversion diagnostics, verified drivers and corrective learning loop"
-      actions={<button type="button" className="pm-btn" onClick={() => go('tm.ai1')}>Discuss with AI Copilot â†’ TM.AI1</button>}
+      actions={<ActionButton kind="primary" label="Discuss with AI Copilot" onClick={() => go('tm.ai1')} />}
       metrics={[
         { label: 'Analyzed villages', value: '5 / 5' },
         { label: 'Verified drivers', value: '4' },
@@ -659,7 +661,7 @@ export function TmAi1() {
       title="Territory Business & Campaign Copilot Workspace"
       subtitle="Conversational planning and diagnostics assistant for territory execution"
       metrics={[
-        { label: 'Context loaded', value: 'TM.1â€“TM.IM2' },
+        { label: 'Context loaded', value: 'TM.1–TM.IM2' },
         { label: 'Suggested actions', value: '6 ranked options' },
         { label: 'Decision mode', value: 'Assistive (no auto-change)' },
       ]}

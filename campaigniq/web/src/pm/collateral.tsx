@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Product Manager - Campaign Collateral & Content Studio (PM.7, 7A, 7B, 7C, 7D, 7E).
  */
 import { useState } from 'react';
@@ -27,7 +27,7 @@ export function Pm7() {
       <Source>PM.6 Product Proposition & Intervention Designer.</Source>
       <Strip items={[
         { label: 'Parent theme', value: THEME.name },
-        { label: 'Product Â· Crop', value: 'Croptek Â· Maharashtra Onion' },
+        { label: 'Product · Crop', value: 'Croptek · Maharashtra Onion' },
         { label: 'Selected campaign', value: C1.name },
         { label: 'Status', value: <Status>Draft / Not Approved</Status> },
       ]} />
@@ -40,7 +40,7 @@ export function Pm7() {
                 <Creative kind={item.kind} lang={item.kind === 'whatsapp' || item.kind === 'poster' ? 'Marathi' : 'English'} size="md" selected={index === selected} />
                 <div className="creative-card-meta">
                   <b>{item.name}</b>
-                  <span>{item.lang} Â· {item.format}</span>
+                  <span>{item.lang} · {item.format}</span>
                   <div className="creative-card-row"><span>{item.version}</span><Status>{item.status}</Status></div>
                 </div>
                 <div className="creative-card-row">
@@ -54,7 +54,7 @@ export function Pm7() {
         </Box>
 
         <div className="pm-stack">
-          <Box title={`Selected asset Â· ${asset.name}`} tone="soft">
+          <Box title={`Selected asset · ${asset.name}`} tone="soft">
             <Creative kind={asset.kind} lang={lang} size="lg" />
             <div className="pm-form pm-form-2">
               <Field label="Language"><Select options={['English', 'Marathi']} value={lang} key={lang} /></Field>
@@ -70,7 +70,7 @@ export function Pm7() {
               <Btn small to="pm.7c">Preview</Btn>
               <Btn small to="pm.7d">Send for Technical Review</Btn>
             </div>
-            <Facts rows={[['Technical claim compliance', <P />], ['Provenance', `Created by ${asset.kind === 'detailer' ? 'PM Â· AI draft v0.1 â†’ v0.3' : 'PM Â· AI draft v0.1'}`]]} />
+            <Facts rows={[['Technical claim compliance', <P />], ['Provenance', `Created by ${asset.kind === 'detailer' ? 'PM · AI draft v0.1 → v0.3' : 'PM · AI draft v0.1'}`]]} />
           </Box>
           <Box title="Asset approval tracker">
             <Workflow compact steps={ASSET_STAGES.map((label, index) => ({ label, state: index === 0 ? 'done' : 'pending' }))} />
@@ -81,8 +81,8 @@ export function Pm7() {
       </div>
 
       <Actions
-        left={<><Btn to="pm.6">â† Back to PM.6</Btn><Act message="Collateral drafts saved">Save Collateral Drafts</Act></>}
-        right={<Cta to="pm.8">Develop Campaign Business Case â†’ PM.8</Cta>}
+        left={<><Btn to="pm.6">← Back to PM.6</Btn><Act message="Collateral drafts saved">Save Collateral Drafts</Act></>}
+        right={<Cta to="pm.8">Develop Campaign Business Case</Cta>}
       />
     </PmPage>
   );
@@ -99,11 +99,11 @@ export function Pm7a() {
       crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'Retailer Product Detailer' }, { label: 'Edit Design' }]}
       code="PM.7A"
       title="AI Collateral Designer & Content Approval Workspace"
-      status="v0.3 Draft â€” Not Approved"
+      status="v0.3 Draft — Not Approved"
     >
-      <Source>PM.7 â€” <b>Open / Edit</b> on Retailer Product Detailer. {THEME.name} Â· {C1.name} Â· Maharashtra Onion.</Source>
+      <Source>PM.7 — <b>Open / Edit</b> on Retailer Product Detailer. {THEME.name} · {C1.name} · Maharashtra Onion.</Source>
       <div className="pm-two">
-        <Box title="Design canvas" icon={<LayoutTemplate size={15} />} actions={<Muted>Page {page} of 4 Â· {lang}</Muted>}>
+        <Box title="Design canvas" icon={<LayoutTemplate size={15} />} actions={<Muted>Page {page} of 4 · {lang}</Muted>}>
           <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr', gap: 12 }}>
             <div className="creative-thumbs">
               {[1, 2, 3, 4].map((item) => <button type="button" key={item} className={cx(item === page && 'active')} onClick={() => setPage(item)}>Page {item}</button>)}
@@ -119,7 +119,7 @@ export function Pm7a() {
         <div className="pm-stack">
           <Box title="AI Design Studio" icon={<Sparkles size={15} />}>
             <div className="pm-form">
-              <Field label="Headline"><Input value={lang === 'Marathi' ? 'à¤•à¤¾à¤‚à¤¦à¤¾ à¤ªà¤¿à¤•à¤¾à¤¸à¤¾à¤ à¥€ à¤•à¥à¤°à¥‰à¤ªà¤Ÿà¥‡à¤•' : 'Croptek for Onion â€” product education'} key={lang} /></Field>
+              <Field label="Headline"><Input value={lang === 'Marathi' ? 'कांदा पिकासाठी क्रॉपटेक' : 'Croptek for Onion — product education'} key={lang} /></Field>
               <Field label="Audience"><Input value="Retailer" /></Field>
               <Field label="Language"><Select options={['English', 'Marathi']} value={lang} key={`l${lang}`} /></Field>
               <div className="row">
@@ -142,7 +142,7 @@ export function Pm7a() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7">â† Back to PM.7</Btn><Act message="Draft v0.3 saved">Save Draft</Act><Btn to="pm.7c">Preview</Btn></>}
+        left={<><Btn to="pm.7">← Back to PM.7</Btn><Act message="Draft v0.3 saved">Save Draft</Act><Btn to="pm.7c">Preview</Btn></>}
         right={<><Btn to="pm.7d">Submit for Technical Review</Btn><Cta to="pm.8">PM.8 Business Case</Cta></>}
       />
     </PmPage>
@@ -160,14 +160,14 @@ export function Pm7b() {
       title="AI Campaign Collateral Template Selection & Draft Generation"
       status="Draft / Not Approved"
     >
-      <Source>PM.7 â€” <b>Add Asset / Generate with AI</b>. PM.6B product claims drafted and sent for technical validation, not yet approved.</Source>
+      <Source>PM.7 — <b>Add Asset / Generate with AI</b>. PM.6B product claims drafted and sent for technical validation, not yet approved.</Source>
       <div className="pm-two">
         <Box title="Template gallery" icon={<LayoutTemplate size={15} />}>
           <div className="creative-grid">
             {COLLATERALS.map((item, index) => (
               <div key={item.name} className={cx('creative-card', index === selected && 'selected')} onClick={() => setSelected(index)}>
                 <Creative kind={item.kind} lang={item.kind === 'whatsapp' || item.kind === 'poster' ? 'Marathi' : 'English'} size="md" selected={index === selected} />
-                <div className="creative-card-meta"><b>{item.name}</b><span>{item.format} Â· {item.lang}</span><span>Audience: {item.kind === 'detailer' ? 'Retailer' : 'Farmer'}</span></div>
+                <div className="creative-card-meta"><b>{item.name}</b><span>{item.format} · {item.lang}</span><span>Audience: {item.kind === 'detailer' ? 'Retailer' : 'Farmer'}</span></div>
                 <div className="creative-card-row"><Btn small variant={index === selected ? 'primary' : 'outline'} onClick={() => setSelected(index)}>{index === selected ? 'Selected' : 'Select'}</Btn><Btn small to="pm.7c">Preview</Btn></div>
               </div>
             ))}
@@ -180,18 +180,18 @@ export function Pm7b() {
               <Field label="Audience"><Input value={COLLATERALS[selected].kind === 'detailer' ? 'Retailer' : 'Farmer'} key={`a${selected}`} /></Field>
               <Field label="Language"><Select options={['English', 'Marathi']} /></Field>
               <Field label="Communication objective"><Input value="Approved product education and eligible first-purchase support" /></Field>
-              <Field label="Design style"><Select options={['Mahadhan corporate Â· white / green / yellow', 'Field-friendly high contrast']} /></Field>
+              <Field label="Design style"><Select options={['Mahadhan corporate · white / green / yellow', 'Field-friendly high contrast']} /></Field>
               <Field label="Output format"><Select options={[COLLATERALS[selected].format, 'PDF', 'PNG']} key={`f${selected}`} /></Field>
             </div>
-            <Facts rows={[['Source inputs', 'Product Master Â· PM.6B Draft Claims Â· PM.6 Intervention Design Â· authorized imagery library'], ['Supporting evidence status', <P />]]} />
+            <Facts rows={[['Source inputs', 'Product Master · PM.6B Draft Claims · PM.6 Intervention Design · authorized imagery library'], ['Supporting evidence status', <P />]]} />
           </Box>
           <p className="pm-callout">PM.6B claims ("{CLAIMS[1]}", "{CLAIMS[2]}", "{CLAIMS[3]}") are still technically <b>unvalidated</b>. AI drafts use neutral placeholder content with explicit pending-review tags, never approved claims or invented dosages.</p>
           <Workflow compact steps={[{ label: 'Select Template', state: 'active' }, { label: 'Configure Inputs', state: 'active' }, { label: 'Generate Draft' }, { label: 'Edit in PM.7A' }, { label: 'Technical Approval PM.7D' }]} />
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7">â† Back to PM.7</Btn><Btn to="pm.7c">Preview Template</Btn><Act message="Draft setup saved">Save Draft Setup</Act></>}
-        right={<Cta to="pm.7a" message="Draft generated with pending-review tags â€” opening editor">Generate Draft & Open Editor â†’ PM.7A</Cta>}
+        left={<><Btn to="pm.7">← Back to PM.7</Btn><Btn to="pm.7c">Preview Template</Btn><Act message="Draft setup saved">Save Draft Setup</Act></>}
+        right={<Cta to="pm.7a" message="Draft generated with pending-review tags — opening editor">Generate Draft & Open Editor</Cta>}
       />
     </PmPage>
   );
@@ -224,15 +224,15 @@ export function Pm7c() {
         <button type="button" className={cx('pm-chip', mode === 'Overlay' && 'active')} onClick={() => setMode('Overlay')}>Overlay</button>
       </div>}
     >
-      <Source>PM.7A â€” <b>Preview / View Version History</b> for the Retailer Product Detailer. C1 {C1.name} Â· Maharashtra Onion.</Source>
+      <Source>PM.7A — <b>Preview / View Version History</b> for the Retailer Product Detailer. C1 {C1.name} · Maharashtra Onion.</Source>
       <div className="pm-two">
-        <Box title={`${mode} comparison Â· v0.2 vs v0.3`} icon={<Eye size={15} />}>
+        <Box title={`${mode} comparison · v0.2 vs v0.3`} icon={<Eye size={15} />}>
           <div className={mode === 'Side-by-side' ? 'pm-two-even' : undefined} style={mode === 'Overlay' ? { position: 'relative' } : undefined}>
             <div style={mode === 'Overlay' ? { opacity: .45 } : undefined}>
-              <Creative kind="detailer" lang={lang} size="lg" label="Previous Â· v0.2" version="Draft" />
+              <Creative kind="detailer" lang={lang} size="lg" label="Previous · v0.2" version="Draft" />
             </div>
             <div style={mode === 'Overlay' ? { position: 'absolute', inset: 0, opacity: .75 } : { position: 'relative' }}>
-              <Creative kind="detailer" lang={lang} size="lg" label="Current Â· v0.3" version="Draft" />
+              <Creative kind="detailer" lang={lang} size="lg" label="Current · v0.3" version="Draft" />
               <div className="cr-handle" style={{ left: '34%', top: '18%', width: '48%', height: '10%' }} />
               <div className="cr-handle" style={{ left: '4%', top: '18%', width: '26%', height: '22%' }} />
               <div className="cr-handle" style={{ left: '4%', top: '62%', width: '70%', height: '12%' }} />
@@ -252,8 +252,8 @@ export function Pm7c() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7a">â† Back to PM.7A Editor</Btn><Btn onClick={() => toast('Restore v0.2? Confirmation required (demo: no change made)')}>Restore Previous Draft</Btn><Btn to="pm.7a">Edit Current Version</Btn><Act message="Version comparison saved">Save Version Comparison</Act></>}
-        right={<Cta to="pm.7d">Submit Current Version for Technical Review â†’ PM.7D</Cta>}
+        left={<><Btn to="pm.7a">← Back to PM.7A Editor</Btn><Btn onClick={() => toast('Restore v0.2? Confirmation required (demo: no change made)')}>Restore Previous Draft</Btn><Btn to="pm.7a">Edit Current Version</Btn><Act message="Version comparison saved">Save Version Comparison</Act></>}
+        right={<Cta to="pm.7d">Submit Current Version for Technical Review</Cta>}
       />
     </PmPage>
   );
@@ -262,10 +262,10 @@ export function Pm7c() {
 /* ------------------------------------------------------------------ PM.7D */
 
 const REVIEW_ROWS = [
-  { element: `Draft positioning â€œ${CLAIMS[0]}â€`, evidence: 'Product Master / technical evidence', owner: 'Agronomy / Technical Reviewer', stage: 'Technical Review' },
-  { element: `Draft benefit claim â€œ${CLAIMS[1]}â€`, evidence: 'Technical substantiation', owner: 'Agronomy / Technical Reviewer', stage: 'Technical Review' },
-  { element: `Draft claim â€œ${CLAIMS[2]}â€`, evidence: 'Technical substantiation', owner: 'Agronomy / Technical Reviewer', stage: 'Technical Review' },
-  { element: `Draft claim â€œ${CLAIMS[3]}â€`, evidence: 'Technical substantiation', owner: 'Agronomy / Technical Reviewer', stage: 'Technical Review' },
+  { element: `Draft positioning “${CLAIMS[0]}”`, evidence: 'Product Master / technical evidence', owner: 'Agronomy / Technical Reviewer', stage: 'Technical Review' },
+  { element: `Draft benefit claim “${CLAIMS[1]}”`, evidence: 'Technical substantiation', owner: 'Agronomy / Technical Reviewer', stage: 'Technical Review' },
+  { element: `Draft claim “${CLAIMS[2]}”`, evidence: 'Technical substantiation', owner: 'Agronomy / Technical Reviewer', stage: 'Technical Review' },
+  { element: `Draft claim “${CLAIMS[3]}”`, evidence: 'Technical substantiation', owner: 'Agronomy / Technical Reviewer', stage: 'Technical Review' },
   { element: 'Onion imagery / brand rights', evidence: 'Authorized imagery licence', owner: 'Brand Reviewer', stage: 'Brand / Language Review' },
   { element: 'Marathi translation variant', evidence: 'Translation meaning check', owner: 'Language Reviewer', stage: 'Brand / Language Review' },
 ];
@@ -278,9 +278,9 @@ export function Pm7d() {
       crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'Retailer Product Detailer', to: 'pm.7a' }, { label: 'Approval Tracker' }]}
       code="PM.7D"
       title="Collateral Technical, Brand & Language Approval Tracker"
-      status="Submitted â€” Technical Review Pending"
+      status="Submitted — Technical Review Pending"
     >
-      <Source>PM.7C â€” <b>Submit Current Version for Technical Review</b> (v0.3 English). Later illustrative state after submission, not an actual approval.</Source>
+      <Source>PM.7C — <b>Submit Current Version for Technical Review</b> (v0.3 English). Later illustrative state after submission, not an actual approval.</Source>
       <div className="pm-two">
         <Box title="Claim-wise & content-wise review tracker">
           <Table
@@ -292,7 +292,7 @@ export function Pm7d() {
           <Muted>Reviewers are shown by role. The PM cannot self-approve technical claims or silently overwrite v0.3; corrected versions require renewed validation.</Muted>
         </Box>
         <div className="pm-stack">
-          <Box title="v0.3 Â· Retailer Product Detailer" tone="soft">
+          <Box title="v0.3 · Retailer Product Detailer" tone="soft">
             <Creative kind="detailer" size="md" label="v0.3 English" version="Submitted (timestamp pending)" />
             <Facts rows={[['Selected item', row.element], ['Reviewer observations', <Muted>Awaiting reviewer findings</Muted>]]} />
             <div className="row">
@@ -305,8 +305,8 @@ export function Pm7d() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7c">â† Back to PM.7C</Btn><Btn to="pm.7a">Open in PM.7A to Create Corrected v0.4</Btn><Act message="Approval tracking subscribed">Track Approval</Act></>}
-        right={<><Btn to="pm.7e">Playbook release readiness (later state) â†’ PM.7E</Btn><Cta locked="Disabled until technical and required brand / language approvals are complete and campaign release authorization permits publishing">Release Approved Asset to Campaign Playbook â†’ PM.7E</Cta></>}
+        left={<><Btn to="pm.7c">← Back to PM.7C</Btn><Btn to="pm.7a">Open in PM.7A to Create Corrected v0.4</Btn><Act message="Approval tracking subscribed">Track Approval</Act></>}
+        right={<><Btn to="pm.7e">Playbook release readiness (later state)</Btn><Cta locked="Disabled until technical and required brand / language approvals are complete and campaign release authorization permits publishing">Release Approved Asset to Campaign Playbook</Cta></>}
       />
     </PmPage>
   );
@@ -320,16 +320,16 @@ export function Pm7e() {
       crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'Playbook Release' }]}
       code="PM.7E"
       title="Approved Collateral Packaging & Campaign Playbook Release Readiness"
-      status="Release Readiness â€” Pending"
+      status="Release Readiness — Pending"
     >
-      <Source>PM.7D Approval Tracker â€” later hypothetical preparation stage. It does <b>not</b> claim PM.7D's pending reviews were completed.</Source>
+      <Source>PM.7D Approval Tracker — later hypothetical preparation stage. It does <b>not</b> claim PM.7D's pending reviews were completed.</Source>
       <div className="pm-two">
         <Box title="Collateral library & playbook assembly">
           <div className="creative-grid">
             {COLLATERALS.map((item, index) => (
               <div key={item.name} className="creative-card">
                 <Creative kind={item.kind} lang={item.kind === 'whatsapp' || item.kind === 'poster' ? 'Marathi' : 'English'} size="sm" />
-                <div className="creative-card-meta"><b>{item.name}</b><span>{item.lang}</span><Status>{index === 0 ? 'Approved Version â€” Verify' : 'Approved version pending confirmation'}</Status></div>
+                <div className="creative-card-meta"><b>{item.name}</b><span>{item.lang}</span><Status>{index === 0 ? 'Approved Version — Verify' : 'Approved version pending confirmation'}</Status></div>
                 <Act small message="Inclusion recorded as pending authorized version">Include in Playbook</Act>
               </div>
             ))}
@@ -339,9 +339,9 @@ export function Pm7e() {
             head={['Asset', 'Latest Authorized Version', 'Languages', 'Review Status', 'Playbook Inclusion', 'View']}
             rows={COLLATERALS.map((item, index) => [
               <b>{item.name}</b>,
-              index === 0 ? <Status>Approved Version â€” Verify</Status> : <Muted>Not selected</Muted>,
+              index === 0 ? <Status>Approved Version — Verify</Status> : <Muted>Not selected</Muted>,
               item.lang,
-              <Status>{index === 0 ? 'v0.3 submitted â€” not approved' : 'Approved version pending confirmation'}</Status>,
+              <Status>{index === 0 ? 'v0.3 submitted — not approved' : 'Approved version pending confirmation'}</Status>,
               <Status>Pending</Status>,
               <Btn small to="pm.7d">View</Btn>,
             ])}
@@ -361,11 +361,11 @@ export function Pm7e() {
             ]} />
           </Box>
           <Workflow compact steps={[{ label: 'Asset Technical / Brand Approval' }, { label: 'Select Authorized Versions' }, { label: 'Assemble Campaign Playbook' }, { label: 'MH Campaign Approval / MH.8A Release' }, { label: 'Publish to Eligible TM My Campaigns (CW.1)' }]} />
-          <p className="pm-note"><b>Roles:</b> PM maintains approved content versions Â· MH authorizes campaign rollout Â· TM consumes authorized material and never modifies master claims.</p>
+          <p className="pm-note"><b>Roles:</b> PM maintains approved content versions · MH authorizes campaign rollout · TM consumes authorized material and never modifies master claims.</p>
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7d">â† Back to PM.7D</Btn><Act message="Authorized version preview (registry match pending)">Preview Authorized Version</Act><Btn to="pm.7d">View PM.7D Approval Records</Btn><Act message="Playbook draft saved">Save Playbook Draft</Act></>}
+        left={<><Btn to="pm.7d">← Back to PM.7D</Btn><Act message="Authorized version preview (registry match pending)">Preview Authorized Version</Act><Btn to="pm.7d">View PM.7D Approval Records</Btn><Act message="Playbook draft saved">Save Playbook Draft</Act></>}
         right={<><Btn to="pm.8b">PM.8B Financial Assumptions</Btn><Cta locked="Disabled until all required approvals and recipient checks pass">Publish Approved Assets to Eligible Territory Managers</Cta></>}
       />
     </PmPage>

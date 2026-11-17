@@ -1,8 +1,10 @@
-﻿import { useMemo, useState } from 'react';
-import { AlertCircle, ChevronDown, KeyRound, ShieldCheck, Sprout, UserRound } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { AlertCircle, BadgeCheck, Briefcase, Eye, EyeOff, Lock, MapPin, Megaphone, Package, ShieldCheck, Sprout, UserRound, type LucideIcon } from 'lucide-react';
 import type { PersonaId } from './nav';
 import { PERSONAS } from './nav';
 import { credentialForPersona, validatePersonaCredentials } from './personaAuth';
+
+const PERSONA_ICON: Record<PersonaId, LucideIcon> = { strategy: Briefcase, mh: Megaphone, pm: Package, tm: MapPin };
 
 interface LoginPayload {
   name: string;
@@ -51,7 +53,7 @@ export function LoginPage({ onLogin, initialPersona }: { onLogin: (payload: Logi
             </div>
           </div>
           <h2>Build. Approve. Execute. Learn.</h2>
-          <p>Unified planning and execution workspaces for Product Manager, Territory Manager, and Marketing Head.</p>
+          <p>Unified planning and execution workspaces for Business Head, Marketing Head, Product Manager and Territory Manager.</p>
           <div className="login-hero-points">
             <span><ShieldCheck size={14} /> Secure persona-based access</span>
             <span><ShieldCheck size={14} /> Map-rich planning intelligence</span>
@@ -71,29 +73,26 @@ export function LoginPage({ onLogin, initialPersona }: { onLogin: (payload: Logi
             </div>
           </label>
 
-          <label className="login-field">
+          <div className="login-field" role="radiogroup" aria-label="Designation / Persona">
             <span>Designation / Persona</span>
-            <div className="select-wrap login-select">
-              <select
-                value={persona}
-                onChange={(e) => {
-                  setPersona(e.target.value as PersonaId);
-                  setError('');
-                }}
-              >
-                {choices.map((p) => (
-                  <option key={p.id} value={p.id}>{p.label}</option>
-                ))}
-              </select>
-              <ChevronDown size={14} />
+            <div className="login-personas">
+              {choices.map((p) => {
+                const Icon = PERSONA_ICON[p.id];
+                return (
+                  <button key={p.id} type="button" role="radio" aria-checked={persona === p.id} className={`login-persona ${persona === p.id ? 'active' : ''}`} onClick={() => { setPersona(p.id); setError(''); }}>
+                    <Icon size={22} strokeWidth={1.75} />
+                    <b>{p.label}</b>
+                  </button>
+                );
+              })}
             </div>
             <small>Selected designation: {designation}</small>
-          </label>
+          </div>
 
           <label className="login-field">
             <span>Persona ID</span>
             <div className="login-input-wrap">
-              <KeyRound size={16} />
+              <BadgeCheck size={16} />
               <input value={userId} onChange={(e) => setUserId(e.target.value)} placeholder={selected?.userId ?? 'e.g. TM001'} />
             </div>
           </label>
@@ -101,7 +100,7 @@ export function LoginPage({ onLogin, initialPersona }: { onLogin: (payload: Logi
           <label className="login-field">
             <span>Password</span>
             <div className="login-input-wrap">
-              <KeyRound size={16} />
+              <Lock size={16} />
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
@@ -111,12 +110,10 @@ export function LoginPage({ onLogin, initialPersona }: { onLogin: (payload: Logi
                   if (e.key === 'Enter') handleSubmit();
                 }}
               />
+              <button type="button" className="login-eye" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((v) => !v)}>
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
             </div>
-          </label>
-
-          <label className="login-show-pwd">
-            <input type="checkbox" checked={showPassword} onChange={(e) => setShowPassword(e.target.checked)} />
-            <span>Show password</span>
           </label>
 
           {error && (

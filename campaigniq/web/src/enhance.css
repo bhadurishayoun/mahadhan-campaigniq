@@ -37,16 +37,16 @@ pre { overflow-x: auto; max-width: 100%; }
 
 /* Visible scrollbars (thin, brand-tinted) so it is obvious there is more to see. */
 .main-scroll, .panel, .table-wrap, .wide-scroll, .s6-cal, .s6-board {
-  scrollbar-width: thin; scrollbar-color: #9dbf8c #eef3ea;
+  scrollbar-width: thin; scrollbar-color: var(--g300) var(--n100);
 }
-.sidebar { scrollbar-width: thin; scrollbar-color: #9dbf8c transparent; }
+.sidebar { scrollbar-width: thin; scrollbar-color: var(--g300) transparent; }
 /* Same slim, themed look in Safari / older Chromium (they ignore scrollbar-color). */
 .main-scroll::-webkit-scrollbar, .panel::-webkit-scrollbar, .table-wrap::-webkit-scrollbar,
 .s6-cal::-webkit-scrollbar, .s6-board::-webkit-scrollbar, .sidebar::-webkit-scrollbar { width: 8px; height: 8px; }
 .main-scroll::-webkit-scrollbar-thumb, .panel::-webkit-scrollbar-thumb, .table-wrap::-webkit-scrollbar-thumb,
-.s6-cal::-webkit-scrollbar-thumb, .s6-board::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb { background: #9dbf8c; border-radius: 8px; }
+.s6-cal::-webkit-scrollbar-thumb, .s6-board::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb { background: var(--g300); border-radius: 8px; }
 .main-scroll::-webkit-scrollbar-track, .panel::-webkit-scrollbar-track, .table-wrap::-webkit-scrollbar-track,
-.s6-cal::-webkit-scrollbar-track, .s6-board::-webkit-scrollbar-track { background: #eef3ea; border-radius: 8px; }
+.s6-cal::-webkit-scrollbar-track, .s6-board::-webkit-scrollbar-track { background: var(--n100); border-radius: 8px; }
 
 /* Buttons may wrap their label instead of spilling out of a narrow panel. */
 .btn { max-width: 100%; white-space: normal; text-wrap: balance; }
@@ -72,10 +72,10 @@ pre { overflow-x: auto; max-width: 100%; }
 /* Tooltip (TooltipLayer in ui.tsx) */
 .ui-tip {
   position: fixed; z-index: 200; transform: translate(-50%, -100%); max-width: min(280px, calc(100vw - 24px));
-  background: #17361f; color: #fff; font-size: 11.5px; font-weight: 500; line-height: 1.35; padding: 6px 10px; border-radius: 7px;
+  background: var(--n900); color: var(--card); font-size: 11.5px; font-weight: 500; line-height: 1.35; padding: 6px 10px; border-radius: 7px;
   box-shadow: 0 8px 22px rgba(10, 30, 15, .25); pointer-events: none; animation: ui-tip-in .12s ease-out;
 }
-.ui-tip::after { content: ''; position: absolute; left: 50%; bottom: -4px; width: 8px; height: 8px; background: #17361f; transform: translateX(-50%) rotate(45deg); }
+.ui-tip::after { content: ''; position: absolute; left: 50%; bottom: -4px; width: 8px; height: 8px; background: var(--n900); transform: translateX(-50%) rotate(45deg); }
 .ui-tip-below { transform: translate(-50%, 0); }
 .ui-tip-below::after { bottom: auto; top: -4px; }
 [data-tip] { cursor: help; }
@@ -87,11 +87,11 @@ button[data-tip], .q-click[data-tip], .pt[data-tip], .donut-seg { cursor: pointe
 .panel-info { display: inline-flex; }
 .panel-expand {
   display: grid; place-items: center; width: 26px; height: 26px; flex-shrink: 0; border: 1px solid transparent; border-radius: 7px;
-  background: transparent; color: #8a978c; opacity: .55; transition: opacity .15s, background .15s, color .15s, border-color .15s;
+  background: transparent; color: var(--n500); opacity: .55; transition: opacity .15s, background .15s, color .15s, border-color .15s;
 }
 .panel:hover > .panel-head .panel-expand, .panel-expand:focus-visible { opacity: 1; }
-.panel-expand:hover { background: var(--pale); color: var(--dark); border-color: #d4e8c4; }
-.panel.dark-head > .panel-head .panel-expand { color: #fff; }
+.panel-expand:hover { background: var(--pale); color: var(--dark); border-color: var(--g200); }
+.panel.dark-head > .panel-head .panel-expand { color: var(--card); }
 .panel.dark-head > .panel-head .panel-expand:hover { background: rgba(255, 255, 255, .14); border-color: transparent; }
 @media (hover: none) { .panel-expand { opacity: .9; } }
 
@@ -107,25 +107,25 @@ button[data-tip], .q-click[data-tip], .pt[data-tip], .donut-seg { cursor: pointe
 
 /* Sortable table headers */
 .dt th.th-sort { cursor: pointer; user-select: none; transition: color .15s, background .15s; }
-.dt th.th-sort:hover { color: var(--dark); background: #f0f6ea; }
+.dt th.th-sort:hover { color: var(--dark); background: var(--g50); }
 .dt th.th-sorted { color: var(--dark); }
 .th-sort-icon { display: inline-flex; margin-left: 3px; vertical-align: -1px; opacity: .4; }
 .th-sorted .th-sort-icon { opacity: 1; }
 .dt tbody tr { transition: background .15s; }
-.dt tbody tr:hover > td { background: #f7fbf3; }
-.dt .row-highlight:hover > td { background: #fbefc4; }
+.dt tbody tr:hover > td { background: var(--n50); }
+.dt .row-highlight:hover > td { background: var(--amber-100); }
 
 /* Hover / press feedback */
 .kpi { transition: transform .18s ease, box-shadow .18s ease, border-color .18s; }
-.kpi:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(20, 60, 30, .08); border-color: #d4e3cb; }
+.kpi:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(20, 60, 30, .08); border-color: var(--n300); }
 .panel { transition: box-shadow .2s ease, border-color .2s ease; }
-.panel:not(.panel-expanded):hover { box-shadow: 0 6px 18px rgba(20, 60, 30, .06); border-color: #d6e3cd; }
+.panel:not(.panel-expanded):hover { box-shadow: 0 6px 18px rgba(20, 60, 30, .06); border-color: var(--n300); }
 .btn { transition: background .15s, box-shadow .15s, transform .08s, border-color .15s; }
 .btn:active:not(:disabled) { transform: scale(.97); }
 .btn-primary:hover { box-shadow: 0 4px 12px rgba(31, 95, 44, .28); }
-.btn-outline:hover { border-color: #b7cdab; }
+.btn-outline:hover { border-color: var(--n400); }
 .mini-card { transition: border-color .15s, box-shadow .15s; }
-.mini-card:hover { border-color: #cfe0c4; box-shadow: 0 3px 10px rgba(20, 60, 30, .06); }
+.mini-card:hover { border-color: var(--n300); box-shadow: 0 3px 10px rgba(20, 60, 30, .06); }
 .side-link, .side-sublink, .flow-step, .tab, .crumb button { transition: background .15s, color .15s; }
 .flow-step:not(:disabled):hover { border-color: var(--light); background: var(--paler); }
 .tab:hover { color: var(--dark); }

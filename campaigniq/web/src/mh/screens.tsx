@@ -1,7 +1,9 @@
-﻿import type { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useNav, type ScreenId } from '../nav';
 import { MhPage } from './ui';
 import { IndiaDistrictMap } from '../map/IndiaDistrictMap';
+import { ActionButton } from '../ui/index';
+import { MH_CHARTS, MH_OWN_MAP, MH_PULSE } from './charts';
 
 type Spec = {
   code: string;
@@ -228,14 +230,15 @@ function visualFor(code: string, go: (screen: ScreenId) => void): { visual?: Rea
 
 function Workspace(spec: Spec) {
   const { go } = useNav();
-  const view = spec.visual ? { visual: spec.visual, visualNote: spec.visualNote } : visualFor(spec.code, go);
+  const view = spec.visual ? { visual: spec.visual, visualNote: spec.visualNote } : MH_OWN_MAP.has(spec.code) ? {} : visualFor(spec.code, go);
   return (
     <MhPage
       crumbs={spec.crumbs}
       code={spec.code}
       title={spec.title}
       subtitle={spec.subtitle}
-      actions={spec.next ? <button type="button" className="pm-btn" onClick={() => go(spec.next!.to)}>{spec.next.label}</button> : undefined}
+      actions={spec.next ? <ActionButton kind="primary" label={spec.next.label} onClick={() => go(spec.next!.to)} /> : undefined}
+      pulse={MH_PULSE[spec.code]}
     >
       <div className="pm-strip">
         {spec.metrics.map(([label, value, tone]) => (
@@ -245,6 +248,8 @@ function Workspace(spec: Spec) {
           </div>
         ))}
       </div>
+
+      {MH_CHARTS[spec.code]}
 
       <div className="pm-two">
         <div className="pm-box">
@@ -257,7 +262,7 @@ function Workspace(spec: Spec) {
                 <tr key={label}>
                   <th>{label}</th>
                   <td>{value}</td>
-                  <td style={{ textAlign: 'right' }}>{to && <button type="button" className="pm-btn" onClick={() => go(to)}>Open</button>}</td>
+                  <td style={{ textAlign: 'right' }}>{to && <ActionButton label="View details" onClick={() => go(to)} />}</td>
                 </tr>
               ))}
             </tbody>
@@ -310,7 +315,7 @@ const C = {
 };
 
 const CORE_ROWS: [string, string][] = [
-  ['Strategic focus', 'Prioritize evidence-linked outcomes with low-text executive clarity.'],
+  ['Strategic focus', 'Prioritize evidence-linked outcomes.'],
   ['Execution control', 'Track conditional approvals and readiness gates before scale actions.'],
   ['Data discipline', 'Keep observed performance signals separate from unverified causes.'],
 ];
@@ -328,7 +333,7 @@ function make(code: string, title: string, subtitle: string, crumbs: { label: st
   } as Spec;
 }
 
-export function Mh1() { return S(make('MH.1', 'National Marketing Opportunity & Performance Command Centre', 'National overview with low text density and high whitespace', C.m1, { label: 'Open MH.2', to: 'mh.2' }, '3 regional watchouts')); }
+export function Mh1() { return S(make('MH.1', 'National Marketing Opportunity & Performance Command Centre', 'National overview of opportunity, performance and watchouts', C.m1, { label: 'View opportunity map', to: 'mh.2' }, '3 regional watchouts')); }
 export function Mh2() { return S(make('MH.2', 'Regional Market Opportunity & Product Sales Intelligence', 'West region opportunity stack with product-cluster context', C.m2, { label: 'Proceed to Plan Reviews -> MH.3', to: 'mh.3' }, 'High-priority pockets: 3')); }
 export function Mh3() { return S(make('MH.3', 'Business & Crop Plan Alignment Review', 'Cross-check territory plans with intervention assumptions', C.m3, { label: 'Open Regional Detail -> MH.3A', to: 'mh.3a' }, 'Conditional plans: 4')); }
 export function Mh3a() { return S(make('MH.3A', 'Regional Business Plan Detail & Marketing Intervention Review', 'Regional intervention quality and business-case consistency', C.m3a, { label: 'Open Territory Contribution -> MH.3B', to: 'mh.3b' }, 'Conditional interventions: 2')); }
@@ -358,8 +363,9 @@ export function Mh9c() {
       code="MH.9C"
       title="Territory Impact Explorer"
       subtitle="Contextual drawer over MH.9B with read-only territory inspection"
-      actions={<button type="button" className="pm-btn" onClick={() => go('mh.9d')}>Request Optimization Review → MH.9D</button>}
+      actions={<button type="button" className="pm-btn" onClick={() => go('mh.9d')}>Request Optimization Review</button>}
     >
+      {MH_CHARTS['MH.9C']}
       <div className="pm-two">
         <div className="pm-box pm-box-soft">
           <div className="pm-box-head"><h3>Background Context (MH.9B)</h3></div>
@@ -373,7 +379,7 @@ export function Mh9c() {
           <div className="pm-box-head"><h3>Territory Impact Drawer</h3></div>
           <table className="pm-table"><tbody>
             <tr><th>Selected territory</th><td>Ambad, Jalna (illustrative local campaign)</td></tr>
-            <tr><th>Drilldown routes</th><td>Open Campaign Impact → TM.IM1, Diagnostics → TM.IM2</td></tr>
+            <tr><th>Drilldown routes</th><td>Open Campaign Impact → TM.IM1, Diagnostics</td></tr>
             <tr><th>Governance</th><td>Marketing Head inspects; Territory Manager owns local corrective action</td></tr>
           </tbody></table>
         </div>
@@ -390,8 +396,9 @@ export function Mh9d() {
       code="MH.9D"
       title="Campaign Optimization Review Request"
       subtitle="Draft request drawer for Product Manager optimization review"
-      actions={<button type="button" className="pm-btn" onClick={() => go('mh.ai1')}>Discuss in AI Copilot → MH.AI1</button>}
+      actions={<button type="button" className="pm-btn" onClick={() => go('mh.ai1')}>Discuss in AI Copilot</button>}
     >
+      {MH_CHARTS['MH.9D']}
       <div className="pm-two">
         <div className="pm-box pm-box-soft">
           <div className="pm-box-head"><h3>Issue Context</h3></div>
@@ -408,7 +415,7 @@ export function Mh9d() {
             <tr><th>Responsible PM</th><td>Crop Nutrition Product Manager</td></tr>
             <tr><th>Deliverable</th><td>Revised campaign proposal + updated business case if material</td></tr>
           </tbody></table>
-          <div className="pm-box-actions"><button type="button" className="pm-btn" onClick={() => go('pm.opt1')}>Submit Optimization Request to Product Manager → PM.OPT1</button><button type="button" className="pm-btn pm-btn-soft" onClick={() => go('mh.9b')}>Back to MH.9B</button></div>
+          <div className="pm-box-actions"><button type="button" className="pm-btn" onClick={() => go('pm.opt1')}>Submit Optimization Request to Product Manager</button><button type="button" className="pm-btn pm-btn-soft" onClick={() => go('mh.9b')}>Back to MH.9B</button></div>
         </div>
       </div>
     </MhPage>

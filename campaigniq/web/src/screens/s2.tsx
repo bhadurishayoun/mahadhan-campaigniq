@@ -1,4 +1,4 @@
-﻿import './s2.css';
+import './s2.css';
 import { useState, type ReactNode } from 'react';
 import {
   AlertTriangle, ArrowRightLeft, BarChart3, Boxes, Check as CheckIcon, Coins, FlaskConical, Info, Landmark, LayoutGrid,

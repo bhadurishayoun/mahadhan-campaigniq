@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Territory Manager persona (CampaignIQ V2) - screen registry.
  *
  * Based on the approved specs in `ui-mockups/V2-persona-mockup-specs.md`.

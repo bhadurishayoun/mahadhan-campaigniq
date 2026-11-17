@@ -1,8 +1,8 @@
-﻿/**
+/**
  * Product Manager - Business case, scenarios, reconciliation and submission (PM.8, 8A, 8B, 8C, 8D, 8E, 8F).
  */
 import { useState } from 'react';
-import { Calculator, GitCompare, Send, SlidersHorizontal } from 'lucide-react';
+import { Calculator, GitCompare, RotateCcw, Send, SlidersHorizontal } from 'lucide-react';
 import { Btn, COLORS, cx } from '../ui';
 import { useNav } from '../nav';
 import { Act, Actions, AiBox, Bars, Box, Checklist, Cta, Facts, Field, Input, Modal, Muted, P, PmPage, Radios, Source, Sources, Status, Strip, Table, Workflow } from './kit';
@@ -20,14 +20,14 @@ export function Pm8() {
       crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Business Case & Scenarios' }]}
       code="PM.8"
       title="Campaign Business Case & Scenario Simulator"
-      status="Draft â€” Not Submitted / Not Approved"
+      status="Draft — Not Submitted / Not Approved"
     >
-      <Source>PM.7 Campaign Collateral & Content Studio. Parent theme {THEME.name} Â· PM-developed {C1.name} Â· priority Maharashtra Onion.</Source>
+      <Source>PM.7 Campaign Collateral & Content Studio. Parent theme {THEME.name} · PM-developed {C1.name} · priority Maharashtra Onion.</Source>
       <div className="pm-two">
         <div className="pm-stack">
-          <Box title="Campaign Financial Business Case Â· Scenario Simulator" icon={<Calculator size={15} />}>
+          <Box title="Campaign Financial Business Case · Scenario Simulator" icon={<Calculator size={15} />}>
             <Table
-              head={['', ...SCENARIOS.map((item, index) => <span className={cx(index === scenario && 'pm-selected-col')}>{item.name}{index === scenario ? ' Â· SELECTED' : ''}</span>)]}
+              head={['', ...SCENARIOS.map((item, index) => <span className={cx(index === scenario && 'pm-selected-col')}>{item.name}{index === scenario ? ' · SELECTED' : ''}</span>)]}
               align={['l', 'r', 'r', 'r']}
               rows={[
                 [<b>Regional investment (illustrative)</b>, INVESTMENT, INVESTMENT, INVESTMENT],
@@ -37,9 +37,9 @@ export function Pm8() {
                 ['', ...SCENARIOS.map((_, index) => <Btn small variant={index === scenario ? 'primary' : 'outline'} onClick={() => setScenario(index)}>{index === scenario ? 'Selected' : 'Select'}</Btn>)],
               ]}
             />
-            <Muted>ROI = (contribution âˆ’ â‚¹12 L) Ã· â‚¹12 L. All figures are PM forecasts; none are actual or approved.</Muted>
+            <Muted>ROI = (contribution − ₹12 L) ÷ ₹12 L. All figures are PM forecasts; none are actual or approved.</Muted>
           </Box>
-          <Box title="Core assumptions (editable)" tone="soft" actions={<Btn small to="pm.8b">View Assumptions & Calculation Logic â†’ PM.8B</Btn>}>
+          <Box title="Core assumptions (editable)" tone="soft" actions={<Btn small to="pm.8b">View Assumptions & Calculation Logic</Btn>}>
             <div className="pm-form pm-form-2">
               <Field label="Eligible audience"><Input placeholder="Pending CRM validation" /></Field>
               <Field label="Expected reach"><Input placeholder="Pending" /></Field>
@@ -68,12 +68,12 @@ export function Pm8() {
               { label: 'Attribution method', status: 'Pending' },
             ]} />
           </Box>
-          <p className="pm-callout">The region-wide â‚¹12 L investment is an envelope to be allocated later to local territory campaigns, not additive to local spend. Expected incremental sales must be reconciled to approved ABP objectives and an incremental baseline, never simply added to ABP.</p>
+          <p className="pm-callout">The region-wide ₹12 L investment is an envelope to be allocated later to local territory campaigns, not additive to local spend. Expected incremental sales must be reconciled to approved ABP objectives and an incremental baseline, never simply added to ABP.</p>
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7">â† Back to PM.7</Btn><Btn to="pm.8b" icon={<SlidersHorizontal size={13} />}>Adjust Assumptions</Btn><Btn to="pm.8c" icon={<GitCompare size={13} />}>Compare Scenarios</Btn><Act message="Draft business case saved">Save Draft Business Case</Act></>}
-        right={<><Btn to="pm.8a">Proposal review â†’ PM.8A</Btn><Cta locked="Conditional: enabled once mandatory financial / content checks are resolved or authorized exceptions accepted. Submission is not Marketing approval.">Review & Submit Proposal to Marketing Head â†’ MH.7</Cta></>}
+        left={<><Btn to="pm.7">← Back to PM.7</Btn><Btn to="pm.8b" icon={<SlidersHorizontal size={13} />}>Adjust Assumptions</Btn><Btn to="pm.8c" icon={<GitCompare size={13} />}>Compare Scenarios</Btn><Act message="Draft business case saved">Save Draft Business Case</Act></>}
+        right={<><Btn to="pm.8a">Proposal review</Btn><Cta locked="Conditional: enabled once mandatory financial / content checks are resolved or authorized exceptions accepted. Submission is not Marketing approval.">Review & Submit Proposal to Marketing Head</Cta></>}
        
       />
     </PmPage>
@@ -91,7 +91,7 @@ export function Pm8a() {
       title="Campaign Proposal Consolidation, Review & Submission to Marketing Head"
       status="Pre-Submission Draft"
     >
-      <Source>PM.8 Business Case after PM.7A collateral preparation. Owner: Crop Nutrition Product Manager Â· intended reviewer: Marketing Head.</Source>
+      <Source>PM.8 Business Case after PM.7A collateral preparation. Owner: Crop Nutrition Product Manager · intended reviewer: Marketing Head.</Source>
       <div className="pm-two">
         <div className="pm-stack">
           <Box title="Campaign Proposal Portfolio">
@@ -99,8 +99,8 @@ export function Pm8a() {
               head={['Campaign', 'Strategic Focus', 'Proposed Investment', 'Forecast Incremental Sales', 'Forecast Contribution', 'Forecast Net ROI', 'Validation Status', '']}
               align={['l', 'l', 'r', 'r', 'r', 'r', 'l', 'l']}
               rows={[
-                [<b>A Â· {C1.name}</b>, 'Retailer education & recommendation', INVESTMENT, BASE.sales, `${BASE.contribution} (35%)`, <b>{BASE.roi}</b>, <Status>Mandatory Checks Pending</Status>, <Btn small onClick={() => setSelected(0)}>Review</Btn>],
-                [<b>B Â· {C2.name}</b>, 'Structured trial / interest nurture', <P>Pending</P>, <P>Pending</P>, <P>Pending</P>, <P>Pending</P>, <Status>Business Case Incomplete</Status>, <Btn small onClick={() => setSelected(1)}>Review</Btn>],
+                [<b>A · {C1.name}</b>, 'Retailer education & recommendation', INVESTMENT, BASE.sales, `${BASE.contribution} (35%)`, <b>{BASE.roi}</b>, <Status>Mandatory Checks Pending</Status>, <Btn small onClick={() => setSelected(0)}>Review</Btn>],
+                [<b>B · {C2.name}</b>, 'Structured trial / interest nurture', <P>Pending</P>, <P>Pending</P>, <P>Pending</P>, <P>Pending</P>, <Status>Business Case Incomplete</Status>, <Btn small onClick={() => setSelected(1)}>Review</Btn>],
               ]}
               highlight={selected}
               onRow={setSelected}
@@ -124,21 +124,21 @@ export function Pm8a() {
             { text: 'Unresolved retailer / stock evidence.', tone: 'amber' },
             { text: 'Pending source validation.', tone: 'amber' },
           ]} />
-          <Box title={`Selected proposal Â· ${selected === 0 ? 'A' : 'B'}`}>
+          <Box title={`Selected proposal · ${selected === 0 ? 'A' : 'B'}`}>
             <div className="row">
               <Btn small to="pm.6">View PM.6 Proposition</Btn>
               <Btn small to="pm.7">View PM.7 Assets</Btn>
               <Btn small to="pm.8">View PM.8 Business Case</Btn>
               <Btn small to="pm.8d">Compare Proposals</Btn>
             </div>
-            <Field label="Review comments"><Input rows={3} placeholder="Comments for submissionâ€¦" /></Field>
+            <Field label="Review comments"><Input rows={3} placeholder="Comments for submission…" /></Field>
           </Box>
           <Workflow title="Routing" compact steps={[{ label: 'Product Manager Submission', state: 'active' }, { label: 'MH.7 Comparison' }, { label: 'MH.7A Business Case Review' }, { label: 'MH.8 Approval' }]} />
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.8">â† Back to PM.8</Btn><Act message="Draft saved">Save Draft</Act><Btn to="pm.6b">Request Technical Validation</Btn></>}
-        right={<><Btn to="pm.8e" icon={<Send size={13} />}>Open submission confirmation â†’ PM.8E</Btn><Cta locked="Disabled until mandatory checks are cleared or an authorized conditional submission is recorded">Submit Selected Proposals to Marketing Head â†’ MH.7</Cta></>}
+        left={<><Btn to="pm.8">← Back to PM.8</Btn><Act message="Draft saved">Save Draft</Act><Btn to="pm.6b">Request Technical Validation</Btn></>}
+        right={<><Btn to="pm.8f" icon={<RotateCcw size={13} />}>Revise & Resubmit</Btn><Btn to="pm.8e" icon={<Send size={13} />}>Open submission confirmation</Btn><Cta locked="Disabled until mandatory checks are cleared or an authorized conditional submission is recorded">Submit Selected Proposals to Marketing Head</Cta></>}
       />
     </PmPage>
   );
@@ -148,11 +148,11 @@ export function Pm8a() {
 
 const ASSUMPTIONS = [
   { parameter: 'Eligible farmers', value: 'Pending validation', method: 'From CRM eligible cohort', source: 'CRM', status: 'Pending' },
-  { parameter: 'Incremental first-purchase conversion', value: 'Benchmark pending', method: 'Forecast conversion âˆ’ valid comparable baseline', source: 'MH.4A-I4 + benchmark', status: 'Pending' },
-  { parameter: 'Expected incremental purchasers', value: 'Pending', method: 'Eligible audience Ã— attributable incremental conversion', source: 'Derived', status: 'Pending' },
-  { parameter: 'Incremental product volume', value: 'Pending', method: 'Incremental purchasers Ã— forecast quantity per purchaser', source: 'Derived', status: 'Pending' },
+  { parameter: 'Incremental first-purchase conversion', value: 'Benchmark pending', method: 'Forecast conversion − valid comparable baseline', source: 'MH.4A-I4 + benchmark', status: 'Pending' },
+  { parameter: 'Expected incremental purchasers', value: 'Pending', method: 'Eligible audience × attributable incremental conversion', source: 'Derived', status: 'Pending' },
+  { parameter: 'Incremental product volume', value: 'Pending', method: 'Incremental purchasers × forecast quantity per purchaser', source: 'Derived', status: 'Pending' },
   { parameter: 'Net realization per SKU', value: 'Pending', method: 'Authorized price list less schemes', source: 'Product Master / ERP', status: 'Pending' },
-  { parameter: 'Incremental sales', value: 'â‚¹48 L base-case target', method: 'Incremental volume Ã— net realization', source: 'PM proposal', status: 'Not bottom-up reconciled' },
+  { parameter: 'Incremental sales', value: '₹48 L base-case target', method: 'Incremental volume × net realization', source: 'PM proposal', status: 'Not bottom-up reconciled' },
   { parameter: 'Contribution margin', value: '35% assumed', method: 'Finance standard margin', source: 'Finance', status: 'Pending Finance verification' },
   { parameter: 'Campaign investment', value: INVESTMENT, method: 'PM proposal (regional envelope)', source: 'PM', status: 'Proposed' },
 ];
@@ -165,12 +165,12 @@ export function Pm8b() {
       title="Financial Assumptions, Calculation Logic & Source Validation"
       status="Draft / Not Approved"
     >
-      <Source>PM.8 â€” <b>View Calculation Logic / Adjust Assumptions</b>. PM.7E collateral packaging remains a separate, not-yet-released workflow.</Source>
+      <Source>PM.8 — <b>View Calculation Logic / Adjust Assumptions</b>. PM.7E collateral packaging remains a separate, not-yet-released workflow.</Source>
       <Strip items={[
         { label: 'Proposed regional investment', value: INVESTMENT },
         { label: 'Forecast incremental sales', value: BASE.sales },
         { label: `Forecast contribution (${MARGIN})`, value: BASE.contribution },
-        { label: 'Forecast net ROI', value: `${BASE.roi} = (â‚¹16.8 L âˆ’ â‚¹12 L) Ã· â‚¹12 L`, tone: 'amber' },
+        { label: 'Forecast net ROI', value: `${BASE.roi} = (₹16.8 L − ₹12 L) ÷ ₹12 L`, tone: 'amber' },
       ]} />
       <div className="pm-two">
         <div className="pm-stack">
@@ -182,7 +182,7 @@ export function Pm8b() {
             <Muted>The regional investment envelope is distinct from subsequent local territory budget allocations (not additive). The hypothetical 36% matched pilot trial-to-purchase is historical observed conversion, not proof of weakness and not incremental conversion.</Muted>
           </Box>
           <Box title="Financial driver bridge" tone="soft">
-            <Workflow compact steps={[{ label: 'Audience', sub: 'Pending', state: 'pending' }, { label: 'Incremental Buyers', sub: 'Pending' }, { label: 'Incremental Volume', sub: 'Pending' }, { label: 'Incremental Sales', sub: 'â‚¹48 L target (not reconciled)' }]} />
+            <Workflow compact steps={[{ label: 'Audience', sub: 'Pending', state: 'pending' }, { label: 'Incremental Buyers', sub: 'Pending' }, { label: 'Incremental Volume', sub: 'Pending' }, { label: 'Incremental Sales', sub: '₹48 L target (not reconciled)' }]} />
           </Box>
         </div>
         <div className="pm-stack">
@@ -197,8 +197,8 @@ export function Pm8b() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.8">â† Back to PM.8</Btn><Act message="Draft assumptions saved">Save Draft Assumptions</Act><Act message="Source records opened">View Source Records</Act><Act message="Finance validation requested">Request Finance Validation</Act></>}
-        right={<Cta to="pm.8c">Compare Financial Scenarios â†’ PM.8C</Cta>}
+        left={<><Btn to="pm.8">← Back to PM.8</Btn><Act message="Draft assumptions saved">Save Draft Assumptions</Act><Act message="Source records opened">View Source Records</Act><Act message="Finance validation requested">Request Finance Validation</Act></>}
+        right={<Cta to="pm.8c">Compare Financial Scenarios</Cta>}
       />
     </PmPage>
   );
@@ -219,12 +219,12 @@ export function Pm8c() {
       title="Campaign Financial Scenario Comparison & Sensitivity Simulator"
       status="Draft / Not Approved"
     >
-      <Source>PM.8B â€” <b>Compare Financial Scenarios</b>. Selected draft C1 {C1.name}, Maharashtra Onion.</Source>
+      <Source>PM.8B — <b>Compare Financial Scenarios</b>. Selected draft C1 {C1.name}, Maharashtra Onion.</Source>
       <div className="pm-two">
         <div className="pm-stack">
           <Box title="Scenario comparison" icon={<GitCompare size={15} />}>
             <Table
-              head={['', 'Conservative', 'Base Â· SELECTED', 'Optimistic']}
+              head={['', 'Conservative', 'Base · SELECTED', 'Optimistic']}
               align={['l', 'r', 'r', 'r']}
               rows={[
                 [<b>Incremental sales</b>, ...SCENARIOS.map((item) => item.sales)],
@@ -234,14 +234,14 @@ export function Pm8c() {
                 [<b>Forecast net ROI</b>, ...SCENARIOS.map((item) => <b>{item.roi}</b>)],
               ]}
             />
-            <Muted>ROI = (contribution âˆ’ investment) Ã· investment. Illustrative PM forecasts, not actual or validated.</Muted>
+            <Muted>ROI = (contribution − investment) ÷ investment. Illustrative PM forecasts, not actual or validated.</Muted>
           </Box>
           <Box title="Forecast contribution vs proposed investment">
             <Bars
               height={140}
               data={SCENARIOS.map((item) => ({ label: item.name, values: [item.contribL, 12] }))}
               series={[{ label: 'Forecast contribution', color: COLORS.dark }, { label: 'Proposed investment', color: COLORS.yellow }]}
-              format={(value) => `â‚¹${value} L`}
+              format={(value) => `₹${value} L`}
             />
           </Box>
         </div>
@@ -249,10 +249,10 @@ export function Pm8c() {
           <Box title="Sensitivity & driver controls" icon={<SlidersHorizontal size={15} />} tone="soft">
             <Facts rows={[['Eligible farmer audience', <P>Not validated</P>], ['Incremental conversion uplift', <P>Not validated</P>], ['Avg volume per incremental buyer', <P>Not validated</P>], ['Net realization', <P>Not validated</P>]]} />
             <b className="small">Numeric what-if (assumed inputs, not bottom-up)</b>
-            <div className="slider-row"><span>Incremental sales</span><input type="range" min={20} max={80} value={sales} onChange={(event) => setSales(Number(event.target.value))} /><b>â‚¹{sales} L</b></div>
+            <div className="slider-row"><span>Incremental sales</span><input type="range" min={20} max={80} value={sales} onChange={(event) => setSales(Number(event.target.value))} /><b>₹{sales} L</b></div>
             <div className="slider-row"><span>Margin</span><input type="range" min={20} max={50} value={margin} onChange={(event) => setMargin(Number(event.target.value))} /><b>{margin}%</b></div>
-            <div className="slider-row"><span>Investment</span><input type="range" min={6} max={24} value={invest} onChange={(event) => setInvest(Number(event.target.value))} /><b>â‚¹{invest} L</b></div>
-            <Facts cols={2} rows={[['What-if contribution', `â‚¹${contrib.toFixed(1)} L`], ['What-if net ROI', <b>{roi >= 0 ? '+' : ''}{roi.toFixed(2)}x</b>]]} />
+            <div className="slider-row"><span>Investment</span><input type="range" min={6} max={24} value={invest} onChange={(event) => setInvest(Number(event.target.value))} /><b>₹{invest} L</b></div>
+            <Facts cols={2} rows={[['What-if contribution', `₹${contrib.toFixed(1)} L`], ['What-if net ROI', <b>{roi >= 0 ? '+' : ''}{roi.toFixed(2)}x</b>]]} />
           </Box>
           <AiBox title="AI Scenario Risk" items={[
             { text: 'Missing historical conversion comparator.', tone: 'amber' },
@@ -263,8 +263,8 @@ export function Pm8c() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.8b">â† Back to PM.8B</Btn><Btn to="pm.8b">Adjust Assumptions</Btn><Act message="Draft scenario saved">Save Draft Scenario</Act></>}
-        right={<Cta to="pm.8d">Reconcile Campaign Benefits & Audience Overlap â†’ PM.8D</Cta>}
+        left={<><Btn to="pm.8b">← Back to PM.8B</Btn><Btn to="pm.8b">Adjust Assumptions</Btn><Act message="Draft scenario saved">Save Draft Scenario</Act></>}
+        right={<Cta to="pm.8d">Reconcile Campaign Benefits & Audience Overlap</Cta>}
       />
     </PmPage>
   );
@@ -281,16 +281,16 @@ export function Pm8d() {
       title="Multi-Campaign Audience Overlap & Financial Benefit Reconciliation"
       status="Not Submitted / Not Approved"
     >
-      <Source>PM.8C â€” <b>Reconcile Campaign Benefits & Audience Overlap</b>. Two PM draft campaigns under the {THEME.name} theme.</Source>
+      <Source>PM.8C — <b>Reconcile Campaign Benefits & Audience Overlap</b>. Two PM draft campaigns under the {THEME.name} theme.</Source>
       <div className="pm-two">
         <div className="pm-stack">
           <Box title="C1 vs C2 reconciliation">
             <Table
-              head={['', `C1 Â· ${C1.name}`, `C2 Â· ${C2.name}`]}
+              head={['', `C1 · ${C1.name}`, `C2 · ${C2.name}`]}
               rows={[
                 [<b>Proposed regional investment</b>, INVESTMENT, <Status>Business Case Pending</Status>],
                 [<b>Forecast incremental sales</b>, BASE.sales, <Status>Not Available</Status>],
-                [<b>Assumed margin / contribution</b>, `35% Â· ${BASE.contribution}`, <Status>Not Available</Status>],
+                [<b>Assumed margin / contribution</b>, `35% · ${BASE.contribution}`, <Status>Not Available</Status>],
                 [<b>Forecast net ROI</b>, BASE.roi, <Status>Not Available</Status>],
                 [<b>Priority audience</b>, C1.audience, C2.audience],
                 [<b>First-purchase objective</b>, 'Yes', 'Yes'],
@@ -298,7 +298,7 @@ export function Pm8d() {
                 [<b>Matched farmer IDs</b>, <P>Pending CRM matching</P>, <P>Pending CRM matching</P>],
                 [<b>Unique eligible audience</b>, <P>Pending</P>, <P>Pending</P>],
                 [<b>Potentially overlapping cohorts</b>, <P>Pending source validation</P>, <P>Pending source validation</P>],
-                [<b>Common communication channels</b>, 'Retailer Â· consent-based digital', 'Field follow-up Â· consent-based digital'],
+                [<b>Common communication channels</b>, 'Retailer · consent-based digital', 'Field follow-up · consent-based digital'],
                 [<b>Shared benefit attribution</b>, <P>Method pending</P>, <P>Method pending</P>],
               ]}
             />
@@ -328,8 +328,8 @@ export function Pm8d() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.8c">â† Back to PM.8C</Btn><Act message="Source cohorts opened (CRM matching pending)">View Source Cohorts</Act><Act message="CRM matching requested">Request CRM Matching</Act><Act message="Reconciliation draft saved">Save Reconciliation Draft</Act></>}
-        right={<Cta to="pm.8a">Review Proposals & Submission Readiness â†’ PM.8A</Cta>}
+        left={<><Btn to="pm.8c">← Back to PM.8C</Btn><Act message="Source cohorts opened (CRM matching pending)">View Source Cohorts</Act><Act message="CRM matching requested">Request CRM Matching</Act><Act message="Reconciliation draft saved">Save Reconciliation Draft</Act></>}
+        right={<Cta to="pm.8a">Review Proposals & Submission Readiness</Cta>}
       />
     </PmPage>
   );
@@ -339,11 +339,11 @@ export function Pm8d() {
 
 export function Pm8e() {
   return (
-    <Modal title="Review & Submit Campaign Proposals" status="Pre-Submission / Not Sent" width="72%" back="pm.8a" subtitle={`${THEME.name} Â· Maharashtra Onion Â· submitted by Crop Nutrition Product Manager Â· reviewer Marketing Head`}
+    <Modal title="Review & Submit Campaign Proposals" status="Pre-Submission / Not Sent" width="72%" back="pm.8a" subtitle={`${THEME.name} · Maharashtra Onion · submitted by Crop Nutrition Product Manager · reviewer Marketing Head`}
       footer={<>
         <Btn to="pm.8a">Back to PM.8A</Btn>
         <Act message="Missing checks listed in validation readiness">View Missing Checks</Act>
-        <Act message="Submission draft saved â€” not sent">Save Submission Draft</Act>
+        <Act message="Submission draft saved — not sent">Save Submission Draft</Act>
         <Act message="Validation requested">Request Validation</Act>
         <span className="pm-foot-right"><Cta locked="Disabled while mandatory checks are open or no authorized policy exception is recorded">Confirm Submission to Marketing Head</Cta></span>
       </>}
@@ -352,8 +352,8 @@ export function Pm8e() {
         compact
         head={['Select', 'Proposal', 'Investment', 'Forecast incremental sales', 'Contribution', 'Net ROI', 'Status']}
         rows={[
-          [<input type="checkbox" checked readOnly />, <b>C1 Â· {C1.name}</b>, INVESTMENT, BASE.sales, `${BASE.contribution} (35% assumed)`, BASE.roi, <Status>Mandatory Checks Pending â€” Conditional</Status>],
-          [<input type="checkbox" disabled />, <b>C2 Â· {C2.name}</b>, <Muted>Business Case Incomplete</Muted>, <Muted>â€”</Muted>, <Muted>â€”</Muted>, <Muted>â€”</Muted>, <Status>Selection Disabled</Status>],
+          [<input type="checkbox" checked readOnly />, <b>C1 · {C1.name}</b>, INVESTMENT, BASE.sales, `${BASE.contribution} (35% assumed)`, BASE.roi, <Status>Mandatory Checks Pending — Conditional</Status>],
+          [<input type="checkbox" disabled />, <b>C2 · {C2.name}</b>, <Muted>Business Case Incomplete</Muted>, <Muted>—</Muted>, <Muted>—</Muted>, <Muted>—</Muted>, <Status>Selection Disabled</Status>],
         ]}
       />
       <div className="pm-two-even">
@@ -372,7 +372,7 @@ export function Pm8e() {
         </Box>
       </div>
       <Workflow title="Marketing review routing" compact steps={[{ label: 'Product Manager Draft', state: 'active' }, { label: 'Submitted' }, { label: 'MH.7 Comparison' }, { label: 'MH.7A Business Case Review' }, { label: 'MH.8 Approval / Return for Changes' }]} />
-      <Muted>After valid submission â†’ MH.7. If MH requests changes â†’ PM.8F Revision & Resubmission. Submission is not marketing approval or campaign release.</Muted>
+      <Muted>After valid submission → MH.7. If MH requests changes → PM.8F Revision & Resubmission. Submission is not marketing approval or campaign release.</Muted>
     </Modal>
   );
 }
@@ -383,8 +383,8 @@ const RETURNED = [
   { parameter: 'Proposed investment', v1: INVESTMENT, comment: 'Confirm authority if investment changes materially', status: 'Pending PM Update' },
   { parameter: 'Forecast incremental sales', v1: BASE.sales, comment: 'Strengthen incremental sales baseline and attribution method', status: 'Pending PM Update' },
   { parameter: 'Contribution margin', v1: '35% assumed', comment: 'Finance verification', status: 'Pending PM Update' },
-  { parameter: 'Forecast contribution', v1: BASE.contribution, comment: 'â€”', status: 'Derived After Inputs' },
-  { parameter: 'Net ROI', v1: BASE.roi, comment: 'â€”', status: 'Derived After Inputs' },
+  { parameter: 'Forecast contribution', v1: BASE.contribution, comment: '—', status: 'Derived After Inputs' },
+  { parameter: 'Net ROI', v1: BASE.roi, comment: '—', status: 'Derived After Inputs' },
   { parameter: 'Retailer participation / stock assumptions', v1: 'Unverified', comment: 'Validate before resubmission', status: 'Pending PM Update' },
   { parameter: 'Cohort overlap with C2', v1: 'Pending CRM matching', comment: 'Reconcile with separate C2 proposal', status: 'Pending PM Update' },
   { parameter: 'Technical claims / authorized collateral', v1: 'v0.3 submitted', comment: 'Confirm approved claim and collateral versions', status: 'Pending PM Update' },
@@ -396,8 +396,8 @@ export function Pm8f() {
     <PmPage
       crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: 'Returned Proposals' }, { label: 'C1 Revision & Resubmission' }]}
       code="PM.8F"
-      title="Marketing Head Returned Proposal â€” Revision & Resubmission"
-      status="Returned for Revision â€” Not Approved"
+      title="Marketing Head Returned Proposal — Revision & Resubmission"
+      status="Returned for Revision — Not Approved"
     >
       <Source>Hypothetical later state: C1's submission validations were resolved, a valid version was submitted to MH.7A / MH.8, then returned for changes. The earlier blocked PM.8E state is not shown as submitted. C2 remains a separate draft.</Source>
       <div className="pm-two">
@@ -413,7 +413,7 @@ export function Pm8f() {
         <div className="pm-stack">
           <Box title="Marketing Head review notes" tone="soft">
             <Facts rows={[['Selected comment', RETURNED[selected].comment], ['Source', 'MH.7A / MH.8'], ['Priority', 'High'], ['Assigned to', 'Crop Nutrition Product Manager']]} />
-            <Field label="Response"><Input rows={3} placeholder="Draft response to the commentâ€¦" /></Field>
+            <Field label="Response"><Input rows={3} placeholder="Draft response to the comment…" /></Field>
           </Box>
           <Sources items={[{ label: 'PM.6 Proposition', to: 'pm.6' }, { label: 'PM.7D Collateral Approval', to: 'pm.7d' }, { label: 'PM.8B Calculation Logic', to: 'pm.8b' }, { label: 'PM.8C Scenarios', to: 'pm.8c' }, { label: 'PM.8D Audience Reconciliation', to: 'pm.8d' }, { label: 'MH review source' }]} />
           <Workflow compact steps={[{ label: 'Original Submitted v1', state: 'done' }, { label: 'MH Returned', state: 'done' }, { label: 'PM Revision v2 Draft', state: 'active' }, { label: 'Mandatory Revalidation' }, { label: 'Resubmitted' }, { label: 'MH Review' }]} />
@@ -421,7 +421,7 @@ export function Pm8f() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.5">â† Back to Campaign Studio</Btn><Act message="Original submission v1 opened read-only">View Original Submission</Act><Act message="Revised draft v2 saved">Save Revised Draft</Act><Act message="Validation requested">Request Validation</Act></>}
+        left={<><Btn to="pm.5">← Back to Campaign Studio</Btn><Act message="Original submission v1 opened read-only">View Original Submission</Act><Act message="Revised draft v2 saved">Save Revised Draft</Act><Act message="Validation requested">Request Validation</Act></>}
         right={<Cta locked="Disabled until all required checks pass (policy-authorized exception process is separate)">Resubmit Revised Proposal to Marketing Head</Cta>}
       />
     </PmPage>

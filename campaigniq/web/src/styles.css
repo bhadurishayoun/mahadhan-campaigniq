@@ -1,4 +1,47 @@
-﻿:root {
+:root {
+  /* ---- design tokens (single source for all personas) ---- */
+  --g900: #174c22;
+  --g800: #1f5f2c;
+  --g700: #276336;
+  --g600: #2f8a3b;
+  --g500: #5fae4c;
+  --g300: #9fd27f;
+  --g200: #cfe6c0;
+  --g100: #e9f4e1;
+  --g50: #f3f9ee;
+  --n900: #1d2a1f;
+  --n800: #2f3d33;
+  --n700: #435348;
+  --n600: #66736a;
+  --n500: #8a9a8c;
+  --n400: #b8c3b8;
+  --n300: #cfdcc6;
+  --n200: #e1e8dc;
+  --n100: #edf1eb;
+  --n50: #f5f8f2;
+  --n25: #fbfdf9;
+  --amber-800: #6b5310;
+  --amber-600: #cc901c;
+  --amber-500: #d7a62f;
+  --amber-300: #f1d77b;
+  --amber-100: #fff3c4;
+  --amber-50: #fffbec;
+  --info-700: #235187;
+  --info-500: #3972b8;
+  --info-200: #9fc0ea;
+  --info-50: #edf4ff;
+  --violet-700: #54379c;
+  --violet-500: #7a58c4;
+  --violet-200: #c9b9f2;
+  --violet-50: #f1ecff;
+  --risk-700: #a86a44;
+  --risk-500: #c9865a;
+  --risk-200: #f3d9c2;
+  --risk-50: #f7e4d3;
+  --ok: var(--g600); --warn: var(--amber-500); --risk: #d9534f; --info: var(--info-500);
+  --seg-emerging: #e8c13a; --seg-growing: #5fae4c; --seg-maturing: #3972b8; --seg-matured: #1f5f2c;
+  --radius-lg: 12px; --radius-md: 8px; --shadow: 0 1px 2px rgba(23,39,27,.06), 0 4px 14px rgba(23,39,27,.06);
+  --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px;
   --dark: #1f5f2c;
   --green: #2f8a3b;
   --mid: #5fae4c;
@@ -17,6 +60,7 @@
   --radius: 10px;
   font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
   font-size: 13px;
+  font-variant-numeric: tabular-nums;
   color: var(--ink);
   background: var(--bg);
 }

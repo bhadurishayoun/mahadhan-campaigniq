@@ -1,4 +1,4 @@
-﻿import './s5.css';
+import './s5.css';
 import { useState } from 'react';
 import {
   AlertTriangle, ArrowRight, BarChart3, Boxes, Building2, CalendarDays, CheckCircle2, ClipboardCheck, Clock, Coins,

@@ -1,7 +1,7 @@
-﻿import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
-  BarChart3, Bell, CalendarDays, CheckSquare, ChevronDown, ClipboardCheck, Database, Gauge, Presentation, HelpCircle, Home, Inbox, Layers, MapPin, Menu, Radio, Search, ShoppingCart, SlidersHorizontal, Sparkles, Sprout, User, Wallet, X,
+  BarChart3, Bell, ChevronsLeft, ChevronsRight, CalendarDays, CheckSquare, ChevronDown, ClipboardCheck, Database, Gauge, Presentation, HelpCircle, Home, Inbox, Layers, MapPin, Menu, Radio, Search, ShoppingCart, SlidersHorizontal, Sparkles, Sprout, User, Wallet, X,
 } from 'lucide-react';
 import {
   MODULES, NavContext, PERSONAS, SCREENS, personaOf, screenMeta, type Filters, type ModuleId, type ModuleScreenId, type ScreenId, type PersonaId,
@@ -158,8 +158,12 @@ export default function App() {
   const [query, setQuery] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [navOpen, setNavOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [personaOpen, setPersonaOpen] = useState(false);
+  useEffect(() => {
+    document.querySelectorAll<HTMLButtonElement>('.side-link').forEach((b) => { b.title = b.querySelector('span')?.textContent ?? ''; });
+  });
   const meta = screenMeta(screen);
   const persona = personaOf(meta.module);
   const personaMeta = PERSONAS.find((item) => item.id === persona)!;
@@ -301,13 +305,14 @@ export default function App() {
 
   return (
     <NavContext.Provider value={{ screen, go, filters, setFilters, scope, reference, toast }}>
-      <div className="app">
+      <div className={collapsed ? 'app app-collapsed' : 'app'}>
         <aside className={navOpen ? 'sidebar open' : 'sidebar'} aria-label="Main navigation">
           <button type="button" className="brand" onClick={() => go(personaMeta.home)}>
             <Sprout size={26} className="brand-leaf" />
             <span>Mahadhan<br />CampaignIQ</span>
           </button>
           <button type="button" className="nav-close" aria-label="Close menu" onClick={() => setNavOpen(false)}><X size={18} /></button>
+          <button type="button" className="side-collapse" aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} onClick={() => setCollapsed((c) => !c)}>{collapsed ? <ChevronsRight size={16} /> : <ChevronsLeft size={16} />}</button>
           {pmSidebar || tmSidebar || mhSidebar || bhSidebar || (
             <nav className="side-nav">
               {MODULES.filter((module) => module.id !== 'admin').map((module) => {
@@ -401,7 +406,7 @@ export default function App() {
               )}
             </div>
             <button type="button" className="icon-btn" aria-label="Notifications" onClick={() => toast('3 new risk alerts in Jalna and Dhanora')}>
-              <Bell size={17} /><i className="dot" />
+              <Bell size={17} /><span className="notif-count" aria-label="3 unread notifications">3</span>
             </button>
             <button type="button" className="icon-btn" aria-label="Help"><HelpCircle size={17} /></button>
             <div className="persona-menu">

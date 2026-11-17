@@ -4,6 +4,7 @@ import { API_BASE, api } from '../api';
 import { DATASET_CATALOG, refreshDatasets, type DatasetStatus } from '../data/datasets';
 import { getCopilotStatus, type CopilotStatus } from '../data/copilot';
 import { SCREENS, useNav, type ScreenId } from '../nav';
+import { StatusChip } from '../ui/index';
 import { Btn, Grid, Kpi, KpiRow, Note, PageHeader, Panel, Pill } from '../ui';
 
 /**
@@ -87,6 +88,20 @@ export function DataSources() {
         <Kpi icon={<Bot size={18} />} label="AI Co-pilot" value={copilot?.mode === 'llm' ? 'LLM' : 'Demo'} sub={copilot ? `${copilot.provider}${copilot.model ? ` · ${copilot.model}` : ''}` : 'API offline'} />
       </KpiRow>
 
+      <div className="adm-cards" aria-label="Data source overview">
+        {(items ?? []).map((item) => (
+          <article key={item.name} className="adm-card">
+            <header><Database size={18} strokeWidth={1.75} /><b>{item.title}</b></header>
+            <StatusChip kind={item.status === 'live' ? 'ok' : 'pending'}>{item.status === 'live' ? 'Live' : 'Demo data'}</StatusChip>
+            <dl>
+              <div><dt>Last sync</dt><dd>{item.uploaded_at ? item.uploaded_at.slice(0, 16).replace('T', ' ') : 'Never'}</dd></div>
+              <div><dt>Records</dt><dd>{item.row_count ?? '—'}</dd></div>
+              <div><dt>Source</dt><dd>{item.source_system}</dd></div>
+            </dl>
+          </article>
+        ))}
+      </div>
+
       <Panel title="Screen Datasets" icon={<Database size={16} />} subtitle="Each row is a table or chart that currently shows illustrative data. Download the CSV template, fill it from the source system and upload it. Optional scope columns (season, state, district, taluka, crop, product, campaign_type) let one file cover many states, districts and products - the filter bar picks the matching rows.">
         <input ref={fileInput} className="adm-file" type="file" accept=".csv,.json" onChange={(event) => { const file = event.target.files?.[0]; if (file) void upload(file); }} />
         <div className="table-wrap">
@@ -161,7 +176,7 @@ export function DataSources() {
 COPILOT_MODEL=<model name>
 COPILOT_API_KEY=<secret>
 COPILOT_BASE_URL=https://api.openai.com/v1`}</pre>
-          <div style={{ marginTop: 10 }}><Btn small variant="outline" to="ai.1" icon={<Bot size={12} />}>Open AI.1 Copilot</Btn></div>
+          <div style={{ marginTop: 10 }}><Btn small variant="outline" to="ai.1" icon={<Bot size={12} />}>Ask the AI Copilot</Btn></div>
         </Panel>
       </Grid>
     </div>

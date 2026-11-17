@@ -1,4 +1,4 @@
-﻿import type { PersonaId } from './nav';
+import type { PersonaId } from './nav';
 
 export interface PersonaCredential {
   persona: PersonaId;

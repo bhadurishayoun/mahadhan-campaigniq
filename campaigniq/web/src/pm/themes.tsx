@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Product Manager - Assigned Marketing Themes (PM.4, PM.4A, PM.4B, PM.4C).
  */
 import { useState } from 'react';
@@ -30,21 +30,21 @@ export function Pm4() {
         <Table
           head={['Theme', 'Priority Crop / Product', 'Regional Scope', 'Assigned By', 'Status', 'Open Brief']}
           rows={[
-            [<b>{THEME.name}</b>, 'Croptek Â· Maharashtra Onion', 'West Region', THEME.assignedBy, <Status>{THEME.status}</Status>, <Btn small to="pm.4a">Open Brief</Btn>],
-            [<Muted>Theme placeholder</Muted>, <Muted>â€”</Muted>, <Muted>â€”</Muted>, <Muted>â€”</Muted>, <Status>No Assignment</Status>, <Muted>â€”</Muted>],
-            [<Muted>Theme placeholder</Muted>, <Muted>â€”</Muted>, <Muted>â€”</Muted>, <Muted>â€”</Muted>, <Status>No Assignment</Status>, <Muted>â€”</Muted>],
+            [<b>{THEME.name}</b>, 'Croptek · Maharashtra Onion', 'West Region', THEME.assignedBy, <Status>{THEME.status}</Status>, <Btn small to="pm.4a">Open Brief</Btn>],
+            [<Muted>Theme placeholder</Muted>, <Muted>—</Muted>, <Muted>—</Muted>, <Muted>—</Muted>, <Status>No Assignment</Status>, <Muted>—</Muted>],
+            [<Muted>Theme placeholder</Muted>, <Muted>—</Muted>, <Muted>—</Muted>, <Muted>—</Muted>, <Status>No Assignment</Status>, <Muted>—</Muted>],
           ]}
           highlight={0}
         />
       </Box>
 
       <div className="pm-two">
-        <Box title={`Selected theme Â· ${THEME.name}`} tone="soft">
+        <Box title={`Selected theme · ${THEME.name}`} tone="soft">
           <Facts cols={2} rows={[
             ['Strategic objective', THEME.objective],
             ['Strategic scope', 'Maharashtra Onion initially; other West Region markets subject to validation'],
             ['Opportunity rationale', `Indicative penetration headroom (${EVIDENCE.penetration}) and positive historical secondary-sales momentum`],
-            ['Matched trial-to-purchase evidence', <>{EVIDENCE.trialToPurchase} ({EVIDENCE.purchases} / {EVIDENCE.trials}) <Status>Illustrative</Status> â€” not proof of poor conversion without a benchmark</>],
+            ['Matched trial-to-purchase evidence', <>{EVIDENCE.trialToPurchase} ({EVIDENCE.purchases} / {EVIDENCE.trials}) <Status>Illustrative</Status> — not proof of poor conversion without a benchmark</>],
           ]} />
         </Box>
         <Box title="Product Manager deliverables" icon={<ListChecks size={15} />}>
@@ -60,7 +60,7 @@ export function Pm4() {
 
       <Actions
         left={<><Btn to="pm.4a">View Original MH.5 Theme Brief</Btn><Btn to="pm.4b" icon={<MessageSquare size={13} />}>Request Clarification</Btn><Act message="Notes saved">Save Notes</Act></>}
-        right={<Cta to="pm.4c">Acknowledge & Develop Campaign Concepts â†’ PM.5</Cta>}
+        right={<Cta to="pm.4c">Acknowledge & Develop Campaign Concepts</Cta>}
       />
     </PmPage>
   );
@@ -70,11 +70,11 @@ export function Pm4() {
 
 export function Pm4a() {
   return (
-    <Drawer title="Strategic Theme Brief & Evidence" status={THEME.status} width="50%" back="pm.4" subtitle={`${THEME.name} Â· priority Maharashtra Onion Â· broader West Region eligibility pending`}
+    <Drawer title="Strategic Theme Brief & Evidence" status={THEME.status} width="50%" back="pm.4" subtitle={`${THEME.name} · priority Maharashtra Onion · broader West Region eligibility pending`}
       footer={<>
         <Act message="MH.2 / MH.4A-I4 source analysis opened read-only">View Source Analysis</Act>
-        <Btn to="pm.4b">Request Theme Clarification â†’ PM.4B</Btn>
-        <span className="pm-foot-right"><Cta to="pm.4c">Acknowledge Theme â†’ PM.4C</Cta></span>
+        <Btn to="pm.4b">Request Theme Clarification</Btn>
+        <span className="pm-foot-right"><Cta to="pm.4c">Acknowledge Theme</Cta></span>
       </>}
     >
       <Box title="Strategic Opportunity Evidence">
@@ -82,21 +82,21 @@ export function Pm4a() {
           compact
           head={['Evidence', 'Value', 'Source scope', 'Status']}
           rows={[
-            [<b>Croptek product penetration</b>, EVIDENCE.penetration, 'MH.2 Market Intelligence Â· Maharashtra Onion', <Status>Provisional</Status>],
-            [<b>Quarterly Maharashtra secondary sales</b>, EVIDENCE.quarterly.join(' â†’ '), 'MH.2 Â· illustrative Q1â€“Q4', <Status>Illustrative</Status>],
+            [<b>Croptek product penetration</b>, EVIDENCE.penetration, 'MH.2 Market Intelligence · Maharashtra Onion', <Status>Provisional</Status>],
+            [<b>Quarterly Maharashtra secondary sales</b>, EVIDENCE.quarterly.join(' → '), 'MH.2 · illustrative Q1–Q4', <Status>Illustrative</Status>],
             [<b>Farmer investigation trial-to-purchase</b>, `${EVIDENCE.trials} documented trials / ${EVIDENCE.purchases} matched purchases = ${EVIDENCE.trialToPurchase}`, 'MH.4A-I4 Investigation', <Status>No benchmark</Status>],
           ]}
         />
         <Muted>Different source scopes; provisional evidence. 36% is not shown as poor without a comparator.</Muted>
       </Box>
       <Box title="Business-plan linkage" tone="soft">
-        <p className="small">Illustrative Ambad Onion growth objective of â‚¹25 L is already <b>included</b> within the approved all-product Ambad ABP of â‚¹4.20 Cr. It is not additive to the target and not Croptek-specific committed revenue.</p>
+        <p className="small">Illustrative Ambad Onion growth objective of ₹25 L is already <b>included</b> within the approved all-product Ambad ABP of ₹4.20 Cr. It is not additive to the target and not Croptek-specific committed revenue.</p>
       </Box>
       <Facts cols={2} rows={[
         ['Objective', THEME.objective],
         ['Initial scope', 'Maharashtra Onion'],
         ['Proposed audience', 'Conventional-nutrition / trial-interest farmers, subject to eligibility and consent'],
-        ['Unresolved', 'Retailer influence Â· historical comparator Â· stock Â· technical applicability'],
+        ['Unresolved', 'Retailer influence · historical comparator · stock · technical applicability'],
       ]} />
       <Box title="PM deliverables checklist">
         <Checklist items={DELIVERABLES.map((label) => ({ label, status: 'Not Started' }))} />
@@ -118,18 +118,18 @@ const TOPICS = [
 export function Pm4b() {
   const [selected, setSelected] = useState(0);
   return (
-    <Drawer title="Strategic Theme Clarification Request" status="Draft â€” Not Sent" width="50%" back="pm.4" subtitle={`${THEME.name} Â· priority Maharashtra Onion Â· recipient: Marketing Head`}
+    <Drawer title="Strategic Theme Clarification Request" status="Draft — Not Sent" width="50%" back="pm.4" subtitle={`${THEME.name} · priority Maharashtra Onion · recipient: Marketing Head`}
       footer={<>
         <Btn to="pm.4a">View Original MH.5 Theme Brief</Btn>
-        <Act message="Clarification saved as draft â€” not sent">Save Draft</Act>
+        <Act message="Clarification saved as draft — not sent">Save Draft</Act>
         <Btn to="pm.4a">Back to PM.4A</Btn>
-        <span className="pm-foot-right"><Cta message="Clarification request saved â€” sending requires confirmation (not sent)">Send Clarification Request to Marketing Head</Cta></span>
+        <span className="pm-foot-right"><Cta message="Clarification request saved — sending requires confirmation (not sent)">Send Clarification Request to Marketing Head</Cta></span>
       </>}
     >
       <Table
         compact
         head={['Clarification topic', 'Priority', 'Linked evidence', '']}
-        rows={TOPICS.map((item, index) => [<b>{item.topic}</b>, <Status tone={item.priority === 'High' ? 'amber' : 'grey'}>{item.priority}</Status>, <Muted>MH.2 Â· MH.4A-I4</Muted>, <input type="radio" checked={selected === index} onChange={() => setSelected(index)} />])}
+        rows={TOPICS.map((item, index) => [<b>{item.topic}</b>, <Status tone={item.priority === 'High' ? 'amber' : 'grey'}>{item.priority}</Status>, <Muted>MH.2 · MH.4A-I4</Muted>, <input type="radio" checked={selected === index} onChange={() => setSelected(index)} />])}
         highlight={selected}
         onRow={setSelected}
       />
@@ -138,7 +138,7 @@ export function Pm4b() {
         <div className="pm-form pm-form-2">
           <Field label="Priority"><Select options={['High', 'Medium', 'Low']} value={TOPICS[selected].priority} /></Field>
           <Field label="Recipient"><Select options={['Marketing Head']} /></Field>
-          <Field label="Response due date" hint="Optional Â· no commitment implied"><Input placeholder="Select date" /></Field>
+          <Field label="Response due date" hint="Optional · no commitment implied"><Input placeholder="Select date" /></Field>
           <Field label="Notes / attachments"><Input placeholder="Add note or attach" /></Field>
         </div>
       </Box>
@@ -154,19 +154,19 @@ export function Pm4b() {
 
 export function Pm4c() {
   return (
-    <Modal title="Acknowledge Strategic Theme & Commit to Campaign Development" status="Acknowledgement Pending" back="pm.4" subtitle={`${THEME.name} Â· Maharashtra Onion Â· ${PM_ROLE} assigned`}
+    <Modal title="Acknowledge Strategic Theme & Commit to Campaign Development" status="Acknowledgement Pending" back="pm.4" subtitle={`${THEME.name} · Maharashtra Onion · ${PM_ROLE} assigned`}
       footer={<>
         <Btn to="pm.4a">View Original Theme Brief</Btn>
         <Act message="Development dependencies recorded">Record Development Dependencies</Act>
-        <Act message="Draft commitment saved â€” acknowledgement not yet confirmed">Save Draft Commitment</Act>
+        <Act message="Draft commitment saved — acknowledgement not yet confirmed">Save Draft Commitment</Act>
         <Btn to="pm.4">Back to PM.4</Btn>
-        <span className="pm-foot-right"><Cta to="pm.5" message="Theme acknowledged â€” campaign development started (MH.6 tracker will update)">Acknowledge & Start Campaign Development â†’ PM.5</Cta></span>
+        <span className="pm-foot-right"><Cta to="pm.5" message="Theme acknowledged — campaign development started (MH.6 tracker will update)">Acknowledge & Start Campaign Development</Cta></span>
       </>}
     >
       <Facts cols={3} rows={[
         ['Marketing Head objective', THEME.objective],
         ['Source', 'MH.5 strategic brief'],
-        ['Strategy scope', 'Maharashtra Onion Â· West Region pending'],
+        ['Strategy scope', 'Maharashtra Onion · West Region pending'],
       ]} />
       <p className="pm-callout">Development dependencies flagged, not proven causes: market benchmark, retailer influence, stock and technical applicability.</p>
       <Box title="Deliverables checklist">
@@ -178,7 +178,7 @@ export function Pm4c() {
         <Field label="Reviewer"><Input value="Marketing Head" /></Field>
         <Field label="Clarification status"><Select options={['Open (PM.4B draft not sent)', 'Reviewed']} /></Field>
       </div>
-      <Workflow compact steps={[{ label: 'MH Theme Assigned', state: 'done' }, { label: 'PM Acknowledgement', state: 'active' }, { label: 'Campaign Concepts PM.5' }, { label: 'Proposition / Collaterals / Business Case PM.6â€“PM.8' }, { label: 'MH Proposal Review MH.7' }]} />
+      <Workflow compact steps={[{ label: 'MH Theme Assigned', state: 'done' }, { label: 'PM Acknowledgement', state: 'active' }, { label: 'Campaign Concepts PM.5' }, { label: 'Proposition / Collaterals / Business Case PM.6–PM.8' }, { label: 'MH Proposal Review MH.7' }]} />
       <Muted>Acknowledgement is <b>not</b> campaign proposal submission or marketing approval. <P>Not yet confirmed</P></Muted>
     </Modal>
   );

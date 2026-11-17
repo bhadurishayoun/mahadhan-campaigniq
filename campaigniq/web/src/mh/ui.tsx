@@ -1,6 +1,7 @@
-﻿import type { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { ChevronRight, Home } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
+import { PulseStrip, type PulseItem } from '../ui/index';
 import { cx, Pill, type Tone } from '../ui';
 
 export function toneOf(text: string): Tone {
@@ -15,24 +16,14 @@ export function toneOf(text: string): Tone {
 export function Status({ children, tone, solid }: { children: string; tone?: Tone; solid?: boolean }) {
   return <Pill tone={tone ?? toneOf(children)} solid={solid}>{children}</Pill>;
 }
-function PersonaPulseMh() {
-  return (
-    <section className="persona-pulse persona-pulse-mh" aria-label="Marketing Head visual summary">
-      <div className="persona-pulse-chip">Strategic Control</div>
-      <div className="persona-pulse-row">
-        <span>Opportunity realization</span><i style={{ width: '84%' }} /><b>84%</b>
-      </div>
-      <div className="persona-pulse-row persona-pulse-amber">
-        <span>Conditional approvals</span><i style={{ width: '58%' }} /><b>58%</b>
-      </div>
-      <div className="persona-pulse-row">
-        <span>Rollout discipline</span><i style={{ width: '79%' }} /><b>79%</b>
-      </div>
-    </section>
-  );
-}
 
-export function MhPage({ crumbs, code, title, status, subtitle, actions, children, className }: {
+export const MH_PULSE: PulseItem[] = [
+  { label: 'Opportunity realization', value: 84 },
+  { label: 'Conditional approvals', value: 58, tone: 'amber' },
+  { label: 'Rollout discipline', value: 79 },
+];
+
+export function MhPage({ crumbs, code, title, status, subtitle, actions, children, className, pulse }: {
   crumbs: { label: string; to?: ScreenId }[];
   code: string;
   title: string;
@@ -41,6 +32,7 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
   actions?: ReactNode;
   children: ReactNode;
   className?: string;
+  pulse?: PulseItem[];
 }) {
   const { go } = useNav();
   return (
@@ -69,7 +61,7 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
         </div>
         {actions && <div className="page-actions">{actions}</div>}
       </div>
-      <PersonaPulseMh />
+      <PulseStrip title="Strategic Control" ariaLabel="Marketing Head visual summary" items={pulse ?? MH_PULSE} />
       {children}
     </div>
   );

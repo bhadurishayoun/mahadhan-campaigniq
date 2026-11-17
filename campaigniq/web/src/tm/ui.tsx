@@ -1,6 +1,7 @@
-﻿import type { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { ChevronRight, Home } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
+import { PulseStrip, type PulseItem } from '../ui/index';
 import { cx, Pill, type Tone } from '../ui';
 
 export function toneOf(text: string): Tone {
@@ -15,24 +16,14 @@ export function toneOf(text: string): Tone {
 export function Status({ children, tone, solid }: { children: string; tone?: Tone; solid?: boolean }) {
   return <Pill tone={tone ?? toneOf(children)} solid={solid}>{children}</Pill>;
 }
-function PersonaPulseTm() {
-  return (
-    <section className="persona-pulse persona-pulse-tm" aria-label="Territory Manager visual summary">
-      <div className="persona-pulse-chip">Territory Pulse</div>
-      <div className="persona-pulse-row">
-        <span>Network readiness</span><i style={{ width: '78%' }} /><b>78%</b>
-      </div>
-      <div className="persona-pulse-row persona-pulse-amber">
-        <span>Cluster risk watch</span><i style={{ width: '61%' }} /><b>61%</b>
-      </div>
-      <div className="persona-pulse-row">
-        <span>Outlet coverage</span><i style={{ width: '73%' }} /><b>73%</b>
-      </div>
-    </section>
-  );
-}
 
-export function TmPage({ crumbs, code, title, status, subtitle, actions, children, className }: {
+export const TM_PULSE: PulseItem[] = [
+  { label: 'Network readiness', value: 78 },
+  { label: 'Cluster risk watch', value: 61, tone: 'amber' },
+  { label: 'Outlet coverage', value: 73 },
+];
+
+export function TmPage({ crumbs, code, title, status, subtitle, actions, children, className, pulse }: {
   crumbs: { label: string; to?: ScreenId }[];
   code: string;
   title: string;
@@ -41,6 +32,7 @@ export function TmPage({ crumbs, code, title, status, subtitle, actions, childre
   actions?: ReactNode;
   children: ReactNode;
   className?: string;
+  pulse?: PulseItem[];
 }) {
   const { go } = useNav();
   return (
@@ -69,7 +61,7 @@ export function TmPage({ crumbs, code, title, status, subtitle, actions, childre
         </div>
         {actions && <div className="page-actions">{actions}</div>}
       </div>
-      <PersonaPulseTm />
+      <PulseStrip title="Territory Pulse" ariaLabel="Territory Manager visual summary" items={pulse ?? TM_PULSE} />
       {children}
     </div>
   );

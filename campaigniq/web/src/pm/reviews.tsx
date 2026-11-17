@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Product Manager - My Performance (PM.1) and Territory Plan Reviews (PM.2 ... PM.3D).
  */
 import { useState } from 'react';
@@ -14,17 +14,17 @@ import { AMBAD, CROP_PLAN, CROP_TOTAL, DHANORA, ONION_APPROVED_LATER, PORTFOLIO,
 
 export function Pm1() {
   return (
-    <PmPage crumbs={[{ label: 'My Performance' }]} code="PM.1" title="My Performance & Product Portfolio ABP" subtitle="Crop Nutrition Portfolio Â· FY 2025â€“26 planning context">
+    <PmPage crumbs={[{ label: 'My Performance' }]} code="PM.1" title="My Performance & Product Portfolio ABP" subtitle="Crop Nutrition Portfolio · FY 2025–26 planning context">
       <Strip items={[
-        { label: 'FY 2024â€“25 portfolio sales', value: 'â‚¹4.80 Cr', sub: 'Previous year, all three product categories' },
-        { label: 'FY 2025â€“26 Product Portfolio ABP', value: 'â‚¹6.00 Cr', sub: 'Annual business plan assigned to this portfolio', tone: 'green' },
-        { label: 'Required growth', value: '+25%', sub: 'â‚¹1.20 Cr absolute growth across the portfolio' },
+        { label: 'FY 2024–25 portfolio sales', value: '₹4.80 Cr', sub: 'Previous year, all three product categories' },
+        { label: 'FY 2025–26 Product Portfolio ABP', value: '₹6.00 Cr', sub: 'Annual business plan assigned to this portfolio', tone: 'green' },
+        { label: 'Required growth', value: '+25%', sub: '₹1.20 Cr absolute growth across the portfolio' },
       ]} />
 
       <div className="pm-two">
         <Box title="Product-wise Achievement vs ABP" icon={<Table2 size={15} />}>
           <Table
-            head={['Product', 'FY 2024â€“25 Sales', 'FY 2025â€“26 ABP', 'Growth Required', 'Absolute Growth', 'Share of Portfolio Growth']}
+            head={['Product', 'FY 2024–25 Sales', 'FY 2025–26 ABP', 'Growth Required', 'Absolute Growth', 'Share of Portfolio Growth']}
             align={['l', 'r', 'r', 'r', 'r', 'r']}
             rows={PORTFOLIO.map((row) => [
               <b>{row.product}</b>, cr(row.ly), cr(row.abp), <b>+{growthPct(row.ly, row.abp)}</b>, cr(row.abp - row.ly),
@@ -33,21 +33,21 @@ export function Pm1() {
             total={['Total portfolio', cr(PORTFOLIO_TOTAL.ly), cr(PORTFOLIO_TOTAL.abp), '+25.0%', cr(1.2), '100%']}
             highlight={0}
           />
-          <Muted>All financials illustrative. Growth required = (ABP âˆ’ previous-year sales) Ã· previous-year sales.</Muted>
+          <Muted>All financials illustrative. Growth required = (ABP − previous-year sales) ÷ previous-year sales.</Muted>
         </Box>
         <div className="pm-stack">
           <Box title="Portfolio contribution & growth">
             <Bars
               height={130}
               data={PORTFOLIO.map((row) => ({ label: row.product.replace('Specialty ', 'Spec. '), values: [row.ly, row.abp] }))}
-              series={[{ label: 'FY 2024â€“25 sales', color: COLORS.light }, { label: 'FY 2025â€“26 ABP', color: COLORS.dark }]}
-              format={(value) => `â‚¹${value.toFixed(1)} Cr`}
+              series={[{ label: 'FY 2024–25 sales', color: COLORS.light }, { label: 'FY 2025–26 ABP', color: COLORS.dark }]}
+              format={(value) => `₹${value.toFixed(1)} Cr`}
             />
           </Box>
           <Box title="Previous-year campaign indicators" tone="soft">
             <Facts cols={3} rows={[
-              ['Target attainment FY 2024â€“25', <>94% <Status>Illustrative</Status></>],
-              ['Campaign-linked sales FY 2024â€“25', <>â‚¹0.62 Cr <Status>Illustrative</Status></>],
+              ['Target attainment FY 2024–25', <>94% <Status>Illustrative</Status></>],
+              ['Campaign-linked sales FY 2024–25', <>₹0.62 Cr <Status>Illustrative</Status></>],
               ['Campaigns closed with learning', <>3 of 4 <Status>Illustrative</Status></>],
             ]} />
           </Box>
@@ -55,10 +55,10 @@ export function Pm1() {
       </div>
 
       <AiBox title="AI Portfolio Insight" items={[
-        { title: 'Croptek carries the largest absolute growth requirement (â‚¹0.80 Cr of â‚¹1.20 Cr).', text: 'Prioritise Croptek when reconciling incoming territory plans against the portfolio ABP. This highlights where the growth sits; it does not confirm the cause of last year\'s performance.', tone: 'green' },
+        { title: 'Croptek carries the largest absolute growth requirement (₹0.80 Cr of ₹1.20 Cr).', text: 'Prioritise Croptek when reconciling incoming territory plans against the portfolio ABP. This highlights where the growth sits; it does not confirm the cause of last year\'s performance.', tone: 'green' },
       ]} />
 
-      <Next label="Review Consolidated Territory Plans â†’ PM.2" to="pm.2" sub="Territory Managers submit business & crop plans; the Product Manager reviews and consolidates them against the portfolio ABP" />
+      <Next label="Review Consolidated Territory Plans" to="pm.2" sub="Territory Managers submit business & crop plans; the Product Manager reviews and consolidates them against the portfolio ABP" />
     </PmPage>
   );
 }
@@ -66,10 +66,10 @@ export function Pm1() {
 /* ------------------------------------------------------------------ PM.2 */
 
 const TERRITORIES = [
-  { territory: 'Ambad, Jalna', tm: 'TM Â· Jalna Cluster', abp: AMBAD.abp, plan: AMBAD.submitted, contribution: 'Pending SKU Mapping', gap: `${AMBAD.gap} unresolved`, status: 'Submitted â€” PM Review Required' },
-  { territory: 'Jalna HQ', tm: 'TM Â· Jalna Cluster', abp: 'â€”', plan: 'â€”', contribution: 'Awaiting Mapping', gap: 'â€”', status: 'Awaiting Submission' },
-  { territory: 'Paithan, Aurangabad', tm: 'TM Â· Aurangabad', abp: 'â€”', plan: 'â€”', contribution: 'Awaiting Mapping', gap: 'â€”', status: 'Awaiting Submission' },
-  { territory: 'Georai, Beed', tm: 'TM Â· Beed', abp: 'â€”', plan: 'â€”', contribution: 'Awaiting Mapping', gap: 'â€”', status: 'Awaiting Submission' },
+  { territory: 'Ambad, Jalna', tm: 'TM · Jalna Cluster', abp: AMBAD.abp, plan: AMBAD.submitted, contribution: 'Pending SKU Mapping', gap: `${AMBAD.gap} unresolved`, status: 'Submitted — PM Review Required' },
+  { territory: 'Jalna HQ', tm: 'TM · Jalna Cluster', abp: '—', plan: '—', contribution: 'Awaiting Mapping', gap: '—', status: 'Awaiting Submission' },
+  { territory: 'Paithan, Aurangabad', tm: 'TM · Aurangabad', abp: '—', plan: '—', contribution: 'Awaiting Mapping', gap: '—', status: 'Awaiting Submission' },
+  { territory: 'Georai, Beed', tm: 'TM · Beed', abp: '—', plan: '—', contribution: 'Awaiting Mapping', gap: '—', status: 'Awaiting Submission' },
 ];
 
 export function Pm2() {
@@ -85,8 +85,8 @@ export function Pm2() {
       <Source>Opened from PM.1 by clicking <b>Review Consolidated Territory Plans</b>. Territory Managers prepare the plans; this screen only reviews and consolidates them.</Source>
 
       <Strip items={[
-        { label: 'Previous-year portfolio sales', value: 'â‚¹4.80 Cr' },
-        { label: 'Portfolio ABP FY 2025â€“26', value: 'â‚¹6.00 Cr', tone: 'green' },
+        { label: 'Previous-year portfolio sales', value: '₹4.80 Cr' },
+        { label: 'Portfolio ABP FY 2025–26', value: '₹6.00 Cr', tone: 'green' },
         { label: 'Required growth', value: '+25%' },
         { label: 'Incoming portfolio contribution', value: <Status>Pending</Status>, sub: 'Until SKU-level mappings and submissions are validated', tone: 'amber' },
       ]} />
@@ -100,36 +100,36 @@ export function Pm2() {
               <><b>{row.territory}</b><br /><Muted>{row.tm}</Muted></>,
               row.abp, row.plan,
               index === 0 ? <button type="button" className="pm-chip" onClick={(event) => { event.stopPropagation(); go('pm.2a'); }}>{row.contribution}</button> : <Muted>{row.contribution}</Muted>,
-              index === 0 ? <span style={{ color: '#a42e2a', fontWeight: 600 }}>{row.gap}</span> : <Muted>â€”</Muted>,
+              index === 0 ? <span style={{ color: '#a42e2a', fontWeight: 600 }}>{row.gap}</span> : <Muted>—</Muted>,
               <Status>{row.status}</Status>,
-              index === 0 ? <Btn small to="pm.3">View</Btn> : <Muted>â€”</Muted>,
+              index === 0 ? <Btn small to="pm.3">View</Btn> : <Muted>—</Muted>,
             ])}
             highlight={selected}
             onRow={setSelected}
           />
-          <p className="pm-callout">All-product territory figures (â‚¹4.20 Cr ABP, â‚¹3.80 Cr submitted) are <b>not</b> summed into the â‚¹6.00 Cr product portfolio target. The product-specific roll-up needs validated SKU-to-portfolio mapping first.</p>
+          <p className="pm-callout">All-product territory figures (₹4.20 Cr ABP, ₹3.80 Cr submitted) are <b>not</b> summed into the ₹6.00 Cr product portfolio target. The product-specific roll-up needs validated SKU-to-portfolio mapping first.</p>
           <Sources items={[{ label: 'TM.3 Outlet Planning', note: 'Territory Manager outlet-wise plan (source, read-only)' }, { label: 'TM.4 Crop / Product Coverage Planning', note: 'Village-wise crop coverage plan (source, read-only)' }]} />
         </Box>
 
         <div className="pm-stack">
           <Box title="Portfolio target reconciliation" tone="soft">
             <Facts rows={[
-              ['Portfolio ABP', <b>â‚¹6.00 Cr</b>],
+              ['Portfolio ABP', <b>₹6.00 Cr</b>],
               ['Validated PM contribution', <P />],
               ['Unreviewed submissions', <P />],
               ['Remaining ABP gap', <Status>Not Yet Determinable</Status>],
             ]} />
           </Box>
           <AiBox title="AI Planning Insight" items={[
-            { title: 'Ambad shows a â‚¹40 L all-product allocation shortfall.', text: 'Submitted â‚¹3.80 Cr against a â‚¹4.20 Cr territory ABP. This is an all-product gap, not a portfolio-specific one.', tone: 'amber' },
+            { title: 'Ambad shows a ₹40 L all-product allocation shortfall.', text: 'Submitted ₹3.80 Cr against a ₹4.20 Cr territory ABP. This is an all-product gap, not a portfolio-specific one.', tone: 'amber' },
             { title: 'Map Croptek, Water Soluble and Specialty Nutrition SKU contributions before drawing portfolio-gap conclusions.', text: 'Open the pending SKU mapping to see what can and cannot be attributed yet.' },
           ]} />
         </div>
       </div>
 
       <Actions
-        left={<Btn to="pm.1">â† Back to PM.1</Btn>}
-        right={<Cta to="pm.3">Review Selected Territory Plan â†’ PM.3</Cta>}
+        left={<Btn to="pm.1">← Back to PM.1</Btn>}
+        right={<Cta to="pm.3">Review Selected Territory Plan</Cta>}
        
       />
     </PmPage>
@@ -150,35 +150,35 @@ export function Pm2a() {
     >
       <Source>Opened from PM.2 by clicking <b>Pending SKU Mapping</b> on the Ambad, Jalna submission.</Source>
       <Strip items={[
-        { label: 'PM Portfolio ABP', value: 'â‚¹6.00 Cr', tone: 'green' },
+        { label: 'PM Portfolio ABP', value: '₹6.00 Cr', tone: 'green' },
         { label: 'Validated contribution', value: <P />, tone: 'amber' },
         { label: 'Unmapped contribution', value: <P />, tone: 'amber' },
         { label: 'Remaining gap', value: <Status>Not Determinable</Status> },
       ]} />
 
       <div className="pm-two">
-        <Box title="Product Ã— Territory Reconciliation" icon={<Table2 size={15} />}>
+        <Box title="Product × Territory Reconciliation" icon={<Table2 size={15} />}>
           <Table
             head={['Portfolio Category', 'Territory', 'Territory Submitted All-Product Business', 'Mapped In-Scope SKU Contribution', 'Unmapped Value', 'Validation Status', 'Accountable Owner', '']}
             align={['l', 'l', 'r', 'r', 'r', 'l', 'l', 'l']}
             rows={[
               ...SKU_ROWS.map((product) => [
-                <b>{product}</b>, 'Ambad, Jalna', <>{AMBAD.submitted} <Muted>(shared all-product figure)</Muted></>, <P />, <Status>Not Determinable</Status>, <Status>Pending SKU Mapping</Status>, 'Master Data Â· TM Jalna', <Btn small to="pm.2b">Review Mapping</Btn>,
+                <b>{product}</b>, 'Ambad, Jalna', <>{AMBAD.submitted} <Muted>(shared all-product figure)</Muted></>, <P />, <Status>Not Determinable</Status>, <Status>Pending SKU Mapping</Status>, 'Master Data · TM Jalna', <Btn small to="pm.2b">Review Mapping</Btn>,
               ]),
-              ['All categories', 'Other territories', <Muted>Data pending</Muted>, <Muted>Data pending</Muted>, <Muted>â€”</Muted>, <Status>Awaiting Submission</Status>, <Muted>â€”</Muted>, <Muted>â€”</Muted>],
+              ['All categories', 'Other territories', <Muted>Data pending</Muted>, <Muted>Data pending</Muted>, <Muted>—</Muted>, <Status>Awaiting Submission</Status>, <Muted>—</Muted>, <Muted>—</Muted>],
             ]}
             highlight={selected}
             onRow={(index) => index < 3 && setSelected(index)}
           />
-          <p className="pm-callout">Ambad's all-product ABP is {AMBAD.abp}; the originally submitted plan is {AMBAD.submitted} with a {AMBAD.gap} gap. Its contribution to the â‚¹6.00 Cr portfolio ABP stays <b>Pending</b> until a valid SKU mapping exists. Nothing here is invented to fill the gap.</p>
+          <p className="pm-callout">Ambad's all-product ABP is {AMBAD.abp}; the originally submitted plan is {AMBAD.submitted} with a {AMBAD.gap} gap. Its contribution to the ₹6.00 Cr portfolio ABP stays <b>Pending</b> until a valid SKU mapping exists. Nothing here is invented to fill the gap.</p>
         </Box>
 
-        <Box title={`Ambad Â· ${SKU_ROWS[selected]} SKU-mapping validation`} tone="soft">
+        <Box title={`Ambad · ${SKU_ROWS[selected]} SKU-mapping validation`} tone="soft">
           <Checklist items={[
             { label: 'SKU master reference', status: 'Pending', note: 'Authorized product / SKU master not yet linked' },
             { label: 'Product category assignment', status: 'Pending', note: `${SKU_ROWS[selected]} category confirmation` },
             { label: 'Primary vs secondary sales basis', status: 'To Verify', note: 'Territory plan is primary (dealer) sales' },
-            { label: 'Validity period', status: 'To Verify', note: 'FY 2025â€“26' },
+            { label: 'Validity period', status: 'To Verify', note: 'FY 2025–26' },
             { label: 'Duplicate mapping check', status: 'Pending' },
             { label: 'Source lineage', status: 'Unverified Input', note: 'TM.3 / TM.4 submission v1' },
           ]} />
@@ -187,8 +187,8 @@ export function Pm2a() {
       </div>
 
       <Actions
-        left={<><Btn to="pm.2">â† Back to PM.2</Btn><Btn to="pm.2b" icon={<MessageSquare size={13} />}>Request Mapping Correction</Btn><Cta locked="Validate Mapping is enabled when all mandatory checks pass">Validate Mapping</Cta></>}
-        right={<Cta locked="Proceed to PM.3 once valid mapping records exist (PM.3 remains reachable from PM.2)">Proceed to Territory Plan Review â†’ PM.3</Cta>}
+        left={<><Btn to="pm.2">← Back to PM.2</Btn><Btn to="pm.2b" icon={<MessageSquare size={13} />}>Request Mapping Correction</Btn><Cta locked="Validate Mapping is enabled when all mandatory checks pass">Validate Mapping</Cta></>}
+        right={<Cta locked="Proceed to PM.3 once valid mapping records exist (PM.3 remains reachable from PM.2)">Proceed to Territory Plan Review</Cta>}
       />
     </PmPage>
   );
@@ -198,12 +198,12 @@ export function Pm2a() {
 
 export function Pm2b() {
   return (
-    <Drawer title="SKU Mapping Correction Request" status="Draft â€” Not Sent" back="pm.2a" subtitle="Scope: Ambad, Jalna Â· Croptek Â· FY 2025â€“26"
+    <Drawer title="SKU Mapping Correction Request" status="Draft — Not Sent" back="pm.2a" subtitle="Scope: Ambad, Jalna · Croptek · FY 2025–26"
       footer={<>
         <Act message="Source record (TM submitted plan v1) opened read-only">View Source Record</Act>
-        <Act message="Correction request saved as draft â€” not sent">Save Draft</Act>
+        <Act message="Correction request saved as draft — not sent">Save Draft</Act>
         <Btn to="pm.2a">Back to PM.2A</Btn>
-        <span className="pm-foot-right"><Cta message="Correction request created as draft â€” not sent to the owner">Create Mapping Correction Request</Cta></span>
+        <span className="pm-foot-right"><Cta message="Correction request created as draft — not sent to the owner">Create Mapping Correction Request</Cta></span>
       </>}
     >
       <Facts cols={3} rows={[
@@ -218,7 +218,7 @@ export function Pm2b() {
           { label: 'Missing SKU identifiers in submission', status: 'Pending' },
           { label: 'SKU-to-portfolio category mapping', status: 'Pending' },
           { label: 'Primary vs secondary sales measure', status: 'Verify' },
-          { label: 'Validity dates (FY 2025â€“26)', status: 'Verify' },
+          { label: 'Validity dates (FY 2025–26)', status: 'Verify' },
           { label: 'Possible duplicate mappings', status: 'Pending' },
           { label: 'Source submission completeness', status: 'Verify' },
         ]} />
@@ -226,11 +226,11 @@ export function Pm2b() {
       </Box>
 
       <div className="pm-form pm-form-2">
-        <Field label="Request reason"><Input rows={2} placeholder="Describe the mapping gap to correctâ€¦" value="Ambad Croptek contribution cannot be attributed: SKU identifiers missing in submitted plan v1." /></Field>
-        <Field label="Responsible master-data / source owner"><Select options={['Master Data Team', 'Territory Manager â€” Jalna', 'ERP / DMS Integration Owner']} /></Field>
-        <Field label="Optional TM collaborator"><Select options={['Territory Manager â€” Jalna Cluster', 'None']} /></Field>
+        <Field label="Request reason"><Input rows={2} placeholder="Describe the mapping gap to correct…" value="Ambad Croptek contribution cannot be attributed: SKU identifiers missing in submitted plan v1." /></Field>
+        <Field label="Responsible master-data / source owner"><Select options={['Master Data Team', 'Territory Manager — Jalna', 'ERP / DMS Integration Owner']} /></Field>
+        <Field label="Optional TM collaborator"><Select options={['Territory Manager — Jalna Cluster', 'None']} /></Field>
         <Field label="Due date" hint="No committed date yet"><Input placeholder="Select due date" /></Field>
-        <Field label="Comments"><Input rows={2} placeholder="Comments for the ownerâ€¦" /></Field>
+        <Field label="Comments"><Input rows={2} placeholder="Comments for the owner…" /></Field>
         <Field label="Supporting evidence"><Input placeholder="Attach file or link" /></Field>
       </div>
 
@@ -252,9 +252,9 @@ export function Pm3() {
       crumbs={[{ label: 'Territory Plan Reviews', to: 'pm.2' }, { label: 'Consolidated Territory Plans', to: 'pm.2' }, { label: 'Ambad' }, { label: 'Plan Validation' }]}
       code="PM.3"
       title="Territory Business & Crop Plan Validation & Endorsement"
-      status="Submitted â€” PM Review Required"
+      status="Submitted — PM Review Required"
     >
-      <Source>PM.2 â€” selected the Ambad / Jalna Territory Manager submission (plan v1, pre-approval).</Source>
+      <Source>PM.2 — selected the Ambad / Jalna Territory Manager submission (plan v1, pre-approval).</Source>
       <Strip items={[
         { label: 'All-product Ambad ABP', value: AMBAD.abp },
         { label: 'Originally submitted primary business', value: AMBAD.submitted },
@@ -276,17 +276,17 @@ export function Pm3() {
               highlight={crop}
               onRow={setCrop}
             />
-            <p className="pm-note">Onion â‚¹1.65 Cr is the <b>original pre-approval submission</b>. The â‚¹{ONION_APPROVED_LATER.replace('â‚¹', '')} Onion figure used later in Marketing Head screens is a subsequently revised / approved value and is not shown as submitted here.</p>
+            <p className="pm-note">Onion ₹1.65 Cr is the <b>original pre-approval submission</b>. The ₹{ONION_APPROVED_LATER.replace('₹', '')} Onion figure used later in Marketing Head screens is a subsequently revised / approved value and is not shown as submitted here.</p>
           </Box>
 
           <div className="pm-two-even">
             <Box title="Dhanora planning detail (read-only)" tone="soft">
               <Facts cols={2} rows={[
-                ['Historical', `${DHANORA.histRev} Â· ${DHANORA.histVol}`],
-                ['Target', `${DHANORA.tgtRev} Â· ${DHANORA.tgtVol}`],
-                ['Effective coverage (illustrative)', <>{DHANORA.prevAcres} â†’ {DHANORA.reqAcres} <Status>Unvalidated</Status></>],
+                ['Historical', `${DHANORA.histRev} · ${DHANORA.histVol}`],
+                ['Target', `${DHANORA.tgtRev} · ${DHANORA.tgtVol}`],
+                ['Effective coverage (illustrative)', <>{DHANORA.prevAcres} → {DHANORA.reqAcres} <Status>Unvalidated</Status></>],
                 ['Application rate assumption', <>{DHANORA.rate} <Status>Unvalidated</Status></>],
-                ['Product realization', <>{DHANORA.realPrev} â†’ {DHANORA.realNew} <span style={{ color: '#a42e2a' }}>(âˆ’20%)</span></>],
+                ['Product realization', <>{DHANORA.realPrev} → {DHANORA.realNew} <span style={{ color: '#a42e2a' }}>(−20%)</span></>],
                 ['Volume growth', '+50%'],
               ]} />
               <Muted>Estimated crop coverage is not verified.</Muted>
@@ -301,18 +301,18 @@ export function Pm3() {
             </Box>
           </div>
 
-          <AiBox title="AI Planning Exception Insight" items={[{ title: 'Volume +50% with realization âˆ’20% is a discrepancy worth evidence review.', text: 'This flags the assumptions for review; it is not a proven error or infeasibility.', tone: 'amber' }]} />
+          <AiBox title="AI Planning Exception Insight" items={[{ title: 'Volume +50% with realization −20% is a discrepancy worth evidence review.', text: 'This flags the assumptions for review; it is not a proven error or infeasibility.', tone: 'amber' }]} />
         </div>
 
         <div className="pm-stack">
           <Box title="Product Manager Review & Endorsement" icon={<ClipboardCheck size={15} />}>
-            <Field label="Review comments"><Input rows={4} placeholder="Add review comments for the Territory Managerâ€¦" /></Field>
+            <Field label="Review comments"><Input rows={4} placeholder="Add review comments for the Territory Manager…" /></Field>
             <div className="pm-stack" style={{ gap: 6 }}>
               <Btn to="pm.3b" icon={<MessageSquare size={13} />}>Request Changes to Territory Manager</Btn>
               <Act icon={<FileText size={13} />} message="TM.3 Outlet Plan opened read-only">View Original TM.3 Outlet Plan</Act>
               <Act icon={<FileText size={13} />} message="TM.4 Coverage Plan opened read-only">View Original TM.4 Coverage Plan</Act>
               <Act message="Review saved (plan not endorsed)">Save Review</Act>
-              <Cta locked="Disabled until mandatory validations and the â‚¹0.40 Cr planning gap are resolved, or an authorized exception is accepted">Endorse & Forward to Marketing Head</Cta>
+              <Cta locked="Disabled until mandatory validations and the ₹0.40 Cr planning gap are resolved, or an authorized exception is accepted">Endorse & Forward to Marketing Head</Cta>
             </div>
             <Muted>The Product Manager reviews and comments; the Territory Manager's original plan is never edited here.</Muted>
           </Box>
@@ -323,8 +323,8 @@ export function Pm3() {
       </div>
 
       <Actions
-        left={<Btn to="pm.2">â† Back to PM.2</Btn>}
-        right={<><Btn to="pm.3c" icon={<History size={13} />}>Revised plan review (after TM resubmission) â†’ PM.3C</Btn><Cta to="pm.4">Assigned Marketing Themes â†’ PM.4</Cta></>}
+        left={<Btn to="pm.2">← Back to PM.2</Btn>}
+        right={<><Btn to="pm.3c" icon={<History size={13} />}>Revised plan review (after TM resubmission)</Btn><Cta to="pm.4">Assigned Marketing Themes</Cta></>}
        
       />
     </PmPage>
@@ -334,9 +334,9 @@ export function Pm3() {
 /* ------------------------------------------------------------------ PM.3B (drawer over PM.3) */
 
 const EXCEPTIONS = [
-  { exception: 'All-product planning gap', value: 'â‚¹0.40 Cr unresolved', fix: 'Allocate or justify gap vs â‚¹4.20 Cr ABP', status: 'Pending' },
-  { exception: 'Dhanora proposed volume growth', value: '10 â†’ 15 MT (+50%)', fix: 'Evidence for volume drivers', status: 'Clarification Required' },
-  { exception: 'Implied realization', value: 'â‚¹100 â†’ â‚¹80/kg (âˆ’20%)', fix: 'Confirm price / mix assumption', status: 'Clarification Required' },
+  { exception: 'All-product planning gap', value: '₹0.40 Cr unresolved', fix: 'Allocate or justify gap vs ₹4.20 Cr ABP', status: 'Pending' },
+  { exception: 'Dhanora proposed volume growth', value: '10 → 15 MT (+50%)', fix: 'Evidence for volume drivers', status: 'Clarification Required' },
+  { exception: 'Implied realization', value: '₹100 → ₹80/kg (−20%)', fix: 'Confirm price / mix assumption', status: 'Clarification Required' },
   { exception: 'Application-rate assumption', value: '20 kg/acre', fix: 'Agronomy validation of rate', status: 'Unvalidated' },
   { exception: 'Source completeness', value: 'TM.4 v1', fix: 'Attach historical sales / acreage records', status: 'Pending' },
 ];
@@ -345,12 +345,12 @@ export function Pm3b() {
   const [selected, setSelected] = useState(1);
   const row = EXCEPTIONS[selected];
   return (
-    <Drawer title="Territory Plan Correction Request" status="Draft â€” Not Sent" back="pm.3" subtitle={`Ambad, Jalna Â· ABP ${AMBAD.abp} Â· submitted ${AMBAD.submitted} Â· gap ${AMBAD.gap} Â· original Onion â‚¹1.65 Cr (pre-approval)`}
+    <Drawer title="Territory Plan Correction Request" status="Draft — Not Sent" back="pm.3" subtitle={`Ambad, Jalna · ABP ${AMBAD.abp} · submitted ${AMBAD.submitted} · gap ${AMBAD.gap} · original Onion ₹1.65 Cr (pre-approval)`}
       footer={<>
         <Act message="Original TM plan v1 opened read-only">View Original TM Plan</Act>
-        <Act message="Correction request saved as draft â€” not sent">Save Draft</Act>
+        <Act message="Correction request saved as draft — not sent">Save Draft</Act>
         <Btn to="pm.3">Back to PM.3</Btn>
-        <span className="pm-foot-right"><Cta message="Correction request drafted â€” sending requires confirmation (not sent)">Send Correction Request to Territory Manager</Cta></span>
+        <span className="pm-foot-right"><Cta message="Correction request drafted — sending requires confirmation (not sent)">Send Correction Request to Territory Manager</Cta></span>
       </>}
     >
       <Table
@@ -360,11 +360,11 @@ export function Pm3b() {
         highlight={selected}
         onRow={setSelected}
       />
-      <Box title={`Selected correction Â· ${row.exception}`} tone="soft">
+      <Box title={`Selected correction · ${row.exception}`} tone="soft">
         <div className="pm-form pm-form-2">
           <Field label="Reason"><Input rows={2} value={`${row.fix}. Current value: ${row.value}.`} /></Field>
           <Field label="Supporting source reference"><Input value="TM.4 Village-wise Crop, Product & Coverage Planning (v1)" /></Field>
-          <Field label="Assigned to"><Select options={['Territory Manager â€” Jalna Cluster']} /></Field>
+          <Field label="Assigned to"><Select options={['Territory Manager — Jalna Cluster']} /></Field>
           <Field label="Due date" hint="No committed date"><Input placeholder="Select due date" /></Field>
           <Field label="Required evidence"><Input placeholder="e.g. historical sales records, agronomy note" /></Field>
           <Field label="Optional PM technical reviewer"><Select options={['None', 'Agronomy Lead', 'Pricing Analyst']} /></Field>
@@ -374,7 +374,7 @@ export function Pm3b() {
       <Workflow title="Correction workflow" compact steps={[{ label: 'Draft', state: 'active' }, { label: 'Sent to TM' }, { label: 'Revised Plan Submitted' }, { label: 'PM Revalidation' }, { label: 'Resolved' }]} />
       <Facts cols={2} rows={[['Version tracking', 'Original plan v1 (submitted)'], ['Revised version', <P>Pending TM resubmission</P>]]} />
       <AiBox title="AI Planning Review Insight" items={[{ text: 'Validate volume-growth drivers, realization and acreage before endorsement.', tone: 'amber' }]} />
-      <Muted>After TM resubmission: PM.3 revalidation â†’ PM.3C Endorse & Forward to Marketing Head, only once mandatory checks are resolved or authorized exceptions accepted.</Muted>
+      <Muted>After TM resubmission: PM.3 revalidation → PM.3C Endorse & Forward to Marketing Head, only once mandatory checks are resolved or authorized exceptions accepted.</Muted>
     </Drawer>
   );
 }
@@ -382,11 +382,11 @@ export function Pm3b() {
 /* ------------------------------------------------------------------ PM.3C */
 
 const COMPARISON = [
-  { parameter: 'All-product submitted plan vs ABP', original: 'â‚¹3.80 Cr vs â‚¹4.20 Cr', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
-  { parameter: 'Onion allocation', original: 'â‚¹1.65 Cr', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
-  { parameter: 'Dhanora revenue / volume', original: 'â‚¹10 L / 10 MT â†’ â‚¹12 L / 15 MT', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
-  { parameter: 'Implied realization', original: 'â‚¹100 â†’ â‚¹80/kg', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
-  { parameter: 'Application rate', original: '20 kg/acre (unvalidated)', revised: 'View TM Revised Submission', variation: 'â€”', status: 'Agronomy Validation Pending' },
+  { parameter: 'All-product submitted plan vs ABP', original: '₹3.80 Cr vs ₹4.20 Cr', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
+  { parameter: 'Onion allocation', original: '₹1.65 Cr', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
+  { parameter: 'Dhanora revenue / volume', original: '₹10 L / 10 MT → ₹12 L / 15 MT', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
+  { parameter: 'Implied realization', original: '₹100 → ₹80/kg', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
+  { parameter: 'Application rate', original: '20 kg/acre (unvalidated)', revised: 'View TM Revised Submission', variation: '—', status: 'Agronomy Validation Pending' },
 ];
 
 export function Pm3c() {
@@ -395,9 +395,9 @@ export function Pm3c() {
       crumbs={[{ label: 'Territory Plan Reviews', to: 'pm.2' }, { label: 'Ambad', to: 'pm.3' }, { label: 'Correction Request', to: 'pm.3b' }, { label: 'Revised Plan Review' }]}
       code="PM.3C"
       title="Revised Territory Plan Comparison, Revalidation & Endorsement"
-      status="Revised Plan v2 Received â€” Revalidation Pending"
+      status="Revised Plan v2 Received — Revalidation Pending"
     >
-      <Source>PM.3B â€” hypothetical future state: correction request sent, revised plan v2 received from the Territory Manager. PM revalidation and endorsement are <b>not yet complete</b>.</Source>
+      <Source>PM.3B — hypothetical future state: correction request sent, revised plan v2 received from the Territory Manager. PM revalidation and endorsement are <b>not yet complete</b>.</Source>
 
       <div className="pm-two">
         <div className="pm-stack">
@@ -406,11 +406,11 @@ export function Pm3c() {
               head={['Parameter', 'Original v1', 'Revised v2 / Source', 'Variation', 'PM Validation']}
               rows={COMPARISON.map((row) => [<b>{row.parameter}</b>, row.original, <Act small message="TM revised submission v2 opened read-only">{row.revised}</Act>, <Muted>{row.variation}</Muted>, <Status>{row.status}</Status>])}
             />
-            <p className="pm-note">Revised v2 amounts are not displayed until revalidated. The later â‚¹1.90 Cr approved Onion allocation is <b>not</b> treated as submitted or endorsed here.</p>
+            <p className="pm-note">Revised v2 amounts are not displayed until revalidated. The later ₹1.90 Cr approved Onion allocation is <b>not</b> treated as submitted or endorsed here.</p>
           </Box>
           <Box title="Exception Resolution Tracker">
             <Checklist items={[
-              { label: 'Original â‚¹0.40 Cr all-product planning gap', status: 'Pending' },
+              { label: 'Original ₹0.40 Cr all-product planning gap', status: 'Pending' },
               { label: 'Dhanora volume basis', status: 'Pending' },
               { label: 'Price / mix realization', status: 'Pending' },
               { label: 'Application-rate validation', status: 'Exception Requested', note: 'Agronomy review' },
@@ -420,21 +420,21 @@ export function Pm3c() {
         </div>
 
         <Box title="PM Endorsement" icon={<ClipboardCheck size={15} />}>
-          <Field label="Review comments"><Input rows={3} placeholder="Revalidation notesâ€¦" /></Field>
-          <Facts rows={[['Source attachments', <Sources label="" items={[{ label: 'TM Plan v1' }, { label: 'TM Plan v2' }]} />], ['Endorsed crop / product scope', 'Onion Â· Maize Â· Other Crops (all-product)'], ['Authorized-exception check', <P>Not recorded</P>]]} />
+          <Field label="Review comments"><Input rows={3} placeholder="Revalidation notes…" /></Field>
+          <Facts rows={[['Source attachments', <Sources label="" items={[{ label: 'TM Plan v1' }, { label: 'TM Plan v2' }]} />], ['Endorsed crop / product scope', 'Onion · Maize · Other Crops (all-product)'], ['Authorized-exception check', <P>Not recorded</P>]]} />
           <Workflow title="Approval routing" compact steps={[{ label: 'TM Resubmission', state: 'done' }, { label: 'PM Revalidation', state: 'active' }, { label: 'PM Endorsement' }, { label: 'MH.3 Marketing Head Review' }]} />
           <div className="pm-stack" style={{ gap: 6 }}>
             <Act message="Original TM plan v1 opened read-only">View Original TM Plan</Act>
             <Act message="Revised TM plan v2 opened read-only">View Revised TM Plan</Act>
             <Btn to="pm.3b">Request Further Changes</Btn>
-            <Act message="Review saved â€” not endorsed">Save Review</Act>
-            <Cta locked="Disabled until mandatory checks clear or authorized exceptions are recorded">Endorse & Forward to Marketing Head â†’ MH.3</Cta>
+            <Act message="Review saved — not endorsed">Save Review</Act>
+            <Cta locked="Disabled until mandatory checks clear or authorized exceptions are recorded">Endorse & Forward to Marketing Head</Cta>
           </div>
           <Muted>The PM never modifies original TM data. Endorsement is distinct from final business-plan approval.</Muted>
         </Box>
       </div>
 
-      <Actions left={<Btn to="pm.3">â† Back to PM.3</Btn>} right={<Btn to="pm.3d" icon={<MessageSquare size={13} />}>Marketing Head clarification (later state) â†’ PM.3D</Btn>} />
+      <Actions left={<Btn to="pm.3">← Back to PM.3</Btn>} right={<Btn to="pm.3d" icon={<MessageSquare size={13} />}>Marketing Head clarification (later state)</Btn>} />
     </PmPage>
   );
 }
@@ -442,24 +442,24 @@ export function Pm3c() {
 /* ------------------------------------------------------------------ PM.3D (drawer over PM.3C) */
 
 const MH_QUESTIONS = [
-  { q: 'Justify the Onion opportunity and growth requirement', evidence: 'MH.3B review note Â· PM.3C endorsed plan' },
-  { q: 'Evidence for planned volume, acreage and realization assumptions', evidence: 'TM.4 coverage plan Â· agronomy note' },
-  { q: 'What marketing intervention support is recommended?', evidence: 'Market evidence Â· PM.3C comments' },
+  { q: 'Justify the Onion opportunity and growth requirement', evidence: 'MH.3B review note · PM.3C endorsed plan' },
+  { q: 'Evidence for planned volume, acreage and realization assumptions', evidence: 'TM.4 coverage plan · agronomy note' },
+  { q: 'What marketing intervention support is recommended?', evidence: 'Market evidence · PM.3C comments' },
 ];
 
 export function Pm3d() {
   const [selected, setSelected] = useState(0);
   const [type, setType] = useState('Explain Existing Plan');
   return (
-    <Drawer title="Marketing Review Feedback & Clarification" status="MH Clarification Received â€” PM Response Pending" back="pm.3c" subtitle="Ambad / Jalna Â· Maharashtra Onion Â· owner: Product Manager Â· reviewed plan version from source"
+    <Drawer title="Marketing Review Feedback & Clarification" status="MH Clarification Received — PM Response Pending" back="pm.3c" subtitle="Ambad / Jalna · Maharashtra Onion · owner: Product Manager · reviewed plan version from source"
       footer={<>
-        <Act message="Draft response saved â€” not submitted">Save Draft Response</Act>
+        <Act message="Draft response saved — not submitted">Save Draft Response</Act>
         <Btn to="pm.3b">Request TM Revision</Btn>
         <Btn to="pm.3c">Back to Plan Review</Btn>
-        <span className="pm-foot-right"><Cta message="Clarification response saved as draft â€” not yet submitted">Submit Clarification Response to Marketing Head</Cta></span>
+        <span className="pm-foot-right"><Cta message="Clarification response saved as draft — not yet submitted">Submit Clarification Response to Marketing Head</Cta></span>
       </>}
     >
-      <p className="pm-note">Later hypothetical state: PM.3C validations were completed, the plan was endorsed and forwarded, and the Marketing Head (MH.3A / MH.3B) raised a clarification. Original v1: â‚¹3.80 Cr submitted vs â‚¹4.20 Cr ABP, Onion â‚¹1.65 Cr. Any â‚¹1.90 Cr Onion figure requires a verified approved source version.</p>
+      <p className="pm-note">Later hypothetical state: PM.3C validations were completed, the plan was endorsed and forwarded, and the Marketing Head (MH.3A / MH.3B) raised a clarification. Original v1: ₹3.80 Cr submitted vs ₹4.20 Cr ABP, Onion ₹1.65 Cr. Any ₹1.90 Cr Onion figure requires a verified approved source version.</p>
       <Table
         compact
         head={['#', 'Marketing Head question', 'Status', 'Source / evidence', '']}
@@ -467,11 +467,11 @@ export function Pm3d() {
         highlight={selected}
         onRow={setSelected}
       />
-      <Box title={`Response Â· ${MH_QUESTIONS[selected].q}`} tone="soft">
-        <Field label="PM response"><Input rows={3} placeholder="Draft your responseâ€¦" /></Field>
+      <Box title={`Response · ${MH_QUESTIONS[selected].q}`} tone="soft">
+        <Field label="PM response"><Input rows={3} placeholder="Draft your response…" /></Field>
         <div className="pm-form pm-form-2">
           <Field label="Response type"><Select key={type} options={['Explain Existing Plan', 'Request Territory Manager Revision']} value={type} /></Field>
-          <Field label="Responsible owner"><Select options={['Product Manager', 'Territory Manager â€” Jalna']} /></Field>
+          <Field label="Responsible owner"><Select options={['Product Manager', 'Territory Manager — Jalna']} /></Field>
           <Field label="Response due date" hint="No committed date"><Input placeholder="Select date" /></Field>
           <Field label="Evidence"><Act small message="Attachment dialog (demo)">Attach Evidence</Act></Field>
         </div>
@@ -488,7 +488,7 @@ function Chipsy({ onPick }: { onPick: (value: string) => void }) {
   return (
     <div className="row" style={{ fontSize: 11.5 }}>
       <AlertTriangle size={13} color="#b07800" />
-      <span className="muted">Choosing â€œRequest Territory Manager Revisionâ€ routes the question back through TM revision.</span>
+      <span className="muted">Choosing “Request Territory Manager Revision” routes the question back through TM revision.</span>
       <button type="button" className="pm-chip" onClick={() => onPick('Request Territory Manager Revision')}>Switch to TM revision</button>
     </div>
   );

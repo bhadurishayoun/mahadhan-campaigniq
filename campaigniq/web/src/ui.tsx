@@ -1,6 +1,7 @@
-﻿import { createContext, useContext, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowDown, ArrowRight, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Home, Info, Maximize2, Minimize2, Sparkles } from 'lucide-react';
+import { STATUS } from './chartTheme';
 import { useNav, type ScreenId } from './nav';
 
 /* ------------------------------------------------------------------ layout helpers */
@@ -100,7 +101,7 @@ export function TooltipLayer() {
 
 const NUMBER_RE = /-?\d[\d,]*(?:\.\d+)?/;
 
-/** Counts up to the first number inside a value such as "â‚¹6.4 Cr", "3.2 Lakh", "63%" or 1,240. */
+/** Counts up to the first number inside a value such as "₹6.4 Cr", "3.2 Lakh", "63%" or 1,240. */
 export function CountUp({ value, duration = 900 }: { value: ReactNode; duration?: number }) {
   const parsed = useMemo(() => {
     if (typeof value !== 'string' && typeof value !== 'number') return null;
@@ -139,15 +140,15 @@ export type Tone = 'green' | 'lime' | 'amber' | 'red' | 'blue' | 'grey' | 'dark'
 
 export const COLORS = {
   dark: '#1f5f2c',
-  green: '#2f8a3b',
+  green: STATUS.ok,
   mid: '#5fae4c',
   light: '#9fd27f',
   pale: '#d8edc9',
   yellow: '#e8c13a',
   amber: '#f0a830',
-  red: '#d9534f',
+  red: STATUS.risk,
   grey: '#c9cfc6',
-  blue: '#3f7fc4',
+  blue: STATUS.info,
 };
 
 const cx = (...names: (string | false | undefined | null)[]) => names.filter(Boolean).join(' ');
@@ -175,6 +176,7 @@ export function Btn({ children, variant = 'outline', to, onClick, icon, small, c
     >
       {icon}
       <span>{children}</span>
+      {to && !icon && <ArrowRight size={14} strokeWidth={1.75} aria-hidden="true" />}
     </button>
   );
 }
@@ -187,7 +189,7 @@ export function Pill({ tone = 'green', children, solid }: { tone?: Tone; childre
 export function DataBadge({ data }: { data: { name: string; live: boolean; source?: string; uploadedAt?: string } }) {
   const { go } = useNav();
   const title = data.live
-    ? `Live data Â· ${data.name}${data.source ? ` Â· ${data.source}` : ''}${data.uploadedAt ? ` Â· ${data.uploadedAt}` : ''}`
+    ? `Live data · ${data.name}${data.source ? ` · ${data.source}` : ''}${data.uploadedAt ? ` · ${data.uploadedAt}` : ''}`
     : `Illustrative demo data. Upload dataset "${data.name}" in Data Sources to replace it.`;
   return (
     <button type="button" className={cx('data-badge', data.live ? 'data-live' : 'data-demo')} title={title} onClick={() => go('admin.1')}>
@@ -226,7 +228,7 @@ export function Panel({ title, icon, info, actions, className, children, number,
               {number !== undefined && <span className="panel-number">{number}.</span>}
               {icon && <span className="panel-icon">{icon}</span>}
               <h3>{title}</h3>
-              {info && <span className="panel-info" data-tip="Hover or tap chart elements for exact values. Use â¤¢ to open this panel full screen."><Info size={13} className="muted-icon" /></span>}
+              {info && <span className="panel-info" data-tip="Hover or tap chart elements for exact values. Use ⤢ to open this panel full screen."><Info size={13} className="muted-icon" /></span>}
               {data && <DataBadge data={data} />}
             </div>
             <div className="panel-head-right">
@@ -273,7 +275,7 @@ export function Kpi({ icon, label, value, sub, trend, spark, tone, badge, compac
           {badge}
           {spark && <Spark points={Array.isArray(spark) ? spark : undefined} tone={trend === 'down' ? 'red' : 'green'} />}
         </div>
-        {sub && <div className={cx('kpi-sub', trend && `trend-${trend}`)}>{trend === 'up' ? 'â–² ' : trend === 'down' ? 'â–¼ ' : ''}{sub}</div>}
+        {sub && <div className={cx('kpi-sub', trend && `trend-${trend}`)}>{trend === 'up' ? '▲ ' : trend === 'down' ? '▼ ' : ''}{sub}</div>}
       </div>
     </div>
   );
@@ -297,7 +299,7 @@ export function Spark({ points = [3, 5, 4, 6, 5, 7, 6, 8, 9], tone = 'green', wi
     .join(' ');
   const last = points[points.length - 1];
   return (
-    <svg className="spark" width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden data-tip={`Trend: ${points.join(' â†’ ')}`}>
+    <svg className="spark" width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden data-tip={`Trend: ${points.join(' → ')}`}>
       <path className="spark-line" pathLength={1} d={path} fill="none" stroke={tone === 'red' ? COLORS.red : COLORS.green} strokeWidth="1.6" />
       <circle cx={width - 1.5} cy={(height - 2 - ((last - min) / (max - min || 1)) * (height - 4)).toFixed(1)} r="2" fill={tone === 'red' ? COLORS.red : COLORS.green} />
     </svg>
@@ -349,7 +351,7 @@ export function DataTable<T extends Record<string, unknown>>({ columns, rows, hi
       const raw = row[sort.key] as string | number;
       if (typeof raw === 'number') return raw;
       const numeric = parseFloat(String(raw).replace(/[^\d.-]/g, ''));
-      return /^[\sâ‚¹~â‰ˆ<>+-]*\d/.test(String(raw)) && Number.isFinite(numeric) ? numeric : String(raw).toLowerCase();
+      return /^[\s₹~≈<>+-]*\d/.test(String(raw)) && Number.isFinite(numeric) ? numeric : String(raw).toLowerCase();
     };
     return [...indexed].sort((a, b) => {
       const x = value(a.row); const y = value(b.row);
@@ -604,7 +606,7 @@ export function VBars({ data, series, height: baseHeight = 150, max, showValues 
             <div className="vbar-cols">
               {item.values.map((value, seriesIndex) => {
                 const shown = item.labels?.[seriesIndex] ?? (valueFormat ? valueFormat(value) : value);
-                const tip = `${typeof item.label === 'string' ? `${item.label} Â· ` : ''}${series[seriesIndex]?.label ?? ''}${series[seriesIndex]?.label ? ': ' : ''}${typeof shown === 'string' || typeof shown === 'number' ? shown : value}`;
+                const tip = `${typeof item.label === 'string' ? `${item.label} · ` : ''}${series[seriesIndex]?.label ?? ''}${series[seriesIndex]?.label ? ': ' : ''}${typeof shown === 'string' || typeof shown === 'number' ? shown : value}`;
                 return (
                   <div className="vbar-col" key={seriesIndex} data-tip={tip}>
                     {showValues && <span className="vbar-value">{shown}</span>}
@@ -719,7 +721,7 @@ export function Stepper({ steps, active, onSelect }: { steps: string[]; active: 
       {steps.map((step, index) => (
         <li key={step} className={cx(index < active && 'step-done', index === active && 'step-active')}>
           <button type="button" onClick={() => onSelect?.(index)}>
-            <span className="step-dot">{index < active ? 'âœ“' : index + 1}</span>
+            <span className="step-dot">{index < active ? '✓' : index + 1}</span>
             <span className="step-label">{step}</span>
           </button>
         </li>
@@ -765,7 +767,7 @@ export function ContextStrip({ items }: { items: { icon?: ReactNode; label: Reac
 }
 
 export function Check({ status, children }: { status: 'done' | 'pending' | 'warn' | 'todo'; children: ReactNode }) {
-  const symbol = status === 'done' ? 'âœ“' : status === 'warn' ? '!' : status === 'pending' ? 'â—·' : 'â—‹';
+  const symbol = status === 'done' ? '✓' : status === 'warn' ? '!' : status === 'pending' ? '◷' : '○';
   return <div className={cx('check', `check-${status}`)}><span>{symbol}</span><div>{children}</div></div>;
 }
 

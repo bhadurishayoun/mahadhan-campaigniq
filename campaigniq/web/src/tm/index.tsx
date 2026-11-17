@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Territory Manager persona: screen registry and the shell that renders the current screen.
  */
 import type { ComponentType } from 'react';
