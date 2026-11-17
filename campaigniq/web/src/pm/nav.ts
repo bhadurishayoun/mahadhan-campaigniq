@@ -15,7 +15,7 @@ export const PM_IDS = [
   'pm.5', 'pm.5a', 'pm.5b', 'pm.5c',
   'pm.6', 'pm.6a', 'pm.6b',
   'pm.7', 'pm.7a', 'pm.7b', 'pm.7c', 'pm.7d', 'pm.7e',
-  'pm.8', 'pm.8a', 'pm.8b', 'pm.8c', 'pm.8d', 'pm.8e', 'pm.8f',
+  'pm.8', 'pm.8a', 'pm.8b', 'pm.8c', 'pm.8d', 'pm.8e', 'pm.8f', 'pm.opt1',
   'pm.9b', 'pm.9', 'pm.9a', 'pm.9c', 'pm.9d', 'pm.9e',
   'pm.10', 'pm.10a', 'pm.10b', 'pm.10c',
   'pm.11', 'pm.11a', 'pm.11b', 'pm.11c', 'pm.11d',
@@ -85,6 +85,7 @@ export const PM_SCREENS: PmMeta[] = [
   { id: 'pm.8d', code: 'PM.8D', title: 'Audience Overlap & Benefit Reconciliation', tab: 'studio', period: FY25 },
   { id: 'pm.8e', code: 'PM.8E', title: 'Proposal Submission Confirmation', tab: 'studio', parent: 'pm.8a', kind: 'modal', period: FY25 },
   { id: 'pm.8f', code: 'PM.8F', title: 'Returned Proposal Revision & Resubmission', tab: 'studio', period: FY25 },
+  { id: 'pm.opt1', code: 'PM.OPT1', title: 'Incoming Campaign Optimization & Revision Workspace', tab: 'studio', period: FY26 },
 
   { id: 'pm.9b', code: 'PM.9B', title: 'Activity Plan Approval Inbox', tab: 'approvals', period: FY25 },
   { id: 'pm.9', code: 'PM.9', title: 'Territory Activity Plan Review & Approval', tab: 'approvals', period: FY25 },

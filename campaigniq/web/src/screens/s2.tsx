@@ -395,7 +395,6 @@ export function OpportunityAtlas() {
           { label: 'Current: S2.1 Crop × Geography Opportunity Atlas', current: true },
           { label: 'On click of Jalna / Dhule: Next S2.2 District / Taluka Intelligence', to: 's2.2' },
         ]}
-        nextLabel="Recommended Next Screen:"
         next={{ label: 'S2.2 — District / Taluka Intelligence', to: 's2.2', sub: ' Opens when clicking a district / taluka such as Jalna or Dhule' }}
       />
     </div>
@@ -694,7 +693,6 @@ export function DistrictIntelligence() {
           { label: 'Current: S2.2 Jalna District / Taluka Intelligence', current: true },
           { label: "On click of 'Explore Target Segments' → S2.3 Micro-Market Segmentation", to: 's2.3' },
         ]}
-        nextLabel="Recommended Next Screen:"
         next={{ label: 'S2.3 — Micro-Market Segmentation', to: 's2.3' }}
       />
     </div>
@@ -894,7 +892,6 @@ export function MicroMarketSegmentation() {
           { label: 'Ambad → Explore Target Segments', to: 's2.2' },
           { label: 'Current Screen: S2.3 Ambad Segmentation', current: true },
         ]}
-        nextLabel="Recommended Next Screen:"
         next={{ label: 'S2.4 Competition & Channel Intelligence', to: 's2.4' }}
       />
       <p className="s2-footnote">Illustrative concept data | S2.2 → S2.3 → S2.4 connected user journey</p>
@@ -1126,9 +1123,8 @@ export function CompetitionChannel() {
         steps={[
           { label: 'Source: S2.3 Ambad Micro-Market Segmentation & Campaign Targeting', to: 's2.3' },
           { label: 'S2.4 Ambad Competition & Channel Intelligence (Current Screen)', current: true },
-          { label: "On click of 'Generate Conversion Strategy' → Next S2.5", to: 's2.5' },
+          { label: "On click of 'Generate Conversion Strategy' → S2.5", to: 's2.5' },
         ]}
-        nextLabel="Recommended Next Screen:"
         next={{ label: 'S2.5 — Opportunity Prioritization & Campaign Recommendations', to: 's2.5' }}
       />
     </div>
@@ -1364,4 +1360,5 @@ export function CampaignRecommendations() {
     </div>
   );
 }
+
 

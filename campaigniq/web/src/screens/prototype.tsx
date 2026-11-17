@@ -57,7 +57,7 @@ export function ApiConsole({ title = 'Backend Activity (live API calls)' }: { ti
       className="proto-console"
       icon={<TerminalSquare size={16} />}
       title={title}
-      actions={<><span className="small muted">{API_BASE || 'no backend connected'}</span><Btn small variant="ghost" onClick={clearApiLog}>Clear</Btn></>}
+      actions={<><span className="small muted">{API_BASE || 'API URL not configured'}</span><Btn small variant="ghost" onClick={clearApiLog}>Clear</Btn></>}
     >
       {calls.length === 0 ? (
         <p className="small muted" style={{ margin: 0 }}>No calls yet. Interact with the screen; every request to the FastAPI backend appears here with its status and response time.</p>
@@ -82,7 +82,7 @@ export function ApiConsole({ title = 'Backend Activity (live API calls)' }: { ti
 
 type FeatureStatus = 'live' | 'ready' | 'proposed';
 const STATUS_META: Record<FeatureStatus, { label: string; tone: Tone }> = {
-  live: { label: 'Live · backend connected', tone: 'green' },
+  live: { label: 'Backend feature', tone: 'green' },
   ready: { label: 'Interactive UI · API ready', tone: 'blue' },
   proposed: { label: 'Proposed', tone: 'amber' },
 };
@@ -174,7 +174,7 @@ export function PrototypeOverview() {
   const liveDatasets = datasets.data?.items.filter((item) => item.status === 'live').length ?? 0;
 
   const health: { label: string; value: ReactNode; ok: boolean | null; sub: string }[] = [
-    { label: 'FastAPI backend', value: apiUp == null ? 'Checking…' : apiUp ? `Online · ${latency} ms` : 'Offline', ok: apiUp, sub: API_BASE || 'Not connected on this published demo' },
+    { label: 'FastAPI backend', value: apiUp == null ? 'Checking…' : apiUp ? `Online · ${latency} ms` : 'Offline', ok: apiUp, sub: API_BASE || 'API URL not configured' },
     { label: 'Database (SQLite)', value: dashboard.data ? `${num(dashboard.data.kpis.marketing_units)} market units` : dashboard.error ? 'Unavailable' : '…', ok: dashboard.data ? true : dashboard.error ? false : null, sub: `${plans.data ? `${plans.data.total} campaign plan${plans.data.total === 1 ? '' : 's'}` : '…'} · ${num(dashboard.data?.kpis.activities_done)} field activities done` },
     { label: 'Planning engine', value: 'Python · 8 guardrails', ok: apiUp, sub: 'Segment → goal → farmers → mix → budget' },
     { label: 'Reference masters', value: `${reference.states.length} states · ${districts} districts`, ok: true, sub: `${reference.products.length} products · editable JSON` },

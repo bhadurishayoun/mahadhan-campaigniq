@@ -254,7 +254,6 @@ export function Pm7c() {
       <Actions
         left={<><Btn to="pm.7a">â† Back to PM.7A Editor</Btn><Btn onClick={() => toast('Restore v0.2? Confirmation required (demo: no change made)')}>Restore Previous Draft</Btn><Btn to="pm.7a">Edit Current Version</Btn><Act message="Version comparison saved">Save Version Comparison</Act></>}
         right={<Cta to="pm.7d">Submit Current Version for Technical Review â†’ PM.7D</Cta>}
-        note="Submission not yet made"
       />
     </PmPage>
   );
@@ -372,4 +371,5 @@ export function Pm7e() {
     </PmPage>
   );
 }
+
 

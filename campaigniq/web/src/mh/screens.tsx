@@ -408,7 +408,7 @@ export function Mh9d() {
             <tr><th>Responsible PM</th><td>Crop Nutrition Product Manager</td></tr>
             <tr><th>Deliverable</th><td>Revised campaign proposal + updated business case if material</td></tr>
           </tbody></table>
-          <div className="pm-box-actions"><button type="button" className="pm-btn">Submit Optimization Request to Product Manager</button><button type="button" className="pm-btn pm-btn-soft" onClick={() => go('mh.9b')}>Back to MH.9B</button></div>
+          <div className="pm-box-actions"><button type="button" className="pm-btn" onClick={() => go('pm.opt1')}>Submit Optimization Request to Product Manager → PM.OPT1</button><button type="button" className="pm-btn pm-btn-soft" onClick={() => go('mh.9b')}>Back to MH.9B</button></div>
         </div>
       </div>
     </MhPage>

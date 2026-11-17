@@ -1,19 +1,19 @@
 ﻿import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
-  BarChart3, Bell, CalendarDays, CheckSquare, ChevronDown, ClipboardCheck, Database, Gauge, Presentation, HelpCircle, Home, Inbox, Layers, MapPin, Menu, Radio, Search, ShoppingCart, SlidersHorizontal, Sparkles, Sprout, User, X,
+  BarChart3, Bell, CalendarDays, CheckSquare, ChevronDown, ClipboardCheck, Database, Gauge, Presentation, HelpCircle, Home, Inbox, Layers, MapPin, Menu, Radio, Search, ShoppingCart, SlidersHorizontal, Sparkles, Sprout, User, Wallet, X,
 } from 'lucide-react';
 import {
   MODULES, NavContext, PERSONAS, SCREENS, personaOf, screenMeta, type Filters, type ModuleId, type ModuleScreenId, type ScreenId, type PersonaId,
 } from './nav';
-import { PM_SCREENS, PM_TABS, PmScreen, isPmScreen, pmMeta, type PmTabId } from './pm';
-import { TM_SCREENS, TM_TABS, TmScreen, isTmScreen, tmMeta, type TmTabId } from './tm';
-import { MH_SCREENS, MH_TABS, MhScreen, isMhScreen, mhMeta, type MhTabId } from './mh';
+import { PM_TABS, PmScreen, isPmScreen, pmMeta, type PmTabId } from './pm';
+import { TM_TABS, TmScreen, isTmScreen, tmMeta, type TmTabId } from './tm';
+import { MH_TABS, MhScreen, isMhScreen, mhMeta, type MhTabId } from './mh';
+import { BH_TABS, BhScreen, isBhScreen, bhMeta, type BhTabId } from './bh';
 import { filterOptions, normalizeFilters, scopeOf, useReference } from './data/reference';
 import { DataSources } from './screens/admin';
 import * as P from './screens/prototype';
 import { TooltipLayer } from './ui';
-import { API_ENABLED } from './api';
 import * as S1 from './screens/s1';
 import * as S2 from './screens/s2';
 import * as S3 from './screens/s3';
@@ -23,7 +23,7 @@ import * as S6 from './screens/s6';
 import * as S7 from './screens/s7';
 import * as AI from './screens/ai';
 import { LoginPage } from './login';
-import { loadSession, saveSession, type Session } from './session';
+import { saveSession, type Session } from './session';
 
 const REGISTRY: Record<ModuleScreenId, ComponentType> = {
   'p.1': P.PrototypeOverview,
@@ -75,6 +75,7 @@ const MODULE_ICONS: Record<ModuleId, LucideIcon> = {
   pm: Gauge,
   tm: User,
   mh: User,
+  bh: Gauge,
 };
 
 const PM_TAB_ICONS: Record<PmTabId, LucideIcon> = {
@@ -105,6 +106,15 @@ const MH_TAB_ICONS: Record<MhTabId, LucideIcon> = {
   copilot: Sparkles,
 };
 
+const BH_TAB_ICONS: Record<BhTabId, LucideIcon> = {
+  command: Home,
+  portfolio: BarChart3,
+  investment: Wallet,
+  themes: ClipboardCheck,
+  interventions: CheckSquare,
+  copilot: Sparkles,
+};
+
 const FILTER_LABELS: Record<keyof Filters, string> = {
   season: 'Season',
   geography: 'Geography',
@@ -132,16 +142,16 @@ const DEFAULT_FILTERS: Record<ModuleId, Filters> = {
   pm: JALNA_ONION,
   tm: JALNA_ONION,
   mh: JALNA_ONION,
+  bh: NATIONAL,
 };
 
 function readHash(): ScreenId {
   const id = window.location.hash.replace(/^#\/?/, '') as ScreenId;
-  // Without a backend (published static demo) open on the Command Centre; P.1 needs the live API.
-  return SCREENS.some((screen) => screen.id === id) ? id : API_ENABLED ? 'p.1' : 's1.1';
+  return SCREENS.some((screen) => screen.id === id) ? id : 's1.1';
 }
 
 export default function App() {
-  const [session, setSession] = useState<Session | null>(() => loadSession());
+  const [session, setSession] = useState<Session | null>(null);
   const [loginPersona, setLoginPersona] = useState<PersonaId | undefined>(undefined);
   const [screen, setScreen] = useState<ScreenId>(readHash);
   const [filtersByModule, setFiltersByModule] = useState(DEFAULT_FILTERS);
@@ -156,6 +166,7 @@ export default function App() {
   const pm = isPmScreen(screen) ? pmMeta(screen) : null;
   const tm = isTmScreen(screen) ? tmMeta(screen) : null;
   const mh = isMhScreen(screen) ? mhMeta(screen) : null;
+  const bh = isBhScreen(screen) ? bhMeta(screen) : null;
   const filters = filtersByModule[meta.module];
   const { reference } = useReference();
   const options = useMemo(() => filterOptions(reference, filters), [reference, filters]);
@@ -204,34 +215,19 @@ export default function App() {
     return SCREENS.filter((item) => `${item.code} ${item.title}`.toLowerCase().includes(text)).slice(0, 6);
   }, [query]);
 
-  const Screen = pm ? PmScreen : tm ? TmScreen : mh ? MhScreen : REGISTRY[screen as ModuleScreenId];
+  const Screen = pm ? PmScreen : tm ? TmScreen : mh ? MhScreen : bh ? () => <BhScreen screen={bh.id} /> : REGISTRY[screen as ModuleScreenId];
 
   const pmSidebar = pm && (
     <nav className="side-nav">
       <div className="pm-side-persona">Product Manager</div>
       {PM_TABS.map((tab) => {
         const Icon = PM_TAB_ICONS[tab.id];
-        const active = tab.id === pm.tab;
         return (
           <div key={tab.id} className={tab.id === 'copilot' ? 'side-copilot' : undefined}>
-            <button type="button" className={active ? 'side-link active' : 'side-link'} onClick={() => { go(tab.home); setNavOpen(true); }}>
+            <button type="button" className={tab.id === pm.tab ? 'side-link active' : 'side-link'} onClick={() => { go(tab.home); setNavOpen(true); }}>
               <Icon size={17} />
               <span>{tab.label}</span>
             </button>
-            {active && tab.id !== 'copilot' && (
-              <div className="side-sub">
-                {PM_SCREENS.filter((item) => item.tab === tab.id).map((item) => (
-                  <button
-                    type="button"
-                    key={item.id}
-                    className={[item.id === screen ? 'side-sublink active' : 'side-sublink', item.parent ? 'overlay' : ''].join(' ').trim()}
-                    onClick={() => go(item.id)}
-                  >
-                    <b>{item.code}</b> {item.parent ? '↳ ' : ''}{item.title}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         );
       })}
@@ -243,27 +239,12 @@ export default function App() {
       <div className="pm-side-persona">Territory Manager</div>
       {TM_TABS.map((tab) => {
         const Icon = TM_TAB_ICONS[tab.id];
-        const active = tab.id === tm.tab;
         return (
           <div key={tab.id} className={tab.id === 'copilot' ? 'side-copilot' : undefined}>
-            <button type="button" className={active ? 'side-link active' : 'side-link'} onClick={() => { go(tab.home); setNavOpen(true); }}>
+            <button type="button" className={tab.id === tm.tab ? 'side-link active' : 'side-link'} onClick={() => { go(tab.home); setNavOpen(true); }}>
               <Icon size={17} />
               <span>{tab.label}</span>
             </button>
-            {active && tab.id !== 'copilot' && (
-              <div className="side-sub">
-                {TM_SCREENS.filter((item) => item.tab === tab.id).map((item) => (
-                  <button
-                    type="button"
-                    key={item.id}
-                    className={item.id === screen ? 'side-sublink active' : 'side-sublink'}
-                    onClick={() => go(item.id)}
-                  >
-                    <b>{item.code}</b> {item.title}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         );
       })}
@@ -275,27 +256,29 @@ export default function App() {
       <div className="pm-side-persona">Marketing Head</div>
       {MH_TABS.map((tab) => {
         const Icon = MH_TAB_ICONS[tab.id];
-        const active = tab.id === mh.tab;
         return (
           <div key={tab.id} className={tab.id === 'copilot' ? 'side-copilot' : undefined}>
-            <button type="button" className={active ? 'side-link active' : 'side-link'} onClick={() => { go(tab.home); setNavOpen(true); }}>
+            <button type="button" className={tab.id === mh.tab ? 'side-link active' : 'side-link'} onClick={() => { go(tab.home); setNavOpen(true); }}>
               <Icon size={17} />
               <span>{tab.label}</span>
             </button>
-            {active && tab.id !== 'copilot' && (
-              <div className="side-sub">
-                {MH_SCREENS.filter((item) => item.tab === tab.id).map((item) => (
-                  <button
-                    type="button"
-                    key={item.id}
-                    className={item.id === screen ? 'side-sublink active' : 'side-sublink'}
-                    onClick={() => go(item.id)}
-                  >
-                    <b>{item.code}</b> {item.title}
-                  </button>
-                ))}
-              </div>
-            )}
+          </div>
+        );
+      })}
+    </nav>
+  );
+
+  const bhSidebar = bh && (
+    <nav className="side-nav">
+      <div className="pm-side-persona">Business Head</div>
+      {BH_TABS.map((tab) => {
+        const Icon = BH_TAB_ICONS[tab.id];
+        return (
+          <div key={tab.id} className={tab.id === 'copilot' ? 'side-copilot' : undefined}>
+            <button type="button" className={tab.id === bh.tab ? 'side-link active' : 'side-link'} onClick={() => { go(tab.home); setNavOpen(true); }}>
+              <Icon size={17} />
+              <span>{tab.label}</span>
+            </button>
           </div>
         );
       })}
@@ -320,47 +303,31 @@ export default function App() {
     <NavContext.Provider value={{ screen, go, filters, setFilters, scope, reference, toast }}>
       <div className="app">
         <aside className={navOpen ? 'sidebar open' : 'sidebar'} aria-label="Main navigation">
-          <button type="button" className="brand" onClick={() => go('p.1')}>
+          <button type="button" className="brand" onClick={() => go(personaMeta.home)}>
             <Sprout size={26} className="brand-leaf" />
             <span>Mahadhan<br />CampaignIQ</span>
           </button>
           <button type="button" className="nav-close" aria-label="Close menu" onClick={() => setNavOpen(false)}><X size={18} /></button>
-          {pmSidebar || tmSidebar || mhSidebar || (
+          {pmSidebar || tmSidebar || mhSidebar || bhSidebar || (
             <nav className="side-nav">
               {MODULES.filter((module) => module.id !== 'admin').map((module) => {
                 const Icon = MODULE_ICONS[module.id];
-                const active = module.id === meta.module;
                 return (
                   <div key={module.id} className={module.id === 'copilot' ? 'side-copilot' : undefined}>
-                    <button type="button" className={active ? 'side-link active' : 'side-link'} onClick={() => { go(module.home); setNavOpen(true); }}>
+                    <button type="button" className={module.id === meta.module ? 'side-link active' : 'side-link'} onClick={() => { go(module.home); setNavOpen(true); }}>
                       <Icon size={17} />
                       <span>{module.label}</span>
                     </button>
-                    {active && module.id !== 'copilot' && (
-                      <div className="side-sub">
-                        {SCREENS.filter((item) => item.module === module.id).map((item) => (
-                          <button
-                            type="button"
-                            key={item.id}
-                            className={item.id === screen ? 'side-sublink active' : 'side-sublink'}
-                            onClick={() => go(item.id)}
-                          >
-                            <b>{item.code}</b> {item.title}
-                          </button>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 );
               })}
             </nav>
           )}
-          <div className="side-admin">
+          {!bh && <div className="side-admin">
             <button type="button" className={meta.module === 'admin' ? 'side-link active' : 'side-link'} onClick={() => go('admin.1')}>
               <Database size={16} /><span>Data Sources & Integrations</span>
             </button>
-          </div>
-          <div className="side-foot">Illustrative concept data · All financials are illustrative</div>
+          </div>}
         </aside>
 
         <div className="main">
@@ -385,6 +352,12 @@ export default function App() {
                 <span><b>Marketing Head</b></span>
                 <span>{mh.period}</span>
                 <span>Regional marketing workspace</span>
+              </div>
+            ) : bh ? (
+              <div className="pm-topctx bh-topctx">
+                <span><b>Business Head</b></span>
+                <span>FY 2026–27</span>
+                <span>National Portfolio · YTD</span>
               </div>
             ) : (
               <>
@@ -486,3 +459,5 @@ export default function App() {
     </NavContext.Provider>
   );
 }
+
+

@@ -306,10 +306,6 @@ export function DemandProjection() {
           </Btn>
           {status === 'changes' && <Pill tone="amber">Changes requested</Pill>}
         </div>
-        <div className="row">
-          <span className="muted small"><Lightbulb size={13} /> Recommended Next:</span>
-          <Btn variant="dark" to="s5.2" icon={<ArrowRight size={14} />}>Check Stock Readiness — S5.2 Stock Readiness Dashboard</Btn>
-        </div>
       </div>
 
       <FlowFooter steps={[
@@ -1090,4 +1086,5 @@ export function SupplyRiskPlanner() {
     </div>
   );
 }
+
 

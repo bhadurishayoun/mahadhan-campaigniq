@@ -3,8 +3,9 @@ import type { Filters, ReferenceData, Scope } from './data/reference';
 import { PM_SCREENS, type PmScreenId } from './pm/nav';
 import { TM_SCREENS, type TmScreenId } from './tm/nav';
 import { MH_SCREENS, type MhScreenId } from './mh/nav';
+import { BH_SCREENS, type BhScreenId } from './bh/nav';
 
-/** Screens of the original module-based view (the "Strategy Head" persona). */
+/** Screens of the original module-based workspace. */
 export type ModuleScreenId =
   | 'p.1' | 'p.2' | 'p.3'
   | 's1.1' | 's1.2' | 's1.3' | 's1.4' | 's1.5'
@@ -17,13 +18,13 @@ export type ModuleScreenId =
   | 'ai.1'
   | 'admin.1';
 
-export type ScreenId = ModuleScreenId | PmScreenId | TmScreenId | MhScreenId;
+export type ScreenId = ModuleScreenId | PmScreenId | TmScreenId | MhScreenId | BhScreenId;
 
 /**
  * Modules used by the app.
  *
- * - Strategy persona uses the module view (prototype, atlas, ...)
- * - V2 personas are grouped under their own module keys (pm, tm, mh)
+ * - Business Head, Product Manager, Territory Manager and Marketing Head use their own workspace routes.
+ * - The legacy module screens remain available for navigation and demo workflows.
  */
 export type ModuleId =
   | 'prototype'
@@ -39,14 +40,15 @@ export type ModuleId =
   | 'admin'
   | 'pm'
   | 'tm'
-  | 'mh';
+  | 'mh'
+  | 'bh';
 
 export type StrategyModuleId = Exclude<ModuleId, 'pm' | 'tm' | 'mh'>;
 
 export type PersonaId = 'strategy' | 'pm' | 'tm' | 'mh';
 
 export const PERSONAS: { id: PersonaId; label: string; sub: string; home: ScreenId; initials: string; available: boolean }[] = [
-  { id: 'strategy', label: 'Strategy Head', sub: 'Module view · command centre, atlas, studio, control tower', home: 's1.1', initials: 'SH', available: true },
+  { id: 'strategy', label: 'Business Head', sub: 'National portfolio, investment, strategic themes & decisions', home: 'bh.1', initials: 'BH', available: true },
   { id: 'pm', label: 'Product Manager', sub: 'Crop Nutrition Portfolio · V2 persona journey', home: 'pm.1', initials: 'PM', available: true },
   { id: 'tm', label: 'Territory Manager', sub: 'Territory plan, campaigns, execution and impact', home: 'tm.1', initials: 'TM', available: true },
   { id: 'mh', label: 'Marketing Head', sub: 'Regional strategy, approvals & rollout, performance learning', home: 'mh.1', initials: 'MH', available: true },
@@ -56,6 +58,7 @@ export const personaOf = (module: ModuleId): PersonaId => {
   if (module === 'pm') return 'pm';
   if (module === 'tm') return 'tm';
   if (module === 'mh') return 'mh';
+  if (module === 'bh') return 'strategy';
   return 'strategy';
 };
 
@@ -67,7 +70,6 @@ export interface ScreenMeta {
 }
 
 export const MODULES: { id: StrategyModuleId; label: string; home: ScreenId }[] = [
-  { id: 'prototype', label: 'Prototype Showcase', home: 'p.1' },
   { id: 'command', label: 'Strategy Command Centre', home: 's1.1' },
   { id: 'atlas', label: 'Opportunity Atlas', home: 's2.1' },
   { id: 'nutrition', label: 'Crop Nutrition Intelligence', home: 's3.1' },
@@ -116,6 +118,7 @@ export const SCREENS: ScreenMeta[] = [
   ...PM_SCREENS.map((screen) => ({ id: screen.id, code: screen.code, title: screen.title, module: 'pm' as const })),
   ...TM_SCREENS.map((screen) => ({ id: screen.id, code: screen.code, title: screen.title, module: 'tm' as const })),
   ...MH_SCREENS.map((screen) => ({ id: screen.id, code: screen.code, title: screen.title, module: 'mh' as const })),
+  ...BH_SCREENS.map((screen) => ({ id: screen.id, code: screen.code, title: screen.title, module: 'bh' as const })),
 ];
 
 export const screenMeta = (id: ScreenId) => SCREENS.find((screen) => screen.id === id)!;
@@ -140,3 +143,4 @@ export function useNav() {
   if (!value) throw new Error('useNav must be used inside the app shell');
   return value;
 }
+

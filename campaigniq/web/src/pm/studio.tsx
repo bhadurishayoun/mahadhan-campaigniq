@@ -210,7 +210,6 @@ export function Pm5c() {
       <Actions
         left={<><Btn to="pm.5b">View C1 Evidence â†’ PM.5B</Btn><Btn to="pm.5a">Edit Concepts â†’ PM.5A</Btn><Act message="Comparison saved">Save Comparison</Act></>}
         right={<Cta to="pm.6">Proceed to Proposition Design â†’ PM.6</Cta>}
-        note={`Selected direction: ${decision}`}
       />
     </PmPage>
   );
@@ -400,4 +399,5 @@ export function Pm6b() {
     </Drawer>
   );
 }
+
 

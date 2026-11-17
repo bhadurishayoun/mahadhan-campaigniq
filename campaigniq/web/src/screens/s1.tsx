@@ -638,8 +638,8 @@ export function ExecutiveSummary() {
       <FlowStrip items={[
         { small: 'Source:', label: 'S1.2 Campaign Portfolio Dashboard', to: 's1.2', icon: <Layers size={16} /> },
         { small: 'Current:', label: 'S1.3 Campaign Executive Summary', current: true, icon: <Target size={16} /> },
-        { small: 'On click of “View Root Cause” → Next:', label: 'S1.4 Strategic Risk Analysis', to: 's1.4', icon: <BarChart3 size={16} /> },
-        { small: 'On click of “Open Opportunity Context” → Next:', label: 'S2.2 District / Taluka Intelligence', to: 's2.2', icon: <MapPin size={16} /> },
+        { small: 'On click of “View Root Cause”', label: 'S1.4 Strategic Risk Analysis', to: 's1.4', icon: <BarChart3 size={16} /> },
+        { small: 'On click of “Open Opportunity Context”', label: 'S2.2 District / Taluka Intelligence', to: 's2.2', icon: <MapPin size={16} /> },
       ]} />
 
       <KpiRow>
@@ -773,9 +773,7 @@ export function ExecutiveSummary() {
                 { key: 'urgency', label: 'Urgency', render: (r) => <Pill tone={riskTone(r.urgency)}>{r.urgency}</Pill> },
               ]} />
             <div className="row" style={{ marginTop: 10 }}>
-              <Btn variant="primary" small to="s1.4">Recommended Next Screen</Btn>
-              <ArrowRight size={14} />
-              <span className="small"><strong>S1.4 — Strategic Risk Analysis</strong><span className="s1-sub">Opens on clicking ‘View Root Cause’ to diagnose conversion and stock gap drivers.</span></span>
+              <Btn variant="primary" small to="s1.4">Open S1.4 Strategic Risk Analysis</Btn>
             </div>
           </Panel>
         </div>
@@ -1325,7 +1323,6 @@ export function RecoveryReplanning() {
             <Btn icon={<ArrowLeft size={14} />} to="s1.4">Return to Risk Analysis</Btn>
           </div>
           <div className="row">
-            <span className="small muted">Recommended Next Screen →</span>
             <Btn variant={approved ? 'primary' : 'outline'} to="s6.1" icon={<ArrowRight size={14} />}>S6.1 Campaign Action Plan / Orchestration Update</Btn>
           </div>
         </div>
@@ -1342,4 +1339,7 @@ export function RecoveryReplanning() {
     </div>
   );
 }
+
+
+
 

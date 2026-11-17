@@ -37,6 +37,22 @@ All figures on these screens are the mockups' illustrative demo values (Croptek 
 | Campaign Impact & Learning | S7.1 Campaign Impact & Effectiveness Dashboard | `#/s7.1` | `3.03.25 PM` |
 | | S7.2 Campaign Diagnostics & Learning Studio | `#/s7.2` | `3.02.43 PM` |
 | AI Co-pilot | AI.1 Intelligent Copilot Workspace | `#/ai.1` | `3.03.24 PM`, `3.02.42 PM` |
+| Product Manager | PM.OPT1 Incoming Campaign Optimization & Revision Workspace | `#/pm.opt1` | Added from the PM UI Workflow; linked from MH.9D |
+
+## Business Head V2 workspace
+
+The Business Head uses a dedicated executive workspace based on the supplied November 17, 2026 WhatsApp mockups. It replaces the former S1–S7 module landing for this persona; the legacy routes remain available.
+
+| Section | Screens | Routes |
+|---|---|---|
+| National Command Centre | BH.1 | `#/bh.1` |
+| Campaign Portfolio Performance | BH.2, BH.3, BH.3A, BH.4, BH.10 | `#/bh.2` through `#/bh.4`, `#/bh.10` |
+| Marketing Investment & ROI | BH.5, BH.5A, BH.5B, BH.5C | `#/bh.5`, `#/bh.5a` through `#/bh.5c` |
+| Strategic Themes & Approvals | BH.6, BH.7, BH.7A, BH.7B, BH.8 | `#/bh.6` through `#/bh.8` |
+| Strategic Interventions | BH.9, BH.9A | `#/bh.9`, `#/bh.9a` |
+| AI Copilot | BH.AI1 | `#/bh.ai1` |
+
+The PM UI Workflow document is a Product Manager click-through inventory, not a whole-portal or Business Head specification. Its role handoffs and approval gates are reflected in the BH theme decision flow: a BH theme decision returns to Marketing Head for assignment; the PM develops the campaign proposal and business case afterward. Theme approval does not authorize spend or field execution. The incoming optimization request handoff is linked from MH.9D to PM.OPT1. The workflow's campaign-level launch, local-plan approval, and evidence/attribution distinctions remain separate.
 
 ## Main story flow
 

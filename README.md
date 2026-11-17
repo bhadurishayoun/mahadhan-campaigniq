@@ -20,9 +20,9 @@ All data in the tool is illustrative.
 | `render.yaml` | One-click setup of the backend on Render's free tier |
 | `*.docx`, `*.pptx`, `*.md`, `ui-mockups/` | Product briefs, analysis and UI mockups (`ui-mockups/V2-persona-mockup-specs.md` holds the V2 persona-wise screen specs) |
 
-**Personas (V2):** the avatar menu at the top-right switches between the *Strategy Head* module view and the
-*Product Manager* journey (PM.1 – PM.AI1, 48 screens). Further personas (Territory Manager, Marketing Head, Business Head)
-follow the same pattern; see `campaigniq/docs/product-manager-persona.md`.
+**Personas (V2):** the avatar menu at the top-right switches among the dedicated Business Head, Product Manager
+(PM.1 – PM.AI1, 48 screens), Territory Manager and Marketing Head workspaces. The legacy module screens remain
+available through their existing routes; see `campaigniq/docs/product-manager-persona.md` for the PM build notes.
 
 ## How it is hosted
 

@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { Calculator, GitCompare, Send, SlidersHorizontal } from 'lucide-react';
 import { Btn, COLORS, cx } from '../ui';
+import { useNav } from '../nav';
 import { Act, Actions, AiBox, Bars, Box, Checklist, Cta, Facts, Field, Input, Modal, Muted, P, PmPage, Radios, Source, Sources, Status, Strip, Table, Workflow } from './kit';
 import { C1, C2, INVESTMENT, MARGIN, SCENARIOS, THEME } from './data';
 
@@ -264,7 +265,6 @@ export function Pm8c() {
       <Actions
         left={<><Btn to="pm.8b">â† Back to PM.8B</Btn><Btn to="pm.8b">Adjust Assumptions</Btn><Act message="Draft scenario saved">Save Draft Scenario</Act></>}
         right={<Cta to="pm.8d">Reconcile Campaign Benefits & Audience Overlap â†’ PM.8D</Cta>}
-        note="â‚¹12 L regional envelope â‰  future TM local allocations; pilot 36% is not an incremental campaign effect"
       />
     </PmPage>
   );
@@ -330,7 +330,6 @@ export function Pm8d() {
       <Actions
         left={<><Btn to="pm.8c">â† Back to PM.8C</Btn><Act message="Source cohorts opened (CRM matching pending)">View Source Cohorts</Act><Act message="CRM matching requested">Request CRM Matching</Act><Act message="Reconciliation draft saved">Save Reconciliation Draft</Act></>}
         right={<Cta to="pm.8a">Review Proposals & Submission Readiness â†’ PM.8A</Cta>}
-        note="Draft navigation only; PM.8E handles actual submission after mandatory checks clear"
       />
     </PmPage>
   );
@@ -428,4 +427,76 @@ export function Pm8f() {
     </PmPage>
   );
 }
+
+/* ------------------------------------------------------------------ PM.OPT1: incoming MH optimization request */
+
+export function PmOpt1() {
+  const { go, toast } = useNav();
+  const [status, setStatus] = useState('New Request · Not Accepted');
+  return (
+    <PmPage
+      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: 'Incoming Optimization Request' }]}
+      code="PM.OPT1"
+      title="Incoming Campaign Optimization & Revision Workspace"
+      status={status}
+      subtitle="Review a Marketing Head request and develop a controlled revision to the currently approved campaign."
+    >
+      <Source>Request from MH.9D · West Region · Retailer-Led Croptek Conversion. The current approved campaign version remains effective until a replacement completes the required approvals and controlled release.</Source>
+      <div className="pm-two">
+        <div className="pm-stack">
+          <Box title="Optimization request from Marketing Head" tone="soft">
+            <Facts rows={[
+              ['Observed issue', 'Execution progress 72% vs 80% planned'],
+              ['Supporting concern', 'Farmer follow-up and retailer activation may need review'],
+              ['Evidence status', 'Partial · no causal driver verified'],
+              ['Requested review', 'Audience, intervention mix, timing, channel readiness and resource assumptions'],
+              ['Requested deliverable', 'Revised campaign proposal and updated business case if materially affected'],
+              ['Due date / priority', 'To confirm · High'],
+            ]} />
+            <AiBox title="Evidence check" items={[{ text: 'The execution gap is observed. Validate owner completion, eligible cohort and contact evidence before treating follow-up as the cause.', tone: 'amber' }]} />
+          </Box>
+          <Box title="Current approved campaign version">
+            <Table head={['Item', 'Current authorized state', 'Revision control']} rows={[
+              ['Campaign', 'Retailer-Led Croptek Conversion · West Region', 'Current version stays active'],
+              ['Investment envelope', 'Approved MH.8A version · ₹12 L allocation', 'Revalidate if materially changed'],
+              ['Territory availability', 'Previously released recommendations', 'Do not overwrite existing release'],
+            ]} />
+          </Box>
+        </div>
+        <div className="pm-stack">
+          <Box title="Review assignment">
+            <Facts rows={[
+              ['Request owner', 'Marketing Head · West Region'],
+              ['Responsible PM', 'Crop Nutrition Product Manager'],
+              ['Request status', status],
+              ['Source links', 'MH.9B diagnostics · MH.9D request · MH.8A approved playbook'],
+            ]} />
+            <Field label="PM response / clarification"><Input rows={3} placeholder="Record the evidence needed or the revision approach" /></Field>
+          </Box>
+          <Box title="Revision controls" tone="soft">
+            <Checklist items={[
+              { label: 'Accept review assignment', status: status.startsWith('Accepted') || status.startsWith('Revision') ? 'Accepted' : 'Pending' },
+              { label: 'Validate source evidence and request scope', status: 'Pending' },
+              { label: 'Create a new proposal version', status: status.startsWith('Revision') ? 'Draft in Progress' : 'Not Started' },
+              { label: 'Revalidate affected proposition, assets and business case', status: 'Pending' },
+            ]} />
+            <Muted>Revisions create a new version. The PM may request specialist validation; Marketing Head and Business Head approvals are required where policy or material financial changes demand them.</Muted>
+          </Box>
+        </div>
+      </div>
+      <Sources items={[{ label: 'MH.9B performance diagnostics' }, { label: 'MH.9D optimization request' }, { label: 'MH.8A approved playbook' }, { label: 'PM.6 proposition', to: 'pm.6' }, { label: 'PM.8 business case', to: 'pm.8' }]} />
+      <Workflow compact steps={[{ label: 'MH Optimization Request', state: 'done' }, { label: 'PM Assignment Review', state: status.startsWith('New') ? 'active' : 'done' }, { label: 'PM Revised Proposal', state: status.startsWith('Revision') ? 'active' : undefined }, { label: 'Required Reapproval' }, { label: 'Controlled Release' }]} />
+      <Actions
+        left={<><Act message="Original approved version opened read-only">View Approved Version</Act><Btn to="mh.9d">View MH Request</Btn></>}
+        right={<>
+          <button type="button" className="pm-btn pm-btn-soft" onClick={() => { setStatus('Clarification Requested'); toast('Clarification request drafted for the Marketing Head.'); }}>Request Clarification</button>
+          <button type="button" className="pm-btn" onClick={() => { setStatus('Accepted · Draft in Progress'); toast('Optimization assignment accepted.'); }}>Accept Review Assignment</button>
+          <button type="button" className="pm-btn pm-btn-primary" onClick={() => { setStatus('Revision Draft in Progress'); toast('A new proposal draft is ready; the approved version remains active.'); go('pm.8'); }}>Develop Revised Campaign Proposal</button>
+        </>}
+        note="No campaign, budget, territory release or execution status changes when this request is received."
+      />
+    </PmPage>
+  );
+}
+
 

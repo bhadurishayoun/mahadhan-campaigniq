@@ -61,7 +61,6 @@ export function Pm4() {
       <Actions
         left={<><Btn to="pm.4a">View Original MH.5 Theme Brief</Btn><Btn to="pm.4b" icon={<MessageSquare size={13} />}>Request Clarification</Btn><Act message="Notes saved">Save Notes</Act></>}
         right={<Cta to="pm.4c">Acknowledge & Develop Campaign Concepts â†’ PM.5</Cta>}
-        note="Acknowledgement not yet completed Â· next PM.5 Campaign Concept Development Studio"
       />
     </PmPage>
   );
@@ -184,4 +183,5 @@ export function Pm4c() {
     </Modal>
   );
 }
+
 
