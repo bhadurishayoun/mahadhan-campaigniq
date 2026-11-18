@@ -437,6 +437,21 @@ Good next candidates (still hard-coded): S1 KPI tiles and funnels, S2.3 segments
 
 ### 5.5 Connect the AI Co-pilot to an LLM
 
+**Default: live AI with no API key.** `COPILOT_PROVIDER=free` (the default) calls free, keyless OpenAI-compatible
+endpoints: LLM7 first, Pollinations as the fallback. Both serve open-weight models (mainly `gpt-oss-20b`).
+
+* All copilots are live: AI.1 (structured analysis, `POST /api/copilot/ask`) and the persona copilots TM.AI1,
+  PM.AI1, MH.AI1 and BH.AI1 (`POST /api/copilot/chat`). Each persona screen sends the figures it shows, and the
+  backend adds matching datasets and live KPIs (`server/data/prompts/copilot_chat.md` holds the rules).
+* Without a backend (e.g. the GitHub Pages site) the browser calls the same free endpoints directly with the same
+  prompts (`web/src/data/copilot.ts`).
+* Limits: the free services are best-effort and rate-limited (Pollinations: about one reply per 45 seconds per IP).
+  The client honours short `Retry-After` waits and falls back between endpoints; if both are busy, the chat says
+  so. Questions and on-screen (illustrative) figures are sent to these third-party services, so do not use them
+  with confidential data. For production, switch to a paid or self-hosted model as below.
+
+To use your own model instead:
+
 1. Copy `.env.example` to `server/.env` and set the provider:
 
    **OpenAI**

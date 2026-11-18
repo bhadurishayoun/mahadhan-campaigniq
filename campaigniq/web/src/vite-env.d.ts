@@ -9,3 +9,9 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+/** Vite `?raw` imports (e.g. the copilot prompt files shared with the backend). */
+declare module '*?raw' {
+  const content: string;
+  export default content;
+}

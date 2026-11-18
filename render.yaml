@@ -18,9 +18,9 @@ services:
       # The GitHub Pages origin allowed to call the API, e.g. https://<your-username>.github.io (no path).
       - key: CAMPAIGNIQ_CORS_ORIGINS
         sync: false
-      # AI Co-pilot: "demo" needs no key. To use a real LLM set COPILOT_PROVIDER=openai and enter the key
-      # here in Render's dashboard (never in the code).
+      # AI Co-pilot: "free" uses keyless free LLM endpoints (no key needed). For a paid model set
+      # COPILOT_PROVIDER=openai and enter the key here in Render's dashboard (never in the code).
       - key: COPILOT_PROVIDER
-        value: demo
+        value: free
       - key: COPILOT_API_KEY
         sync: false

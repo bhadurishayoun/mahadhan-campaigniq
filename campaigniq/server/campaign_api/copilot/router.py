@@ -17,7 +17,7 @@ from pydantic import ValidationError
 
 from .context import SCREEN_IDS, build_context
 from .providers import CopilotError, get_provider
-from .schema import AskRequest, AskResponse, CopilotAnswer
+from .schema import AskRequest, AskResponse, ChatRequest, ChatResponse, CopilotAnswer
 
 PROMPT_PATH = Path(os.environ.get("COPILOT_SYSTEM_PROMPT", Path(__file__).resolve().parents[2] / "data" / "prompts" / "copilot_system.md"))
 DEFAULT_SCREEN = "ai.1"
@@ -40,6 +40,9 @@ def _parse_answer(text: str, question: str) -> CopilotAnswer:
     cleaned = text.strip()
     if cleaned.startswith("```"):
         cleaned = cleaned.strip("`").removeprefix("json").strip()
+    start, end = cleaned.find("{"), cleaned.rfind("}")
+    if 0 <= start < end:
+        cleaned = cleaned[start:end + 1]  # tolerate leading / trailing prose around the JSON object
     try:
         payload: dict[str, Any] = json.loads(cleaned)
         payload["question"] = question
@@ -81,3 +84,59 @@ def ask(request: AskRequest) -> AskResponse:
         raise HTTPException(status_code=502, detail=str(error)) from error
     return AskResponse(mode="llm", provider=provider.name, model=provider.model, answer=_parse_answer(text, request.question),
                        grounded_on=[item["dataset"] for item in context["datasets"]])
+
+
+CHAT_PROMPT_PATH = PROMPT_PATH.parent / "copilot_chat.md"
+CHAT_DATASET_ROWS = 12
+
+
+def _backend_kpis() -> dict[str, Any]:
+    """Compact live planning / execution metrics from the database (best-effort)."""
+    from .. import main  # imported lazily: main includes this router
+
+    try:
+        dashboard = main.dashboard()["kpis"]
+        performance = main.performance()["kpis"]
+        segments = main.segments_summary()
+    except Exception:  # noqa: BLE001 - the copilot must still answer if a metric query fails
+        return {}
+    keep = ("activity_completion", "done_events", "converted_farmers", "liquidation_vs_plan", "demo_yield_gain", "report_quality", "budget_utilisation")
+    return {
+        "onion_market": {key: round(value, 3) if isinstance(value, float) else value for key, value in dashboard.items()},
+        "execution": {key: round(performance[key], 3) if isinstance(performance.get(key), float) else performance.get(key) for key in keep},
+        "segments": [{"segment": s["segment"], "marketing_units": s["mus"]} for s in segments],
+    }
+
+
+@router.post("/chat", response_model=ChatResponse)
+def chat(request: ChatRequest) -> ChatResponse:
+    provider = _provider()
+    if not provider.configured:
+        return ChatResponse(mode="demo", provider=provider.name, message="No LLM configured.")
+    context = build_context(request.question, request.scope.model_dump(), request.screen)
+    for item in context["datasets"]:
+        item["rows"] = item["rows"][:CHAT_DATASET_ROWS]
+    payload = {
+        "question": request.question,
+        "context": {
+            "persona": request.persona,
+            "screen": request.screen,
+            "page": request.page_context,
+            "scope": context["scope"],
+            "datasets": context["datasets"][:4],
+            "backend_kpis": _backend_kpis(),
+        },
+    }
+    system = CHAT_PROMPT_PATH.read_text(encoding="utf-8").replace("{persona}", request.persona)
+    messages = [
+        {"role": "system", "content": system},
+        *[{"role": item["role"], "content": item["content"][:2000]} for item in request.history
+          if item.get("role") in ("user", "assistant") and isinstance(item.get("content"), str)],
+        {"role": "user", "content": json.dumps(payload, ensure_ascii=False, default=str)[:30_000]},
+    ]
+    try:
+        text = provider.generate(messages, temperature=0.3, max_tokens=900, json_mode=False)
+    except CopilotError as error:
+        raise HTTPException(status_code=502, detail=str(error)) from error
+    return ChatResponse(mode="llm", provider=provider.name, model=provider.model, answer=text.strip(),
+                        grounded_on=[item["dataset"] for item in context["datasets"][:4]])

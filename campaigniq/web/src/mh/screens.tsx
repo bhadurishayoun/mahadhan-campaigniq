@@ -4,6 +4,8 @@ import { MhPage } from './ui';
 import { IndiaDistrictMap } from '../map/IndiaDistrictMap';
 import { ActionButton } from '../ui/index';
 import { MH_CHARTS, MH_OWN_MAP, MH_PULSE } from './charts';
+import { LiveCopilot } from '../ui/LiveCopilot';
+import { EVIDENCE, IMPACT, THEME, VILLAGES } from '../pm/data';
 
 type Spec = {
   code: string;
@@ -16,6 +18,8 @@ type Spec = {
   visual?: ReactNode;
   visualNote?: string;
   next?: { label: string; to: ScreenId };
+  /** Extra content rendered after the charts (e.g. the live copilot on MH.AI1). */
+  extra?: ReactNode;
 };
 
 type VizBar = {
@@ -251,6 +255,8 @@ function Workspace(spec: Spec) {
 
       {MH_CHARTS[spec.code]}
 
+      {spec.extra}
+
       {view.visual && (
         <div className="pm-box iq-visual-card">
           <div className="tm-map-wrap">{view.visual}</div>
@@ -427,8 +433,23 @@ export function Mh9d() {
   );
 }
 
+/** Marketing Head figures handed to the live LLM as grounding context (shared with the PM and BH views). */
+const MH_FACTS = [
+  'Persona: Marketing Head, West Region (Maharashtra and neighbouring states), FY 2026-27. All figures illustrative.',
+  'West Region: ABP Rs 16.0 Cr, actual Rs 14.2 Cr (88.8%), 4 active campaigns, execution 76% vs 82% plan, campaign investment Rs 72 L, 760 adopters; largest reported business gap nationally (Rs 1.8 Cr).',
+  `Strategic theme assigned to the Product Manager: ${THEME.name} (${THEME.scope}); objective: ${THEME.objective}. Evidence: penetration ${EVIDENCE.penetration}; quarterly Croptek onion sales ${EVIDENCE.quarterly.join(', ')}; pilot ${EVIDENCE.purchases}/${EVIDENCE.trials} trial-to-purchase ${EVIDENCE.trialToPurchase}.`,
+  'Campaign awaiting Marketing Head approval: Ambad Onion Croptek Conversion (Dhanora, Wadi Gaon), budget Rs 3.00 L, base forecast Rs 12 L sales, ROI +0.40x (assumptions unvalidated), conditions: confirm demo stock, keep consent logs. Business Head escalation only above Rs 5 L.',
+  `Interim results (Ambad): reached ${IMPACT.reached}, trials ${IMPACT.trials}, adopters ${IMPACT.adopters} (${IMPACT.rate}), linked sales ${IMPACT.linkedSales} provisional. ${VILLAGES.map((v) => `${v.village} ${v.rate}%`).join(' vs ')} trial-to-adoption; causes unverified (stock-dependent demo, follow-up, retailer advocacy).`,
+  `Governance principles: ${CORE_ROWS.map(([k, v]) => `${k}: ${v}`).join(' ')}`,
+].join('\n');
+
 export function MhAi1() {
-  return S(make('MH.AI1', 'Strategic Marketing Intelligence Copilot', 'Conversational decision support across all Marketing Head workflows', C.ai, undefined, 'Assistive mode only'));
+  return S({
+    ...make('MH.AI1', 'Strategic Marketing Intelligence Copilot', 'Conversational decision support across all Marketing Head workflows', C.ai, undefined, 'Assistive mode only'),
+    extra: <LiveCopilot persona="Marketing Head" screen="mh.ai1" pageContext={MH_FACTS}
+      suggestions={['Should I approve the Ambad onion campaign as submitted?', 'Why is West Region execution behind plan?', 'Which theme should I scale next season?', 'What evidence is missing before scaling Croptek conversion?']}
+      intro="Ask about regional strategy, campaign approvals, rollout or performance learning. The live model answers from the Marketing Head figures in this tool." />,
+  });
 }
 
 

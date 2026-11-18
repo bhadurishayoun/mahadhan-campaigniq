@@ -134,6 +134,57 @@ class ExtensionPointTests(unittest.TestCase):
         self.assertEqual(context["scope"], {"state": "maharashtra", "district": "jalna"})
         self.assertEqual(context["datasets"][0]["rows"][0]["cluster"], "Dhanora")
 
+    def test_copilot_defaults_to_the_free_keyless_provider(self):
+        with patch.dict(os.environ, {"COPILOT_PROVIDER": ""}):
+            status = self.client.get("/api/copilot/status").json()
+        self.assertEqual(status["provider"], "free")
+        self.assertEqual(status["mode"], "llm")
+
+    def test_free_provider_waits_on_short_rate_limit_then_falls_back(self):
+        calls = []
+
+        def fake_call(self_, url, body):
+            calls.append(url)
+            if "llm7" in url:
+                return 429, {"error": {"retry_after": 1}}, 1.0
+            return 200, {"model": "gpt-oss-20b", "choices": [{"message": {"content": "Fallback answer"}}]}, 0.0
+
+        provider = providers.FreeProvider()
+        with patch.object(providers.FreeProvider, "_call", fake_call), patch.object(providers.time, "sleep") as sleep:
+            text = provider.generate([{"role": "user", "content": "hi"}], json_mode=False)
+        self.assertEqual(text, "Fallback answer")
+        self.assertEqual(sum("llm7" in url for url in calls), 2)  # retried once after the 1 s wait
+        sleep.assert_called_with(1.0)
+        self.assertIn("Pollinations", provider.model)
+
+    def test_free_provider_reports_when_all_endpoints_are_busy(self):
+        provider = providers.FreeProvider()
+        with patch.object(providers.FreeProvider, "_call", lambda self_, url, body: (402, {}, 45.0)):
+            with self.assertRaises(providers.CopilotError) as caught:
+                provider.generate([{"role": "user", "content": "hi"}])
+        self.assertIn("HTTP 402", str(caught.exception))
+
+    def test_copilot_chat_returns_grounded_text(self):
+        class ChatProvider(FakeProvider):
+            def generate(self, messages, *, temperature=0.2, max_tokens=1500, json_mode=True):
+                FakeProvider.messages = messages
+                return "**Dhanora** converts 38.7% vs 49.0% in Wadi Gaon.\n- Confirm demo stock."
+
+        with patch.dict(providers.PROVIDERS, {"chatfake": ChatProvider}), patch.dict(os.environ, {"COPILOT_PROVIDER": "chatfake"}):
+            response = self.client.post("/api/copilot/chat", json={
+                "question": "Why is Dhanora lower?", "persona": "Territory Manager", "screen": "tm.ai1",
+                "page_context": "Dhanora 62 trials, 24 adopters (38.7%)",
+            })
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["mode"], "llm")
+        self.assertIn("Dhanora", body["answer"])
+        system = FakeProvider.messages[0]["content"]
+        self.assertIn("Territory Manager", system)
+        payload = json.loads(FakeProvider.messages[-1]["content"])
+        self.assertEqual(payload["context"]["page"], "Dhanora 62 trials, 24 adopters (38.7%)")
+        self.assertIn("backend_kpis", payload["context"])
+
     def test_copilot_rejects_malformed_llm_output(self):
         class BrokenProvider(FakeProvider):
             def generate(self, messages, *, temperature=0.2, max_tokens=1500):

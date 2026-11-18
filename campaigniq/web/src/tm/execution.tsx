@@ -1,12 +1,13 @@
 /** Territory Manager - Campaign Execution (TM.EX1-EX2), Impact & Learning (TM.IM1-IM2) and AI Copilot (TM.AI1). */
 import { useState } from 'react';
-import { AlertTriangle, Bot, Camera, CheckCircle2, Clock, FileText, Send, ShieldAlert, Upload, UserRound } from 'lucide-react';
+import { AlertTriangle, Bot, Camera, CheckCircle2, Clock, FileText, ShieldAlert, Upload, UserRound } from 'lucide-react';
 import { useNav } from '../nav';
 import { Btn, cx } from '../ui';
 import { FunnelBars } from '../ui/index';
 import { CAMPAIGN, GANTT, IMPACT_VILLAGES, conversion, type GanttUnit } from './data';
 import { AiPanel, Context, Footer, HBars, Metrics, Note, Panel, Status, TmPage, lakh } from './ui';
 import { MAP_COLORS, TmMap } from './viz';
+import { LiveCopilot } from '../ui/LiveCopilot';
 
 const allUnits = GANTT.flatMap((row) => row.units);
 const count = (state: GanttUnit['state']) => allUnits.filter((u) => u.state === state).length;
@@ -335,62 +336,61 @@ export function TmIm2() {
 }
 
 /* ------------------------------------------------------------------ TM.AI1 */
-const CATEGORIES = [
-  { name: 'Business Target Gaps', prompts: ['Where is Ambad behind its ABP?', 'Which outlets carry the ₹40 L gap?'] },
-  { name: 'Campaign Opportunities', prompts: ['Is the Maize ₹15 L priority ready for a campaign?'] },
-  { name: 'Execution Risks', prompts: ['Which activities are at risk this week?'] },
-  { name: 'Performance Diagnostics', prompts: ['Why is Croptek adoption lower in Dhanora, and what should I do?'] },
+/** Everything the Territory Manager screens show, handed to the live LLM as grounding context. */
+const TM_FACTS = [
+  'Persona: Territory Manager, Jalna Cluster, FY 2025-26. All figures illustrative.',
+  'Territories: Ambad Rs 3.2 Cr last year -> Rs 4.2 Cr ABP (+31.3%), Ghansawangi 2.8 -> 3.4 (+21.4%), Badnapur 2.0 -> 2.4 (+20%); cluster 8.0 -> 10.0 Cr (+25%).',
+  'Last year: incentive achievement 92%, campaign ROI 1.6x, 3-year target attainment 94%.',
+  'Ambad network: 8 dealers, 74 retailers. Dhanora 1 dealer/12 retailers (Sai Krushi Bhandar unmapped, Kisan Seva Kendra inactive); Wadi Gaon 1/14; Ambad HQ 3/22; Pimpalgaon 1/10; other villages 2/16.',
+  'Outlet plan: 8 dealers Rs 320 L last year -> Rs 380 L proposed (+18.8%) vs ABP Rs 420 L; gap Rs 40 L (90.5% allocated). Dhanora Agro Inputs 48->55 L, Ambad Crop Depot 36->43, Shiv Krushi Kendra 42->50 (flagged for potential review), Mahalaxmi Agro 45->53, other 4 dealers 149->179.',
+  'Onion village plan Rs 165 L: Dhanora Rs 12 L / 15 MT (last year Rs 10 L / 10 MT, 500 -> 750 acres at 20 kg/acre; realisation Rs 100 -> 80/kg, -20%), Wadi Gaon 28, Ambad HQ 42, Pimpalgaon 23, other villages 60 (history unverified).',
+  'Crop plan: Onion 1.65 Cr, Maize 1.10 Cr, Other 1.05 Cr = 3.80 Cr. Approved plan v3: Onion 1.90 (+25 L), Maize 1.25 (+15 L), Other 1.05 = 4.20 Cr.',
+  'Campaign Ambad Onion Croptek Conversion (Dhanora, Wadi Gaon, 3 retailers): budget Rs 3.00 L = field demos 4 units 1.05 L, retailer activation 3 sessions 0.75 L, farmer meetings 3 0.60 L, digital advisory 1 wave 0.30 L, follow-ups 2 rounds 0.30 L. Linked objective Rs 25 L (inside ABP). Scenarios: conservative Rs 8 L sales / ROI -0.07x, base Rs 12 L / +0.40x, optimistic Rs 16 L / +0.87x (Rs 100/kg, 35% margin). Base covers 48% of the objective; Rs 13 L must come from other interventions. Approval: content review then Marketing Head (Business Head only above Rs 5 L).',
+  'Execution: 13 activities = 3 completed, 8 scheduled, 2 at risk: Dhanora field demonstration week 2 (stock confirmation pending, owner R. Jadhav) and Wadi Gaon farmer meeting week 2 (field confirmation pending).',
+  'Impact checkpoint: reached 640, trials 160, adopters 72 (reach->trial 25%, trial->adoption 45%). Dhanora 280/62/24 = 38.7%, Rs 2.0 L tracked; Wadi Gaon 360/98/48 = 49.0%, Rs 3.4 L tracked. Gap 10.3 pp. Tracked sales Rs 5.4 L vs Rs 12 L base forecast (provisional, not verified incremental). Activities 9 of 13 completed at this checkpoint.',
+  'Verified issues: Dhanora demo stock pending; Wadi Gaon meeting field confirmation pending. Unverified hypotheses: follow-up quality, retailer advocacy, contact quality. Actual ROI not yet attributable.',
+  'Other priorities: Maize portfolio expansion Rs 15 L (Ambad HQ, Pimpalgaon) - draft campaign Rs 2.2 L, not modelled; retailer advocacy programme not drafted. Kharif 2025: Ghansawangi soybean sulphur campaign ROI 1.8x, Badnapur cotton retailer activation ROI 1.4x.',
+].join('\n');
+
+const TM_SUGGESTIONS = [
+  'Why is Croptek adoption lower in Dhanora, and what should I do?',
+  'Which activities are at risk this week?',
+  'How can I close the ₹13 L gap to the onion objective?',
+  'Is the Maize ₹15 L priority ready for a campaign?',
+  'Which dealers should I review to close the ₹40 L ABP gap?',
 ];
-const CANNED: Record<string, string> = {
-  'Which activities are at risk this week?': 'Two of 13 activities are at risk: the Dhanora field demonstration (stock confirmation pending) and the Wadi Gaon farmer meeting (field confirmation pending). Both are open in the Control Tower.',
-  'Where is Ambad behind its ABP?': 'The approved plan v3 now covers the full ₹4.20 Cr. Earlier, ₹40 L was unallocated; it was closed by the Onion +₹25 L and Maize +₹15 L priorities.',
-  'Which outlets carry the ₹40 L gap?': 'The gap was not tied to specific outlets. Shiv Krushi Kendra was flagged for potential review in Outlet Planning (TM.3).',
-  'Is the Maize ₹15 L priority ready for a campaign?': 'The Maize priority is in the approved plan but no campaign is drafted. Coverage focus would be Ambad HQ and Pimpalgaon; start it from My Campaigns (TM.C1).',
-};
 
 export function TmAi1() {
-  const [thread, setThread] = useState<{ q: string; a?: string }[]>([{ q: 'Why is Croptek adoption lower in Dhanora, and what should I do?' }]);
-  const [draft, setDraft] = useState('');
-  const ask = (q: string) => {
-    if (!q.trim()) return;
-    setThread((t) => [...t, { q, a: CANNED[q] ?? 'In this showcase the copilot answers from the campaign records shown on TM.EX1–TM.IM2. Try one of the suggested prompts on the left.' }]);
-    setDraft('');
-  };
   return (
     <TmPage crumbs={[{ label: 'AI Copilot' }, { label: CAMPAIGN.name }, { label: 'Campaign Diagnostics' }]}
-      code="TM.AI1" title="Territory Business & Campaign Copilot" status="Evidence-linked · causation not yet verified">
+      code="TM.AI1" title="Territory Business & Campaign Copilot" status="Live AI · evidence-linked · causation not yet verified">
       <div className="tm-copilot">
         <aside className="tm-copilot-left">
-          {CATEGORIES.map((c) => (
-            <div key={c.name}><h5>{c.name}</h5>{c.prompts.map((p) => <button key={p} type="button" onClick={() => ask(p)}>{p}</button>)}</div>
-          ))}
-          <div><h5>History</h5><span className="tm-muted">Dhanora adoption · today</span><span className="tm-muted">Ambad gap check · 12 Nov</span></div>
+          <div><h5>What the copilot can see</h5>
+            {['Territory plan & ABP (TM.1–TM.5)', 'Outlet & village plans', 'Campaign wizard & approval', 'Execution calendar & risks', 'Impact & diagnostics', 'Backend datasets & KPIs (when connected)'].map((item) => <span key={item} className="tm-muted">• {item}</span>)}
+          </div>
+          <div><h5>Ground rules</h5><span className="tm-muted">Answers only from CampaignIQ data, flags unverified causes, never prescribes doses or prices.</span></div>
         </aside>
         <section className="tm-copilot-main">
           <div className="tm-thread">
-            {thread.map((m, index) => (
-              <div key={index} className="tm-turn">
-                <div className="tm-q"><UserRound size={14} /><span>{m.q}</span></div>
-                <div className="tm-a"><Bot size={14} />
-                  {index === 0 ? (
-                    <div>
-                      <p>Dhanora converts <b>24 of 62 trials (38.7%)</b> against Wadi Gaon's <b>48 of 98 (49.0%)</b> — a <b>10.3 percentage-point</b> gap.</p>
-                      <HBars rows={[{ label: 'Dhanora', value: 38.7, tone: 'amber' }, { label: 'Wadi Gaon', value: 49.0, tone: 'green' }]} max={60} />
-                      <div className="tm-ai-split">
-                        <div><h5 className="tm-verified">Verified operational issue</h5><p>The Dhanora field demonstration is at risk: <b>stock confirmation pending</b>. The Wadi Gaon meeting is also pending field confirmation.</p></div>
-                        <div><h5 className="tm-hypo">Unverified hypotheses</h5><p>Follow-up quality and retailer influence may contribute but need validation. No proven causal attribution.</p></div>
-                      </div>
-                      <p><b>Suggested next steps:</b> confirm stock with the channel manager, validate Dhanora follow-up records, then decide whether to reschedule, reassign or escalate.</p>
-                    </div>
-                  ) : <p>{m.a}</p>}
+            <div className="tm-turn">
+              <div className="tm-q"><UserRound size={14} /><span>Why is Croptek adoption lower in Dhanora, and what should I do?</span></div>
+              <div className="tm-a"><Bot size={14} />
+                <div>
+                  <p>Dhanora converts <b>24 of 62 trials (38.7%)</b> against Wadi Gaon's <b>48 of 98 (49.0%)</b> — a <b>10.3 percentage-point</b> gap.</p>
+                  <HBars rows={[{ label: 'Dhanora', value: 38.7, tone: 'amber' }, { label: 'Wadi Gaon', value: 49.0, tone: 'green' }]} max={60} />
+                  <div className="tm-ai-split">
+                    <div><h5 className="tm-verified">Verified operational issue</h5><p>The Dhanora field demonstration is at risk: <b>stock confirmation pending</b>. The Wadi Gaon meeting is also pending field confirmation.</p></div>
+                    <div><h5 className="tm-hypo">Unverified hypotheses</h5><p>Follow-up quality and retailer influence may contribute but need validation. No proven causal attribution.</p></div>
+                  </div>
+                  <p><b>Suggested next steps:</b> confirm stock with the channel manager, validate Dhanora follow-up records, then decide whether to reschedule, reassign or escalate.</p>
+                  <small className="tm-muted">Pinned analysis · ask follow-up questions to the live copilot below.</small>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-          <div className="tm-prompt">
-            <input value={draft} placeholder="Ask about targets, campaigns, risks or performance…" onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') ask(draft); }} aria-label="Ask the copilot" />
-            <button type="button" aria-label="Send" onClick={() => ask(draft)}><Send size={15} /></button>
-          </div>
+          <LiveCopilot persona="Territory Manager" screen="tm.ai1" pageContext={TM_FACTS} suggestions={TM_SUGGESTIONS}
+            intro="Ask a follow-up about your plan, campaigns, execution or impact. The live model answers from the Territory Manager figures in this tool." />
         </section>
         <aside className="tm-copilot-right">
           <Panel title="Context">
@@ -414,7 +414,7 @@ export function TmAi1() {
           </Panel>
         </aside>
       </div>
-      <Footer back={{ label: 'Back to Diagnostics', to: 'tm.im2' }} source="Campaign records TM.EX1–TM.IM2 (illustrative)" next="Final Territory Manager screen — switch persona to continue the journey"
+      <Footer back={{ label: 'Back to Diagnostics', to: 'tm.im2' }} source="Campaign records TM.1–TM.IM2 (illustrative) · live LLM" next="Final Territory Manager screen — switch persona to continue the journey"
         primary={{ label: 'Create Corrective Action', to: 'tm.ex2' }} />
     </TmPage>
   );

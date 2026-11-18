@@ -72,6 +72,26 @@ class CopilotAnswer(BaseModel):
     secondary: Link
 
 
+class ChatRequest(BaseModel):
+    """Conversational copilot used by the persona workspaces (TM / PM / MH / BH)."""
+
+    question: str = Field(min_length=2, max_length=1000)
+    persona: str = Field(default="Territory Manager", max_length=60)
+    screen: str | None = Field(default=None, max_length=20)
+    page_context: str = Field(default="", max_length=6000)
+    scope: Scope = Field(default_factory=Scope)
+    history: list[dict[str, str]] = Field(default_factory=list, max_length=12)
+
+
+class ChatResponse(BaseModel):
+    mode: Literal["llm", "demo"]
+    provider: str
+    model: str | None = None
+    answer: str | None = None
+    grounded_on: list[str] = Field(default_factory=list)
+    message: str | None = None
+
+
 class AskResponse(BaseModel):
     mode: Literal["llm", "demo"]
     provider: str

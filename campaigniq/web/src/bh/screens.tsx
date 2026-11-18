@@ -5,6 +5,7 @@ import { BarChart3, MapPin, Target } from '../icons';
 import { ChartCard, ColumnBars, MapCard, ScatterPlot, Bullets } from '../ui/index';
 import { BhAction, BhBars, BhCard, BhMetric, BhPage, BhWorkflow } from './ui';
 import type { BhScreenId } from './nav';
+import { LiveCopilot } from '../ui/LiveCopilot';
 import './bh.css';
 
 const regions = [
@@ -19,6 +20,14 @@ const themes = [
   { name: 'Trial & Follow-up', campaigns: 3, spend: '₹50 L', adopters: 420 },
   { name: 'Crop Nutrition Awareness', campaigns: 2, spend: '₹28 L', adopters: 260 },
 ];
+/** Business Head figures handed to the live LLM as grounding context. */
+const BH_FACTS = [
+  'Persona: Business Head, national portfolio FY 2026-27, YTD. All figures illustrative.',
+  `Regions: ${regions.map((r) => `${r.name} ABP ${r.abp}, actual ${r.actual} (${r.achievement}), ${r.campaigns} campaigns, execution ${r.observed}% vs ${r.plan}% plan, investment ${r.investment}, adopters ${r.adopters}`).join('; ')}.`,
+  `Marketing themes: ${themes.map((t) => `${t.name}: ${t.campaigns} campaigns, spend ${t.spend}, adopters ${t.adopters}`).join('; ')}.`,
+  'West Region has the largest reported business gap (Rs 1.8 Cr). Recorded adoption gap Dhanora vs Wadi Gaon (Ambad, Jalna) 10.3 percentage points; causes unverified. Incremental sales and ROI pending attribution.',
+].join('\n');
+
 const campaignRows = [
   { name: 'Retailer-Led Croptek Conversion', theme: 'Conversion & Adoption', investment: '₹9 L', adopters: 180, planned: 80, observed: 72 },
   { name: 'Product Adoption Drive', theme: 'Conversion & Adoption', investment: '₹23 L', adopters: 260, planned: 84, observed: 80 },
@@ -202,4 +211,5 @@ function BhLearning(){return <BhPage screen="bh.10" subtitle="Use current perfor
 
 function BhCopilot(){const {toast}=useNav();const [question,setQuestion]=useState('Which regions and marketing themes should I prioritize for FY 2027–28, and why?');const [answered,setAnswered]=useState(true);const ask=()=>{if(!question.trim())return;setAnswered(true);toast('Answer prepared from the illustrative portfolio evidence.')};return <BhPage screen="bh.ai1" subtitle="Evidence-linked strategic decision support. The copilot summarizes signals and uncertainty; it does not approve budgets or execute changes.">
   <div className="bh-grid copilot"><BhCard title="Strategic intelligence"><div className="bh-question">{question}</div>{answered&&<div className="bh-answer"><p>West Region currently has the largest reported business gap (₹1.8 Cr) and four active campaigns. Observed execution is 76% against an 82% plan, while the recorded adoption gap between Dhanora and Wadi Gaon is 10.3 percentage points.</p><p>These signals support prioritizing a West Region evidence review. They do not establish why conversion differs, and incremental sales and ROI remain pending attribution.</p><BhBars title="Planned vs observed execution" items={regions.map(r=>({label:r.name,value:r.observed,note:`${r.plan}% / ${r.observed}%`,tone:r.plan-r.observed>=6?'amber':'green'}))} max={100}/></div>}<label className="bh-field">Ask a question<textarea rows={3} value={question} onChange={e=>setQuestion(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();ask()}}}/></label><div className="bh-actions"><BhAction kind="primary" onClick={ask}>Ask Copilot</BhAction><BhAction onClick={()=>{setQuestion('Which themes should scale after attribution is validated?');setAnswered(false)}}>New question</BhAction></div><div className="bh-chips">{['Which themes should scale?','Where are regional gaps?','What requires intervention?'].map((q,qi)=><button key={q} onClick={()=>{setQuestion(q);setAnswered(false)}}>{qi===0?<BarChart3 size={14}/>:qi===1?<MapPin size={14}/>:<Target size={14}/>}{q}</button>)}</div></BhCard><BhCard title="Context & next best actions"><dl className="bh-dl"><dt>Portfolio</dt><dd>National · FY 2026–27</dd><dt>Theme</dt><dd>Conversion & Adoption</dd><dt>Evidence</dt><dd>National Business & Marketing Command Centre, National Campaign Portfolio Performance, Territory Campaign Performance Detail, Market Opportunity Intelligence</dd><dt>Confidence</dt><dd>Observed execution; attribution pending</dd></dl><ul className="bh-checks"><li>Review West follow-up completion</li><li>Validate eligible cohort and sales records</li><li>Request Marketing Head evidence review if needed</li></ul><div className="bh-actions"><LinkRow label="Investigate performance" to="bh.3"/><LinkRow label="Review strategic themes" to="bh.7"/><LinkRow label="Create intervention" to="bh.9a"/></div><p className="bh-note">Illustrative portfolio data. No causal conclusion or approval action is made by the copilot.</p></BhCard></div>
+<LiveCopilot persona="Business Head" screen="bh.ai1" pageContext={BH_FACTS} suggestions={['Which region should get more investment next year, and why?', 'Which themes are ready to scale?', 'Where is execution furthest behind plan?', 'What evidence is still missing before I approve more budget?']} intro="Ask about national portfolio performance, regions, themes or investment. The live model answers from the Business Head figures in this tool." />
 </BhPage>}

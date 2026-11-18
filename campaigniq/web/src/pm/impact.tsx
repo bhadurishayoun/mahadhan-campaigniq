@@ -2,11 +2,15 @@
  * Product Manager - Impact & Learning (PM.10, 10A, 10B, 10C, PM.11, 11A, 11B, 11C, 11D) and AI Copilot (PM.AI1).
  */
 import { useState } from 'react';
-import { BarChart3, Lightbulb, Search, Send, Sparkles, Table2 } from 'lucide-react';
+import { BarChart3, Lightbulb, Search, Sparkles, Table2 } from 'lucide-react';
 import { useNav } from '../nav';
 import { Btn, COLORS } from '../ui';
 import { Act, Actions, AiBox, Bars, Box, Checklist, Chips, Creative, Cta, Drawer, Facts, Field, Input, Meter, Muted, P, PmPage, Select, Source, Sources, Status, Strip, Table, Workflow } from './kit';
-import { ACTIVITIES, ACTIVITY_TOTAL, C1, COLLATERALS, IMPACT, INVESTMENT, ONION_APPROVED_LATER, SCENARIOS, THEME, VILLAGES, VILLAGE_GAP } from './data';
+import {
+  ACTIVITIES, ACTIVITY_TOTAL, AMBAD, C1, C2, COLLATERALS, CROP_PLAN, DHANORA, EVIDENCE, IMPACT, INVESTMENT, LOCAL_PLAN, MARGIN,
+  ONION_APPROVED_LATER, PM_ROLE, PORTFOLIO, PORTFOLIO_TOTAL, SCENARIOS, THEME, VILLAGES, VILLAGE_GAP,
+} from './data';
+import { LiveCopilot } from '../ui/LiveCopilot';
 
 const BASE = SCENARIOS[1];
 
@@ -450,11 +454,23 @@ export function Pm11d() {
 
 /* ------------------------------------------------------------------ PM.AI1 */
 
-const QUESTIONS = ['Which intervention worked?', 'Where is growth lagging?', 'What should change next year?'];
+const QUESTIONS = ['Which intervention worked?', 'Where is growth lagging?', 'What should change next year?', 'Is the ₹12 L investment justified?'];
+
+/** Product Manager figures handed to the live LLM as grounding context. */
+const PM_FACTS = [
+  `Persona: ${PM_ROLE}. All figures illustrative.`,
+  `Portfolio ABP (Rs Cr): ${PORTFOLIO.map((p) => `${p.product} ${p.ly} last year -> ${p.abp}`).join('; ')}; total ${PORTFOLIO_TOTAL.ly} -> ${PORTFOLIO_TOTAL.abp}.`,
+  `Territory submission ${AMBAD.territory}: ABP ${AMBAD.abp}, submitted ${AMBAD.submitted}, gap ${AMBAD.gap}. Crop plan: ${CROP_PLAN.map((c) => `${c.crop} ${c.business} (${c.growth})`).join('; ')}.`,
+  `Dhanora onion: history ${DHANORA.histRev} / ${DHANORA.histVol}, target ${DHANORA.tgtRev} / ${DHANORA.tgtVol}, area ${DHANORA.prevAcres} -> ${DHANORA.reqAcres} at ${DHANORA.rate}, realisation ${DHANORA.realPrev} -> ${DHANORA.realNew}.`,
+  `Theme from Marketing Head: ${THEME.name} (${THEME.scope}); objective: ${THEME.objective}. Evidence: penetration ${EVIDENCE.penetration}, pilot ${EVIDENCE.purchases}/${EVIDENCE.trials} trial-to-purchase ${EVIDENCE.trialToPurchase}.`,
+  `Concepts: ${C1.id} ${C1.name} (${C1.evidence}); ${C2.id} ${C2.name} (${C2.evidence}).`,
+  `Business case: investment ${INVESTMENT}, margin ${MARGIN}; scenarios ${SCENARIOS.map((s) => `${s.name} sales ${s.sales}, contribution ${s.contribution}, ROI ${s.roi}`).join('; ')}.`,
+  `Local plan ${LOCAL_PLAN.name}: ${LOCAL_PLAN.villages}, ${LOCAL_PLAN.retailers}, ${LOCAL_PLAN.units} units, budget ${LOCAL_PLAN.budget}, status ${LOCAL_PLAN.status}. Activities: ${ACTIVITIES.map((a) => `${a.activity} ${a.done}/${a.planned} done (${a.budget})`).join('; ')}.`,
+  `Interim results: reached ${IMPACT.reached}, trials ${IMPACT.trials}, adopters ${IMPACT.adopters} (${IMPACT.rate}), linked sales ${IMPACT.linkedSales} (provisional, not incremental), activities ${IMPACT.activities}. ${VILLAGES.map((v) => `${v.village} ${v.reached}/${v.trials}/${v.adopters} = ${v.rate}%`).join('; ')}; gap ${VILLAGE_GAP}.`,
+  'Unverified: stock-dependent demonstration in Dhanora, field-confirmation flag in Wadi Gaon, retailer engagement, follow-up completion, CRM purchase matching.',
+].join('\n');
 
 export function PmAi1() {
-  const [question, setQuestion] = useState('');
-  const { toast } = useNav();
   return (
     <PmPage
       crumbs={[{ label: 'AI Copilot' }, { label: THEME.name }, { label: 'Ambad' }, { label: 'Campaign Diagnostics' }]}
@@ -480,11 +496,8 @@ export function PmAi1() {
               <p><b>What to change next season</b> depends on closing those gaps first; see the actions on the right.</p>
             </div>
           </div>
-          <Chips items={QUESTIONS} onSelect={(item) => setQuestion(item)} />
-          <div className="pm-chat-input">
-            <input value={question} placeholder="Ask about products, campaigns, territories or evidence…" onChange={(event) => setQuestion(event.target.value)} />
-            <Btn small variant="primary" icon={<Send size={13} />} onClick={() => { toast(question ? `Copilot (demo): "${question}"` : 'Type a question first'); setQuestion(''); }}>Ask</Btn>
-          </div>
+          <LiveCopilot persona="Crop Nutrition Product Manager" screen="pm.ai1" pageContext={PM_FACTS} suggestions={QUESTIONS}
+            intro="Ask a follow-up about the portfolio, campaign concepts, business case or interim results. The live model answers from the Product Manager figures in this tool." />
         </div>
         <div className="pm-stack">
           <Box title="Context" tone="soft">
