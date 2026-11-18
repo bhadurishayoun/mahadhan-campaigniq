@@ -3,6 +3,7 @@
  */
 import type { ComponentType } from 'react';
 import { useNav } from '../nav';
+import './mh.css';
 import { MH_SCREENS, isMhScreen, type MhScreenId } from './nav';
 import {
   Mh1, Mh2, Mh3, Mh3a, Mh3b,

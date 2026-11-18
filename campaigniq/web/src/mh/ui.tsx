@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { ChevronRight, Home } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
-import { PulseStrip, type PulseItem } from '../ui/index';
 import { cx, Pill, type Tone } from '../ui';
 
 export function toneOf(text: string): Tone {
@@ -17,13 +16,7 @@ export function Status({ children, tone, solid }: { children: string; tone?: Ton
   return <Pill tone={tone ?? toneOf(children)} solid={solid}>{children}</Pill>;
 }
 
-export const MH_PULSE: PulseItem[] = [
-  { label: 'Opportunity realization', value: 84 },
-  { label: 'Conditional approvals', value: 58, tone: 'amber' },
-  { label: 'Rollout discipline', value: 79 },
-];
-
-export function MhPage({ crumbs, code, title, status, subtitle, actions, children, className, pulse }: {
+export function MhPage({ crumbs, code, title, status, subtitle, actions, children, className }: {
   crumbs: { label: string; to?: ScreenId }[];
   code: string;
   title: string;
@@ -32,7 +25,6 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
   actions?: ReactNode;
   children: ReactNode;
   className?: string;
-  pulse?: PulseItem[];
 }) {
   const { go } = useNav();
   return (
@@ -60,7 +52,6 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
         </div>
         {actions && <div className="page-actions">{actions}</div>}
       </div>
-      <PulseStrip title="Status at a glance" ariaLabel="Marketing Head visual summary" items={pulse ?? MH_PULSE} />
       {children}
     </div>
   );

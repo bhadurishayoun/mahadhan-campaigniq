@@ -305,11 +305,12 @@ export default function App() {
 
   return (
     <NavContext.Provider value={{ screen, go, filters, setFilters, scope, reference, toast }}>
-      <div className={collapsed ? 'app app-collapsed' : 'app'}>
+      <div className={`app${collapsed ? ' app-collapsed' : ''}${mh ? ' app-mh' : ''}`}>
         <aside className={navOpen ? 'sidebar open' : 'sidebar'} aria-label="Main navigation">
           <button type="button" className="brand" onClick={() => go(personaMeta.home)}>
-            <Sprout size={26} className="brand-leaf" />
+            {mh ? <span className="mh-brand-mark" aria-hidden="true"><i /><b /></span> : <Sprout size={26} className="brand-leaf" />}
             <span>Mahadhan<br />CampaignIQ</span>
+            {mh && <b className="mh-brand-version">V2</b>}
           </button>
           <button type="button" className="nav-close" aria-label="Close menu" onClick={() => setNavOpen(false)}><X size={18} /></button>
           <button type="button" className="side-collapse" aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} onClick={() => setCollapsed((c) => !c)}>{collapsed ? <ChevronsRight size={16} /> : <ChevronsLeft size={16} />}</button>
@@ -328,7 +329,7 @@ export default function App() {
               })}
             </nav>
           )}
-          {!bh && <div className="side-admin">
+          {!bh && !mh && <div className="side-admin">
             <button type="button" className={meta.module === 'admin' ? 'side-link active' : 'side-link'} onClick={() => go('admin.1')}>
               <Database size={16} /><span>Data Sources & Integrations</span>
             </button>
@@ -338,7 +339,7 @@ export default function App() {
         <div className="main">
           <header className="topbar">
             <button type="button" className="menu-btn" aria-label="Open menu" aria-expanded={navOpen} onClick={() => setNavOpen(true)}><Menu size={20} /></button>
-            <span className="topbar-title">{meta.title}</span>
+            {!mh && <span className="topbar-title">{meta.title}</span>}
 
             {pm ? (
               <div className="pm-topctx">
@@ -353,10 +354,15 @@ export default function App() {
                 <span>Territory workspace</span>
               </div>
             ) : mh ? (
-              <div className="pm-topctx">
-                <span><b>Marketing Head</b></span>
-                <span>{mh.period}</span>
-                <span>Regional marketing workspace</span>
+              <div className="pm-topctx mh-topctx">
+                <span className="mh-topctx-person"><User size={14} /><b>Marketing Head</b><ChevronDown size={12} /></span>
+                <span><CalendarDays size={14} />FY 2025-26 <ChevronDown size={12} /></span>
+                <span><Layers size={14} />National Marketing Portfolio <ChevronDown size={12} /></span>
+                <label><small>Scope:</small><select value={filters.geography === 'India' ? 'National' : 'West Region'} onChange={(e) => setFilters({ ...filters, geography: e.target.value === 'National' ? 'India' : 'Maharashtra' })}><option>National</option><option>West Region</option></select></label>
+                <label><small>Region</small><select value={filters.geography === 'India' ? 'All Regions' : 'West Region'} onChange={(e) => setFilters({ ...filters, geography: e.target.value === 'All Regions' ? 'India' : 'Maharashtra' })}><option>All Regions</option><option>West Region</option><option>South Region</option><option>North Region</option><option>East Region</option></select></label>
+                <label><small>State</small><select value={filters.geography === 'India' ? 'All States' : filters.geography} onChange={(e) => setFilters({ ...filters, geography: e.target.value === 'All States' ? 'India' : e.target.value })}><option>All States</option><option>Maharashtra</option><option>Gujarat</option><option>Rajasthan</option><option>Madhya Pradesh</option></select></label>
+                <label><small>Crop</small><select value={filters.crop === 'All Crops' ? 'All Crops' : filters.crop} onChange={(e) => setFilters({ ...filters, crop: e.target.value })}><option>All Crops</option><option>Onion</option><option>Maize</option><option>Cotton</option><option>Soybean</option></select></label>
+                <label><small>Product</small><select value={filters.portfolio === 'All Products' ? 'All Products' : filters.portfolio} onChange={(e) => setFilters({ ...filters, portfolio: e.target.value })}><option>All Products</option><option>Croptek</option><option>NutriBoost</option></select></label>
               </div>
             ) : bh ? (
               <div className="pm-topctx bh-topctx">
@@ -385,7 +391,7 @@ export default function App() {
               </>
             )}
 
-            <div className="search">
+            {!mh && <div className="search">
               <Search size={15} />
               <input
                 value={query}
@@ -404,7 +410,7 @@ export default function App() {
                   ))}
                 </ul>
               )}
-            </div>
+            </div>}
             <button type="button" className="icon-btn" aria-label="Notifications" onClick={() => toast('3 new risk alerts in Jalna and Dhanora')}>
               <Bell size={17} /><span className="notif-count" aria-label="3 unread notifications">3</span>
             </button>

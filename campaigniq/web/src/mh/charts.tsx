@@ -1,137 +1,308 @@
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useNav } from '../nav';
-import { Bell, BarChart3, Filter, Grid3x3, IndianRupee, ListChecks, Megaphone, Sparkles, Target, ClipboardCheck, Wallet } from '../icons';
-import { QuestionChips, AlertList, Bullets, ChartCard, ColumnBars, FunnelBars, HeatGrid, KpiCard, KpiGrid, MapCard, MonthGantt, RankBars, ScatterPlot } from '../ui/index';
-import type { MapView } from '../map/IndiaDistrictMap';
-import type { PulseItem } from '../ui/index';
+import { BarChart3, Grid3x3, ListChecks, Target } from '../icons';
+import { Activity, ArrowLeft, ArrowRight, Boxes, CheckCircle2, CircleHelp, Clock3, Database, FileText, Info, Layers3, MapPin, Megaphone, Play, Save, Send, ShieldCheck, Sparkles, Sprout, Store, Users } from 'lucide-react';
+import { QuestionChips, ChartCard, HeatGrid, RankBars } from '../ui/index';
 
 /* Illustrative figures only; they reuse the numbers shown on the BH / MH screens. */
 const REGIONS = ['West', 'South', 'North', 'East'];
 
+function MhDataTable({ title, hint, headers, rows }: { title: string; hint: string; headers: string[]; rows: string[][] }) {
+  const renderCell = (cell: string) => {
+    if (/^(reviewed|approved|verified|complete|aligned)(\b|\s*[-(])/i.test(cell)) return <span className="mh-table-status mh-table-status-good"><CheckCircle2 />{cell}</span>;
+    if (/^(under review|not started|in review|pending|partial|in progress|awaiting|open|needs validation|review required)/i.test(cell)) return <span className="mh-table-status mh-table-status-review"><Clock3 />{cell}</span>;
+    return cell;
+  };
+  return <ChartCard icon={ListChecks} title={title} hint={hint}><div className="iq-table-wrap"><div className="iq-table-scroll"><table className="iq-table"><thead><tr>{headers.map((h) => <th key={h}>{h}</th>)}</tr></thead><tbody>{rows.map((row, i) => <tr key={`${row[0]}-${i}`}>{row.map((cell, j) => <td key={`${i}-${j}`}>{renderCell(cell)}</td>)}</tr>)}</tbody></table></div></div></ChartCard>;
+}
+
+function MhAssessment({ title, steps }: { title: string; steps: [string, string, string][] }) {
+  return <ChartCard icon={Target} title={title} hint="Candidate - not yet approved"><div className="mh-assessment-flow">{steps.map(([heading, body, iconName], i) => { const StepIcon = iconName === 'growth' ? Activity : iconName === 'audience' ? Users : Megaphone; return <div key={heading} className="mh-assessment-step"><span className="mh-assessment-icon"><StepIcon /></span><div><b>{heading}</b><p>{body}</p></div>{i < steps.length - 1 && <ArrowRight className="mh-assessment-arrow" />}</div>; })}</div></ChartCard>;
+}
+
 function Mh1Charts() {
   const { go } = useNav();
-  const trail: { label: string; view: MapView }[] = [
-    { label: 'India', view: 'india' },
-    { label: 'Maharashtra', view: { state: 'Maharashtra' } },
-    { label: 'West Region · Jalna', view: { district: 'Jalna', state: 'Maharashtra' } },
-  ];
-  const [depth, setDepth] = useState(1);
   return (
-    <div className="iq-stack">
-      <KpiGrid cols={5}>
-        <KpiCard icon={IndianRupee} label="YTD business vs ABP" value="₹42.8 Cr" change={-14.4} changeLabel="to ABP" tone="amber" />
-        <KpiCard icon={Megaphone} label="Active campaigns" value="12" />
-        <KpiCard icon={Wallet} label="Marketing investment" value="₹1.90 Cr" spark={[0.4, 0.7, 1.0, 1.3, 1.6, 1.9]} />
-        <KpiCard icon={Target} label="Regions below plan" value="3" tone="red" />
-        <KpiCard icon={ClipboardCheck} label="Approvals pending" value="4" tone="blue" onClick={() => go('mh.8')} />
-      </KpiGrid>
-      <div className="iq-grid-2">
-        <MapCard title="Where is the opportunity?" label="National opportunity map" height={300}
-          view={trail[depth].view} focus={trail[depth].view}
-          crumbs={trail.slice(0, depth + 1).map((t) => t.label)} onCrumb={(i) => setDepth(i)}
-          states={{ Maharashtra: { tone: 4, info: 'Largest opportunity', onSelect: () => setDepth(1) }, Gujarat: { tone: 3, info: 'High channel readiness' }, Karnataka: { tone: 2, info: 'Emerging cluster' }, 'Madhya Pradesh': { tone: 2, info: 'Expansion territory' } }}
-          markers={[{ id: 'jalna', info: 'Jalna priority district', onSelect: () => setDepth(2) }, { id: 'nashik', info: 'Nashik demand anchor' }, { id: 'dhule', info: 'Dhule activation corridor' }, { id: 'sangli', info: 'Sangli referral adoption' }]}
-          scale={{ title: 'Opportunity intensity', items: [{ label: 'Priority', tone: 4 }, { label: 'High', tone: 3 }, { label: 'Emerging', tone: 2 }] }} />
-        <ChartCard icon={BarChart3} title="Which regions lead on achievement?" hint="YTD achievement vs ABP (%)"><RankBars highlightFirst fmt={(v) => `${v}%`} series={[{ key: 'v', name: 'Achievement %' }]} data={[{ name: 'West', v: 88.8 }, { name: 'East', v: 85.6 }, { name: 'South', v: 84.3 }, { name: 'North', v: 82.7 }]} /></ChartCard>
-      </div>
+    <div className="mh-national-reports">
+      <section className="mh-section mh-report-card">
+        <h2><Activity />National &amp; Regional Opportunity Pulse</h2>
+        <div className="mh-report-table-wrap"><table className="mh-report-table"><thead><tr><th>Region</th><th>Regional Market<br/>Opportunity <small>(Illustrative)</small></th><th>Priority Crop / Product</th><th>Historical Product Sales Trend<br/><small>(Past 3–4 seasons, illustrative)</small></th><th>Opportunity / Performance Gap</th><th>Explore</th></tr></thead><tbody>
+          {[
+            { region:'West Region', size:'High', crop:'Croptek + Onion', gap:'High potential – under-indexing', points:'0,24 12,19 24,21 36,12 48,16 60,6 72,4', cls:'priority' },
+            { region:'South Region', size:'High', crop:'Maize – Croptek', gap:'Strong momentum – scale further', points:'0,22 12,16 24,18 36,11 48,14 60,8 72,5' },
+            { region:'North Region', size:'Medium–High', crop:'Cotton – Croptek', gap:'Stable – improve penetration', points:'0,18 12,16 24,18 36,14 48,15 60,11 72,9' },
+            { region:'East Region', size:'Medium', crop:'Soybean – Croptek', gap:'Emerging – expansion opportunity', points:'0,23 12,20 24,18 36,13 48,14 60,7 72,3' },
+          ].map((r)=><tr key={r.region} className={r.cls}><td><b>{r.region}</b></td><td>{r.size}</td><td><b>{r.crop}</b></td><td><svg className="mh-sparkline" viewBox="0 0 76 30" role="img" aria-label={`${r.region} sales trend rising`}><polyline points={r.points} transform="translate(2 2)"/><path d={`M2 27 L${r.points.split(' ').map(p=>p.split(',').join(' ')).join(' L')} L74 27 Z`} className="mh-sparkline-fill"/><circle cx="73" cy={Number(r.points.split(' ').at(-1)?.split(',')[1])+2} r="2.5"/></svg></td><td>{r.gap}</td><td><button className={`mh-explore ${r.region==='West Region'?'mh-explore-primary':''}`} onClick={()=>go('mh.2')}>Explore <span>→</span></button></td></tr>)}
+        </tbody></table></div>
+      </section>
+      <section className="mh-section mh-report-card mh-efficacy-card">
+        <h2><Target />Historical Campaign Effectiveness <small>(Previous National/Regional Interventions)</small></h2>
+        <div className="mh-report-table-wrap"><table className="mh-report-table mh-efficacy-table"><thead><tr><th>Campaign Intervention</th><th>Engagement<br/><small>(Illustrative)</small></th><th>Adoption<br/><small>(Illustrative)</small></th><th>Attributable Commercial Outcome<br/><small>(Illustrative)</small></th><th>Source / Confidence</th></tr></thead><tbody>
+          {[
+            {icon:<Activity/>,name:'Conversion Campaigns',eng:'High',lift:'+14–20%',out:'+1.9x incremental sales',status:'Verified',tone:'good'},
+            {icon:<Store/>,name:'Retailer Activation',eng:'Medium–High',lift:'+8–13%',out:'+1.5x incremental sales',status:'Estimated',tone:'review'},
+            {icon:<Megaphone/>,name:'Awareness Programmes',eng:'High',lift:'+6–10%',out:'+1.3x incremental sales',status:'Partial Attribution',tone:'review'},
+            {icon:<Sprout/>,name:'Advisory-led Engagement',eng:'Medium',lift:'+9–15%',out:'+1.6x incremental sales',status:'Estimated',tone:'review'},
+          ].map(r=><tr key={r.name}><td><span className="mh-intervention-icon">{r.icon}</span><b>{r.name}</b></td><td>{r.eng}</td><td>{r.lift}</td><td>{r.out}</td><td><span className={`mh-confidence mh-confidence-${r.tone}`}>{r.tone==='good'?<CheckCircle2/>:<CircleHelp/>}{r.status}</span></td></tr>)}
+        </tbody></table></div>
+      </section>
     </div>
   );
 }
 
 function Mh2Charts() {
   return (
-    <ChartCard icon={Sparkles} title="Where is potential high but penetration low?" hint="Each dot is a district; top-left = biggest headroom">
-      <ScatterPlot xLabel="Penetration (%)" yLabel="Potential (index)" points={[{ name: 'Jalna', x: 38, y: 82 }, { name: 'Nashik', x: 52, y: 74 }, { name: 'Dhule', x: 31, y: 58 }, { name: 'Sangli', x: 44, y: 66 }, { name: 'Pune', x: 60, y: 70 }]} />
-    </ChartCard>
-  );
-}
-
-function GapCharts() {
-  return (
-    <ChartCard icon={BarChart3} title="Which territories carry the biggest gap?" hint="Gap to ABP, ₹ Cr"><RankBars highlightFirst fmt={(v) => `₹${v}`} series={[{ key: 'v', name: '₹ Cr' }]} data={[{ name: 'Ambad', v: 1.0 }, { name: 'Ghansawangi', v: 0.6 }, { name: 'Badnapur', v: 0.4 }]} /></ChartCard>
-  );
-}
-
-const barrierGrid = (
-  <ChartCard icon={Grid3x3} title="Which barriers dominate in each region?" hint="Share of farmers citing the barrier (%)">
-    <HeatGrid corner="Region" rows={REGIONS} cols={['Awareness', 'Trust', 'Availability', 'Price']} fmt={(v) => `${v}%`} values={[[34, 22, 18, 26], [28, 31, 20, 21], [25, 24, 33, 18], [30, 20, 27, 23]]} />
-  </ChartCard>
-);
-const dropFunnel = (
-  <ChartCard icon={Filter} title="Where do farmers drop off?" hint="Farmers at each stage"><FunnelBars stages={[{ label: 'Aware', value: 1000 }, { label: 'Trial', value: 420 }, { label: 'Purchase', value: 190 }, { label: 'Repeat', value: 86 }]} /></ChartCard>
-);
-
-function ThemeFit() {
-  return (
-    <ChartCard icon={BarChart3} title="Which campaign themes fit best?" hint="Strategic fit score (0–100)"><RankBars highlightFirst series={[{ key: 'v', name: 'Fit' }]} data={[{ name: 'Croptek conversion', v: 86 }, { name: 'Retailer advocacy', v: 78 }, { name: 'Trial nurture', v: 71 }, { name: 'Crop awareness', v: 63 }]} /></ChartCard>
-  );
-}
-
-function Mh6Charts() {
-  return (
-    <div className="iq-grid-2">
-      <ChartCard icon={BarChart3} title="Where does the budget go by segment?" hint="₹ Lakh by activity"><ColumnBars x="a" stacked height={220} series={[{ key: 'emerging', name: 'Emerging', color: '#e8c13a' }, { key: 'growing', name: 'Growing', color: '#5fae4c' }, { key: 'maturing', name: 'Maturing', color: '#3972b8' }, { key: 'matured', name: 'Matured', color: '#1f5f2c' }]} data={[{ a: 'Dealer meets', emerging: 1, growing: 2, maturing: 1.5, matured: 0.7 }, { a: 'Village demos', emerging: 2, growing: 3, maturing: 1.8, matured: 1 }, { a: 'Follow-ups', emerging: 0.8, growing: 1.4, maturing: 0.9, matured: 0.5 }, { a: 'Digital', emerging: 0.4, growing: 0.7, maturing: 0.5, matured: 0.3 }]} /></ChartCard>
-      <ChartCard icon={ListChecks} title="When does each activity run?"><MonthGantt months={['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov']} rows={[{ label: 'Dealer meets', start: 0, end: 1 }, { label: 'Village demos', start: 1, end: 4 }, { label: 'Follow-ups', start: 2, end: 5 }, { label: 'Digital nudges', start: 0, end: 5 }]} /></ChartCard>
+    <div className="iq-stack">
+      <ChartCard icon={BarChart3} title="Product Sales Trend - Croptek (Onion), Maharashtra" hint="Secondary sales (illustrative)">
+        <div className="mh-trend-layout"><svg className="mh-sales-trend" viewBox="0 0 650 185" role="img" aria-label="Quarterly secondary sales rise from 40 lakh to 48 lakh">
+          <defs><linearGradient id="mhSalesFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8fd77e" stopOpacity=".55"/><stop offset="1" stopColor="#dff2d9" stopOpacity=".15"/></linearGradient></defs>
+          {[30,60,90,120,150].map(y=><line key={y} x1="54" x2="628" y1={y} y2={y} stroke="#e6ece5" strokeWidth="1"/>)}
+          <path d="M72 121 L242 96 L412 80 L582 56 L582 150 L72 150 Z" fill="url(#mhSalesFill)"/>
+          <path d="M72 121 L242 96 L412 80 L582 56" fill="none" stroke="#238444" strokeWidth="3"/>
+          {[[72,121,'INR 40L','Q1'],[242,96,'INR 43L','Q2'],[412,80,'INR 45L','Q3'],[582,56,'INR 48L','Q4']].map(([x,y,v,q])=><g key={q as string}><circle cx={x as number} cy={y as number} r="5" fill="#fff" stroke="#248244" strokeWidth="3"/><text x={x as number} y={(y as number)-14} textAnchor="middle" className="mh-trend-value">{v}</text><text x={x as number} y="174" textAnchor="middle" className="mh-trend-axis">{q}</text></g>)}
+          {[0,10,20,30,40,50,60].map((v,i)=><text key={v} x="42" y={154-i*20} textAnchor="end" className="mh-trend-axis">INR {v}L</text>)}
+        </svg><div className="mh-quarter-total"><small>Four-quarter total</small><strong>INR 1.76 Cr</strong><span>Secondary sales</span></div></div>
+      </ChartCard>
+      <div className="iq-grid-2">
+        <ChartCard icon={Target} title="Market Opportunity vs Product Penetration" hint="West Region · illustrative estimates"><div className="mh-report-table-wrap"><table className="mh-report-table mh-opportunity-table"><thead><tr><th>State (West Region)</th><th>Addressable Opportunity<br/><small>(Indicative Range, Cr)</small></th><th>Opportunity</th><th>Product Penetration<br/><small>(Illustrative)</small></th><th>Penetration</th></tr></thead><tbody>{[
+          ['Maharashtra','~₹7–10 Cr','14–18%',88],['Gujarat','~₹5–7 Cr','18–22%',58],['Madhya Pradesh','~₹4–6 Cr','12–16%',47],['Rajasthan','~₹3–5 Cr','16–20%',35],
+        ].map(([state,market,penetration,width])=><tr key={state as string} className={state==='Maharashtra'?'priority':''}><td><b>{state}</b></td><td>{market}</td><td><span className="mh-meter"><i style={{width:`${width}%`}}/></span></td><td>{penetration}</td><td><span className="mh-meter mh-meter-slim"><i style={{width:`${Number(String(penetration).split('–')[0].replace('%',''))*4}%`}}/></span></td></tr>)}</tbody></table></div></ChartCard>
+        <ChartCard icon={Target} title="Previous Campaign Effectiveness" hint="Croptek, Onion – Maharashtra"><div className="mh-report-table-wrap"><table className="mh-report-table mh-effectiveness-table"><thead><tr><th>Campaign Intervention</th><th>Engagement / Adoption<br/><small>(Illustrative)</small></th><th>Commercial Evidence<br/><small>(Illustrative)</small></th><th>Attribution Quality / Evidence Confidence</th></tr></thead><tbody>{[
+          {icon:<Store/>,name:'Retailer Activation',value:'~62%',effect:'Higher offtake at participating outlets',quality:'High evidence',tone:'good'},
+          {icon:<Activity/>,name:'Conversion',value:'~45%',effect:'Improved product trials and repeat',quality:'Moderate evidence',tone:'review'},
+          {icon:<Megaphone/>,name:'Awareness',value:'~74%',effect:'Strong reach and interest generation',quality:'Limited evidence',tone:'review'},
+        ].map(r=><tr key={r.name}><td><span className="mh-intervention-icon">{r.icon}</span><b>{r.name}</b></td><td><span className="mh-meter"><i style={{width:r.value.replace('~','')}}/></span><strong>{r.value}</strong></td><td>{r.effect}</td><td><span className={`mh-confidence mh-confidence-${r.tone}`}>{r.tone==='good'?<CheckCircle2/>:<CircleHelp/>}{r.quality}</span></td></tr>)}</tbody></table></div></ChartCard>
+      </div>
+      <div className="mh-source-notes"><b><Database />Source &amp; Measure Notes<br/><small>(Illustrative, for interpretation only)</small></b><span><Layers3 />Market estimates: addressable market / opportunity<br/><small>Not a sales measure</small></span><span><BarChart3 />Sales data: secondary sales (product offtake)<br/><small>Illustrative trade-based measure</small></span><span><Megaphone />Campaign evidence: engagement / adoption<br/><small>Illustrative, non-sales performance evidence</small></span><span><CircleHelp />Measure basis (not interchangeable)<br/><small>Primary vs. direct offtake and liquidations</small></span></div>
     </div>
   );
 }
 
-function RoiScatter() {
-  return (
-    <ChartCard icon={Sparkles} title="Is spend earning its return?" hint="Forecast ROI vs budget; bigger and higher is better">
-      <ScatterPlot xLabel="Budget (₹ Lakh)" yLabel="Forecast ROI (x)" points={[{ name: 'Croptek conversion', x: 9, y: 2.4 }, { name: 'Adoption drive', x: 23, y: 1.9 }, { name: 'Retailer enablement', x: 22, y: 1.6 }, { name: 'Trial follow-up', x: 18, y: 2.1 }]} />
-    </ChartCard>
-  );
-}
-
-function Mh8Charts({ withMap }: { withMap?: boolean }) {
-  return (
-    <div className="iq-grid-2">
-      <ChartCard icon={Bell} title="How long are approvals waiting?" hint="Days in queue"><Bullets unit="d" max={10} rows={[{ label: 'Croptek conversion', actual: 2, target: 3 }, { label: 'Retailer advocacy', actual: 5, target: 3 }, { label: 'Trial nurture', actual: 7, target: 3 }]} /></ChartCard>
-      {withMap && <MapCard title="Where is rollout releasing?" label="Rollout map" height={240} view={{ district: 'Jalna', state: 'Maharashtra' }} markers={[{ id: 'v-ambad', info: 'Released' }, { id: 'v-dhanora', info: 'Release scheduled', color: '#d7a62f' }]} />}
+function MhEvidenceRequestTracking() {
+  const { go } = useNav();
+  return <div className="mh-evidence-tracker-layout">
+    <div className="mh-evidence-illustrative-note"><Info/>This is a hypothetical future workflow after evidence requests are created, not real requests sent or data received.</div>
+    <div className="mh-evidence-request-grid">
+      <div className="mh-evidence-request-main">
+        <section className="mh-section mh-report-card"><h2><FileText/>Evidence Request Tracker</h2><div className="mh-report-table-wrap"><table className="mh-report-table"><thead><tr><th>#</th><th>Evidence Request</th><th>Owner</th><th>Due Date</th><th>Latest Status</th><th>Action</th></tr></thead><tbody>
+          {[
+            ['1','Farmer-linked Croptek Purchase Records','CRM / Sales Operations','30 Apr 2025','Awaiting Evidence','Purchase and transaction data'],
+            ['2','Farmer Awareness & Call Outcomes','CRM / Call Centre','25 Apr 2025','Submitted, Validation Pending','Awareness, engagement and call logs'],
+            ['3','Retailer Recommendation Evidence','Regional Sales Team','05 May 2025','Assigned, Awaiting Submission','Retailer engagement and advocacy'],
+          ].map((r,i)=><tr key={r[0]} className={i===1?'priority':''}><td>{r[0]}</td><td><b>{r[1]}</b><small>{r[5]}</small></td><td>{r[2]}</td><td>{r[3]}</td><td><span className="mh-table-status mh-table-status-review"><Clock3/>{r[4]}</span></td><td><button className="mh-explore" onClick={()=>go('mh.4a-i4')}>Review</button></td></tr>)}
+        </tbody></table></div></section>
+        <section className="mh-section mh-selected-request"><h2><CheckCircle2/>Selected Request Details — Farmer Awareness &amp; Call Outcomes <span>Submitted</span></h2><div className="mh-selected-request-grid"><article><b><Info/>Request Information</b><p>Evidence name: Farmer awareness &amp; call outcomes</p><p>Owner: CRM / Call Centre</p><p>Due date: 25 Apr 2025</p><p>Requested on: 18 Apr 2025</p></article><article><b><CheckCircle2/>Validation Checklist</b><ul><li>Farmer-ID matching <em>Pending</em></li><li>Crop / region scope <em>Pending</em></li><li>Reporting-period consistency <em>Pending</em></li><li>Awareness-response completeness <em>Pending</em></li><li>Consent / governance verification <em>Pending</em></li></ul></article><article><b><Layers3/>Evidence Requirements</b><p>Required fields: Farmer ID, awareness response, call date and outcome, interaction channel.</p><p>Candidate source: CRM / Call Centre (availability to be checked).</p></article></div></section>
+      </div>
+      <aside className="mh-evidence-request-rail">
+        <section className="mh-section"><h2><Activity/>AI Investigation Readiness</h2><div className="mh-readiness-items">{[['Farmer Outreach & Trial Counts','Partially available (CRM, Field App)','Partial'],['Purchase / Adoption Data','Not measurable (missing linkage)','Not measurable'],['Awareness Analysis','Awaiting validation (call centre / survey)','Pending'],['Primary Conversion Barrier','Remains unconfirmed','Unconfirmed']].map(([title,detail,status],i)=><div key={title}><span className="mh-readiness-icon">{i===0?<Users/>:i===1?<Store/>:i===2?<Activity/>:<Target/>}</span><div><b>{title}</b><small>{detail}</small></div><em className={i===1?'bad':i===3?'neutral':'warn'}>{status}</em></div>)}</div></section>
+        <section className="mh-section"><h2><Users/>Investigation Workflow</h2><div className="mh-request-steps">{['Draft','Assigned','Submitted','Validation','Accepted / Returned','Re-analysis'].map((x,i)=><div key={x} className={i===0?'active':''}><b>{i+1}</b><small>{x}</small></div>)}</div><p className="mh-workflow-note">Re-analysis will be enabled only after sufficient relevant evidence is accepted.</p></section>
+        <section className="mh-section"><h2><Layers3/>Available Actions</h2><div className="mh-request-action-grid"><button onClick={()=>go('mh.4a-i4')}>View Submission</button><button onClick={()=>go('mh.4a-i4')}>Request Correction</button><button onClick={()=>go('mh.4a-i4')}>See Source Record</button><button onClick={()=>go('mh.4a-i4')}>Track Owner</button></div></section>
+      </aside>
     </div>
-  );
+    <div className="mh-evidence-bottom-actions"><button onClick={()=>go('mh.4a')}>← &nbsp;Back to Investigation</button><span><Info/>On accepted validated evidence, the investigation will be re-run in a controlled manner and recommendations refreshed.</span><button className="primary" onClick={()=>go('mh.4a-i4')}>Updated Investigation Results →</button></div>
+  </div>;
 }
 
-function Mh9Charts({ map }: { map?: boolean }) {
+function MhInvestigationResults() {
+  const { go, toast } = useNav();
+  const journey = [
+    ['1,200', 'Eligible farmers', 'Cohort identified'],
+    ['780', 'Reached', 'Outreach recorded'],
+    ['150', 'Documented trials', 'Trial records available'],
+    ['—', 'Purchases / adoption', 'Not measurable yet'],
+  ];
+  return <div className="mh-investigation-results">
+    <div className="mh-investigation-results-main">
+      <section className="mh-investigation-summary"><div><Sparkles/><b>AI Investigation Summary</b></div><p><b>Investigation question:</b> What is preventing eligible onion farmers in Ambad from converting to Croptek adoption?</p><strong>Available outreach and trial records support partial funnel analysis. Purchase linkage is missing, so the primary growth barrier remains <mark>UNCONFIRMED.</mark></strong></section>
+      <section className="mh-section mh-farmer-journey"><h2><Users/>Farmer Journey <small>(Illustrative Pilot Subset)</small></h2><div>{journey.map(([value,label,note],i)=><article key={label}><b>{value}</b><strong>{label}</strong><small>{note}</small>{i<journey.length-1&&<ArrowRight/>}</article>)}</div><p>Counts describe available records and do not establish causal attribution or purchase conversion.</p></section>
+      <div className="mh-readiness-barrier-grid">
+        <section className="mh-section"><h2><Database/>Evidence Readiness</h2><table className="mh-compact-table"><thead><tr><th>Signal</th><th>Available evidence</th><th>Status</th></tr></thead><tbody>{[['Outreach','CRM / field app counts','Partial'],['Trials','Documented field trials','Partial'],['Purchase linkage','Farmer-linked transactions','Missing'],['Retailer advocacy','Retailer recommendation records','Awaiting']].map(([a,b,c])=><tr key={a}><td>{a}</td><td>{b}</td><td><span className={c==='Missing'?'missing':''}>{c}</span></td></tr>)}</tbody></table></section>
+        <section className="mh-section"><h2><CircleHelp/>AI Barrier Assessment</h2>{[['Awareness','Survey and call outcomes needed'],['Trial conversion','Trial-to-purchase linkage missing'],['Retailer advocacy','Retailer records not validated'],['Availability','Stock position not confirmed']].map(([a,b])=><div className="mh-barrier-line" key={a}><b>{a}</b><span>{b}</span><em>Unconfirmed</em></div>)}</section>
+      </div>
+    </div>
+    <aside className="mh-investigation-actions"><section className="mh-section"><h2><ListChecks/>Recommended Investigation Actions</h2>{[['1','Request farmer-linked purchase records'],['2','Validate awareness and call outcomes'],['3','Review retailer recommendation evidence'],['4','Re-run analysis after evidence validation']].map(([n,t])=><div className="mh-investigation-action" key={n}><b>{n}</b><span>{t}</span></div>)}<button className="mh-action-primary" onClick={()=>go('mh.4a-i3')}>Request Missing Evidence <ArrowRight/></button><button onClick={()=>toast('Source analysis is available in the evidence detail view.')}>View Source Analysis</button><button onClick={()=>toast('Cohort comparison is not available for this illustrative pilot subset.')}>Compare Cohorts</button><button className="mh-action-primary" onClick={()=>go('mh.4b')}>Update Campaign Recommendations <ArrowRight/></button></section></aside>
+    <p className="mh-investigation-footnote"><Info/>This investigation uses an illustrative pilot subset. Purchases and adoption remain unmeasurable until farmer-linked transaction evidence is validated.</p>
+  </div>;
+}
+
+function MhUpdatedInvestigation() {
+ const {go}=useNav(); const stages=[['1,200','Eligible','Cohort identified'],['780','Reached','Outreach recorded'],['150','Trials','Documented'],['54','Matched purchases','Linked records']];
+ return <div className="mh-updated-investigation"><section className="mh-investigation-summary"><div><Sparkles/><b>AI Investigation Conclusion</b></div><strong>Purchase linkage is now available for the illustrative pilot subset. Trial-to-purchase can be measured at 36%; broader comparison and channel evidence remain outstanding.</strong></section><div className="mh-updated-funnel"><div><span><MapPin/>Maharashtra / Onion / Croptek</span>{stages.map(([v,l,n],i)=><article key={l}><b>{v}</b><strong>{l}</strong><small>{n}</small>{i<stages.length-1&&<ArrowRight/>}</article>)}<aside><small>Trial-to-purchase</small><b>36%</b><span>Benchmark comparison still needed</span></aside></div></div><div className="mh-brief-columns"><section className="mh-section"><h2><Database/>Evidence Readiness</h2><table className="mh-compact-table"><thead><tr><th>Evidence signal</th><th>Readiness</th><th>Source / note</th></tr></thead><tbody>{[['Eligible farmer cohort','Available','Illustrative territory subset'],['Farmer outreach','Available','CRM / field records'],['Documented trials','Partially validated','150 records'],['Farmer-linked purchases','Matched pilot records','54 linked purchases'],['Historical benchmark','Outstanding','Comparable baseline required']].map(r=><tr key={r[0]}><td>{r[0]}</td><td><span className={r[1]==='Outstanding'?'missing':''}>{r[1]}</span></td><td>{r[2]}</td></tr>)}</tbody></table></section><section className="mh-section"><h2><Activity/>Growth Barrier Assessment</h2>{[['Awareness','Survey benchmark and reach quality','Unconfirmed'],['Conversion','36% in matched pilot cohort; benchmark absent','Partial evidence'],['Retailer advocacy','Participation and influence not measured','Unconfirmed'],['Stock availability','Territory stock verification outstanding','Unconfirmed']].map(r=><div className="mh-barrier-line" key={r[0]}><b>{r[0]}</b><span>{r[1]}</span><em>{r[2]}</em></div>)}</section></div><div className="mh-custom-actions"><button onClick={()=>go('mh.4a-i3')}>View Evidence Requests</button><button onClick={()=>go('mh.4a')}>Back to Diagnostic</button><button className="primary" onClick={()=>go('mh.4b')}>Refresh Campaign Recommendations <ArrowRight/></button></div></div>;
+}
+
+function MhThemeBrief() {
+ const {go}=useNav(); return <div className="mh-strategy-screen"><div className="mh-workflow-note"><Info/>From refreshed investigation: Croptek Conversion is a conditional candidate; pilot results support exploration but require validation.</div><div className="mh-brief-columns"><section className="mh-section"><h2><FileText/>Strategic Campaign Theme Brief</h2>{[['Theme Name','Croptek Conversion'],['Marketing Objective','Strengthen eligible farmer conversion and Croptek adoption'],['Priority Market','Maharashtra / Onion'],['Broader Scope','West Region — eligibility to be validated'],['Strategic Audience Direction','Eligible conventional nutrition / trial-interest farmers']].map(([a,b])=><div className="mh-brief-row" key={a}><b>{a}</b><span>{b}</span></div>)}<h3>Evidence-led Opportunity Rationale</h3><ul><li>Indicative opportunity and historical sales trends suggest scope to strengthen Croptek penetration.</li><li>Pilot cohort shows 36% trial-to-purchase (54 of 150); not yet benchmarked.</li></ul></section><section className="mh-section"><h2><Users/>Product Manager Assignment &amp; Expected Outputs</h2><div className="mh-brief-row"><b>Assigned role</b><span>Crop Nutrition Product Manager</span></div><div className="mh-brief-row"><b>Due date</b><span>To be confirmed</span></div><h3>Expected Deliverables</h3><ul><li>Validate crop applicability and technical claims</li><li>Develop one or more campaign proposals</li><li>Define eligible cohorts and channel interventions</li><li>Submit activity plan, investment and business case</li></ul><h3>Strategic Guardrails &amp; Open Validations</h3><div className="mh-guardrails">Technical claims · Audience consent · Historical benchmark · Channel availability · ABP alignment</div></section></div><div className="mh-handoff"><b>Theme Handoff Workflow</b><span>Marketing Head defines theme</span><ArrowRight/><span>Product Manager develops campaign</span><ArrowRight/><span>Marketing Head reviews proposal</span><ArrowRight/><span>Release after approval</span></div><div className="mh-custom-actions"><button onClick={()=>go('mh.4b')}>Back to Recommendations</button><button className="primary" onClick={()=>go('mh.6')}>Assign &amp; Send Theme to Product Manager <ArrowRight/></button></div></div>
+}
+
+function MhAssignmentTracker() {
+ const {go}=useNav(); return <div className="mh-strategy-screen"><div className="mh-workflow-note"><Info/>Illustrative workflow: theme assignment and development tracking. No actual task has been sent.</div><section className="mh-section"><h2><Layers3/>Strategic Theme Assignment Tracker</h2><div className="mh-report-table-wrap"><table className="mh-report-table"><thead><tr><th>Theme</th><th>Scope</th><th>Assigned Product / Crop Manager</th><th>Assignment Date / Due Date</th><th>Current Development Status</th><th>View / Track</th></tr></thead><tbody><tr className="priority"><td><b>Croptek Conversion</b></td><td>Maharashtra / Onion<br/>West Region validation pending</td><td>Crop Nutrition Product Manager</td><td>Pending / To be confirmed</td><td><span className="mh-table-status mh-table-status-review"><Clock3/>Assigned — Acknowledgement pending</span></td><td><button className="mh-explore" onClick={()=>go('mh.7')}>Track</button></td></tr><tr><td>Input Intensification <small>(Placeholder)</small></td><td>West Region / Multiple Crops</td><td>Unassigned</td><td>—</td><td>Not assigned</td><td>—</td></tr><tr><td>Crop Health Focus <small>(Placeholder)</small></td><td>West Region / Multiple Crops</td><td>Unassigned</td><td>—</td><td>Not assigned</td><td>—</td></tr></tbody></table></div></section><div className="mh-brief-columns"><section className="mh-section"><h2><Target/>Selected Theme — Croptek Conversion</h2><div className="mh-brief-columns"><div><h3>Originating Strategic Brief</h3><p>Eligible farmer conversion and adoption opportunity.</p></div><div><h3>Evidence-linked Rationale</h3><p>Historical sales trends and indicative penetration support exploration.</p></div><div><h3>Intended PM Deliverables</h3><p>Campaign concepts, business case and validation plan.</p></div></div><h3>Theme Development Progress</h3><div className="mh-handoff"><b>Assigned</b><ArrowRight/>PM acknowledgement<ArrowRight/>Concepts in development<ArrowRight/>Business case ready<ArrowRight/>Submitted for review</div></section><aside className="mh-section"><h2><ListChecks/>Clarifications &amp; Management Actions</h2><h3>Outstanding items for PM</h3><ul><li>Comparative benchmark</li><li>Retailer / channel validation</li><li>Product claims and technical substantiation</li><li>Clarifications to be raised</li></ul><h3>Management Actions</h3><button className="mh-explore" onClick={()=>go('mh.5')}>View Original Theme Brief</button><p>Assignment development is separate from campaign approval and rollout.</p></aside></div><div className="mh-custom-actions"><button onClick={()=>go('mh.5')}>Back to MH.5</button><button className="primary" onClick={()=>go('mh.7')}>View Submitted Campaign Proposals <ArrowRight/></button></div></div>
+}
+
+function MhProposalComparison() {
+ const {go}=useNav(); const rows=[['Business Objective Alignment','Strengthen retailer recommendation and eligible conversion','Drive first purchase among verified trial cohorts'],['Intended Audience','Retailer network and eligible farmers','Verified trial and high-interest farmers'],['Primary Intervention','Retailer education and activation','Structured farmer follow-up and education'],['PM Business Case Availability','Submitted assumptions — open details','Submitted assumptions — open details'],['Product / Content Validation','Under review','Submitted by PM'],['Potential Audience Overlap','Requires review','Possible overlap; reconciliation needed']]; return <div className="mh-strategy-screen"><div className="mh-brief-meta"><span><Sprout/>Parent Theme <b>Croptek Conversion</b></span><span><Database/>Originating Source <b>MH.5 Strategic Theme Brief</b></span><span><MapPin/>Priority Market <b>Maharashtra / Onion</b></span><span><Users/>Assigned Owner <b>Crop Nutrition Product Manager</b></span><span><Clock3/>Theme Status <b>PM Submitted — Review Pending</b></span></div><div className="mh-comparison-layout"><section className="mh-section"><h2><Layers3/>Submitted Campaign Proposals — Comparison</h2><div className="mh-proposal-heads"><b>Comparison Dimension</b><b>Retailer-Led Croptek Conversion <small>Submitted for Marketing Review</small></b><b>Trial-to-Purchase Farmer Nurture <small>Submitted for Marketing Review</small></b></div>{rows.map(r=><div className="mh-proposal-row" key={r[0]}><b>{r[0]}</b><span>{r[1]}</span><span>{r[2]}</span></div>)}</section><aside className="mh-section"><h2><Users/>Selected Proposal Summary &amp; Review Notes</h2><h3>Retailer-Led Croptek Conversion</h3><p>Focuses on improving retailer recommendation and eligible farmer conversion through education and activation.</p><textarea placeholder="Add review notes, observations, or change requests"/><button className="mh-explore">View Source Theme Brief</button><button className="mh-explore">Request Changes</button></aside></div><section className="mh-ai-comparison"><h2><Sparkles/>AI Strategic Review Insight</h2><span>Potential complementarity across conversion stages; check duplicate targeting, attribution overlap, comparable benchmarks, and stock readiness before approval.</span></section><div className="mh-custom-actions"><button onClick={()=>go('mh.6')}>Back to Assignment Tracker</button><button className="primary" onClick={()=>go('mh.7a')}>View Detailed Proposal &amp; Business Case <ArrowRight/></button></div></div>
+}
+
+function MhApprovalWorkspace({screen}:{screen:'7A'|'7B'|'8'|'8A'}) {
+ const {go,toast}=useNav();
+ if(screen==='7A') return <div className="mh-strategy-screen"><div className="mh-brief-meta"><span><Sprout/>Parent Theme <b>Croptek Conversion</b></span><span><MapPin/>Priority Market <b>Maharashtra / Onion</b></span><span><Users/>Proposal Owner <b>Crop Nutrition PM</b></span><span><FileText/>Source Brief <b>MH.5</b></span><span><Clock3/>Status <b>PM Submitted — Review Pending</b></span></div><div className="mh-proposal-business-grid"><section className="mh-section"><h2><Megaphone/>Campaign Proposition (PM Submission)</h2><p><b>Objective</b> Strengthen retailer recommendation and eligible first-purchase conversion for Croptek.</p><p><b>Target audience</b> Eligible conventional nutrition and trial-interest farmer cohorts.</p><p><b>Proposed intervention</b> Regional retailer-led education and activation.</p><h3>Validation Status</h3>{['Product / crop applicability','Content & technical claims'].map(x=><div className="mh-barrier-line" key={x}><b>{x}</b><span>PM validation required</span><em>Pending</em></div>)}</section><section className="mh-section"><h2><Target/>Commercial Business Case Review</h2><div className="mh-finance-tiles">{[['₹12 L','Investment'],['₹48 L','Forecast sales'],['35%','Contribution margin'],['₹16.8 L','Contribution'],['+0.40x','Net ROI']].map(([v,l])=><div key={l}><b>{v}</b><small>{l}</small></div>)}</div><h3>Scenario Analysis <small>(PM assumptions)</small></h3><div className="mh-scenario-list">Conservative · ₹36 L sales · ₹12.6 L contribution · +0.05x ROI<br/>Base · ₹48 L sales · ₹16.8 L contribution · +0.40x ROI<br/>Optimistic · ₹60 L sales · ₹21.0 L contribution · +0.75x ROI</div><p className="mh-workflow-note"><Info/>Forecasts are assumptions, not actuals; sales attribution and stock readiness require validation.</p></section><aside className="mh-section"><h2><Sparkles/>AI Business Case Assessment</h2><ul><li>Trial conversion is measurable in the pilot, but lacks a reliable benchmark.</li><li>Validate sales and contribution assumptions with Product and Finance.</li><li>Check retailer participation and potential audience overlap.</li></ul><h3>Marketing Head Review</h3><textarea placeholder="Add review comments or questions for the Product Manager"/></aside></div><div className="mh-custom-actions"><button onClick={()=>go('mh.7')}>Back to Proposal Comparison</button><button onClick={()=>go('mh.7b')}>Compare With Other Proposal</button><button className="primary" onClick={()=>go('mh.8')}>Proceed to Approval Review <ArrowRight/></button></div></div>;
+ if(screen==='7B') return <div className="mh-strategy-screen"><div className="mh-workflow-note"><Info/>Proposal comparison review: both campaign proposals are PM-submitted and not approved.</div><div className="mh-proposal-heads"><b>Comparison Dimension</b><b>Proposal A: Retailer-Led Croptek Conversion</b><b>Proposal B: Trial-to-Purchase Farmer Nurture</b></div>{[['Objective','Increase retailer recommendation and eligible farmer conversion','Improve first purchase among verified trial cohorts'],['Audience','Retailers and eligible farmers','Verified trial and high-interest farmers'],['Intervention','Retailer training and activation','Structured farmer follow-up and education'],['Investment','₹12 L','PM submitted figures'],['Forecast','₹48 L sales / +0.40x ROI','Pending comparable data'],['Content readiness','Under review','Validation pending'],['Audience overlap','Potential overlap; reconcile attribution','Potential overlap; reconcile attribution']].map(r=><div className="mh-proposal-row" key={r[0]}><b>{r[0]}</b><span>{r[1]}</span><span>{r[2]}</span></div>)}<div className="mh-brief-columns"><section className="mh-section"><h2><Sparkles/>AI Strategic Comparison</h2><p>Potential complementarity across conversion stages. Resolve audience overlap, comparative benchmark and stock readiness.</p></section><section className="mh-section"><h2><CheckCircle2/>Marketing Review Decision</h2><div className="mh-review-options">◯ Shortlist A　 ◯ Shortlist B　 ◯ Consider Both　 ◯ Request Consolidated Revision</div><textarea placeholder="Add review comments (optional)"/></section></div><div className="mh-custom-actions"><button onClick={()=>go('mh.7a')}>Back to Business Case</button><button className="primary" onClick={()=>go('mh.8')}>Proceed to Approval Review <ArrowRight/></button></div></div>;
+ if(screen==='8') return <div className="mh-strategy-screen"><div className="mh-workflow-note"><Info/>PRE-APPROVAL: this is a review and authorization step. The campaign is not yet approved.</div><div className="mh-approval-grid"><section className="mh-section"><h2><Megaphone/>Campaign Approval Brief</h2><div className="mh-brief-columns">{[['Parent Theme','Croptek Conversion'],['Priority Market','Maharashtra Onion'],['Owner','Crop Nutrition Product Manager'],['Status','Marketing approval review pending']].map(([a,b])=><div className="mh-brief-row" key={a}><b>{a}</b><span>{b}</span></div>)}</div><h3>Illustrative PM-submitted Forecast</h3><div className="mh-finance-tiles">{[['₹12 L','Proposed investment'],['₹48 L','Incremental sales'],['₹16.8 L','Contribution'],['+0.40x','Net ROI']].map(([v,l])=><div key={l}><b>{v}</b><small>{l}</small></div>)}</div><p>Figures are forecasts; incremental attribution remains subject to validation.</p></section><aside className="mh-section"><h2><Users/>Marketing Head Decision</h2><div className="mh-workflow-note">Approval cannot be completed yet. Mandatory checks remain open.</div><textarea placeholder="Comments / notes (optional)"/><button onClick={()=>go('mh.7a')}><ArrowRight/>Return to PM</button><button onClick={()=>toast('Validation request saved for the PM and review owners.')}><CheckCircle2/>Request Validation</button><button onClick={()=>toast('Review decision saved as a draft.')}><Save/>Save Review Decision</button><button className="primary" onClick={()=>toast('Approval is blocked until financial, technical, retailer and stock checks are resolved.')}><ShieldCheck/>Approve Campaign</button><button onClick={()=>toast('Escalation note prepared for Business Head review.')}><Send/>Escalate to Business Head</button></aside></div><section className="mh-section"><h2><CheckCircle2/>Approval Readiness &amp; Exceptions</h2>{[['Theme alignment','Reviewed / ready for decision'],['Financial validation','Pending'],['Technical content approval','Pending'],['Retailer participation & stock','Pending'],['Proposal overlap reconciliation','Pending']].map(([a,b])=><div className="mh-barrier-line" key={a}><b>{a}</b><span>{b}</span><em>{b==='Pending'?'Pending':'Ready'}</em></div>)}</section><section className="mh-section"><h2><Layers3/>Post-Approval Recommendation Release <span className="mh-locked">LOCKED UNTIL APPROVAL</span></h2><div className="mh-handoff">Eligible territories · Linked PM / TM owners · Proposed campaign playbook · Rollout guardrails</div></section><div className="mh-custom-actions"><button onClick={()=>go('mh.7b')}>Back to Proposal Review</button><button className="primary" onClick={()=>go('mh.8a')}>Review Release Readiness <ArrowRight/></button></div></div>;
+ return <div className="mh-strategy-screen"><div className="mh-workflow-note"><Info/>Illustrative future state: approval and validation are shown separately from local campaign approval and execution.</div><section className="mh-section"><h2><CheckCircle2/>Approved Campaign Summary (for Recommendation Release)</h2><div className="mh-brief-meta"><span><Sprout/>Selected PM Campaign <b>Retailer-Led Croptek Conversion</b></span><span><Layers3/>Parent Theme <b>Croptek Conversion</b></span><span><MapPin/>Priority Market <b>Maharashtra Onion</b></span><span><Target/>Investment envelope <b>₹12 L</b></span><span><Clock3/>Status <b>Approved — Ready for release review</b></span></div></section><div className="mh-approval-grid"><section className="mh-section"><h2><Users/>Territory Campaign Recommendation Distribution</h2><div className="mh-report-table-wrap"><table className="mh-report-table"><thead><tr><th>Eligible Territory</th><th>Crop Market</th><th>Linked Plan</th><th>Eligibility Validation</th><th>Distribution Status</th><th>Action</th></tr></thead><tbody>{[['Ambad, Jalna','Maharashtra Onion','Linked onion business plan available','Recipient validation pending','Draft — not published'],['Other Maharashtra Territory A','Maharashtra Onion','Awaiting approved-plan match','Awaiting matching','Not ready'],['Other Maharashtra Territory B','Maharashtra Onion','Awaiting approved-plan match','Awaiting matching','Not ready'],['West Region Other Market','Scope not confirmed','—','Out of current priority scope','Excluded']].map(r=><tr key={r[0]}><td><b>{r[0]}</b></td><td>{r[1]}</td><td>{r[2]}</td><td>{r[3]}</td><td>{r[4]}</td><td><button className="mh-explore" onClick={()=>toast(r[0]==='Ambad, Jalna'?'Territory eligibility validation opened.':`Eligibility review opened for ${r[0]}.`)}><CheckCircle2/>{r[0]==='Ambad, Jalna'?'Validate':'Review'}</button></td></tr>)}</tbody></table></div></section><aside className="mh-section"><h2><FileText/>Approved Campaign Playbook</h2><h3>Campaign Proposition</h3><p>Retailer-led Croptek conversion.</p><h3>Priority Audience</h3><p>Eligible conventional nutrition and trial-interest farmer cohorts, subject to local eligibility.</p><h3>Approved Messaging</h3><p>Authorized version pending territory mapping.</p><h3>Suggested Channels</h3><p>Retailer education, conversion conversations and approved field support.</p><h3>Scope &amp; Guardrails</h3><p>Use approved budget, territory coverage and evidence controls.</p></aside></div><div className="mh-brief-columns"><section className="mh-section"><h2><ArrowRight/>Recommendation Release Workflow</h2><div className="mh-handoff">Approved PM Campaign → Validate Territory Eligibility → Publish Recommendations → Territory Manager Campaigns</div></section><section className="mh-section"><h2><Activity/>AI Rollout Readiness</h2><p>Not ready for publication: confirm territory eligibility, recipient ownership, and local channel validation.</p></section></div><div className="mh-custom-actions"><button onClick={()=>go('mh.8')}><ArrowLeft/>Back to Approval Review</button><button onClick={()=>toast('Territory checks: Ambad recipient ownership and local channel readiness are still pending.')}><CheckCircle2/>Validate Territories</button><button className="primary" onClick={()=>toast('Publishing is blocked until territory eligibility, recipient ownership and local channel checks are complete.')}><Send/>Publish Recommendations to Eligible Territory Managers</button></div></div>;
+}
+
+function MhCampaignRecommendations({selection=false}:{selection?:boolean}) { const {go}=useNav(); return <div className="mh-strategy-screen"><section className="mh-investigation-summary"><div><Sparkles/><b>{selection?'AI Investigation Conclusion':'Campaign Opportunity Signal'}</b></div><strong>{selection?'Purchase linkage supports pilot measurement, but historical comparison, retailer influence, and stock verification remain outstanding.':'Prioritize high-opportunity, under-indexed markets; keep campaign themes conditional until audience and channel evidence are checked.'}</strong></section>{selection&&<div className="mh-handoff"><span>Maharashtra / Onion / Croptek</span><ArrowRight/><b>1,200 eligible</b><ArrowRight/><b>780 reached</b><ArrowRight/><b>150 trials</b><ArrowRight/><b>54 matched purchases</b><strong>36% pilot conversion</strong></div>}<div className="mh-recommendation-cards">{[['Croptek Conversion Campaign','Leading Candidate','Trial-to-purchase is measurable in the matched illustrative cohort; validate against historical benchmarks and channel checks.','Medium / Conditional','Historical benchmark · Retailer engagement · Stock verification'],['Product Awareness Campaign','Conditional','Proceed if validated evidence confirms awareness is a material barrier.','Low-to-Medium / Conditional','Awareness benchmark · Message reach quality'],['Retailer Advocacy Campaign','Conditional','Proceed if retailer recommendation or engagement is confirmed as a constraint.','Low / Conditional','Retailer recommendation evidence · Channel participation']].map(([title,badge,desc,confidence,missing],i)=><article className={i===0?'selected':''} key={title}><div className="mh-rec-card-title"><span className="mh-rec-icon">{i===0?<Sprout/>:i===1?<Megaphone/>:<Store/>}</span><div><b>{title}</b><small>{badge}</small></div></div><p>{desc}</p><div><b>Evidence confidence:</b><em>{confidence}</em></div><div><b>Status:</b><span>Draft candidate / not approved</span></div><div><b>Missing validations:</b><span>{missing}</span></div><button className="mh-explore">View Rationale <ArrowRight/></button></article>)}</div><div className="mh-brief-columns"><section className="mh-section"><h2><Activity/>Key Insight Before vs Now</h2><div className="mh-handoff">Before: conversion not measurable <ArrowRight/> Now: 36% in matched pilot cohort <ArrowRight/> Root cause still unconfirmed</div></section><section className="mh-section"><h2><Sparkles/>AI Marketing Recommendation</h2><p>Croptek Conversion is a conditional leading candidate. Audience overlap, historical benchmark and channel readiness must be validated before approval.</p></section></div><div className="mh-custom-actions"><button onClick={()=>go(selection?'mh.4a-i4':'mh.4a')}>Back to Analysis</button><button onClick={()=>go('mh.4a-i3')}>Request Further Analysis</button><button className="primary" onClick={()=>go('mh.5')}>Design Selected Campaign <ArrowRight/></button></div></div>; }
+
+function MhBusinessCropPlanReview() {
+ const {go}=useNav();
+ const rows=[
+  ['Maharashtra / Onion','Croptek (Conversion)','Conversion growth objective ₹25 L included in ABP','Reviewed','Retailer-led Croptek conversion','View Plan','priority'],
+  ['Gujarat / Priority crops','Crop Nutrition (Portfolio penetration)','Awaiting consolidated plan','Under Review','Awareness & portfolio education','View Plan',''],
+  ['Madhya Pradesh / Priority crops','Croptek & Portfolio (Adoption)','Awaiting consolidated plan','Not Started','Adoption & trial support','View Plan',''],
+  ['Rajasthan / Priority crops','Nutrition Portfolio (Channel coverage)','Awaiting consolidated plan','Not Started','Channel activation & product visibility','View Plan',''],
+ ];
+ return <div className="mh-plan-review-dashboard"><div className="mh-plan-source-row"><b><Database/> Source: MH.2 — Maharashtra Onion Croptek Opportunity</b><span><Activity/><strong>High addressable potential</strong><small>(Illustrative)</small></span><span><Target/><strong>14–18%</strong><small>Indicative product penetration</small></span><span><BarChart3/><strong>₹40L / ₹43L / ₹45L / ₹48L</strong><small>Illustrative secondary sales Q1–Q4</small></span></div><div className="mh-plan-kpis"><span><MapPin/><small>Region</small><b>West</b></span><span><Sprout/><small>Priority Portfolio</small><b>Croptek</b></span><span><Users/><small>Product Manager Submissions</small><b className="pending">Under Review</b></span><span><Target/><small>Marketing Strategy Alignment</small><b className="pending">Pending</b></span></div><div className="mh-plan-review-columns"><section className="mh-section"><h2><Layers3/>Consolidated Regional Business &amp; Crop Plan Alignment <small>FY 2025–26 (Illustrative)</small></h2><div className="mh-report-table-wrap"><table className="mh-report-table mh-plan-review-table"><thead><tr><th>Region / Market</th><th>Product &amp; Crop Priority</th><th>Submitted Business Growth Objective</th><th>Product Manager Review</th><th>Identified Marketing Intervention</th><th>Action</th></tr></thead><tbody>{rows.map(([market,product,objective,status,action,button,tone])=><tr key={market} className={tone}><td><b>{market}</b></td><td>{product}</td><td>{objective}</td><td><span className={`mh-plan-status ${status==='Reviewed'?'good':status==='Under Review'?'pending':''}`}>{status}</span></td><td>{action}</td><td><button className="mh-explore" onClick={()=>go(market.startsWith('Maharashtra')?'mh.3a':'mh.3b')}>{button} <ArrowRight/></button></td></tr>)}</tbody></table></div><div className="mh-opportunity-to-plan"><h2><ArrowRight/>Opportunity-to-Plan Alignment</h2><div><article><h3><Activity/>Market Intelligence</h3><p>High addressable potential; indicative penetration 14–18%; sales rise ₹40L to ₹48L.</p></article><ArrowRight/><article><h3><Layers3/>Business Plan Support</h3><p>₹25 L conversion growth objective included in the PM-reviewed ABP; aligned to regional crop priority.</p></article><ArrowRight/><article><h3><Target/>Marketing Intervention Needed</h3><p>Candidate: retailer-led Croptek conversion with farmer education; validate product and channel readiness.</p></article></div></div></section><aside className="mh-section mh-plan-context"><h2><Layers3/>Maharashtra / Onion — Plan Context</h2><h3><MapPin/>Ambad — Contributing Plan <small>Illustrative</small></h3><div className="mh-plan-stat-grid"><div><b>₹4.20 Cr</b><small>Territory ABP (all products)</small></div><div><b>₹1.90 Cr</b><small>Approved Onion allocation</small></div><div><b>₹25 L</b><small>Conversion growth objective</small></div></div><p><Info/>These are business plan figures, distinct from market opportunity and illustrative secondary sales.</p><button onClick={()=>go('mh.3a')}>Request Clarification</button><button onClick={()=>go('mh.3a')}>View PM Review</button><button onClick={()=>go('mh.3b')}>Endorse Marketing Requirement</button><h2><Sparkles/>AI Marketing Recommendation</h2><p>Assess a West Region conversion theme supported by PM-reviewed plans, high opportunity and current penetration.</p><div className="mh-approval-note"><Info/>Recommendation is NOT YET APPROVED.</div></aside></div><div className="mh-custom-actions"><button onClick={()=>go('mh.2')}>Back to Market Intelligence</button><span>Data confidence: market estimates medium; plan details as submitted.</span><button className="primary" onClick={()=>go('mh.4')}>Identify Campaign Opportunities <ArrowRight/></button></div></div>;
+}
+
+function Mh9Charts() {
   return (
     <div className="iq-stack">
       <div className="iq-grid-2">
         <ChartCard icon={Grid3x3} title="Which crop and region combos perform?" hint="Execution vs plan (%)"><HeatGrid corner="Crop" rows={['Onion', 'Maize', 'Soybean']} cols={REGIONS} fmt={(v) => `${v}%`} values={[[88, 74, 68, 72], [80, 70, 66, 64], [76, 68, 60, 62]]} /></ChartCard>
         <ChartCard icon={BarChart3} title="What drives the gaps?" hint="Observed workflow gaps (count)"><RankBars highlightFirst series={[{ key: 'v', name: 'Villages' }]} data={[{ name: 'Follow-up lag', v: 6 }, { name: 'Stock continuity', v: 4 }, { name: 'Demo attendance', v: 3 }, { name: 'Retailer onboarding', v: 2 }]} /></ChartCard>
       </div>
-      {map && <MapCard title="Where is impact showing?" label="Impact map" height={250} view={{ district: 'Jalna', state: 'Maharashtra' }} talukas={{ Ambad: { tone: 4, info: 'Strong impact' }, Badnapur: { tone: 2, info: 'Moderate' }, Ghansawangi: { tone: 1, info: 'Early' } }} markers={[{ id: 'v-ambad' }, { id: 'v-dhanora' }]} />}
     </div>
   );
 }
 
-const withAlerts = (node: ReactNode, items: { text: string; kind?: 'risk' | 'warn' | 'info' | 'ok' }[]) => (
-  <div className="iq-stack">{node}<ChartCard icon={Bell} title="What needs attention?"><AlertList items={items} /></ChartCard></div>
-);
+function Mh9PortfolioOverview() {
+  const rows = [
+    ['Croptek Conversion','Retailer-Led Croptek Conversion','West','72%','532','Medium'],
+    ['Croptek Conversion','Trial-to-Purchase Farmer Nurture','West','48%','—','Low'],
+    ['Crop Nutrition Awareness','Farmer Engagement & Awareness','West','34%','—','Low'],
+  ];
+  const comparisons = [
+    { label:'Retailer-led', planned:80, observed:72 },
+    { label:'Farmer follow-up', planned:70, observed:48 },
+    { label:'Awareness', planned:60, observed:34 },
+  ];
+  return <div className="mh-portfolio-overview">
+    <div className="mh-portfolio-top-grid">
+      <section className="mh-section mh-report-card"><h2><Activity/>Marketing Campaign Performance (by Theme)<small>Planned vs. Observed Progress</small></h2><div className="mh-report-table-wrap"><table className="mh-report-table mh-portfolio-table"><thead><tr><th>Theme</th><th>PM Campaign</th><th>Region</th><th>Execution</th><th>Adoption<br/><small>(Verified)</small></th><th>Impact<br/>Confidence</th></tr></thead><tbody>{rows.map((row,i)=><tr key={row[1]} className={i===0?'priority':''}><td><b>{row[0]}</b></td><td>{row[1]}</td><td>{row[2]}</td><td><strong>{row[3]}</strong><span className="mh-mini-progress"><i style={{width:row[3]}}/></span></td><td>{row[4]}</td><td><span className={`mh-impact-confidence ${row[5]==='Medium'?'medium':'low'}`}>{row[5]}</span></td></tr>)}</tbody></table></div></section>
+      <section className="mh-section mh-report-card mh-progress-chart"><h2><BarChart3/>Progress Comparison<span className="mh-chart-legend"><i className="planned"/>Planned <i className="observed"/>Observed</span></h2><div className="mh-bar-compare">{comparisons.map(item=><div key={item.label} className="mh-bar-group"><div className="mh-bar-pair"><span className="planned" style={{height:`${item.planned}%`}}><b>{item.planned}%</b></span><span className="observed" style={{height:`${item.observed}%`}}><b>{item.observed}%</b></span></div><small>{item.label}</small></div>)}</div></section>
+    </div>
+    <section className="mh-portfolio-finance"><div className="mh-finance-title"><Target/><span><b>Programme</b><small>(Forecast – West Region)</small></span></div><div><strong>₹12 L</strong><small>Investment</small></div><div><strong>₹48 L</strong><small>Incremental Sales</small></div><div><strong>₹16.8 L</strong><small>Contribution<br/>(35% margin)</small></div><div className="mh-net-roi"><strong>+0.40x</strong><small>Net ROI</small></div></section>
+  </div>;
+}
+
+function MhCampaignStageProgress() {
+  const stages = [
+    { icon:Megaphone, value:'12', label:'Recommendations Published', tone:'green' },
+    { icon:FileText, value:'8', label:'Local Plans Submitted', tone:'lime' },
+    { icon:CheckCircle2, value:'6', label:'Local Plans Approved', tone:'amber' },
+    { icon:Play, value:'4', label:'Running', tone:'green-strong' },
+  ];
+  return <section className="mh-section mh-stage-progress"><h2><Layers3/>Campaign Stage Distribution <small>(Territory Campaigns)</small></h2><div className="mh-stage-track">{stages.map((stage,i)=>{const Icon=stage.icon;return <div className={`mh-stage-step ${stage.tone}`} key={stage.label}><Icon/><div><b>{stage.label}</b><strong>{stage.value}</strong></div>{i<stages.length-1&&<ArrowRight className="mh-stage-arrow"/>}</div>;})}</div></section>;
+}
+
+function Mh9aRollout() {
+  return <div className="iq-stack"><MhDataTable title="Territory-wise Programme Rollout" hint="Croptek Conversion · West Region" headers={['Territory','Campaign Linkage','Approval / Activation','Execution Progress','Tracked Outcome Confidence','View']} rows={[
+    ['Ambad, Jalna','Onion Plan (Linked)','Running','72%','Medium','View'], ['Other Territories (Eligible)','Onion Plan (Pending Mapping)','Not Started','—','—','View'], ['Additional Territories','Eligibility Review','Pending','—','—','View'],
+  ]}/><MhCampaignStageProgress/></div>;
+}
+
+function Mh9bDiagnostics() {
+  return <div className="iq-stack"><MhCampaignStageProgress/><MhDataTable title="Performance Driver Assessment" hint="Observed workflow gaps · causes require validation" headers={['Driver','Evidence / Status','Implication']} rows={[
+    ['Local activation (plan → run)','Workflow gap observed','Slower activation vs. plan'], ['Retailer engagement','Evidence incomplete','Need retailer participation records'], ['Field follow-up completion','Evidence incomplete','Need field / CRM follow-up data'], ['Stock availability','Not verified','Check stock records if required'],
+  ]}/></div>;
+}
+
+function Mh4aDiagnosis() {
+  const evidence = [
+    {icon:Activity,title:'Historical Campaigns',detail:'Retailer activation & demos (earlier seasons)',status:'Indicative evidence',tone:'green'},
+    {icon:Layers3,title:'Business Plan Support',detail:'Ambad plan includes ₹25 L conversion objective (approved ABP)',status:'PM Reviewed',tone:'green'},
+    {icon:Users,title:'Farmer Awareness',detail:'Market-level awareness not available',status:'Awaiting validation',tone:'amber'},
+    {icon:Sprout,title:'Trial-to-Adoption',detail:'Trial and conversion rate not available',status:'Awaiting validation',tone:'amber'},
+    {icon:Store,title:'Retailer Recommendation',detail:'Retailer advocacy level not available',status:'Awaiting validation',tone:'amber'},
+    {icon:Boxes,title:'Stock & Availability',detail:'Territory stock position not confirmed',status:'Awaiting validation',tone:'amber'},
+  ];
+  const barriers = [
+    {icon:Users,title:'Awareness Barrier',question:'Is limited awareness or product understanding restricting adoption?',status:'Awaiting validation',tone:'amber'},
+    {icon:Activity,title:'Conversion Barrier',question:'Are aware / trial users not converting to regular usage?',status:'Partially available',tone:'green'},
+    {icon:Store,title:'Channel Barrier',question:'Is limited retailer recommendation or engagement a constraint?',status:'Awaiting validation',tone:'amber'},
+    {icon:Activity,title:'Retention Barrier',question:'Is repeat purchase low among existing users?',status:'Awaiting validation',tone:'amber'},
+  ];
+  return <div className="mh-diagnosis">
+    <section className="mh-section mh-diagnosis-evidence"><h2><Layers3/>Market &amp; Historical Performance Evidence — Maharashtra / Onion / Croptek</h2><div className="mh-diagnosis-market"><div><Activity/><b>Addressable Market</b><strong>₹7–10 Cr</strong><small>(Illustrative)</small></div><div><Target/><b>Product Penetration</b><strong>14–18%</strong><small>(Indicative)</small></div><div className="mh-quarterly-evidence"><BarChart3/><b>Quarterly Secondary Sales <small>(Illustrative)</small></b><div>{[['Q1','₹40 L'],['Q2','₹43 L'],['Q3','₹45 L'],['Q4','₹48 L']].map(([q,v],i)=><span key={q}><small>{q}</small><b>{v}</b>{i<3&&<ArrowRight/>}</span>)}</div></div></div><div className="mh-evidence-factor-grid">{evidence.map(({icon:Icon,title,detail,status,tone})=><article key={title}><Icon/><div><b>{title}</b><p>{detail}</p><span className={`mh-factor-status ${tone}`}>{tone==='green'?<CheckCircle2/>:<Clock3/>}{status}</span></div></article>)}</div></section>
+    <section className="mh-diagnostic-insight"><div><Sparkles/><b>AI Diagnostic Insight</b></div><strong>Positive sales momentum + low indicative penetration suggests growth headroom, but exact reason for under-adoption is <mark>UNCONFIRMED.</mark></strong></section>
+    <section className="mh-section mh-barrier-assessment"><h2><Activity/>Potential Growth Barrier – Hypothesis Assessment <small>(Subject to Validation)</small></h2><div>{barriers.map(({icon:Icon,title,question,status,tone},i)=><article key={title}><Icon/><section><b>{title}</b><p>{question}</p><span className={`mh-factor-status ${tone}`}>Evidence Status: &nbsp;{tone==='green'?<CheckCircle2/>:<Clock3/>}{status}</span></section>{i<barriers.length-1&&<ArrowRight className="mh-barrier-arrow"/>}</article>)}</div></section>
+    <div className="mh-diagnosis-footer"><span><Info/>Findings are indicative, based on available historical and plan data. Growth barrier hypotheses and recommended intervention require further validation.</span><button><FileText/>View Source Analysis</button><button className="primary"><Users/>Request Further Analysis</button></div>
+  </div>;
+}
 
 function ChipsFor({ qs }: { qs: string[] }) { const { toast } = useNav(); return <QuestionChips questions={qs} onPick={(q) => toast(`Question sent to the Copilot: ${q}`)} />; }
 
-export const MH_OWN_MAP = new Set(['MH.1']);
 export const MH_CHARTS: Record<string, ReactNode> = {
   'MH.AI1': <ChipsFor qs={['Which regions need attention first?', 'Where is potential highest?', 'Which approvals are ageing?', 'What drives the West gap?']} />,
-  'MH.1': withAlerts(<Mh1Charts />, [{ text: 'West execution is 6 pp below plan.', kind: 'risk' }, { text: 'North adoption evidence needs source validation.', kind: 'warn' }, { text: 'Two strategic themes await a decision.', kind: 'info' }]),
+  'MH.1': <Mh1Charts />,
   'MH.2': <Mh2Charts />,
-  'MH.3': <GapCharts />, 'MH.3A': <GapCharts />, 'MH.3B': <GapCharts />,
-  'MH.4': <div className="iq-grid-2">{dropFunnel}{barrierGrid}</div>,
-  'MH.4A': dropFunnel, 'MH.4A-I2': barrierGrid, 'MH.4A-I3': dropFunnel, 'MH.4A-I4': <div className="iq-grid-2">{dropFunnel}{barrierGrid}</div>,
-  'MH.4B': <ThemeFit />,
-  'MH.5': <ChartCard icon={Target} title="Does the brief meet its governance thresholds?" hint="Current vs required threshold"><Bullets max={100} rows={[{ label: 'Evidence coverage', actual: 72, target: 80 }, { label: 'ABP alignment', actual: 90, target: 85 }, { label: 'Audience validation', actual: 60, target: 75 }]} /></ChartCard>,
-  'MH.6': <Mh6Charts />,
-  'MH.9C': <Mh9Charts map />,
+  'MH.3': <MhBusinessCropPlanReview />,
+  'MH.3-old': <MhDataTable title="Consolidated business and crop plan alignment" hint="Review submitted regional plans against market opportunity and intervention needs" headers={['Region', 'Crop / product', 'Business plan', 'Marketing fit', 'PM review']} rows={[
+    ['West / Maharashtra', 'Onion / Croptek', 'Growth priority', 'Reviewed', 'In progress'], ['South', 'Maize / Croptek', 'Growth opportunity', 'Needs validation', 'Pending'], ['North', 'Cotton / Croptek', 'Maintain reach', 'Reviewed', 'Pending'], ['East', 'Soybean / Croptek', 'Expansion', 'Needs evidence', 'Pending'],
+  ]} />,
+  'MH.3A': <div className="iq-stack"><MhDataTable title="Village-wise Crop & Business Plan - Ambad, Jalna" hint="FY 2025-26 illustrative · Onion / Croptek" headers={['Village', 'Last-year sales / volume', 'Current-year target', 'Derived coverage', 'PM validation']} rows={[
+    ['Dhanora', 'INR 10 L / 10 MT', 'INR 12 L / 15 MT', '500 to 750 acres', 'Reviewed - partial'], ['Wadi Gaon', 'View approved source', 'View approved source', 'View approved source', 'Under review'], ['Ambad HQ', 'View approved source', 'View approved source', 'View approved source', 'Reviewed'], ['Pimpalgaon', 'View approved source', 'View approved source', 'View approved source', 'Not started'], ['Other villages', 'Consolidated', 'Consolidated', 'Illustrative', 'In review'],
+  ]}/><MhAssessment title="Marketing Intervention Assessment - Dhanora / Ambad" steps={[
+    ['Growth requirement','Planned +50% volume (10 MT to 15 MT) across +250 acres.','growth'], ['Eligible opportunity','New farmer conversion and expansion of existing Croptek users.','audience'], ['Proposed intervention','Retailer-led Croptek conversion with targeted farmer education; validate channel readiness.','recommendation'],
+  ]}/></div>,
+  'MH.3B': <div className="iq-stack"><MhDataTable title="Consolidated Business & Crop Plan Detail - Maharashtra (Onion / Croptek)" hint="Business plan and PM-reviewed marketing alignment" headers={['Contributing plan', 'Business / crop plan details', 'PM review', 'Remarks / next step']} rows={[
+    ['Ambad, Jalna', 'Territory ABP INR 4.20 Cr; approved Onion allocation INR 1.90 Cr; conversion growth objective INR 25 L (included in ABP).', 'Reviewed', 'Aligned; eligible for marketing intervention'], ['Other Maharashtra territories', 'Awaiting consolidated plan (multiple territories).', 'In progress', 'Consolidation and PM review pending'],
+  ]}/><MhAssessment title="Opportunity-to-Plan-to-Marketing Intervention Assessment" steps={[
+    ['Market intelligence','High addressable market; indicative product penetration 14-18%.','growth'], ['Business plan support','INR 25 L conversion objective included in ABP; crop priority aligned.','audience'], ['Marketing intervention needed','Evaluate West Region retailer-led Croptek conversion; validate business plan and channel readiness.','recommendation'],
+  ]}/><ChartCard icon={Target} title="Marketing Intervention Review - Key Questions"><div className="mh-question-grid"><div><b>Is marketing intervention needed?</b><span>Yes - conversion focus</span></div><div><b>Is there an existing approved theme?</b><span>No - new theme / expansion</span></div><div><b>Are audience and channels feasible?</b><span>Likely - requires channel validation</span></div><div><b>Can it be aggregated across territories?</b><span>Yes - potential West Region theme</span></div></div></ChartCard></div>,
+  'MH.4': <MhCampaignRecommendations />,
+  'MH.4A': <Mh4aDiagnosis />,
+  'MH.4A-I2': <MhInvestigationResults />,
+  'MH.4A-I3': <MhEvidenceRequestTracking />,
+  'MH.4A-I4': <MhUpdatedInvestigation />,
+  'MH.4B': <MhCampaignRecommendations selection />,
+  'MH.4B-old': <MhDataTable title="Campaign recommendations from diagnosis" hint="Recommendations are not yet approved" headers={['Campaign theme', 'Rationale', 'Priority', 'Evidence confidence']} rows={[
+    ['Croptek Conversion', 'High opportunity with under-indexed penetration', 'High', 'Medium'], ['Product Awareness', 'Address awareness barriers in priority cohorts', 'Medium', 'Low'], ['Retailer Advocacy', 'Improve recommendation and product availability', 'Medium', 'Partial'],
+  ]} />,
+  'MH.5': <MhThemeBrief />,
+  'MH.6': <MhAssignmentTracker />,
+  'MH.7': <MhProposalComparison />,
+  'MH.5-old': <MhDataTable title="Strategic campaign theme brief" hint="Croptek Conversion · Maharashtra / Onion" headers={['Brief element', 'Decision / assignment']} rows={[
+    ['Marketing objective', 'Strengthen farmer conversion and Croptek adoption'], ['Priority market', 'Maharashtra / Onion'], ['Audience', 'Eligible conventional farmers and trial users'], ['Evidence-linked rationale', 'Positive sales momentum with low indicative penetration'], ['Assigned Product Manager', 'Crop Nutrition Product Manager'], ['Expected outputs', 'Proposal, business case, campaign plan, validations'],
+  ]} />,
+  'MH.6-old': <MhDataTable title="Campaign theme assignment tracker" hint="From strategic assignment through PM proposal" headers={['Theme', 'Assigned PM', 'Assignment date', 'Current development status', 'Next']} rows={[
+    ['Croptek Conversion', 'Crop Nutrition PM', '18 Mar 2026', 'Assessment pending', 'Track'], ['Product Awareness', 'Crop Protection PM', '22 Mar 2026', 'Not started', 'Assign'], ['Retailer Advocacy', 'Regional Marketing', '25 Mar 2026', 'Evidence collection', 'Review'],
+  ]} />,
+  'MH.9C': <Mh9Charts />,
   'MH.9D': <ChartCard icon={BarChart3} title="Which gaps justify an optimization request?" hint="Villages affected"><RankBars highlightFirst series={[{ key: 'v', name: 'Villages' }]} data={[{ name: 'Follow-up lag', v: 6 }, { name: 'Stock continuity', v: 4 }, { name: 'Demo attendance', v: 3 }]} /></ChartCard>,
-  'MH.7': <RoiScatter />, 'MH.7A': <RoiScatter />, 'MH.7B': <RoiScatter />,
-  'MH.8': <Mh8Charts />, 'MH.8A': <Mh8Charts withMap />,
-  'MH.9': <Mh9Charts map />, 'MH.9A': <Mh9Charts map />, 'MH.9B': <Mh9Charts />,
-};
-export const MH_PULSE: Record<string, PulseItem[]> = {
-  'MH.1': [{ label: 'Opportunity realization', value: 86 }, { label: 'Regions on plan', value: 25, tone: 'amber' }, { label: 'Approvals cleared', value: 60 }],
-  'MH.2': [{ label: 'Potential captured', value: 52, tone: 'amber' }, { label: 'Product coverage', value: 71 }, { label: 'Data confidence', value: 80 }],
-  'MH.6': [{ label: 'Budget allocated', value: 92 }, { label: 'Calendar locked', value: 66, tone: 'amber' }, { label: 'Segment balance', value: 78 }],
-  'MH.8': [{ label: 'Approvals cleared', value: 58, tone: 'amber' }, { label: 'On-time decisions', value: 67 }, { label: 'Rollout readiness', value: 79 }],
-  'MH.9': [{ label: 'Execution vs plan', value: 90, tone: 'amber' }, { label: 'Evidence verified', value: 64 }, { label: 'Drivers confirmed', value: 40, tone: 'amber' }],
+  'MH.7-old': <MhDataTable title="Submitted campaign proposals" hint="Side-by-side strategic and commercial assessment" headers={['Proposal', 'Objective', 'Budget', 'Forecast', 'Review status']} rows={[
+    ['Retailer-led Croptek Conversion', 'Increase Onion adoption', '₹12 L', '₹48 L sales · +0.40x ROI', 'Marketing review pending'], ['Trial-to-Purchase Farmer Nurture', 'Improve trial conversion', '₹9 L', '₹31 L sales · assumptions open', 'PM submitted'],
+  ]} />,
+  'MH.7A': <MhApprovalWorkspace screen="7A" />,
+  'MH.7A-old': <div className="iq-grid-2"><MhDataTable title="Campaign business case" hint="Submitted proposal · assumptions require review" headers={['Measure', 'Submitted value', 'Review']} rows={[
+    ['Proposed investment', '₹12 L', 'Within review'], ['Forecast sales', '₹48 L', 'Validate base assumptions'], ['Contribution margin', '35%', 'Pending finance check'], ['Net ROI', '+0.40x', 'Assumption sensitive'], ['Target audience', 'Eligible conversion cohort', 'Validate reach'],
+  ]} /><MhDataTable title="Validation status" hint="Required before a decision" headers={['Check', 'Status']} rows={[
+    ['Product / crop applicability', 'Pending'], ['Content and technical claims', 'Pending'], ['Retailer participation', 'Pending'], ['Proposal assumptions', 'Review required'],
+  ]} /></div>,
+  'MH.7B': <MhApprovalWorkspace screen="7B" />,
+  'MH.7B-old': <MhDataTable title="Approval exceptions and conditions" hint="Record controls before conditional approval" headers={['Condition / exception', 'Owner', 'Status', 'Decision control']} rows={[
+    ['Confirm demo stock before Week 2', 'Regional team', 'Open', 'Release hold'], ['Maintain farmer consent logs', 'Territory team', 'Open', 'Evidence required'], ['Validate forecast assumptions', 'Product Manager', 'Pending', 'Finance review'],
+  ]} />,
+  'MH.8': <MhApprovalWorkspace screen="8" />,
+  'MH.8-old': <MhDataTable title="Marketing approval and rollout authorization" hint="Approval cannot be completed until required checks are resolved" headers={['Approval check', 'Status', 'Decision']} rows={[
+    ['Theme alignment review', 'Reviewed', 'Ready'], ['Financial / commercial validation', 'Pending', 'Required'], ['Technical and content approval', 'Pending', 'Required'], ['Retailer and stock readiness', 'Pending', 'Required'], ['Proposal business case', 'Under review', 'Decision pending'],
+  ]} />,
+  'MH.8A': <MhApprovalWorkspace screen="8A" />,
+  'MH.8A-old': <div className="iq-grid-2"><MhDataTable title="Territory campaign recommendation distribution" hint="Approved playbook · territories release after validation" headers={['Territory', 'Crop / product', 'Recommendation', 'Eligibility', 'Status']} rows={[
+    ['Ambad, Jalna', 'Onion / Croptek', 'Retailer-led conversion', 'Eligible', 'Validate'], ['Other Maharashtra', 'Onion / Croptek', 'Conversion campaign', 'Check stock', 'Review'], ['West Region', 'Priority portfolio', 'Approved campaign playbook', 'Local plan required', 'In progress'],
+  ]} /><MhDataTable title="Approved campaign playbook" hint="Implementation controls" headers={['Control', 'Requirement']} rows={[
+    ['Campaign owner', 'Product Manager'], ['Territory owner', 'Territory Manager'], ['Readiness', 'Stock and local plan check'], ['Measurement', 'Consent, reach and follow-up records'],
+  ]} /></div>,
+  'MH.9': <Mh9PortfolioOverview />,
+  'MH.9A': <Mh9aRollout />,
+  'MH.9B': <Mh9bDiagnostics />,
 };
