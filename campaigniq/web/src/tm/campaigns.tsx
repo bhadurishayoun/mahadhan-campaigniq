@@ -495,7 +495,9 @@ export function TmC2() {
         { icon: Lock, value: approved ? 'Unlocked' : 'Locked', label: 'Launch authorisation', note: approved ? 'Ready for execution' : 'Until Marketing Head approves', tone: approved ? 'green' : 'grey' },
       ]} />
       <Panel title="Approval pipeline" actions={submitted && !approved
-        ? <Btn small variant="primary" onClick={() => { setCampaignStage(stage + 1); toast(stage + 1 === 3 ? 'Marketing Head approved the campaign (showcase). Launch unlocked.' : 'Content review completed (showcase).'); }}>Showcase: advance approval</Btn>
+        ? <Btn small variant="primary" disabled={stage >= 2} onClick={() => { setCampaignStage(Math.min(stage + 1, 2)); toast('Content review completed. Awaiting Marketing Head approval.'); }}>
+            {stage >= 2 ? 'Marketing Head approval pending' : 'Showcase: complete content review'}
+          </Btn>
         : undefined}>
         <ApprovalPipeline current={submitted ? stage : 0} steps={APPROVAL_STEPS.map((s, i) => ({ ...s, skipped: i === 3 }))} />
       </Panel>
