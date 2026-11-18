@@ -2,10 +2,10 @@
  * Field Sales Manager - My Campaigns journey:
  * TM.C1 select a business priority -> Campaign Wizard CW.1-CW.4 -> TM.C2 review & approval -> TM.C3 my campaign portfolio.
  */
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useMemo, useRef, useState } from 'react';
 import {
   CalendarRange, CheckCircle2, Eye, FlaskConical, Lock, MapPin, MessageSquare, Plus, Save, ShieldCheck, Trash2,
-  Sprout, Store, Target, Users, Wallet,
+  Sprout, Store, Target, Users, Wallet, Smartphone, RefreshCw, Pencil,
 } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import { Btn, cx } from '../ui';
@@ -19,6 +19,10 @@ import { ApprovalPipeline, Donut, IconTiles, MAP_COLORS, Ring, StageTimeline, Tm
 
 const VILLAGE_CHOICES = ['Dhanora', 'Wadi Gaon', 'Ambad HQ', 'Pimpalgaon', 'Other villages'];
 const MIX_COLORS = ['#2f8a3b', '#3972b8', '#d7a62f', '#8fb08a', '#c8553d'];
+const ACTIVITY_ICONS = [Users, Store, Users, Smartphone, RefreshCw];
+const PLACES = ['Dhanora / Wadi Gaon', 'Dhanora', 'Wadi Gaon', '3 linked retailers', 'Retailer channel', 'Village meetings', 'Consent-based digital', 'Field follow-up'];
+const TIMINGS = ['Indicative crop-stage window', 'Pre-activation', 'Relevant crop-stage window', 'Follow-up support', 'Post-activity'];
+const OWNERS = ['Select owner', 'R. Jadhav', 'S. Patil', 'V. Shinde', 'P. Kale'];
 
 /** The four-step campaign journey shown on TM.C1, TM.C2 and TM.C3. */
 const JOURNEY: { label: string; to: ScreenId }[] = [
@@ -200,6 +204,7 @@ export function Cw1() {
 export function Cw2() {
   const { toast } = useNav();
   const [lines, setLines] = useState<ActivityLine[]>(ACTIVITIES);
+  const activityInputs = useRef<(HTMLInputElement | null)[]>([]);
   const total = lines.reduce((sum, l) => sum + (Number.isFinite(l.budget) ? l.budget : 0), 0);
   const units = lines.reduce((sum, l) => sum + l.units, 0);
   const update = (index: number, patch: Partial<ActivityLine>) => setLines((all) => all.map((l, i) => (i === index ? { ...l, ...patch } : l)));
@@ -218,23 +223,26 @@ export function Cw2() {
       <div className="cw2-layout">
         <div className="cw2-main">
           <Panel title="Campaign Activity Planner" actions={<Btn small icon={<Plus size={12} />} onClick={addActivity}>Add Activity</Btn>}>
-            <p className="cw2-edit-hint">Plan activities, targets, owners and draft budget. All fields are editable.</p>
+            <p className="cw2-edit-hint">Plan key campaign activities, targets, owners and draft budget. All values are <strong>DRAFT and EDITABLE</strong> (not approved).</p>
             <div className="table-wrap cw2-table-wrap">
               <table className="dt pm-table tm-table cw2-table">
-                <thead><tr><th>Activity</th><th>Planned units</th><th>Village / channel</th><th>Tentative timing</th><th>Assigned owner</th><th className="r">Draft budget</th><th aria-label="Actions" /></tr></thead>
+                <thead><tr><th>Activity <em>*</em></th><th>Planned units <em>*</em></th><th>Village / channel <em>*</em></th><th>Tentative timing <em>*</em></th><th>Assigned owner <em>*</em></th><th className="r">Draft budget <em>*</em></th><th>Edit</th></tr></thead>
                 <tbody>{lines.map((line, index) => (
                   <tr key={index}>
-                    <td><div className="cw2-activity-cell"><i style={{ background: MIX_COLORS[index % MIX_COLORS.length] }} /><input value={line.activity} onChange={(e) => update(index, { activity: e.target.value })} aria-label={`Activity ${index + 1}`} /></div></td>
+                    <td><div className="cw2-activity-cell"><span className="cw2-activity-icon" style={{ color: MIX_COLORS[index % MIX_COLORS.length] }}>{(() => { const Icon = ACTIVITY_ICONS[index % ACTIVITY_ICONS.length]; return <Icon size={16} />; })()}</span><input ref={(element) => { activityInputs.current[index] = element; }} value={line.activity} onChange={(e) => update(index, { activity: e.target.value })} aria-label={`Activity ${index + 1}`} /></div></td>
                     <td><div className="cw2-units"><input type="number" min={0} value={line.units} onChange={(e) => update(index, { units: Number(e.target.value) })} aria-label={`Planned units ${index + 1}`} /><input value={line.unitLabel} onChange={(e) => update(index, { unitLabel: e.target.value })} aria-label={`Unit type ${index + 1}`} /></div></td>
-                    <td><input className="cw2-field" value={line.where} onChange={(e) => update(index, { where: e.target.value })} aria-label={`Village or channel ${index + 1}`} /></td>
-                    <td><input className="cw2-field" value={line.timing} onChange={(e) => update(index, { timing: e.target.value })} aria-label={`Tentative timing ${index + 1}`} /></td>
-                    <td><input className="cw2-field" value={line.owner} onChange={(e) => update(index, { owner: e.target.value })} placeholder="Select owner" aria-label={`Assigned owner ${index + 1}`} /></td>
+                    <td><input className="cw2-field" list="cw2-places" value={line.where} onChange={(e) => update(index, { where: e.target.value })} aria-label={`Village or channel ${index + 1}`} /></td>
+                    <td><input className="cw2-field" list="cw2-timings" value={line.timing} onChange={(e) => update(index, { timing: e.target.value })} aria-label={`Tentative timing ${index + 1}`} /></td>
+                    <td><input className="cw2-field" list="cw2-owners" value={line.owner} onChange={(e) => update(index, { owner: e.target.value })} placeholder="Select owner" aria-label={`Assigned owner ${index + 1}`} /></td>
                     <td className="r"><label className="cw2-money"><span>₹</span><input type="number" min={0} step={0.05} value={line.budget} onChange={(e) => update(index, { budget: Number(e.target.value) })} aria-label={`Draft budget ${index + 1}`} /><span>L</span></label></td>
-                    <td><button type="button" className="cw2-delete" aria-label={`Remove ${line.activity}`} onClick={() => removeActivity(index)}><Trash2 size={14} /></button></td>
+                    <td><div className="cw2-row-actions"><button type="button" aria-label={`Focus ${line.activity} name`} title="Edit activity name" onClick={() => activityInputs.current[index]?.focus()}><Pencil size={13} /></button><button type="button" className="cw2-delete" aria-label={`Remove ${line.activity}`} title="Remove activity" onClick={() => removeActivity(index)}><Trash2 size={14} /></button></div></td>
                   </tr>
                 ))}</tbody>
                 <tfoot><tr><td>Total Draft Campaign Budget</td><td>{units} units</td><td colSpan={3} /><td className="r">{lakh(total, 2)}</td><td /></tr></tfoot>
               </table>
+              <datalist id="cw2-places">{PLACES.map((item) => <option key={item} value={item} />)}</datalist>
+              <datalist id="cw2-timings">{TIMINGS.map((item) => <option key={item} value={item} />)}</datalist>
+              <datalist id="cw2-owners">{OWNERS.map((item) => <option key={item} value={item} />)}</datalist>
             </div>
           </Panel>
           <Panel title="Crop-Stage-Linked Campaign Calendar">
@@ -258,7 +266,7 @@ export function Cw2() {
           </AiPanel>
         </aside>
       </div>
-      <Footer back={{ label: 'Back to Objective & Targeting', to: 'cw.1' }} source="Activity library unit costs (illustrative)" next="CW.3 — Scenario & Expected Outcomes"
+      <Footer back={{ label: 'Back to CW.1 (Objective & Targeting)', to: 'cw.1' }}
         secondary={<Btn icon={<Save size={13} />} onClick={() => toast('Activity plan saved as draft.')}>Save Draft</Btn>}
         primary={{ label: 'Scenario & Expected Outcomes', to: 'cw.3' }} />
     </TmPage>

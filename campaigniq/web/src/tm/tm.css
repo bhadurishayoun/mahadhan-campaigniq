@@ -187,7 +187,8 @@
 .cw2-edit-hint { color: var(--n600); font-size: 12px; margin-top: -3px; }
 .cw2-table-wrap { width: 100%; overflow-x: auto; }
 .cw2-table { width: 100%; min-width: 900px; table-layout: fixed; }
-.cw2-table th { background: var(--g50); color: var(--n700); font-size: 11px; }
+.cw2-table th { background: #f8faf7; color: var(--n700); font-size: 11px; }
+.cw2-table th em { color: #b84032; font-style: normal; }
 .cw2-table th:nth-child(1) { width: 20%; }
 .cw2-table th:nth-child(2) { width: 14%; }
 .cw2-table th:nth-child(3), .cw2-table th:nth-child(4) { width: 17%; }
@@ -197,13 +198,19 @@
 .cw2-table td { padding: 6px 5px; }
 .cw2-activity-cell { display: flex; align-items: center; gap: 7px; }
 .cw2-activity-cell i { width: 9px; height: 9px; flex: none; border-radius: 3px; }
+.cw2-activity-icon { flex: none; width: 19px; display: grid; place-items: center; }
 .cw2-table input { min-width: 0; width: 100%; border: 1px solid var(--n300); border-radius: 6px; background: #fff; color: var(--n900); padding: 6px 7px; font: inherit; }
+.cw2-table .cw2-field { background-color: #fff; }
 .cw2-units { display: grid; grid-template-columns: 54px minmax(54px,1fr); gap: 4px; }
 .cw2-units input:first-child { text-align: right; }
 .cw2-money { display: inline-flex; align-items: center; justify-content: flex-end; gap: 3px; width: 100%; }
 .cw2-money input { width: 60px; text-align: right; font-weight: 700; }
 .cw2-delete { display: grid; place-items: center; border: 0; background: transparent; color: var(--n600); padding: 5px; border-radius: 5px; }
 .cw2-delete:hover { background: #fff0ec; color: #a8402c; }
+.cw2-row-actions { display: flex; align-items: center; justify-content: center; gap: 3px; }
+.cw2-row-actions button { display: grid; place-items: center; border: 0; background: transparent; color: var(--g700); padding: 4px; border-radius: 5px; cursor: pointer; }
+.cw2-row-actions button:hover { background: var(--g50); }
+.cw2-table th:nth-child(7) { width: 48px; }
 .cw2-table tfoot td { background: var(--g50); font-weight: 700; }
 .cw2-budget-panel { gap: 9px; }
 .cw2-budget-row { display: grid; grid-template-columns: minmax(95px,1.2fr) minmax(60px,1fr) 36px; gap: 8px; align-items: center; font-size: 12px; }
