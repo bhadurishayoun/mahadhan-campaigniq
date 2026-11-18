@@ -59,7 +59,7 @@
   --card: #ffffff;
   --radius: 10px;
   font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   font-variant-numeric: tabular-nums;
   color: var(--ink);
   background: var(--bg);
@@ -68,6 +68,7 @@
 * { box-sizing: border-box; }
 body { margin: 0; }
 body, body *:not(code):not(pre) { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif !important; }
+body *:not(svg):not(svg *) { font-size: max(12px, 1em) !important; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 h1, h2, h3, h4, p { margin: 0; }

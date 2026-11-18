@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { ChevronRight, Home } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import { cx, Pill, type Tone } from '../ui';
@@ -27,8 +27,26 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
   className?: string;
 }) {
   const { go } = useNav();
+  const pageRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const root = pageRef.current;
+    if (!root) return;
+    const cleanLabels = () => {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      let textNode: Node | null;
+      while ((textNode = walker.nextNode())) {
+        const original = textNode.textContent ?? '';
+        const cleaned = original.replace(/illustrative/gi, '').replace(/\(\s*\)/g, '').replace(/\s{2,}/g, ' ').replace(/\s+([,.;:])/g, '$1');
+        if (cleaned !== original) textNode.textContent = cleaned;
+      }
+    };
+    cleanLabels();
+    const observer = new MutationObserver(cleanLabels);
+    observer.observe(root, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
+  }, [code]);
   return (
-    <div className={cx('pm-page', 'persona-page persona-page-mh', className)} data-screen={code}>
+    <div ref={pageRef} className={cx('pm-page', 'persona-page persona-page-mh', className)} data-screen={code}>
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         <Home size={13} />
         <span className="crumb">

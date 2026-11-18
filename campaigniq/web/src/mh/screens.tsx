@@ -47,7 +47,7 @@ function Workspace(spec: Spec) {
         </aside>
       </div>
       {spec.code === 'MH.9' ? <div className="mh-portfolio-actions"><button onClick={()=>go('mh.8a')}>▤ &nbsp;View Regional Programme</button><button onClick={()=>go('mh.9b')}><Activity/>Investigate Drivers</button><button onClick={()=>go('mh.9c')}>⌖ &nbsp;View Territory Impact</button><button className="primary" onClick={()=>go('mh.ai1')}>✧ &nbsp;Ask Strategic Marketing Copilot</button></div> : spec.code === 'MH.9A' ? <div className="mh-portfolio-actions"><button onClick={()=>go('mh.9')}><ArrowLeft/>Back to Portfolio</button><button onClick={()=>go('mh.9b')}>▥ &nbsp;Investigate Performance Drivers</button><button onClick={()=>go('mh.9c')}>⌖ &nbsp;View Territory Impact</button><button onClick={()=>go('mh.8a')}>▤ &nbsp;View Approved Playbook</button></div> : spec.code === 'MH.9B' ? <div className="mh-portfolio-actions"><button onClick={()=>go('mh.9a')}>← &nbsp;Back to Regional Programme</button><button onClick={()=>go('mh.9c')}>⌖ &nbsp;View Territory Impact</button><button onClick={()=>go('mh.8a')}>▤ &nbsp;View Source Evidence</button><button className="primary" onClick={()=>go('mh.9d')}><TrendingUp/>Request Campaign Optimization Review</button></div> : null}
-      <div className="mh-next-footer"><button type="button" onClick={() => goBack(spec.code === 'MH.1' ? 'bh.1' : [...spec.crumbs].reverse().find((crumb) => crumb.to)?.to ?? 'mh.1')}><ArrowLeft size={14}/>Back</button></div>
+      {spec.code !== 'MH.1' && <div className="mh-next-footer"><button type="button" onClick={() => goBack([...spec.crumbs].reverse().find((crumb) => crumb.to)?.to ?? 'mh.1')}><ArrowLeft size={14}/>Back</button></div>}
     </MhPage>
   );
 }
