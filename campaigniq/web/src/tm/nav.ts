@@ -1,5 +1,5 @@
 /**
- * Territory Manager persona (CampaignIQ V2) - screen registry.
+ * Field Sales Manager persona (CampaignIQ V2) - screen registry.
  *
  * Based on the approved specs in `ui-mockups/V2-persona-mockup-specs.md` (TM.C1 from the rendered mockup in the
  * same ChatGPT conversation): My Plan TM.1-TM.5 -> My Campaigns TM.C1 + wizard CW.1-CW.4 -> Campaign Execution

@@ -1,9 +1,9 @@
 /**
- * Illustrative figures shared by the Product Manager screens. Everything here is concept data - no real
+ * Illustrative figures shared by the Zonal Manager screens. Everything here is concept data - no real
  * Mahadhan results. Keeping the numbers in one place keeps every screen internally consistent.
  */
 
-export const PM_ROLE = 'Crop Nutrition Product Manager';
+export const PM_ROLE = 'Crop Nutrition Zonal Manager';
 
 /* PM.1 - product portfolio ABP (₹ Cr) */
 export const PORTFOLIO = [
@@ -18,7 +18,7 @@ export const cr = (value: number) => `₹${value.toFixed(2)} Cr`;
 /* Ambad / Jalna territory submission (all-product figures) */
 export const AMBAD = {
   territory: 'Ambad, Jalna',
-  tm: 'Territory Manager — Jalna Cluster',
+  tm: 'Field Sales Manager — Jalna Cluster',
   abp: '₹4.20 Cr',
   submitted: '₹3.80 Cr',
   gap: '₹0.40 Cr',

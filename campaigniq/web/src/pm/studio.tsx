@@ -1,5 +1,5 @@
 /**
- * Product Manager - Campaign Planning: concepts (PM.5, 5A, 5B, 5C) and proposition / interventions (PM.6, 6A, 6B).
+ * Zonal Manager - Campaign Planning: concepts (PM.5, 5A, 5B, 5C) and proposition / interventions (PM.6, 6A, 6B).
  */
 import { useState } from 'react';
 import { FlaskConical, GitCompare, Layers, Plus, Sparkles, Workflow as WorkflowIcon } from 'lucide-react';
@@ -287,7 +287,7 @@ export function Pm6() {
             { text: 'Technical / content validation required before any claim is used.', tone: 'red' },
           ]} />
           <Box title="Role ownership" tone="soft">
-            <p className="small">The <b>Product Manager</b> defines the regional campaign proposition and interventions. The <b>Territory Manager</b> later plans specific village activities, owners, dates and local budgets after Marketing approval.</p>
+            <p className="small">The <b>Zonal Manager</b> defines the regional campaign proposition and interventions. The <b>Field Sales Manager</b> later plans specific village activities, owners, dates and local budgets after Marketing approval.</p>
           </Box>
         </div>
       </div>

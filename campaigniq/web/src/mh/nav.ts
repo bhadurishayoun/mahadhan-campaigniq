@@ -66,9 +66,9 @@ export const MH_SCREENS: MhMeta[] = [
   { id: 'mh.4a-i3', code: 'MH.4A-I3', title: 'Evidence Request Tracking & Validation', tab: 'studio', period: FY25_WEST },
   { id: 'mh.4a-i4', code: 'MH.4A-I4', title: 'Updated Farmer Conversion Investigation & Growth Barrier Diagnosis', tab: 'studio', period: FY25_WEST },
   { id: 'mh.4b', code: 'MH.4B', title: 'AI-Generated Campaign Recommendations', tab: 'studio', period: FY25_WEST },
-  { id: 'mh.5', code: 'MH.5', title: 'Strategic Campaign Theme Brief & Product Manager Assignment', tab: 'studio', period: FY25_WEST },
+  { id: 'mh.5', code: 'MH.5', title: 'Strategic Campaign Theme Brief & Zonal Manager Assignment', tab: 'studio', period: FY25_WEST },
   { id: 'mh.6', code: 'MH.6', title: 'Campaign Theme Assignment & Development Tracker', tab: 'studio', period: FY25_WEST },
-  { id: 'mh.7', code: 'MH.7', title: 'Product Manager Campaign Proposal Review & Comparison', tab: 'studio', period: FY25_WEST },
+  { id: 'mh.7', code: 'MH.7', title: 'Zonal Manager Campaign Proposal Review & Comparison', tab: 'studio', period: FY25_WEST },
   { id: 'mh.7a', code: 'MH.7A', title: 'Campaign Proposal & Business Case Review', tab: 'studio', period: FY25_WEST },
   { id: 'mh.7b', code: 'MH.7B', title: 'Campaign Proposal Comparison & Strategic Evaluation', tab: 'studio', period: FY25_WEST },
 

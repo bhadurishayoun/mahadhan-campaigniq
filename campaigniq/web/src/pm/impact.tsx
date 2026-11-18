@@ -1,5 +1,5 @@
 /**
- * Product Manager - Impact & Learning (PM.10, 10A, 10B, 10C, PM.11, 11A, 11B, 11C, 11D) and AI Copilot (PM.AI1).
+ * Zonal Manager - Impact & Learning (PM.10, 10A, 10B, 10C, PM.11, 11A, 11B, 11C, 11D) and AI Copilot (PM.AI1).
  */
 import { useState } from 'react';
 import { BarChart3, Lightbulb, Search, Sparkles, Table2 } from 'lucide-react';
@@ -133,7 +133,7 @@ export function Pm10b() {
   const [territory, setTerritory] = useState('Ambad / Jalna');
   const isAmbad = territory === 'Ambad / Jalna';
   return (
-    <Drawer title="Results by Territory" status="Product Manager Read-Only" back="pm.10a" subtitle={`${C1.name} · Croptek · Onion · Maharashtra`}
+    <Drawer title="Results by Territory" status="Zonal Manager Read-Only" back="pm.10a" subtitle={`${C1.name} · Croptek · Onion · Maharashtra`}
       footer={<>
         <Act message="Territory clarification requested from TM">Request Territory Clarification</Act>
         <Btn to="pm.10c">View Source Evidence</Btn>
@@ -153,7 +153,7 @@ export function Pm10b() {
       ) : (
         <Box tone="soft"><Status>Eligibility / Data Pending</Status><Muted>No recorded values for this territory yet.</Muted></Box>
       )}
-      <Box title="Drill down (read-only for Product Manager)">
+      <Box title="Drill down (read-only for Zonal Manager)">
         <div className="pm-stack" style={{ gap: 6 }}>
           <Act message="Territory Campaign Impact opened read-only">Open Territory Campaign Impact · reach, trials, adoption, linked sales</Act>
           <Act message="Territory Campaign Diagnostics opened read-only">Open Territory Campaign Diagnostics · conversion variation, exceptions, drivers</Act>
@@ -429,7 +429,7 @@ export function Pm11d() {
           <Box title="Next-Season Recommendation Package" tone="soft">
             <Facts rows={[
               ['Selected recommendations', `${picked.length} of ${LEARNINGS.length}`],
-              ['Validation owner roles', 'Territory Manager · Agronomy · Master Data · Finance'],
+              ['Validation owner roles', 'Field Sales Manager · Agronomy · Master Data · Finance'],
               ['Draft target planning period', <Input placeholder="Select season" />],
               ['Evidence-link coverage', <P>Partial</P>],
               ['MH review recipient', 'Marketing Head'],
@@ -456,7 +456,7 @@ export function Pm11d() {
 
 const QUESTIONS = ['Which intervention worked?', 'Where is growth lagging?', 'What should change next year?', 'Is the ₹12 L investment justified?'];
 
-/** Product Manager figures handed to the live LLM as grounding context. */
+/** Zonal Manager figures handed to the live LLM as grounding context. */
 const PM_FACTS = [
   `Persona: ${PM_ROLE}. All figures illustrative.`,
   `Portfolio ABP (Rs Cr): ${PORTFOLIO.map((p) => `${p.product} ${p.ly} last year -> ${p.abp}`).join('; ')}; total ${PORTFOLIO_TOTAL.ly} -> ${PORTFOLIO_TOTAL.abp}.`,
@@ -477,7 +477,7 @@ export function PmAi1() {
       code="PM.AI1"
       title="AI Copilot"
     >
-      <Source><b>Ask Product & Campaign Copilot</b>. Final Product Manager persona screen.</Source>
+      <Source><b>Ask Product & Campaign Copilot</b>. Final Zonal Manager persona screen.</Source>
       <div className="pm-chat">
         <div className="pm-chat-thread">
           <div className="pm-msg pm-msg-user">
@@ -496,8 +496,8 @@ export function PmAi1() {
               <p><b>What to change next season</b> depends on closing those gaps first; see the actions on the right.</p>
             </div>
           </div>
-          <LiveCopilot persona="Crop Nutrition Product Manager" screen="pm.ai1" pageContext={PM_FACTS} suggestions={QUESTIONS}
-            intro="Ask a follow-up about the portfolio, campaign concepts, business case or interim results. The live model answers from the Product Manager figures in this tool." />
+          <LiveCopilot persona="Crop Nutrition Zonal Manager" screen="pm.ai1" pageContext={PM_FACTS} suggestions={QUESTIONS}
+            intro="Ask a follow-up about the portfolio, campaign concepts, business case or interim results. The live model answers from the Zonal Manager figures in this tool." />
         </div>
         <div className="pm-stack">
           <Box title="Context" tone="soft">

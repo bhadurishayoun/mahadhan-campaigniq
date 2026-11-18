@@ -1,5 +1,5 @@
 /**
- * Product Manager - Business case, scenarios, reconciliation and submission (PM.8, 8A, 8B, 8C, 8D, 8E, 8F).
+ * Zonal Manager - Business case, scenarios, reconciliation and submission (PM.8, 8A, 8B, 8C, 8D, 8E, 8F).
  */
 import { useState } from 'react';
 import { Calculator, GitCompare, RotateCcw, Send, SlidersHorizontal } from 'lucide-react';
@@ -91,7 +91,7 @@ export function Pm8a() {
       title="Campaign Proposal Consolidation, Review & Submission to Marketing Head"
       status="Pre-Submission Draft"
     >
-      <Source>Business Case after collateral preparation. Owner: Crop Nutrition Product Manager · intended reviewer: Marketing Head.</Source>
+      <Source>Business Case after collateral preparation. Owner: Crop Nutrition Zonal Manager · intended reviewer: Marketing Head.</Source>
       <div className="pm-two">
         <div className="pm-stack">
           <Box title="Campaign Proposal Portfolio">
@@ -133,7 +133,7 @@ export function Pm8a() {
             </div>
             <Field label="Review comments"><Input rows={3} placeholder="Comments for submission…" /></Field>
           </Box>
-          <Workflow title="Routing" compact steps={[{ label: 'Product Manager Submission', state: 'active' }, { label: 'Comparison' }, { label: 'Business Case Review' }, { label: 'Approval' }]} />
+          <Workflow title="Routing" compact steps={[{ label: 'Zonal Manager Submission', state: 'active' }, { label: 'Comparison' }, { label: 'Business Case Review' }, { label: 'Approval' }]} />
         </div>
       </div>
       <Actions
@@ -339,7 +339,7 @@ export function Pm8d() {
 
 export function Pm8e() {
   return (
-    <Modal title="Review & Submit Campaign Proposals" status="Pre-Submission / Not Sent" width="72%" back="pm.8a" subtitle={`${THEME.name} · Maharashtra Onion · submitted by Crop Nutrition Product Manager · reviewer Marketing Head`}
+    <Modal title="Review & Submit Campaign Proposals" status="Pre-Submission / Not Sent" width="72%" back="pm.8a" subtitle={`${THEME.name} · Maharashtra Onion · submitted by Crop Nutrition Zonal Manager · reviewer Marketing Head`}
       footer={<>
         <Btn to="pm.8a">Back to Submit Proposal</Btn>
         <Act message="Missing checks listed in validation readiness">View Missing Checks</Act>
@@ -371,7 +371,7 @@ export function Pm8e() {
           <Muted>None of these are approved.</Muted>
         </Box>
       </div>
-      <Workflow title="Marketing review routing" compact steps={[{ label: 'Product Manager Draft', state: 'active' }, { label: 'Submitted' }, { label: 'Comparison' }, { label: 'Business Case Review' }, { label: 'Approval / Return for Changes' }]} />
+      <Workflow title="Marketing review routing" compact steps={[{ label: 'Zonal Manager Draft', state: 'active' }, { label: 'Submitted' }, { label: 'Comparison' }, { label: 'Business Case Review' }, { label: 'Approval / Return for Changes' }]} />
       <Muted>After valid submission. If MH requests changes Revision & Resubmission. Submission is not marketing approval or campaign release.</Muted>
     </Modal>
   );
@@ -412,7 +412,7 @@ export function Pm8f() {
         </Box>
         <div className="pm-stack">
           <Box title="Marketing Head review notes" tone="soft">
-            <Facts rows={[['Selected comment', RETURNED[selected].comment], ['Source', 'Proposal & Business Case / Approvals & Rollout'], ['Priority', 'High'], ['Assigned to', 'Crop Nutrition Product Manager']]} />
+            <Facts rows={[['Selected comment', RETURNED[selected].comment], ['Source', 'Proposal & Business Case / Approvals & Rollout'], ['Priority', 'High'], ['Assigned to', 'Crop Nutrition Zonal Manager']]} />
             <Field label="Response"><Input rows={3} placeholder="Draft response to the comment…" /></Field>
           </Box>
           <Sources items={[{ label: 'Proposition', to: 'pm.6' }, { label: 'Collateral Approval', to: 'pm.7d' }, { label: 'Calculation Logic', to: 'pm.8b' }, { label: 'Scenarios', to: 'pm.8c' }, { label: 'Audience Reconciliation', to: 'pm.8d' }, { label: 'MH review source' }]} />
@@ -467,7 +467,7 @@ export function PmOpt1() {
           <Box title="Review assignment">
             <Facts rows={[
               ['Request owner', 'Marketing Head · West Region'],
-              ['Responsible PM', 'Crop Nutrition Product Manager'],
+              ['Responsible PM', 'Crop Nutrition Zonal Manager'],
               ['Request status', status],
               ['Source links', 'diagnostics request approved playbook'],
             ]} />

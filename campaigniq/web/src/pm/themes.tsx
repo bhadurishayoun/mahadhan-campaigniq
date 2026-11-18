@@ -1,5 +1,5 @@
 /**
- * Product Manager - Assigned Marketing Themes (PM.4, PM.4A, PM.4B, PM.4C).
+ * Zonal Manager - Assigned Marketing Themes (PM.4, PM.4A, PM.4B, PM.4C).
  */
 import { useState } from 'react';
 import { Inbox, ListChecks, MessageSquare } from 'lucide-react';
@@ -47,7 +47,7 @@ export function Pm4() {
             ['Matched trial-to-purchase evidence', <>{EVIDENCE.trialToPurchase} ({EVIDENCE.purchases} / {EVIDENCE.trials}) <Status>Illustrative</Status> — not proof of poor conversion without a benchmark</>],
           ]} />
         </Box>
-        <Box title="Product Manager deliverables" icon={<ListChecks size={15} />}>
+        <Box title="Zonal Manager deliverables" icon={<ListChecks size={15} />}>
           <ol className="pm-list">
             {DELIVERABLES.map((item) => <li key={item}>{item}</li>)}
           </ol>

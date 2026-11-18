@@ -25,8 +25,8 @@ All data in the tool is illustrative (mockup figures and a synthetic data workbo
 | `render.yaml` | One-click setup of the backend on Render's free tier |
 | `*.docx`, `*.pptx`, `*.md`, `ui-mockups/` | Product briefs, analysis and UI mockups (`ui-mockups/V2-persona-mockup-specs.md` holds the V2 persona-wise screen specs) |
 
-**Personas (V2):** the avatar menu at the top-right switches among the dedicated Business Head, Product Manager
-(PM.1 – PM.AI1, 48 screens), Territory Manager (17 screens: My Plan, My Campaigns with the campaign wizard, review &
+**Personas (V2):** the avatar menu at the top-right switches among the dedicated Business Head, Zonal Manager
+(PM.1 – PM.AI1, 48 screens), Field Sales Manager (17 screens: My Plan, My Campaigns with the campaign wizard, review &
 approval and campaign portfolio, Execution, Impact, AI Copilot) and Marketing Head workspaces.
 
 **AI Copilot:** every copilot (AI.1 and the TM / PM / MH / BH copilots) answers live with a free, keyless LLM - no API
@@ -37,7 +37,7 @@ wait. See [section 5.5](campaigniq/README.md#55-connect-the-ai-copilot-to-an-llm
 selected; the avatar menu then switches personas without signing in again. The per-persona IDs (SH001, PM001,
 TM001, MH001) still work and stay limited to their own persona. These are demo credentials kept in the front end,
 not real security. The legacy module screens remain
-available through their existing routes; see `campaigniq/docs/product-manager-persona.md` for the PM build notes.
+available through their existing routes; see `campaigniq/docs/zonal manager-persona.md` for the PM build notes.
 
 ## How it is hosted
 

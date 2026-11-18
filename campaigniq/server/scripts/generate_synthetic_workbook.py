@@ -374,7 +374,7 @@ for d in DISTRICTS:
         T["field_staff"].append(dict(id=staff_id, name=person(lang), role="Regional Manager", zone=f"{zone} Zone", region=d[3],
                                      territory=None, district=None, mu_id=None, phone=f"+9100001{staff_id:05d}"))
     staff_id += 1
-    tm = dict(id=staff_id, name=person(lang), role="Territory Manager", zone=f"{zone} Zone", region=d[3], territory=d[1],
+    tm = dict(id=staff_id, name=person(lang), role="Field Sales Manager", zone=f"{zone} Zone", region=d[3], territory=d[1],
               district=d[1], mu_id=None, phone=f"+9100001{staff_id:05d}")
     T["field_staff"].append(tm)
     staff_by_district[d[0]].append(tm)
@@ -1143,7 +1143,7 @@ INFO_FONT = Font(name="Arial", bold=True, color="1F5E3B", size=10)
 TABLE_DOCS = {
     "geo_unit": "Geography tree: state -> district -> marketing unit (MU).",
     "mu": "Marketing units (~10-14 villages, the planning unit). taluka, lat/lng and mdo_user_id are new attributes.",
-    "field_staff": "Field force hierarchy: Zonal Manager -> Regional Manager -> Territory Manager -> MDO (one per MU).",
+    "field_staff": "Field force hierarchy: Zonal Manager -> Regional Manager -> Field Sales Manager -> MDO (one per MU).",
     "crop": "Crop master with the agronomic anchor event (sowing / transplanting / planting / pruning).",
     "crop_stage": "Crop stage windows in days from the anchor date.",
     "season": "Seasons. filter_id links to the web filter bar (masters.json).",

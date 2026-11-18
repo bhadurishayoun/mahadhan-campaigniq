@@ -54,7 +54,7 @@ export function LoginPage({ onLogin, initialPersona }: { onLogin: (payload: Logi
             </div>
           </div>
           <h2>Build. Approve. Execute. Learn.</h2>
-          <p>Planning and execution workspaces for Business Head, Marketing Head, Product Manager and Territory Manager.</p>
+          <p>Planning and execution workspaces for Business Head, Marketing Head, Zonal Manager and Field Sales Manager.</p>
           <div className="login-hero-points">
             <span><ShieldCheck size={14} /> Secure persona-based access</span>
             <span><ShieldCheck size={14} /> Map-rich planning intelligence</span>

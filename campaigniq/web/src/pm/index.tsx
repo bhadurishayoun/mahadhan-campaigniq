@@ -1,5 +1,5 @@
 /**
- * Product Manager persona: screen registry and the shell that renders overlays (drawers / modals) over their
+ * Zonal Manager persona: screen registry and the shell that renders overlays (drawers / modals) over their
  * dimmed parent screen.
  */
 import type { ComponentType } from 'react';
@@ -32,7 +32,7 @@ const REGISTRY: Record<PmScreenId, ComponentType> = {
   'pm.ai1': PmAi1,
 };
 
-/** Renders the current Product Manager screen. Overlay screens show their parent dimmed behind them. */
+/** Renders the current Zonal Manager screen. Overlay screens show their parent dimmed behind them. */
 export function PmScreen() {
   const { screen } = useNav();
   if (!isPmScreen(screen)) return null;

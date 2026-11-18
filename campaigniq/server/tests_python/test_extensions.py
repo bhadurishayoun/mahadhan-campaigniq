@@ -172,7 +172,7 @@ class ExtensionPointTests(unittest.TestCase):
 
         with patch.dict(providers.PROVIDERS, {"chatfake": ChatProvider}), patch.dict(os.environ, {"COPILOT_PROVIDER": "chatfake"}):
             response = self.client.post("/api/copilot/chat", json={
-                "question": "Why is Dhanora lower?", "persona": "Territory Manager", "screen": "tm.ai1",
+                "question": "Why is Dhanora lower?", "persona": "Field Sales Manager", "screen": "tm.ai1",
                 "page_context": "Dhanora 62 trials, 24 adopters (38.7%)",
             })
         self.assertEqual(response.status_code, 200)
@@ -180,7 +180,7 @@ class ExtensionPointTests(unittest.TestCase):
         self.assertEqual(body["mode"], "llm")
         self.assertIn("Dhanora", body["answer"])
         system = FakeProvider.messages[0]["content"]
-        self.assertIn("Territory Manager", system)
+        self.assertIn("Field Sales Manager", system)
         payload = json.loads(FakeProvider.messages[-1]["content"])
         self.assertEqual(payload["context"]["page"], "Dhanora 62 trials, 24 adopters (38.7%)")
         self.assertIn("backend_kpis", payload["context"])

@@ -223,7 +223,7 @@ export default function App() {
 
   const pmSidebar = pm && (
     <nav className="side-nav">
-      <div className="pm-side-persona">Product Manager</div>
+      <div className="pm-side-persona">Zonal Manager</div>
       {PM_TABS.map((tab) => {
         const Icon = PM_TAB_ICONS[tab.id];
         return (
@@ -240,7 +240,7 @@ export default function App() {
 
   const tmSidebar = tm && (
     <nav className="side-nav">
-      <div className="pm-side-persona">Territory Manager</div>
+      <div className="pm-side-persona">Field Sales Manager</div>
       {TM_TABS.map((tab) => {
         const Icon = TM_TAB_ICONS[tab.id];
         return (
@@ -343,13 +343,13 @@ export default function App() {
 
             {pm ? (
               <div className="pm-topctx">
-                <span><b>Product Manager</b></span>
+                <span><b>Zonal Manager</b></span>
                 <span>{pm.period}</span>
                 <span>Crop Nutrition Portfolio</span>
               </div>
             ) : tm ? (
               <div className="pm-topctx">
-                <span><b>Territory Manager</b></span>
+                <span><b>Field Sales Manager</b></span>
                 <span>{tm.period}</span>
                 <span>Territory workspace</span>
               </div>

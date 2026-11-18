@@ -940,7 +940,7 @@ const PRIORITY_VILLAGES: PriorityRow[] = [
 
 const PLAYBOOK = [
   { id: 'price', icon: <Target size={16} />, text: 'Counter price barrier with yield-proof messaging and simple economics during retailer meetings.', cta: 'Create Action', detail: 'Show ₹/acre economics: +11% bulb yield vs. 24:24:0 on 3 Ambad demo plots; cost difference recovered at 0.4 q/acre.' },
-  { id: 'retail', icon: <Users size={16} />, text: 'Prioritize 18 high-influence retailers in Wadigaon, Dhanora and Ambad HQ for conversion push.', cta: 'Assign', detail: 'Assign to Territory Manager — Ambad; 18 retailers cover ~62% of conventional NPK sales in the taluka.' },
+  { id: 'retail', icon: <Users size={16} />, text: 'Prioritize 18 high-influence retailers in Wadigaon, Dhanora and Ambad HQ for conversion push.', cta: 'Assign', detail: 'Assign to Field Sales Manager — Ambad; 18 retailers cover ~62% of conventional NPK sales in the taluka.' },
   { id: 'stock', icon: <Package size={16} />, text: 'Improve Croptek availability in 4 low-coverage pockets before demo burst.', cta: 'Create Action', detail: 'Pockets: Tandulwadi, Pimpalgaon and 2 outer villages — 28 stock-outs recorded last season.' },
   { id: 'whatsapp', icon: <MessageCircle size={16} />, text: 'Use trial-user follow-up plus WhatsApp advisory to accelerate repeat adoption.', cta: 'Create Action', detail: '771 trial users; stage-wise advisory at bulb initiation and bulb development triggers.' },
 ];
@@ -954,7 +954,7 @@ export function CompetitionChannel() {
   const actOn = (id: string, cta: string) => {
     if (done.includes(id)) return;
     setDone((current) => [...current, id]);
-    toast(cta === 'Assign' ? 'Assigned to Territory Manager — Ambad' : 'Action created and added to the conversion plan');
+    toast(cta === 'Assign' ? 'Assigned to Field Sales Manager — Ambad' : 'Action created and added to the conversion plan');
   };
 
   return (
@@ -1147,7 +1147,7 @@ const STRATEGIES = [
     id: 1, title: 'Retailer-Led Croptek Conversion', priority: 'High Priority', tone: 'amber' as Tone, icon: <Store size={18} />,
     target: 'Conventional NPK users (1,832 farmers)',
     interventions: 'Retailer training, village meetings, price-value education, targeted demos',
-    detail: 'Owner: Territory Manager Ambad · 18 high-influence retailers · Budget share ~45% · Expected 620 adopters.',
+    detail: 'Owner: Field Sales Manager Ambad · 18 high-influence retailers · Budget share ~45% · Expected 620 adopters.',
   },
   {
     id: 2, title: 'Demonstration-Led Acquisition', priority: 'High Priority', tone: 'amber' as Tone, icon: <Sprout size={18} />,

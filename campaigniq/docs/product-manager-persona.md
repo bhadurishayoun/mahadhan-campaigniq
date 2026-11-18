@@ -1,7 +1,7 @@
-# Product Manager persona (CampaignIQ V2)
+# Zonal Manager persona (CampaignIQ V2)
 
 The app now has a **persona layer**. The original module view (Business Overview, Market Opportunities, ... ) is the
-*Strategy Head* persona; the *Product Manager* persona is the first of the V2 persona-wise journeys. Switch personas from
+*Strategy Head* persona; the *Zonal Manager* persona is the first of the V2 persona-wise journeys. Switch personas from
 the avatar menu at the top-right. Every screen has its own hash route (for example `#/pm.3b`), so any state can be linked
 directly or found with the top-bar search.
 

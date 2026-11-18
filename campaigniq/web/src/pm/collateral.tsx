@@ -1,5 +1,5 @@
 /**
- * Product Manager - Campaign Collateral (PM.7, 7A, 7B, 7C, 7D, 7E).
+ * Zonal Manager - Campaign Collateral (PM.7, 7A, 7B, 7C, 7D, 7E).
  */
 import { useState } from 'react';
 import { Eye, Image as ImageIcon, Languages, LayoutTemplate, Palette, RefreshCw, Sparkles, Wand2 } from 'lucide-react';
@@ -356,7 +356,7 @@ export function Pm7e() {
               { label: 'Authorized asset version validation', status: 'Pending' },
               { label: 'Campaign approval', status: 'Pending' },
               { label: 'Recommendation publication', status: 'Pending' },
-              { label: 'Eligible Territory Manager recipient mapping', status: 'Pending' },
+              { label: 'Eligible Field Sales Manager recipient mapping', status: 'Pending' },
               { label: 'Language / rights checks', status: 'Pending' },
             ]} />
           </Box>
@@ -366,7 +366,7 @@ export function Pm7e() {
       </div>
       <Actions
         left={<><Btn to="pm.7d">← Back to Collateral Approvals</Btn><Act message="Authorized version preview (registry match pending)">Preview Authorized Version</Act><Btn to="pm.7d">View Approval Records</Btn><Act message="Playbook draft saved">Save Playbook Draft</Act></>}
-        right={<><Btn to="pm.8b">Financial Assumptions</Btn><Cta locked="Disabled until all required approvals and recipient checks pass">Publish Approved Assets to Eligible Territory Managers</Cta></>}
+        right={<><Btn to="pm.8b">Financial Assumptions</Btn><Cta locked="Disabled until all required approvals and recipient checks pass">Publish Approved Assets to Eligible Field Sales Managers</Cta></>}
       />
     </PmPage>
   );

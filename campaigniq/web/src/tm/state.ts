@@ -1,12 +1,12 @@
 /**
- * Showcase state shared by the Territory Manager campaign screens: CW.4 submission -> TM.C2 approvals -> TM.C3 portfolio.
+ * Showcase state shared by the Field Sales Manager campaign screens: CW.4 submission -> TM.C2 approvals -> TM.C3 portfolio.
  * Kept in memory for the session only (a page reload starts the journey again).
  */
 import { useSyncExternalStore } from 'react';
 
 export const APPROVAL_STEPS = [
-  { role: 'Territory Manager', action: 'Submits campaign', who: 'You', sla: 'Day 0' },
-  { role: 'Product / content review', action: 'Advisory & claims check', who: 'Product Manager — Crop Nutrition', sla: '2 working days' },
+  { role: 'Field Sales Manager', action: 'Submits campaign', who: 'You', sla: 'Day 0' },
+  { role: 'Product / content review', action: 'Advisory & claims check', who: 'Zonal Manager — Crop Nutrition', sla: '2 working days' },
   { role: 'Marketing Head', action: 'Campaign approval', who: 'Marketing Head — West Region', sla: '3 working days' },
   { role: 'Business Head', action: 'Threshold escalation', who: 'Only above ₹5 L budget — not required', sla: 'n/a' },
 ];

@@ -4,7 +4,7 @@ CampaignIQ is a crop-nutrition campaign-management tool for Mahadhan (Deepak Nex
 
 The tool has two layers:
 
-* **Version 2 persona workspaces** (the main experience): Business Head, Marketing Head, Product Manager and Territory Manager, built from the approved mockup specs in `ui-mockups/V2-persona-mockup-specs.md`.
+* **Version 2 persona workspaces** (the main experience): Business Head, Marketing Head, Zonal Manager and Field Sales Manager, built from the approved mockup specs in `ui-mockups/V2-persona-mockup-specs.md`.
 * **Version 1 module screens** (S1–S7, AI.1) from the 28 mockups in `ui-mockups/Sayak's Mockups/`, plus the Prototype Showcase (P.1–P.3) that drives the live planning engine.
 
 All data is **illustrative**: the backend is filled from a synthetic data workbook and the persona screens use mockup figures. Nothing is Mahadhan's actual data. The code has placeholders so that more states, districts and products can be added by editing JSON, real data can replace the synthetic rows sheet by sheet, and a paid or self-hosted LLM can replace the free one by changing settings.
@@ -47,7 +47,7 @@ All data is **illustrative**: the backend is filled from a synthetic data workbo
 | `93585cc` | README / DEPLOYMENT rewritten as a handover guide (this section) |
 | `a825e30` | Website connected to the Render backend by default |
 | `6694bbb` | Live AI Copilot on free keyless LLMs (backend `/api/copilot/chat` + browser fallback) for AI.1 and the TM / PM / MH / BH copilots |
-| `24d2330` | Master showcase login; Territory Manager rebuilt to mirror the V2 mockups, with maps, campaign visuals, Approval Status and Campaign Portfolio screens |
+| `24d2330` | Master showcase login; Field Sales Manager rebuilt to mirror the V2 mockups, with maps, campaign visuals, Approval Status and Campaign Portfolio screens |
 | `d6c55d8` | Synthetic data workbook and loader; backend seeds itself from it |
 
 Full history: `git log --oneline`.
@@ -64,8 +64,8 @@ Full history: `git log --oneline`.
 
 | Area | Status | Where |
 |---|---|---|
-| Territory Manager persona | **17 screens mirroring the approved mockups**: My Plan TM.1–TM.5, My Campaigns TM.C1 → wizard CW.1–CW.4 → TM.C2 Review & Approval → TM.C3 Campaign Portfolio, Execution TM.EX1–EX2, Impact TM.IM1–IM2, AI Copilot TM.AI1. Jalna/Ambad maps, donuts, approval pipeline, editable plans that recalculate. | `web/src/tm/` (`plan.tsx`, `campaigns.tsx`, `execution.tsx`, figures in `data.ts`, visuals in `viz.tsx`, session state in `state.ts`) |
-| Product Manager persona | 48 screens (PM.1 – PM.AI1) | `web/src/pm/`, notes in `docs/product-manager-persona.md` |
+| Field Sales Manager persona | **17 screens mirroring the approved mockups**: My Plan TM.1–TM.5, My Campaigns TM.C1 → wizard CW.1–CW.4 → TM.C2 Review & Approval → TM.C3 Campaign Portfolio, Execution TM.EX1–EX2, Impact TM.IM1–IM2, AI Copilot TM.AI1. Jalna/Ambad maps, donuts, approval pipeline, editable plans that recalculate. | `web/src/tm/` (`plan.tsx`, `campaigns.tsx`, `execution.tsx`, figures in `data.ts`, visuals in `viz.tsx`, session state in `state.ts`) |
+| Zonal Manager persona | 48 screens (PM.1 – PM.AI1) | `web/src/pm/`, notes in `docs/zonal manager-persona.md` |
 | Marketing Head, Business Head personas | Workspaces exist; **not yet checked screen-by-screen against the mockups** (MH uses a generic workspace template) | `web/src/mh/`, `web/src/bh/` |
 | Master login | One login for all personas, persona switching without re-login | `web/src/personaAuth.ts`, `login.tsx`, `App.tsx` |
 | Synthetic data | Excel workbook (20 districts, 95 marketing units, 3 seasons, plans, field events, farmers, call-backs, sales, 12 screen datasets) loaded into the backend automatically | `server/scripts/generate_synthetic_workbook.py` → `server/data/seed/mahadhan_synthetic_data.xlsx` → `server/campaign_api/workbook.py` (see [5.3](#53-replace-demo-data-with-real-data)) |
@@ -221,7 +221,7 @@ campaigniq/
 ├── .env.example              all settings (copy to server/.env)
 ├── docs/
 │   ├── screen-inventory.md   every screen, its route and source mockup photo
-│   ├── product-manager-persona.md  V2 persona layer + the 48 Product Manager screens (routes, overlays, conventions)
+│   ├── zonal manager-persona.md  V2 persona layer + the 48 Zonal Manager screens (routes, overlays, conventions)
 │   ├── screen-api-map.md     which API serves which screen
 │   ├── engine.md             planning-engine equations + worked example
 │   └── gaps.md               open data/product questions
@@ -269,8 +269,8 @@ campaigniq/
         ├── map/              IndiaDistrictMap (districts, Jalna talukas, verified places in places.json)
         ├── bh/               Business Head persona (V2)
         ├── mh/               Marketing Head persona (V2)
-        ├── pm/               Product Manager persona (V2): 48 screens PM.1 – PM.AI1, see docs/product-manager-persona.md
-        ├── tm/               Territory Manager persona (V2): 17 screens, see section 0
+        ├── pm/               Zonal Manager persona (V2): 48 screens PM.1 – PM.AI1, see docs/zonal manager-persona.md
+        ├── tm/               Field Sales Manager persona (V2): 17 screens, see section 0
         └── screens/
             ├── prototype.tsx/.css  P.1–P.3 Prototype Showcase (overview, live planner, live execution)
             ├── s1.tsx/.css   S1.1–S1.5 Business Overview

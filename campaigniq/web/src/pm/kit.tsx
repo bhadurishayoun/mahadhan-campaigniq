@@ -43,7 +43,7 @@ export function PmPage({ crumbs, code, title, status, subtitle, actions, childre
     <div className={cx('pm-page', 'persona-page persona-page-pm', className)}>
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         <Home size={13} />
-        <span className="crumb"><ChevronRight size={12} /><button type="button" onClick={() => go('pm.1')}>Product Manager</button></span>
+        <span className="crumb"><ChevronRight size={12} /><button type="button" onClick={() => go('pm.1')}>Zonal Manager</button></span>
         {crumbs.map((item, index) => (
           <span key={item.label} className={cx('crumb', index === crumbs.length - 1 && 'crumb-current')}>
             <ChevronRight size={12} />
@@ -61,7 +61,7 @@ export function PmPage({ crumbs, code, title, status, subtitle, actions, childre
         </div>
         {actions && <div className="page-actions">{actions}</div>}
       </div>
-      <PulseStrip title="Status at a glance" ariaLabel="Product Manager visual summary" items={pulse ?? PM_PULSE_BY_CODE[code] ?? PM_PULSE} />
+      <PulseStrip title="Status at a glance" ariaLabel="Zonal Manager visual summary" items={pulse ?? PM_PULSE_BY_CODE[code] ?? PM_PULSE} />
       {PM_CHARTS[code]}
       {children}
     </div>

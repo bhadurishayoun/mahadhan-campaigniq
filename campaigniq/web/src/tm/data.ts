@@ -1,5 +1,5 @@
 /**
- * Illustrative figures for the Territory Manager journey (Ambad, Jalna Cluster, FY 2025-26).
+ * Illustrative figures for the Field Sales Manager journey (Ambad, Jalna Cluster, FY 2025-26).
  * Every number comes from the approved V2 mockup specs and is kept in one place so all 15 screens reconcile:
  *   territories 8.0 -> 10.0 Cr | dealers 320 L -> 380 L of ABP 420 L | onion villages 165 L
  *   approved plan v3: Onion 190 L + Maize 125 L + Other 105 L = 420 L | campaign 13 activities, Rs 3.00 L

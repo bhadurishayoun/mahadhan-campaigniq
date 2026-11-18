@@ -1,4 +1,4 @@
-/** Territory Manager - Campaign Execution (TM.EX1-EX2), Impact & Learning (TM.IM1-IM2) and AI Copilot (TM.AI1). */
+/** Field Sales Manager - Campaign Execution (TM.EX1-EX2), Impact & Learning (TM.IM1-IM2) and AI Copilot (TM.AI1). */
 import { useState } from 'react';
 import { AlertTriangle, Bot, Camera, CheckCircle2, Clock, FileText, ShieldAlert, Upload, UserRound } from 'lucide-react';
 import { useNav } from '../nav';
@@ -336,9 +336,9 @@ export function TmIm2() {
 }
 
 /* ------------------------------------------------------------------ TM.AI1 */
-/** Everything the Territory Manager screens show, handed to the live LLM as grounding context. */
+/** Everything the Field Sales Manager screens show, handed to the live LLM as grounding context. */
 const TM_FACTS = [
-  'Persona: Territory Manager, Jalna Cluster, FY 2025-26. All figures illustrative.',
+  'Persona: Field Sales Manager, Jalna Cluster, FY 2025-26. All figures illustrative.',
   'Territories: Ambad Rs 3.2 Cr last year -> Rs 4.2 Cr ABP (+31.3%), Ghansawangi 2.8 -> 3.4 (+21.4%), Badnapur 2.0 -> 2.4 (+20%); cluster 8.0 -> 10.0 Cr (+25%).',
   'Last year: incentive achievement 92%, campaign ROI 1.6x, 3-year target attainment 94%.',
   'Ambad network: 8 dealers, 74 retailers. Dhanora 1 dealer/12 retailers (Sai Krushi Bhandar unmapped, Kisan Seva Kendra inactive); Wadi Gaon 1/14; Ambad HQ 3/22; Pimpalgaon 1/10; other villages 2/16.',
@@ -389,8 +389,8 @@ export function TmAi1() {
               </div>
             </div>
           </div>
-          <LiveCopilot persona="Territory Manager" screen="tm.ai1" pageContext={TM_FACTS} suggestions={TM_SUGGESTIONS}
-            intro="Ask a follow-up about your plan, campaigns, execution or impact. The live model answers from the Territory Manager figures in this tool." />
+          <LiveCopilot persona="Field Sales Manager" screen="tm.ai1" pageContext={TM_FACTS} suggestions={TM_SUGGESTIONS}
+            intro="Ask a follow-up about your plan, campaigns, execution or impact. The live model answers from the Field Sales Manager figures in this tool." />
         </section>
         <aside className="tm-copilot-right">
           <Panel title="Context">
@@ -414,7 +414,7 @@ export function TmAi1() {
           </Panel>
         </aside>
       </div>
-      <Footer back={{ label: 'Back to Diagnostics', to: 'tm.im2' }} source="Campaign records TM.1–TM.IM2 (illustrative) · live LLM" next="Final Territory Manager screen — switch persona to continue the journey"
+      <Footer back={{ label: 'Back to Diagnostics', to: 'tm.im2' }} source="Campaign records TM.1–TM.IM2 (illustrative) · live LLM" next="Final Field Sales Manager screen — switch persona to continue the journey"
         primary={{ label: 'Create Corrective Action', to: 'tm.ex2' }} />
     </TmPage>
   );

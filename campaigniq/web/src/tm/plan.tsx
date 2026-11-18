@@ -1,4 +1,4 @@
-/** Territory Manager - My Plan: TM.1 Performance & ABP -> TM.2 Network -> TM.3 Outlet plan -> TM.4 Crop plan -> TM.5 Review. */
+/** Field Sales Manager - My Plan: TM.1 Performance & ABP -> TM.2 Network -> TM.3 Outlet plan -> TM.4 Crop plan -> TM.5 Review. */
 import { Fragment, useMemo, useState } from 'react';
 import { AlertTriangle, ChevronDown, ChevronRight, Download, FileSpreadsheet, RefreshCw, Save, Upload } from 'lucide-react';
 import { useNav } from '../nav';
@@ -432,8 +432,8 @@ export function Tm5() {
       </div>
       <Panel title="Leadership approval workflow">
         <ApprovalPipeline current={-1} steps={[
-          { role: 'Territory Manager', action: 'Plan submission', who: 'You' },
-          { role: 'Product Manager', action: 'Crop & product review', who: 'Crop Nutrition PM' },
+          { role: 'Field Sales Manager', action: 'Plan submission', who: 'You' },
+          { role: 'Zonal Manager', action: 'Crop & product review', who: 'Crop Nutrition PM' },
           { role: 'Marketing Head', action: 'Regional review', who: 'West Region' },
           { role: 'Business Head', action: 'Final approval', who: 'National' },
         ]} />

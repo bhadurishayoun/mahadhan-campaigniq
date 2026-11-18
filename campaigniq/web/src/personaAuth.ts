@@ -18,14 +18,14 @@ export const PERSONA_CREDENTIALS: PersonaCredential[] = [
   },
   {
     persona: 'pm',
-    designation: 'Product Manager',
+    designation: 'Zonal Manager',
     userId: 'PM001',
     password: 'Product@123',
     note: 'Campaign recommendations and proposal owner',
   },
   {
     persona: 'tm',
-    designation: 'Territory Manager',
+    designation: 'Field Sales Manager',
     userId: 'TM001',
     password: 'Territory@123',
     note: 'Territory planning and execution owner',
@@ -42,7 +42,7 @@ export const PERSONA_CREDENTIALS: PersonaCredential[] = [
 /**
  * Master (showcase) login: one ID and password that opens every persona. It works with any persona selected on
  * the sign-in page, and after sign-in the avatar menu switches personas without signing out, so the full user
- * journey (Business Head -> Marketing Head -> Product Manager -> Territory Manager) can be shown in one session.
+ * journey (Business Head -> Marketing Head -> Zonal Manager -> Field Sales Manager) can be shown in one session.
  * Demo-grade only: credentials live in the front end, like the persona credentials above.
  */
 export const MASTER_CREDENTIAL = {

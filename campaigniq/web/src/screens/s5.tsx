@@ -1057,7 +1057,7 @@ export function SupplyRiskPlanner() {
             rows={[
               { a: 'Request Dispatch (48 MT)', o: 'Supply Chain', t: "By 10 Jan '27", s: confirmed ? 'Approved' : 'Pending' },
               { a: 'Transfer Stock (48 MT)', o: 'Regional Sales', t: "By 08 Jan '27", s: confirmed ? 'Approved' : 'In Progress' },
-              { a: 'Monitor Retail Coverage', o: 'Territory Manager', t: 'Ongoing', s: confirmed ? 'In Progress' : 'Not Started' },
+              { a: 'Monitor Retail Coverage', o: 'Field Sales Manager', t: 'Ongoing', s: confirmed ? 'In Progress' : 'Not Started' },
             ]}
           />
         </Panel>

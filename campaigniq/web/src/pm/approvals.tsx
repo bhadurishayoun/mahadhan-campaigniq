@@ -1,5 +1,5 @@
 /**
- * Product Manager - Activity Approvals (PM.9B inbox, PM.9 review, PM.9A / 9C / 9D drawers, PM.9E modal).
+ * Zonal Manager - Activity Approvals (PM.9B inbox, PM.9 review, PM.9A / 9C / 9D drawers, PM.9E modal).
  */
 import { useState } from 'react';
 import { AlertTriangle, ClipboardList, Inbox, MessageSquare } from 'lucide-react';
@@ -19,7 +19,7 @@ export function Pm9b() {
       code="PM.9B"
       title="Territory Campaign Activity Plan Approvals & Submission Tracking"
     >
-      <Source>Separate later hypothetical state: the PM campaign was approved by Marketing Head, released, and at least one Territory Manager submitted a local plan. Publication does not automatically authorize execution.</Source>
+      <Source>Separate later hypothetical state: the PM campaign was approved by Marketing Head, released, and at least one Field Sales Manager submitted a local plan. Publication does not automatically authorize execution.</Source>
       <Chips items={['All', 'Pending PM Review', 'Returned to TM', 'Approved', 'Awaiting Submission']} active={filter} onSelect={setFilter} />
       <div className="pm-two">
         <Box title="Territory Campaign Approval Queue" icon={<Inbox size={15} />}>
@@ -49,7 +49,7 @@ export function Pm9b() {
         </div>
       </div>
       <Actions
-        left={<><Act message="Approved PM campaign playbook opened read-only">View Approved PM Campaign</Act><Act message="Territory Manager tracking opened">Track Territory Manager</Act><Btn to="pm.9c" icon={<MessageSquare size={13} />}>Request Clarification</Btn><Btn to="pm.5">Back to Campaign Planning</Btn></>}
+        left={<><Act message="Approved PM campaign playbook opened read-only">View Approved PM Campaign</Act><Act message="Field Sales Manager tracking opened">Track Field Sales Manager</Act><Btn to="pm.9c" icon={<MessageSquare size={13} />}>Request Clarification</Btn><Btn to="pm.5">Back to Campaign Planning</Btn></>}
         right={<Cta to="pm.9">Review Selected Territory Activity Plan</Cta>}
       />
     </PmPage>
@@ -104,7 +104,7 @@ export function Pm9() {
         <div className="pm-stack">
           <AiBox title="AI Plan Review Insight" items={[{ text: 'Owner / readiness gaps on most activities; budget alignment to the regional envelope needs the remaining-allocation check. No activity is approved or executed.', tone: 'amber' }]} />
           <Box title="Approval">
-            <Field label="Review comments"><Input rows={3} placeholder="Comments for the Territory Manager…" /></Field>
+            <Field label="Review comments"><Input rows={3} placeholder="Comments for the Field Sales Manager…" /></Field>
             <div className="pm-stack" style={{ gap: 6 }}>
               <Act message="Approved PM campaign playbook opened read-only">View Approved PM Campaign Playbook</Act>
               <Act message="Submitted TM plan opened read-only">View Submitted TM Plan</Act>
@@ -129,7 +129,7 @@ export function Pm9a() {
   return (
     <Drawer title="Field Demonstrations — Activity Detail" status="PM Review Pending" back="pm.9" subtitle={`Linked approved campaign ${C1.name} · Onion / Croptek · Dhanora & Wadi Gaon`}
       footer={<>
-        <Btn to="pm.9c">Request Changes to Territory Manager</Btn>
+        <Btn to="pm.9c">Request Changes to Field Sales Manager</Btn>
         <Btn to="pm.9d">Flag Exception</Btn>
         <Act message="Review saved — activity not accepted">Save Review</Act>
         <span className="pm-foot-right"><Cta locked="Disabled until mandatory checks resolve or authorized exceptions are recorded">Accept Activity</Cta></span>
@@ -176,7 +176,7 @@ export function Pm9c() {
         <Act message="Original TM plan v1 opened read-only">View Original TM Plan</Act>
         <Act message="Draft request saved — not sent">Save Draft Request</Act>
         <Btn to="pm.9">Back to Review Activity Plan</Btn>
-        <span className="pm-foot-right"><Cta message="Correction request drafted — send requires confirmation (not sent)">Send Correction Request to Territory Manager</Cta></span>
+        <span className="pm-foot-right"><Cta message="Correction request drafted — send requires confirmation (not sent)">Send Correction Request to Field Sales Manager</Cta></span>
       </>}
     >
       <Table
@@ -187,10 +187,10 @@ export function Pm9c() {
         onRow={setSelected}
       />
       <Box title="Selected issue · Field Demonstration Timing & Stock" tone="soft">
-        <Facts cols={2} rows={[['Villages', 'Dhanora / Wadi Gaon'], ['Proposed owner', 'Territory Manager / field owner to confirm'], ['Planned date', <Status>To Confirm</Status>], ['Requested evidence', 'Crop-stage agronomy window · distributor / product stock confirmation · authorized demo collateral']]} />
+        <Facts cols={2} rows={[['Villages', 'Dhanora / Wadi Gaon'], ['Proposed owner', 'Field Sales Manager / field owner to confirm'], ['Planned date', <Status>To Confirm</Status>], ['Requested evidence', 'Crop-stage agronomy window · distributor / product stock confirmation · authorized demo collateral']]} />
         <div className="pm-form pm-form-2">
           <Field label="Required correction description"><Input rows={2} value="Confirm agronomy activation window and distributor stock for 4 demonstrations before PM endorsement." /></Field>
-          <Field label="Assignee"><Select options={['Territory Manager — Jalna Cluster']} /></Field>
+          <Field label="Assignee"><Select options={['Field Sales Manager — Jalna Cluster']} /></Field>
           <Field label="Due date" hint="No committed date"><Input placeholder="Select date" /></Field>
           <Field label="Priority"><Select options={['High', 'Medium', 'Low']} /></Field>
         </div>
@@ -209,7 +209,7 @@ export function Pm9c() {
 const EXCEPTIONS = [
   { category: 'Local allocation availability', activity: 'Whole local plan ₹3.00 L', deviation: 'Remaining regional allocation not yet verified', authority: 'Finance / Marketing Head (policy-dependent)', status: 'Pending Determination' },
   { category: 'Field demonstration crop-stage deviation', activity: 'Field Demonstrations', deviation: 'Only if proposed timing is outside the validated agronomic window', authority: 'Agronomy review', status: 'Review Required' },
-  { category: 'Stock and activity owner missing', activity: 'Field Demonstrations · Retailer Activation', deviation: 'Ordinary TM correction — not an authorization exception', authority: 'Territory Manager (correction)', status: 'Correction' },
+  { category: 'Stock and activity owner missing', activity: 'Field Demonstrations · Retailer Activation', deviation: 'Ordinary TM correction — not an authorization exception', authority: 'Field Sales Manager (correction)', status: 'Correction' },
 ];
 
 export function Pm9d() {
@@ -255,7 +255,7 @@ export function Pm9d() {
 
 export function Pm9e() {
   return (
-    <Modal title="Consolidated Territory Campaign Plan Approval" status="PM Approval Pending" width="75%" back="pm.9" subtitle={`Ambad, Jalna · Maharashtra Onion · parent approved ${C1.name} · local plan submitted by Territory Manager`}
+    <Modal title="Consolidated Territory Campaign Plan Approval" status="PM Approval Pending" width="75%" back="pm.9" subtitle={`Ambad, Jalna · Maharashtra Onion · parent approved ${C1.name} · local plan submitted by Field Sales Manager`}
       footer={<>
         <Btn to="pm.9">Back to Review Activity Plan</Btn>
         <Btn to="pm.9d">View Activity Exceptions</Btn>

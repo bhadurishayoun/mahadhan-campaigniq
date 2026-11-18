@@ -23,7 +23,7 @@ export type ScreenId = ModuleScreenId | PmScreenId | TmScreenId | MhScreenId | B
 /**
  * Modules used by the app.
  *
- * - Business Head, Product Manager, Territory Manager and Marketing Head use their own workspace routes.
+ * - Business Head, Zonal Manager, Field Sales Manager and Marketing Head use their own workspace routes.
  * - The legacy module screens remain available for navigation and demo workflows.
  */
 export type ModuleId =
@@ -49,8 +49,8 @@ export type PersonaId = 'strategy' | 'pm' | 'tm' | 'mh';
 
 export const PERSONAS: { id: PersonaId; label: string; sub: string; home: ScreenId; initials: string; available: boolean }[] = [
   { id: 'strategy', label: 'Business Head', sub: 'Portfolio, investment, marketing themes & decisions', home: 'bh.1', initials: 'BH', available: true },
-  { id: 'pm', label: 'Product Manager', sub: 'Crop Nutrition Portfolio · V2 persona journey', home: 'pm.1', initials: 'PM', available: true },
-  { id: 'tm', label: 'Territory Manager', sub: 'Territory plan, campaigns, execution and impact', home: 'tm.1', initials: 'TM', available: true },
+  { id: 'pm', label: 'Zonal Manager', sub: 'Crop Nutrition Portfolio · V2 persona journey', home: 'pm.1', initials: 'PM', available: true },
+  { id: 'tm', label: 'Field Sales Manager', sub: 'Territory plan, campaigns, execution and impact', home: 'tm.1', initials: 'TM', available: true },
   { id: 'mh', label: 'Marketing Head', sub: 'Regional strategy, approvals & rollout, performance learning', home: 'mh.1', initials: 'MH', available: true },
 ];
 

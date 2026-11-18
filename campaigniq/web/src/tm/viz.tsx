@@ -1,4 +1,4 @@
-/** Territory Manager visuals: Jalna/Ambad maps, donut, progress ring, icon infographics, stage timeline, approval pipeline. */
+/** Field Sales Manager visuals: Jalna/Ambad maps, donut, progress ring, icon infographics, stage timeline, approval pipeline. */
 import type { ReactNode } from 'react';
 import { Check, Clock, type LucideIcon } from 'lucide-react';
 import { MapCard } from '../ui/index';

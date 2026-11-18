@@ -76,7 +76,7 @@ class ChatRequest(BaseModel):
     """Conversational copilot used by the persona workspaces (TM / PM / MH / BH)."""
 
     question: str = Field(min_length=2, max_length=1000)
-    persona: str = Field(default="Territory Manager", max_length=60)
+    persona: str = Field(default="Field Sales Manager", max_length=60)
     screen: str | None = Field(default=None, max_length=20)
     page_context: str = Field(default="", max_length=6000)
     scope: Scope = Field(default_factory=Scope)

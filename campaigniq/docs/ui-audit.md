@@ -65,7 +65,7 @@ Generated from the source (`go()` / `to=` links). Sidebar shows top-level sectio
 | PM.2A | SKU vs ABP Reconciliation | PM.10A Crop, Product & Area Detail | Mapping | 1 |
 | PM.2B | SKU Mapping Correction Request | PM.2A SKU vs ABP Reconciliation | Review Mapping | 0 |
 | PM.3 | Validate Territory Plan | PM.2 Territory Plans | View | 1 |
-| PM.3B | Request Plan Correction | PM.3 Validate Territory Plan | Request Changes to Territory Manager | 1 |
+| PM.3B | Request Plan Correction | PM.3 Validate Territory Plan | Request Changes to Field Sales Manager | 1 |
 | PM.3C | Revised Plan Check | PM.3 Validate Territory Plan | Revised plan review (after TM resubmission) | 0 |
 | PM.3D | Marketing Head Feedback | PM.3C Revised Plan Check | Marketing Head clarification (later state) | 0 |
 | PM.4 | Assigned Themes | Sidebar section (top level) | Sidebar item | 10 |
@@ -92,7 +92,7 @@ Generated from the source (`go()` / `to=` links). Sidebar shows top-level sectio
 | PM.8D | Audience Overlap Check | PM.8A Submit Proposal | Compare Proposals | 2 |
 | PM.8E | Proposal Submitted | PM.8A Submit Proposal | Open submission confirmation | 0 |
 | PM.8F | Revise & Resubmit | PM.8A Submit Proposal | Revise & Resubmit | 0 |
-| PM.OPT1 | Campaign Change Requests | MH.9D Request Campaign Changes | Submit Optimization Request to Product Manager | 0 |
+| PM.OPT1 | Campaign Change Requests | MH.9D Request Campaign Changes | Submit Optimization Request to Zonal Manager | 0 |
 | PM.9B | Activity Plan Approvals | Sidebar section (top level) | Sidebar item | 1 |
 | PM.9 | Review Activity Plan | PM.9B Activity Plan Approvals | Review Plan | 1 |
 | PM.9A | Activity Detail | PM.9 Review Activity Plan | MH.8A approved PM campaign playbook | 0 |

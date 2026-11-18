@@ -1,5 +1,5 @@
 /**
- * Territory Manager - My Campaigns journey:
+ * Field Sales Manager - My Campaigns journey:
  * TM.C1 select a business priority -> Campaign Wizard CW.1-CW.4 -> TM.C2 review & approval -> TM.C3 my campaign portfolio.
  */
 import { Fragment, useMemo, useState } from 'react';
@@ -473,7 +473,7 @@ export function Cw4() {
 
 /* ------------------------------------------------------------------ TM.C2 */
 const COMMENTS = [
-  { at: 1, who: 'Product Manager — Crop Nutrition', text: 'Advisory content uses approved Croptek onion claims only. Leaflet v0.3 cleared; WhatsApp creative needs Marathi proofreading (condition).', tone: 'ok' },
+  { at: 1, who: 'Zonal Manager — Crop Nutrition', text: 'Advisory content uses approved Croptek onion claims only. Leaflet v0.3 cleared; WhatsApp creative needs Marathi proofreading (condition).', tone: 'ok' },
   { at: 2, who: 'Marketing Head — West Region', text: 'Approved at ₹3.00 L. Condition: confirm Dhanora demo stock before Week 2 and keep consent logs for the digital wave.', tone: 'ok' },
 ];
 

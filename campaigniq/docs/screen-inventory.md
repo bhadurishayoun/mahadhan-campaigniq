@@ -37,7 +37,7 @@ All figures on these screens are the mockups' illustrative demo values (Croptek 
 | Campaign Results | S7.1 Campaign Results | `#/s7.1` | `3.03.25 PM` |
 | | S7.2 What Worked & Why | `#/s7.2` | `3.02.43 PM` |
 | AI Copilot | AI.1 AI Copilot | `#/ai.1` | `3.03.24 PM`, `3.02.42 PM` |
-| Product Manager | PM.OPT1 Campaign Change Requests | `#/pm.opt1` | Added from the PM UI Workflow; linked from MH.9D |
+| Zonal Manager | PM.OPT1 Campaign Change Requests | `#/pm.opt1` | Added from the PM UI Workflow; linked from MH.9D |
 
 ## Business Head V2 workspace
 
@@ -52,7 +52,7 @@ The Business Head uses a dedicated executive workspace based on the supplied Nov
 | Interventions | BH.9, BH.9A | `#/bh.9`, `#/bh.9a` |
 | AI Copilot | BH.AI1 | `#/bh.ai1` |
 
-The PM UI Workflow document is a Product Manager click-through inventory, not a whole-portal or Business Head specification. Its role handoffs and approval gates are reflected in the BH theme decision flow: a BH theme decision returns to Marketing Head for assignment; the PM develops the campaign proposal and business case afterward. Theme approval does not authorize spend or field execution. The incoming optimization request handoff is linked from MH.9D to PM.OPT1. The workflow's campaign-level launch, local-plan approval, and evidence/attribution distinctions remain separate.
+The PM UI Workflow document is a Zonal Manager click-through inventory, not a whole-portal or Business Head specification. Its role handoffs and approval gates are reflected in the BH theme decision flow: a BH theme decision returns to Marketing Head for assignment; the PM develops the campaign proposal and business case afterward. Theme approval does not authorize spend or field execution. The incoming optimization request handoff is linked from MH.9D to PM.OPT1. The workflow's campaign-level launch, local-plan approval, and evidence/attribution distinctions remain separate.
 
 ## Main story flow
 

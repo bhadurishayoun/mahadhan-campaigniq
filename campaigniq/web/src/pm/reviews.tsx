@@ -1,5 +1,5 @@
 /**
- * Product Manager - My Performance (PM.1) and Territory Plan Reviews (PM.2 ... PM.3D).
+ * Zonal Manager - My Performance (PM.1) and Territory Plan Reviews (PM.2 ... PM.3D).
  */
 import { useState } from 'react';
 import { AlertTriangle, ClipboardCheck, FileText, History, MessageSquare, RefreshCw, Table2 } from 'lucide-react';
@@ -58,7 +58,7 @@ export function Pm1() {
         { title: 'Croptek carries the largest absolute growth requirement (₹0.80 Cr of ₹1.20 Cr).', text: 'Prioritise Croptek when reconciling incoming territory plans against the portfolio ABP. This highlights where the growth sits; it does not confirm the cause of last year\'s performance.', tone: 'green' },
       ]} />
 
-      <Next label="Review Consolidated Territory Plans" to="pm.2" sub="Territory Managers submit business & crop plans; the Product Manager reviews and consolidates them against the portfolio ABP" />
+      <Next label="Review Consolidated Territory Plans" to="pm.2" sub="Field Sales Managers submit business & crop plans; the Zonal Manager reviews and consolidates them against the portfolio ABP" />
     </PmPage>
   );
 }
@@ -82,7 +82,7 @@ export function Pm2() {
       title="Territory Plans vs Portfolio ABP"
       actions={<Act icon={<RefreshCw size={13} />} message="Source submissions refreshed from Outlet Targets / Village Crop Plan (no TM plan was edited)">Import / Refresh Source Submissions</Act>}
     >
-      <Source>Opened by clicking <b>Review Consolidated Territory Plans</b>. Territory Managers prepare the plans; this screen only reviews and consolidates them.</Source>
+      <Source>Opened by clicking <b>Review Consolidated Territory Plans</b>. Field Sales Managers prepare the plans; this screen only reviews and consolidates them.</Source>
 
       <Strip items={[
         { label: 'Previous-year portfolio sales', value: '₹4.80 Cr' },
@@ -92,7 +92,7 @@ export function Pm2() {
       ]} />
 
       <div className="pm-two">
-        <Box title="Consolidated Territory Manager Business Plan Submissions" icon={<ClipboardCheck size={15} />}>
+        <Box title="Consolidated Field Sales Manager Business Plan Submissions" icon={<ClipboardCheck size={15} />}>
           <Table
             head={['Territory / TM', 'All-Product Territory ABP', 'TM Submitted Plan', 'PM Portfolio-Specific Contribution', 'Gap / Review Exceptions', 'Submission Status', 'View Plan']}
             align={['l', 'r', 'r', 'l', 'l', 'l', 'l']}
@@ -108,7 +108,7 @@ export function Pm2() {
             onRow={setSelected}
           />
           <p className="pm-callout">All-product territory figures (₹4.20 Cr ABP, ₹3.80 Cr submitted) are <b>not</b> summed into the ₹6.00 Cr product portfolio target. The product-specific roll-up needs validated SKU-to-portfolio mapping first.</p>
-          <Sources items={[{ label: 'Outlet Planning', note: 'Territory Manager outlet-wise plan (source, read-only)' }, { label: 'Crop / Product Coverage Planning', note: 'Village-wise crop coverage plan (source, read-only)' }]} />
+          <Sources items={[{ label: 'Outlet Planning', note: 'Field Sales Manager outlet-wise plan (source, read-only)' }, { label: 'Crop / Product Coverage Planning', note: 'Village-wise crop coverage plan (source, read-only)' }]} />
         </Box>
 
         <div className="pm-stack">
@@ -227,8 +227,8 @@ export function Pm2b() {
 
       <div className="pm-form pm-form-2">
         <Field label="Request reason"><Input rows={2} placeholder="Describe the mapping gap to correct…" value="Ambad Croptek contribution cannot be attributed: SKU identifiers missing in submitted plan v1." /></Field>
-        <Field label="Responsible master-data / source owner"><Select options={['Master Data Team', 'Territory Manager — Jalna', 'ERP / DMS Integration Owner']} /></Field>
-        <Field label="Optional TM collaborator"><Select options={['Territory Manager — Jalna Cluster', 'None']} /></Field>
+        <Field label="Responsible master-data / source owner"><Select options={['Master Data Team', 'Field Sales Manager — Jalna', 'ERP / DMS Integration Owner']} /></Field>
+        <Field label="Optional TM collaborator"><Select options={['Field Sales Manager — Jalna Cluster', 'None']} /></Field>
         <Field label="Due date" hint="No committed date yet"><Input placeholder="Select due date" /></Field>
         <Field label="Comments"><Input rows={2} placeholder="Comments for the owner…" /></Field>
         <Field label="Supporting evidence"><Input placeholder="Attach file or link" /></Field>
@@ -254,7 +254,7 @@ export function Pm3() {
       title="Territory Business & Crop Plan Validation & Endorsement"
       status="Submitted — PM Review Required"
     >
-      <Source>Selected the Ambad / Jalna Territory Manager submission (plan v1, pre-approval).</Source>
+      <Source>Selected the Ambad / Jalna Field Sales Manager submission (plan v1, pre-approval).</Source>
       <Strip items={[
         { label: 'All-product Ambad ABP', value: AMBAD.abp },
         { label: 'Originally submitted primary business', value: AMBAD.submitted },
@@ -305,19 +305,19 @@ export function Pm3() {
         </div>
 
         <div className="pm-stack">
-          <Box title="Product Manager Review & Endorsement" icon={<ClipboardCheck size={15} />}>
-            <Field label="Review comments"><Input rows={4} placeholder="Add review comments for the Territory Manager…" /></Field>
+          <Box title="Zonal Manager Review & Endorsement" icon={<ClipboardCheck size={15} />}>
+            <Field label="Review comments"><Input rows={4} placeholder="Add review comments for the Field Sales Manager…" /></Field>
             <div className="pm-stack" style={{ gap: 6 }}>
-              <Btn to="pm.3b" icon={<MessageSquare size={13} />}>Request Changes to Territory Manager</Btn>
+              <Btn to="pm.3b" icon={<MessageSquare size={13} />}>Request Changes to Field Sales Manager</Btn>
               <Act icon={<FileText size={13} />} message="Outlet Plan opened read-only">View Original Outlet Plan</Act>
               <Act icon={<FileText size={13} />} message="Coverage Plan opened read-only">View Original Coverage Plan</Act>
               <Act message="Review saved (plan not endorsed)">Save Review</Act>
               <Cta locked="Disabled until mandatory validations and the ₹0.40 Cr planning gap are resolved, or an authorized exception is accepted">Endorse & Forward to Marketing Head</Cta>
             </div>
-            <Muted>The Product Manager reviews and comments; the Territory Manager's original plan is never edited here.</Muted>
+            <Muted>The Zonal Manager reviews and comments; the Field Sales Manager's original plan is never edited here.</Muted>
           </Box>
           <Box title="Approval chain" tone="soft">
-            <Workflow compact steps={[{ label: 'Territory Manager Submission', state: 'done' }, { label: 'Product Manager Endorsement', state: 'active' }, { label: 'Marketing Head Review' }]} />
+            <Workflow compact steps={[{ label: 'Field Sales Manager Submission', state: 'done' }, { label: 'Zonal Manager Endorsement', state: 'active' }, { label: 'Marketing Head Review' }]} />
           </Box>
         </div>
       </div>
@@ -350,7 +350,7 @@ export function Pm3b() {
         <Act message="Original TM plan v1 opened read-only">View Original TM Plan</Act>
         <Act message="Correction request saved as draft — not sent">Save Draft</Act>
         <Btn to="pm.3">Back to Validate Territory Plan</Btn>
-        <span className="pm-foot-right"><Cta message="Correction request drafted — sending requires confirmation (not sent)">Send Correction Request to Territory Manager</Cta></span>
+        <span className="pm-foot-right"><Cta message="Correction request drafted — sending requires confirmation (not sent)">Send Correction Request to Field Sales Manager</Cta></span>
       </>}
     >
       <Table
@@ -364,7 +364,7 @@ export function Pm3b() {
         <div className="pm-form pm-form-2">
           <Field label="Reason"><Input rows={2} value={`${row.fix}. Current value: ${row.value}.`} /></Field>
           <Field label="Supporting source reference"><Input value="Village Crop Plan (v1)" /></Field>
-          <Field label="Assigned to"><Select options={['Territory Manager — Jalna Cluster']} /></Field>
+          <Field label="Assigned to"><Select options={['Field Sales Manager — Jalna Cluster']} /></Field>
           <Field label="Due date" hint="No committed date"><Input placeholder="Select due date" /></Field>
           <Field label="Required evidence"><Input placeholder="e.g. historical sales records, agronomy note" /></Field>
           <Field label="Optional PM technical reviewer"><Select options={['None', 'Agronomy Lead', 'Pricing Analyst']} /></Field>
@@ -397,7 +397,7 @@ export function Pm3c() {
       title="Revised Territory Plan Comparison, Revalidation & Endorsement"
       status="Revised Plan v2 Received — Revalidation Pending"
     >
-      <Source>Hypothetical future state: correction request sent, revised plan v2 received from the Territory Manager. PM revalidation and endorsement are <b>not yet complete</b>.</Source>
+      <Source>Hypothetical future state: correction request sent, revised plan v2 received from the Field Sales Manager. PM revalidation and endorsement are <b>not yet complete</b>.</Source>
 
       <div className="pm-two">
         <div className="pm-stack">
@@ -451,7 +451,7 @@ export function Pm3d() {
   const [selected, setSelected] = useState(0);
   const [type, setType] = useState('Explain Existing Plan');
   return (
-    <Drawer title="Marketing Review Feedback & Clarification" status="MH Clarification Received — PM Response Pending" back="pm.3c" subtitle="Ambad / Jalna · Maharashtra Onion · owner: Product Manager · reviewed plan version from source"
+    <Drawer title="Marketing Review Feedback & Clarification" status="MH Clarification Received — PM Response Pending" back="pm.3c" subtitle="Ambad / Jalna · Maharashtra Onion · owner: Zonal Manager · reviewed plan version from source"
       footer={<>
         <Act message="Draft response saved — not submitted">Save Draft Response</Act>
         <Btn to="pm.3b">Request TM Revision</Btn>
@@ -470,8 +470,8 @@ export function Pm3d() {
       <Box title={`Response · ${MH_QUESTIONS[selected].q}`} tone="soft">
         <Field label="PM response"><Input rows={3} placeholder="Draft your response…" /></Field>
         <div className="pm-form pm-form-2">
-          <Field label="Response type"><Select key={type} options={['Explain Existing Plan', 'Request Territory Manager Revision']} value={type} /></Field>
-          <Field label="Responsible owner"><Select options={['Product Manager', 'Territory Manager — Jalna']} /></Field>
+          <Field label="Response type"><Select key={type} options={['Explain Existing Plan', 'Request Field Sales Manager Revision']} value={type} /></Field>
+          <Field label="Responsible owner"><Select options={['Zonal Manager', 'Field Sales Manager — Jalna']} /></Field>
           <Field label="Response due date" hint="No committed date"><Input placeholder="Select date" /></Field>
           <Field label="Evidence"><Act small message="Attachment dialog (demo)">Attach Evidence</Act></Field>
         </div>
@@ -488,8 +488,8 @@ function Chipsy({ onPick }: { onPick: (value: string) => void }) {
   return (
     <div className="row" style={{ fontSize: 11.5 }}>
       <AlertTriangle size={13} color="#b07800" />
-      <span className="muted">Choosing “Request Territory Manager Revision” routes the question back through TM revision.</span>
-      <button type="button" className="pm-chip" onClick={() => onPick('Request Territory Manager Revision')}>Switch to TM revision</button>
+      <span className="muted">Choosing “Request Field Sales Manager Revision” routes the question back through TM revision.</span>
+      <button type="button" className="pm-chip" onClick={() => onPick('Request Field Sales Manager Revision')}>Switch to TM revision</button>
     </div>
   );
 }

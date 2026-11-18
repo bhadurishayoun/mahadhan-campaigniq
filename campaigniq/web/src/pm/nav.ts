@@ -1,5 +1,5 @@
 /**
- * Product Manager persona (CampaignIQ V2) - screen registry.
+ * Zonal Manager persona (CampaignIQ V2) - screen registry.
  *
  * The persona has seven sidebar tabs. Each screen belongs to one tab. "Interaction" screens (PM.2B, PM.9A ...)
  * are drawers or modals that open OVER their parent screen, which stays visible but dimmed behind them.
