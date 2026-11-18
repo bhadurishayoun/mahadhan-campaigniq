@@ -20,14 +20,14 @@ export function Tm1() {
       subtitle="Jalna Cluster · FY 2025–26 · Review last year and plan this year's growth, territory by territory.">
       <PlanTabs active="tm.1" />
       <Metrics items={[
-        { label: 'Last-year sales', value: crore(TOTAL_LY, 1), sub: 'FY 2024–25 primary sales' },
+        { label: 'Last-year liquidation', value: crore(TOTAL_LY, 1), sub: 'FY 2024–25 liquidation' },
         { label: 'Current-year ABP target', value: crore(TOTAL_ABP, 1), sub: 'Assigned annual business plan' },
         { label: 'Required growth', value: pct(growth(TOTAL_LY, TOTAL_ABP), 0), sub: '+₹2.0 Cr over last year', tone: 'amber' },
       ]} />
       <Panel title="Territory planning table" actions={<span className="tm-muted">₹ Cr · illustrative</span>}>
         <div className="table-wrap">
           <table className="dt pm-table tm-table">
-            <thead><tr><th>Territory</th><th className="r">Last-year sales</th><th className="r">Current-year ABP target</th><th className="r">Required growth</th><th className="r">Absolute uplift</th><th>Plan status</th><th /></tr></thead>
+            <thead><tr><th>Territory</th><th className="r">Last-year liquidation</th><th className="r">Current-year ABP target</th><th className="r">Required growth</th><th className="r">Absolute uplift</th><th>Plan status</th><th /></tr></thead>
             <tbody>
               {TERRITORIES.map((t) => (
                 <tr key={t.name} className={cx(t.name === 'Ambad' && 'row-highlight')}>
@@ -79,7 +79,7 @@ export function Tm1() {
           </AiPanel>
         </div>
       </div>
-      <Footer source="Last-year sales & assigned ABP (illustrative)" next="TM.2 — Territory Network"
+      <Footer source="Last-year liquidation & assigned ABP (illustrative)" next="TM.2 — Territory Network"
         primary={{ label: 'Plan Territory: Ambad', to: 'tm.2' }} />
     </TmPage>
   );
@@ -99,7 +99,7 @@ export function Tm2() {
       <PlanTabs active="tm.2" />
       <Context items={[
         { label: 'Territory', value: 'Ambad', sub: 'Jalna district' },
-        { label: 'Last-year primary sales', value: '₹3.2 Cr' },
+        { label: 'Last-year liquidation', value: '₹3.2 Cr' },
         { label: 'Current-year ABP target', value: '₹4.2 Cr' },
         { label: 'Required growth', value: '+31.3%' },
         { label: 'Network (illustrative)', value: '8 dealers · 74 retailers' },
@@ -192,14 +192,14 @@ export function Tm3() {
       <PlanTabs active="tm.3" />
       <Context items={[
         { label: 'Territory', value: 'Ambad, Jalna' },
-        { label: 'Previous-year primary sales', value: '₹3.2 Cr' },
+        { label: 'Last-year liquidation', value: '₹3.2 Cr' },
         { label: 'ABP target', value: '₹4.2 Cr' },
         { label: 'Dealers in plan', value: '8' },
       ]} />
       <Panel title="Dealer-wise business plan" actions={<span className="tm-muted">₹ lakh · targets are editable</span>}>
         <div className="table-wrap">
           <table className="dt pm-table tm-table">
-            <thead><tr><th>Dealer / outlet</th><th className="r">Last-year primary sales</th><th className="r">Proposed target</th><th className="r">Growth %</th><th>Planning status</th><th>Details</th></tr></thead>
+            <thead><tr><th>Dealer / outlet</th><th className="r">Last-year liquidation</th><th className="r">Proposed target</th><th className="r">Growth %</th><th>Planning status</th><th>Details</th></tr></thead>
             <tbody>
               {DEALER_PLAN.map((d, index) => {
                 const isOpen = expanded === d.name;
@@ -254,7 +254,7 @@ export function Tm3() {
           </p>
         </AiPanel>
       </div>
-      <Footer back={{ label: 'Back to Territory Network', to: 'tm.2' }} source="Dealer master, last-year primary sales (illustrative)" next="TM.4 — Crop & Product Plan"
+      <Footer back={{ label: 'Back to Territory Network', to: 'tm.2' }} source="Dealer master, last-year liquidation (illustrative)" next="TM.4 — Crop & Product Plan"
         primary={{ label: 'Proceed to Crop & Product Planning', to: 'tm.4' }} />
     </TmPage>
   );
