@@ -50,7 +50,7 @@ export type PersonaId = 'strategy' | 'pm' | 'tm' | 'mh';
 export const PERSONAS: { id: PersonaId; label: string; sub: string; home: ScreenId; initials: string; available: boolean }[] = [
   { id: 'strategy', label: 'Business Head', sub: 'Portfolio, investment, marketing themes & decisions', home: 'bh.1', initials: 'BH', available: true },
   { id: 'pm', label: 'Zonal Manager', sub: 'Crop Nutrition Portfolio · V2 persona journey', home: 'pm.1', initials: 'PM', available: true },
-  { id: 'tm', label: 'Field Sales Manager', sub: 'Territory plan, campaigns, execution and impact', home: 'tm.1', initials: 'TM', available: true },
+  { id: 'tm', label: 'Field Sales Manager', sub: 'Territory plan, campaigns, execution and impact', home: 'tm.1', initials: 'FSM', available: true },
   { id: 'mh', label: 'Marketing Head', sub: 'Regional strategy, approvals & rollout, performance learning', home: 'mh.1', initials: 'MH', available: true },
 ];
 

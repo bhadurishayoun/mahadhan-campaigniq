@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Home, Sparkles } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import { Btn, cx, Pill, type Tone } from '../ui';
@@ -33,8 +33,26 @@ export function TmPage({ crumbs, code, title, status, subtitle, actions, childre
   banner?: ReactNode;
 }) {
   const { go } = useNav();
+  const pageRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const root = pageRef.current;
+    if (!root) return;
+    const expandRole = () => {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      let textNode: Node | null;
+      while ((textNode = walker.nextNode())) {
+        const original = textNode.textContent ?? '';
+        const expanded = original.replace(/\bTM(?=\.|\s)/g, 'FSM');
+        if (expanded !== original) textNode.textContent = expanded;
+      }
+    };
+    expandRole();
+    const observer = new MutationObserver(expandRole);
+    observer.observe(root, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
+  }, [code]);
   return (
-    <div className={cx('pm-page', 'persona-page persona-page-tm tm-page', className)} data-screen={code}>
+    <div ref={pageRef} className={cx('pm-page', 'persona-page persona-page-tm tm-page', className)} data-screen={code}>
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         <Home size={13} />
         {crumbs.map((item, index) => (

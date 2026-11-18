@@ -104,7 +104,7 @@ export const APPROVED = { abp: 4.2, growth: 1.0, onion: 1.9, maize: 1.25, other:
 
 export const PRIORITIES = [
   { id: 'onion', title: 'Onion — Croptek conversion', sub: 'Convert Non Saarthi nutrition users', geo: 'Dhanora · Wadi Gaon', uplift: '₹25 L',
-    audience: 'Conventional nutrition users', approach: 'Retailer-led + field demos', coverage: 'Dhanora & Wadi Gaon' },
+    audience: 'Non Saarthi nutrition users', approach: 'Retailer-led + field demos', coverage: 'Dhanora & Wadi Gaon' },
   { id: 'maize', title: 'Maize — Portfolio expansion', sub: 'Expand coverage at existing outlets', geo: 'Ambad HQ · Pimpalgaon', uplift: '₹15 L',
     audience: 'Existing maize growers at linked outlets', approach: 'Outlet activation + farmer meetings', coverage: 'Ambad HQ & Pimpalgaon' },
   { id: 'retail', title: 'Retailer engagement', sub: 'Improve channel advocacy and reach', geo: 'Across Ambad', uplift: 'Supports existing plan',
