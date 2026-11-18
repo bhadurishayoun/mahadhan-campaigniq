@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { AlertCircle, BadgeCheck, Briefcase, Eye, EyeOff, Lock, MapPin, Megaphone, Package, ShieldCheck, Sprout, UserRound, type LucideIcon } from 'lucide-react';
 import type { PersonaId } from './nav';
 import { PERSONAS } from './nav';
-import { credentialForPersona, validatePersonaCredentials } from './personaAuth';
+import { credentialForPersona, isMasterCredentials, validatePersonaCredentials } from './personaAuth';
 
 const PERSONA_ICON: Record<PersonaId, LucideIcon> = { strategy: Briefcase, mh: Megaphone, pm: Package, tm: MapPin };
 
@@ -10,6 +10,7 @@ interface LoginPayload {
   name: string;
   persona: PersonaId;
   userId: string;
+  master: boolean;
 }
 
 export function LoginPage({ onLogin, initialPersona }: { onLogin: (payload: LoginPayload) => void; initialPersona?: PersonaId }) {
@@ -38,7 +39,7 @@ export function LoginPage({ onLogin, initialPersona }: { onLogin: (payload: Logi
     }
 
     setError('');
-    onLogin({ name: name.trim(), persona, userId: userId.trim().toUpperCase() });
+    onLogin({ name: name.trim(), persona, userId: userId.trim().toUpperCase(), master: isMasterCredentials(userId, password) });
   }
 
   return (

@@ -21,7 +21,12 @@ All data in the tool is illustrative.
 | `*.docx`, `*.pptx`, `*.md`, `ui-mockups/` | Product briefs, analysis and UI mockups (`ui-mockups/V2-persona-mockup-specs.md` holds the V2 persona-wise screen specs) |
 
 **Personas (V2):** the avatar menu at the top-right switches among the dedicated Business Head, Product Manager
-(PM.1 – PM.AI1, 48 screens), Territory Manager and Marketing Head workspaces. The legacy module screens remain
+(PM.1 – PM.AI1, 48 screens), Territory Manager (TM.1 – TM.AI1, 15 screens) and Marketing Head workspaces.
+
+**Showcase login:** user ID `MASTER001`, password `Mahadhan@2026` opens every persona. Sign in with any persona tile
+selected; the avatar menu then switches personas without signing in again. The per-persona IDs (SH001, PM001,
+TM001, MH001) still work and stay limited to their own persona. These are demo credentials kept in the front end,
+not real security. The legacy module screens remain
 available through their existing routes; see `campaigniq/docs/product-manager-persona.md` for the PM build notes.
 
 ## How it is hosted

@@ -1,7 +1,9 @@
 /**
  * Territory Manager persona (CampaignIQ V2) - screen registry.
  *
- * Based on the approved specs in `ui-mockups/V2-persona-mockup-specs.md`.
+ * Based on the approved specs in `ui-mockups/V2-persona-mockup-specs.md` (TM.C1 from the rendered mockup in the
+ * same ChatGPT conversation): My Plan TM.1-TM.5 -> My Campaigns TM.C1 + wizard CW.1-CW.4 -> Campaign Execution
+ * TM.EX1-EX2 -> Impact & Learning TM.IM1-IM2 -> AI Copilot TM.AI1.
  */
 
 export type TmTabId = 'plan' | 'campaigns' | 'execution' | 'impact' | 'copilot';
@@ -12,10 +14,13 @@ export const TM_IDS = [
   'tm.3',
   'tm.4',
   'tm.5',
+  'tm.c1',
   'cw.1',
   'cw.2',
   'cw.3',
   'cw.4',
+  'tm.c2',
+  'tm.c3',
   'tm.ex1',
   'tm.ex2',
   'tm.im1',
@@ -38,7 +43,7 @@ const FY25 = 'FY 2025–26 · Jalna Cluster';
 
 export const TM_TABS: { id: TmTabId; label: string; home: TmScreenId }[] = [
   { id: 'plan', label: 'My Plan', home: 'tm.1' },
-  { id: 'campaigns', label: 'My Campaigns', home: 'cw.1' },
+  { id: 'campaigns', label: 'My Campaigns', home: 'tm.c1' },
   { id: 'execution', label: 'Campaign Execution', home: 'tm.ex1' },
   { id: 'impact', label: 'Impact & Learning', home: 'tm.im1' },
   { id: 'copilot', label: 'AI Copilot', home: 'tm.ai1' },
@@ -51,10 +56,13 @@ export const TM_SCREENS: TmMeta[] = [
   { id: 'tm.4', code: 'TM.4', title: 'Village-wise Crop, Product & Coverage Planning', tab: 'plan', period: FY25 },
   { id: 'tm.5', code: 'TM.5', title: 'Business & Crop Plan Review and Approval', tab: 'plan', period: FY25 },
 
+  { id: 'tm.c1', code: 'TM.C1', title: 'My Campaigns — Select a Business Priority', tab: 'campaigns', period: FY25 },
   { id: 'cw.1', code: 'CW.1', title: 'Campaign Objective & Targeting', tab: 'campaigns', period: FY25 },
   { id: 'cw.2', code: 'CW.2', title: 'Campaign Activity & Budget Mix Planner', tab: 'campaigns', period: FY25 },
   { id: 'cw.3', code: 'CW.3', title: 'Campaign Scenario & Expected Outcomes', tab: 'campaigns', period: FY25 },
   { id: 'cw.4', code: 'CW.4', title: 'Campaign Review & Submit', tab: 'campaigns', period: FY25 },
+  { id: 'tm.c2', code: 'TM.C2', title: 'Campaign Review & Approval Tracker', tab: 'campaigns', period: FY25 },
+  { id: 'tm.c3', code: 'TM.C3', title: 'My Campaign Portfolio', tab: 'campaigns', period: FY25 },
 
   { id: 'tm.ex1', code: 'TM.EX1', title: 'Campaign Execution & Live Control Tower', tab: 'execution', period: FY25 },
   { id: 'tm.ex2', code: 'TM.EX2', title: 'Activity Execution & Corrective Action Workspace', tab: 'execution', period: FY25 },

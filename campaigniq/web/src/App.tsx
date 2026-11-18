@@ -294,7 +294,7 @@ export default function App() {
       <LoginPage
         initialPersona={loginPersona}
         onLogin={(payload) => {
-          setSession({ name: payload.name, persona: payload.persona, userId: payload.userId });
+          setSession({ name: payload.name, persona: payload.persona, userId: payload.userId, master: payload.master });
           const dest = PERSONAS.find((p) => p.id === payload.persona)?.home ?? 's1.1';
           go(dest);
           setLoginPersona(undefined);
@@ -417,7 +417,7 @@ export default function App() {
               </button>
               {personaOpen && (
                 <div className="persona-list" role="menu">
-                  <h5>Switch persona</h5>
+                  <h5>Switch persona{session.master ? ' · master access' : ''}</h5>
                   {PERSONAS.map((item) => (
                     <button
                       type="button"
@@ -426,8 +426,14 @@ export default function App() {
                       className={[item.id === persona ? 'active' : '', item.available ? '' : 'soon'].join(' ').trim()}
                       onClick={() => {
                         if (!item.available) return;
-                        setLoginPersona(item.id);
                         setPersonaOpen(false);
+                        if (session.master) {
+                          // Master login: move straight to the persona's workspace, no second sign-in.
+                          setSession({ ...session, persona: item.id });
+                          go(item.home);
+                          return;
+                        }
+                        setLoginPersona(item.id);
                         setSession(null);
                       }}
                     >
