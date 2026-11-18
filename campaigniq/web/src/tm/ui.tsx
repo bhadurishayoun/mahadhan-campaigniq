@@ -189,13 +189,11 @@ export function Note({ children, tone = 'info' }: { children: ReactNode; tone?: 
   return <p className={`tm-note tm-note-${tone}`}>{children}</p>;
 }
 
-/** Bottom bar: source on the left, back / primary on the right, recommended next screen below. */
+/** Bottom bar for backwards navigation and the current screen action. */
 export function Footer({ back, primary, secondary }: {
   back?: { label: string; to: ScreenId };
   primary?: { label: string; to?: ScreenId; onClick?: () => void; disabled?: boolean };
   secondary?: ReactNode;
-  source?: string;
-  next?: string;
 }) {
   const { goBack } = useNav();
   return (

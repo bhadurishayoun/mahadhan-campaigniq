@@ -1,6 +1,6 @@
 /** Field Sales Manager - My Plan: TM.1 Performance & ABP -> TM.2 Network -> TM.3 Outlet plan -> TM.4 Crop plan -> TM.5 Review. */
 import { Fragment, useMemo, useState } from 'react';
-import { AlertTriangle, ChevronDown, ChevronRight, Download, FileSpreadsheet, RefreshCw, Save, Upload } from 'lucide-react';
+import { AlertTriangle, ChevronDown, ChevronRight, Download, RefreshCw, Save, Upload } from 'lucide-react';
 import { useNav } from '../nav';
 import { Btn, cx } from '../ui';
 import {
@@ -8,7 +8,7 @@ import {
   PREVIOUS_REALISATION, TERRITORIES, TOTAL_ABP, TOTAL_LY, VILLAGES,
 } from './data';
 import { AiPanel, Context, Footer, HBars, Metrics, Note, Panel, PlanTabs, Status, TmPage, crore, lakh, pct } from './ui';
-import { ApprovalPipeline, Donut, MAP_COLORS, Ring, TmMap, VILLAGE_PLACE } from './viz';
+import { Donut, MAP_COLORS, Ring, TmMap, VILLAGE_PLACE } from './viz';
 
 const growth = (ly: number, target: number) => ((target - ly) / ly) * 100;
 
@@ -20,14 +20,14 @@ export function Tm1() {
       subtitle="Jalna Cluster · FY 2025–26 · Review last year and plan this year's growth, territory by territory.">
       <PlanTabs active="tm.1" />
       <Metrics items={[
-        { label: 'Last-year liquidation', value: crore(TOTAL_LY, 1), sub: 'FY 2024–25 liquidation' },
+        { label: 'Last Year Liquidation', value: crore(TOTAL_LY, 1), sub: 'FY 2024–25 liquidation' },
         { label: 'Current-year ABP target', value: crore(TOTAL_ABP, 1), sub: 'Assigned annual business plan' },
         { label: 'Required growth', value: pct(growth(TOTAL_LY, TOTAL_ABP), 0), sub: '+₹2.0 Cr over last year', tone: 'amber' },
       ]} />
       <Panel title="Territory planning table" actions={<span className="tm-muted">₹ Cr · illustrative</span>}>
         <div className="table-wrap">
           <table className="dt pm-table tm-table">
-            <thead><tr><th>Territory</th><th className="r">Last-year liquidation</th><th className="r">Current-year ABP target</th><th className="r">Required growth</th><th className="r">Absolute uplift</th><th>Plan status</th><th /></tr></thead>
+            <thead><tr><th>Territory</th><th className="r">Last Year Liquidation</th><th className="r">Current-year ABP target</th><th className="r">Required growth</th><th className="r">Absolute uplift</th><th>Plan status</th><th /></tr></thead>
             <tbody>
               {TERRITORIES.map((t) => (
                 <tr key={t.name} className={cx(t.name === 'Ambad' && 'row-highlight')}>
@@ -79,7 +79,7 @@ export function Tm1() {
           </AiPanel>
         </div>
       </div>
-      <Footer source="Last-year liquidation & assigned ABP (illustrative)" next="TM.2 — Territory Network"
+      <Footer
         primary={{ label: 'Plan Territory: Ambad', to: 'tm.2' }} />
     </TmPage>
   );
@@ -99,7 +99,7 @@ export function Tm2() {
       <PlanTabs active="tm.2" />
       <Context items={[
         { label: 'Territory', value: 'Ambad', sub: 'Jalna district' },
-        { label: 'Last-year liquidation', value: '₹3.2 Cr' },
+        { label: 'Last Year Liquidation', value: '₹3.2 Cr' },
         { label: 'Current-year ABP target', value: '₹4.2 Cr' },
         { label: 'Required growth', value: '+31.3%' },
         { label: 'Network (illustrative)', value: '8 dealers · 74 retailers' },
@@ -166,7 +166,7 @@ export function Tm2() {
           <li><b>Wadi Gaon / Pimpalgaon:</b> 2 retailers await master-data verification.</li>
         </ul>
       </AiPanel>
-      <Footer back={{ label: 'Back to My Performance', to: 'tm.1' }} source="Dealer & retailer master (illustrative)" next="TM.3 — Outlet Planning"
+      <Footer back={{ label: 'Back to My Performance', to: 'tm.1' }}
         primary={{ label: 'Proceed to Outlet Planning', to: 'tm.3' }} />
     </TmPage>
   );
@@ -192,7 +192,7 @@ export function Tm3() {
       <PlanTabs active="tm.3" />
       <Context items={[
         { label: 'Territory', value: 'Ambad, Jalna' },
-        { label: 'Last-year liquidation', value: '₹3.2 Cr' },
+        { label: 'Last Year Liquidation', value: '₹3.2 Cr' },
         { label: 'ABP target', value: '₹4.2 Cr' },
         { label: 'Dealers in plan', value: '8' },
       ]} />
@@ -254,7 +254,7 @@ export function Tm3() {
           </p>
         </AiPanel>
       </div>
-      <Footer back={{ label: 'Back to Territory Network', to: 'tm.2' }} source="Dealer master, last-year liquidation (illustrative)" next="TM.4 — Crop & Product Plan"
+      <Footer back={{ label: 'Back to Territory Network', to: 'tm.2' }}
         primary={{ label: 'Proceed to Crop & Product Planning', to: 'tm.4' }} />
     </TmPage>
   );
@@ -358,7 +358,7 @@ export function Tm4() {
           </AiPanel>
         </div>
       </div>
-      <Footer back={{ label: 'Back to Outlet Planning', to: 'tm.3' }} source="Village sales records, crop area estimates (illustrative)" next="TM.5 — Review & Approval"
+      <Footer back={{ label: 'Back to Outlet Planning', to: 'tm.3' }}
         primary={{ label: 'Review Business & Crop Plan', to: 'tm.5' }} />
     </TmPage>
   );
@@ -430,21 +430,7 @@ export function Tm5() {
           <small className="tm-muted">Version history: v1 imported 02 Apr · v2 draft saved today · comments visible to reviewers.</small>
         </Panel>
       </div>
-      <Panel title="Leadership approval workflow">
-        <ApprovalPipeline current={-1} steps={[
-          { role: 'Field Sales Manager', action: 'Plan submission', who: 'You' },
-          { role: 'Zonal Manager', action: 'Crop & product review', who: 'Crop Nutrition PM' },
-          { role: 'Marketing Head', action: 'Regional review', who: 'West Region' },
-          { role: 'Business Head', action: 'Final approval', who: 'National' },
-        ]} />
-        <div className="tm-row-actions">
-          <Btn variant="primary" disabled icon={<FileSpreadsheet size={13} />}>Submit for Approval</Btn>
-          <Btn onClick={() => toast('Exception review requested. This is not an approval; the gap stays open until reviewed.')}>Request Exception Review</Btn>
-          <span className="tm-muted">Submit unlocks when the ₹40 L gap is resolved or a justified exception is accepted.</span>
-        </div>
-      </Panel>
-      <Footer back={{ label: 'Back to Crop & Product Plan', to: 'tm.4' }} source="Outlet plan (TM.3) and crop plan (TM.4), illustrative"
-        next="Leadership review after submission; the approved plan unlocks My Campaigns"
+      <Footer back={{ label: 'Back to Crop & Product Plan', to: 'tm.4' }}
         secondary={<Btn to="tm.c1">Showcase: continue with approved plan v3</Btn>} />
     </TmPage>
   );

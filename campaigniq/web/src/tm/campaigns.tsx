@@ -119,7 +119,7 @@ export function TmC1() {
           </Panel>
         </div>
       </div>
-      <Footer back={{ label: 'Back to My Plan (Approved)', to: 'tm.5' }} source="Approved Ambad Plan v3" next="CW.1 — Campaign Wizard"
+      <Footer back={{ label: 'Back to My Plan (Approved)', to: 'tm.5' }}
         secondary={<Btn to="tm.c3">Campaign Portfolio</Btn>}
         primary={{ label: 'Create Campaign Draft', to: 'cw.1' }} />
     </TmPage>
@@ -193,7 +193,7 @@ export function Cw1() {
           </AiPanel>
         </div>
       </div>
-      <Footer back={{ label: 'Back to Business Priorities', to: 'tm.c1' }} source="Approved business & crop plan · CRM cohort · selected outlets" next="CW.2 — Activity & Budget Mix"
+      <Footer back={{ label: 'Back to Business Priorities', to: 'tm.c1' }}
         secondary={<Btn icon={<Save size={13} />} onClick={() => toast('Campaign draft saved.')}>Save Draft</Btn>}
         primary={{ label: 'Plan Activities & Budget', to: 'cw.2' }} />
     </TmPage>
@@ -373,7 +373,7 @@ export function Cw3() {
           <small className="tm-muted">The ₹25 L sits inside the approved ABP; the campaign forecast is not additional business.</small>
         </AiPanel>
       </div>
-      <Footer back={{ label: 'Back to Activity & Budget Mix', to: 'cw.2' }} source="CW.2 budget, planning assumptions (unvalidated)" next="CW.4 — Review & Submit"
+      <Footer back={{ label: 'Back to Activity & Budget Mix', to: 'cw.2' }}
         secondary={<Btn icon={<Save size={13} />} onClick={() => toast('Scenario saved as draft.')}>Save Draft</Btn>}
         primary={{ label: 'Review Campaign & Submit', to: 'cw.4' }} />
     </TmPage>
@@ -457,7 +457,7 @@ export function Cw4() {
         <Note>Submission is not launch authorisation. Mandatory blockers prevent submission, and launch stays <Lock size={11} /> locked until approvals are complete. Business Head escalation applies only above ₹5 L.</Note>
         <label className="pm-field"><span>Submission rationale</span><textarea className="tm-textarea" rows={2} defaultValue="Supports the approved Onion growth objective in Dhanora and Wadi Gaon; base scenario ROI +0.40× (forecast)." /></label>
       </Panel>
-      <Footer back={{ label: 'Back to Scenario', to: 'cw.3' }} source="CW.1–CW.3 inputs, approved plan v3" next={submitted ? 'TM.C2 — Review & Approval tracker' : 'Resolve mandatory readiness, then submit'}
+      <Footer back={{ label: 'Back to Scenario', to: 'cw.3' }}
         secondary={<>
           <Btn icon={<Save size={13} />} onClick={() => toast('Campaign saved as draft.')}>Save Draft</Btn>
           {submitted && <Btn to="tm.c2" icon={<Eye size={13} />}>Track Approval</Btn>}
@@ -527,8 +527,7 @@ export function TmC2() {
           </AiPanel>
         </div>
       </div>
-      <Footer back={{ label: 'Back to Review & Submit', to: 'cw.4' }} source="Approval workflow (showcase simulation)"
-        next={approved ? 'TM.C3 — Campaign Portfolio, then Campaign Execution' : 'Await reviewer decisions'}
+      <Footer back={{ label: 'Back to Review & Submit', to: 'cw.4' }}
         secondary={approved ? <Btn to="tm.ex1">Open Activity Tracker</Btn> : undefined}
         primary={{ label: 'Campaign Portfolio', to: 'tm.c3' }} />
     </TmPage>
@@ -639,8 +638,7 @@ export function TmC3() {
           </ul>
         </AiPanel>
       </div>
-      <Footer back={{ label: 'Back to Business Priorities', to: 'tm.c1' }} source="Campaign records, Kharif 2025 results (illustrative)"
-        next={stage >= 3 ? 'Campaign Execution — Activity Tracker' : 'Campaign approval, then execution'}
+      <Footer back={{ label: 'Back to Business Priorities', to: 'tm.c1' }}
         primary={{ label: stage >= 3 ? 'Go to Campaign Execution' : 'Track Approval', to: stage >= 3 ? 'tm.ex1' : 'tm.c2' }} />
     </TmPage>
   );

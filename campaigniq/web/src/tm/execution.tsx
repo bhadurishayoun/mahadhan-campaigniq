@@ -86,7 +86,7 @@ export function TmEx1() {
           ]}
           markerLegend={[{ label: 'Blocking risk', color: MAP_COLORS.red }, { label: 'Watch', color: MAP_COLORS.amber }, { label: 'Scheduled', color: MAP_COLORS.grey }]} />
       </div>
-      <Footer back={{ label: 'Back to My Campaigns', to: 'tm.c3' }} source="Field app activity reports (last sync)" next="TM.EX2 — Activity Follow-up"
+      <Footer back={{ label: 'Back to My Campaigns', to: 'tm.c3' }}
         primary={{ label: 'View Activity & Take Action', to: 'tm.ex2' }} />
     </TmPage>
   );
@@ -182,7 +182,7 @@ export function TmEx2() {
           </Panel>
         </div>
       </div>
-      <Footer back={{ label: 'Return to Activity Tracker', to: 'tm.ex1' }} source="Field app · activity record" next="Impact & Learning → TM.IM1 once outcome data is available"
+      <Footer back={{ label: 'Return to Activity Tracker', to: 'tm.ex1' }}
         primary={{ label: 'Go to Impact & Learning', to: 'tm.im1' }} />
     </TmPage>
   );
@@ -257,7 +257,7 @@ export function TmIm1() {
       <AiPanel title="AI Performance Insight">
         <p className="tm-ai-text">Wadi Gaon converts trials to adopters at {conversion(48, 98).toFixed(1)}% vs Dhanora's {conversion(24, 62).toFixed(1)}%. Investigate Dhanora's at-risk demonstration, stock timing, follow-up completion and activity effectiveness — causes are not yet verified.</p>
       </AiPanel>
-      <Footer back={{ label: 'View Execution Details', to: 'tm.ex1' }} source="Field reports, farmer call-backs, provisional sales attribution" next="TM.IM2 — Diagnostics & Learning"
+      <Footer back={{ label: 'View Execution Details', to: 'tm.ex1' }}
         primary={{ label: 'Investigate Performance Drivers', to: 'tm.im2' }} />
     </TmPage>
   );
@@ -329,7 +329,7 @@ export function TmIm2() {
           <div className="tm-row-actions"><Btn small variant="primary" to="tm.ex2">Create Corrective Action</Btn><Btn small to="tm.ai1">Ask AI Copilot</Btn></div>
         </AiPanel>
       </div>
-      <Footer back={{ label: 'Back to Campaign Performance', to: 'tm.im1' }} source="TM.IM1 metrics, TM.EX1/EX2 execution records, CRM call-backs" next="TM.AI1 — AI Copilot"
+      <Footer back={{ label: 'Back to Campaign Performance', to: 'tm.im1' }}
         secondary={<Btn to="tm.ex2">Create Corrective Action</Btn>} primary={{ label: 'Ask AI Copilot', to: 'tm.ai1' }} />
     </TmPage>
   );
@@ -408,7 +408,7 @@ export function TmAi1() {
           </Panel>
         </aside>
       </div>
-      <Footer back={{ label: 'Back to Diagnostics', to: 'tm.im2' }} source="Campaign records TM.1–TM.IM2 (illustrative) · live LLM" next="Final Field Sales Manager screen — switch persona to continue the journey"
+      <Footer back={{ label: 'Back to Diagnostics', to: 'tm.im2' }}
         primary={{ label: 'Create Corrective Action', to: 'tm.ex2' }} />
     </TmPage>
   );
