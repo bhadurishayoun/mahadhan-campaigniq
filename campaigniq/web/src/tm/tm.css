@@ -182,6 +182,47 @@
 .tm-phases small { color: var(--n600); font-size: 10.5px; line-height: 1.35; }
 .tm-phase-key { background: var(--g100) !important; color: var(--g900); }
 .tm-readiness { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 14px; background: #fff; border: 1px solid var(--n200); border-radius: 10px; }
+.cw2-layout { display: grid; grid-template-columns: minmax(0, 1.85fr) minmax(280px, .9fr); gap: 12px; align-items: start; }
+.cw2-main, .cw2-side { display: grid; gap: 10px; min-width: 0; }
+.cw2-edit-hint { color: var(--n600); font-size: 12px; margin-top: -3px; }
+.cw2-table-wrap { width: 100%; overflow-x: auto; }
+.cw2-table { width: 100%; min-width: 900px; table-layout: fixed; }
+.cw2-table th { background: var(--g50); color: var(--n700); font-size: 11px; }
+.cw2-table th:nth-child(1) { width: 20%; }
+.cw2-table th:nth-child(2) { width: 14%; }
+.cw2-table th:nth-child(3), .cw2-table th:nth-child(4) { width: 17%; }
+.cw2-table th:nth-child(5) { width: 14%; }
+.cw2-table th:nth-child(6) { width: 13%; }
+.cw2-table th:nth-child(7) { width: 28px; }
+.cw2-table td { padding: 6px 5px; }
+.cw2-activity-cell { display: flex; align-items: center; gap: 7px; }
+.cw2-activity-cell i { width: 9px; height: 9px; flex: none; border-radius: 3px; }
+.cw2-table input { min-width: 0; width: 100%; border: 1px solid var(--n300); border-radius: 6px; background: #fff; color: var(--n900); padding: 6px 7px; font: inherit; }
+.cw2-units { display: grid; grid-template-columns: 54px minmax(54px,1fr); gap: 4px; }
+.cw2-units input:first-child { text-align: right; }
+.cw2-money { display: inline-flex; align-items: center; justify-content: flex-end; gap: 3px; width: 100%; }
+.cw2-money input { width: 60px; text-align: right; font-weight: 700; }
+.cw2-delete { display: grid; place-items: center; border: 0; background: transparent; color: var(--n600); padding: 5px; border-radius: 5px; }
+.cw2-delete:hover { background: #fff0ec; color: #a8402c; }
+.cw2-table tfoot td { background: var(--g50); font-weight: 700; }
+.cw2-budget-panel { gap: 9px; }
+.cw2-budget-row { display: grid; grid-template-columns: minmax(95px,1.2fr) minmax(60px,1fr) 36px; gap: 8px; align-items: center; font-size: 12px; }
+.cw2-budget-row > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--n800); }
+.cw2-budget-row > b { text-align: right; color: var(--n700); font-variant-numeric: tabular-nums; }
+.cw2-budget-track { height: 10px; border-radius: 8px; background: var(--n100); overflow: hidden; }
+.cw2-budget-track i { display: block; height: 100%; border-radius: inherit; transition: width .2s ease; }
+.cw2-budget-total, .cw2-budget-sum { display: flex; justify-content: space-between; gap: 8px; padding: 8px 10px; background: var(--g50); border-radius: 7px; color: var(--g900); }
+.cw2-budget-sum { background: var(--amber-50); color: var(--n800); }
+.cw2-calendar-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--n600); }
+.cw2-calendar-phases { display: grid; grid-template-columns: 1fr 1.45fr 1fr; gap: 5px; }
+.cw2-calendar-phases section { min-height: 90px; padding: 10px 12px; border-radius: 8px; background: var(--n50); border-top: 3px solid var(--n300); }
+.cw2-calendar-phases section.active { background: var(--g50); border-color: var(--g600); }
+.cw2-calendar-phases ul { margin: 6px 0 0; padding-left: 17px; color: var(--n700); }
+.cw2-readiness-panel .tm-panel-head { margin-bottom: 0; }
+.cw2-readiness-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; }
+.cw2-readiness-grid .pill { height: 100%; display: flex; align-items: center; }
+@media (max-width: 1150px) { .cw2-layout { grid-template-columns: minmax(0,1fr); } .cw2-side { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 760px) { .cw2-side, .cw2-readiness-grid { grid-template-columns: minmax(0,1fr); } .cw2-calendar-phases { grid-template-columns: minmax(0,1fr); } }
 .tm-hbars { display: grid; gap: 8px; }
 .tm-hbar { display: grid; grid-template-columns: minmax(90px, 140px) 1fr 52px; align-items: center; gap: 8px; font-size: 12px; }
 .tm-hbar-label { color: var(--n800); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

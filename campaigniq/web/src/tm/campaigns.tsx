@@ -4,7 +4,7 @@
  */
 import { Fragment, useMemo, useState } from 'react';
 import {
-  CalendarRange, CheckCircle2, Eye, FlaskConical, Lock, MapPin, MessageSquare, Plus, Repeat, Save, ShieldCheck, Smartphone,
+  CalendarRange, CheckCircle2, Eye, FlaskConical, Lock, MapPin, MessageSquare, Plus, Save, ShieldCheck, Trash2,
   Sprout, Store, Target, Users, Wallet,
 } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
@@ -15,10 +15,9 @@ import {
 } from './data';
 import { APPROVAL_STEPS, setCampaignStage, stageLabel, useCampaignState } from './state';
 import { AiPanel, Context, Footer, Note, Panel, Status, Steps, TmPage, WIZARD, crore, lakh } from './ui';
-import { ApprovalPipeline, Donut, IconTiles, MAP_COLORS, Pictogram, Ring, StageTimeline, TmMap, VILLAGE_PLACE } from './viz';
+import { ApprovalPipeline, Donut, IconTiles, MAP_COLORS, Ring, StageTimeline, TmMap, VILLAGE_PLACE } from './viz';
 
 const VILLAGE_CHOICES = ['Dhanora', 'Wadi Gaon', 'Ambad HQ', 'Pimpalgaon', 'Other villages'];
-const ACTIVITY_ICONS = [Sprout, Store, Users, Smartphone, Repeat];
 const MIX_COLORS = ['#2f8a3b', '#3972b8', '#d7a62f', '#8fb08a', '#c8553d'];
 
 /** The four-step campaign journey shown on TM.C1, TM.C2 and TM.C3. */
@@ -204,70 +203,60 @@ export function Cw2() {
   const total = lines.reduce((sum, l) => sum + (Number.isFinite(l.budget) ? l.budget : 0), 0);
   const units = lines.reduce((sum, l) => sum + l.units, 0);
   const update = (index: number, patch: Partial<ActivityLine>) => setLines((all) => all.map((l, i) => (i === index ? { ...l, ...patch } : l)));
+  const addActivity = () => setLines((all) => [...all, { activity: 'New activity', units: 1, unitLabel: 'units', where: 'Select village / channel', timing: 'To schedule', owner: '', budget: 0 }]);
+  const removeActivity = (index: number) => setLines((all) => all.filter((_, i) => i !== index));
   return (
     <TmPage crumbs={[{ label: 'My Campaigns', to: 'tm.c1' }, { label: CAMPAIGN.name, to: 'cw.1' }, { label: 'Campaign Wizard' }, { label: 'Activity & Budget Mix' }]}
-      code="CW.2" title="Activities & Budget" status="Budget draft · editable">
+      code="CW.2" title="Campaign Activity & Budget Mix Planner" status="Draft and editable">
       <Steps steps={WIZARD} active={1} onStep />
       <Context items={[
-        { label: 'Campaign', value: CAMPAIGN.name },
-        { label: 'Villages', value: CAMPAIGN.villages },
-        { label: 'Linked retailers', value: '3 selected' },
-        { label: 'Plan-linked objective', value: '₹25 L', sub: 'Already included in approved ABP ₹4.20 Cr' },
+        { label: 'Campaign name', value: CAMPAIGN.name },
+        { label: 'Geography (villages)', value: CAMPAIGN.villages },
+        { label: 'Selected retailers', value: '3' },
+        { label: 'Linked growth objective', value: '₹25 L', sub: 'Already included in approved Ambad ABP ₹4.20 Cr' },
       ]} />
-      <IconTiles items={[
-        { icon: CalendarRange, value: units, label: 'Planned activity units', note: `${lines.length} activity types`, tone: 'green' },
-        { icon: Wallet, value: lakh(total, 2), label: 'Draft campaign budget', note: 'Editable · not approved', tone: 'amber' },
-        { icon: Users, value: `₹${Math.round((total * 1e5) / 640).toLocaleString('en-IN')}`, label: 'Budget per planned farmer reached', note: 'at 640 planned reach' },
-        { icon: Target, value: `${((total / 25) * 100).toFixed(0)}%`, label: 'Budget vs ₹25 L objective', note: 'spend ratio, draft', tone: 'blue' },
-      ]} />
-      <Panel title="Campaign activity planner" actions={<Btn small icon={<Plus size={12} />} onClick={() => setLines((all) => [...all, { activity: 'New activity', units: 1, unitLabel: 'units', where: 'Select village', timing: 'To schedule', owner: 'Owner pending', budget: 0 }])}>Add Activity</Btn>}>
-        <div className="table-wrap">
-          <table className="dt pm-table tm-table tm-edit-table">
-            <thead><tr><th>Activity</th><th className="r">Planned units</th><th>Village / channel</th><th>Tentative timing</th><th>Assigned owner</th><th className="r">Draft budget</th></tr></thead>
-            <tbody>
-              {lines.map((l, index) => (
-                <tr key={index}>
-                  <td><div className="tm-act-cell"><i style={{ background: MIX_COLORS[index % MIX_COLORS.length] }} /><input className="tm-cell-input" value={l.activity} onChange={(e) => update(index, { activity: e.target.value })} aria-label="Activity" /></div></td>
-                  <td className="r"><input type="number" min={0} className="tm-cell-num" value={l.units} onChange={(e) => update(index, { units: Number(e.target.value) })} aria-label="Units" /> <small>{l.unitLabel}</small>
-                    <div><Pictogram icon={ACTIVITY_ICONS[index % ACTIVITY_ICONS.length]} count={Math.min(Math.max(l.units, 0), 8)} /></div></td>
-                  <td>{l.where}</td>
-                  <td>{l.timing}</td>
-                  <td>{/pending/i.test(l.owner) ? <Status>{l.owner}</Status> : l.owner}</td>
-                  <td className="r"><span className="tm-input-money">₹<input type="number" min={0} step={0.05} value={l.budget} onChange={(e) => update(index, { budget: Number(e.target.value) })} aria-label="Budget in lakh" /> L</span></td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot><tr><td>Total draft campaign budget</td><td className="r">{units} units</td><td /><td /><td /><td className="r">{lakh(total, 2)}</td></tr></tfoot>
-          </table>
+      <div className="cw2-layout">
+        <div className="cw2-main">
+          <Panel title="Campaign Activity Planner" actions={<Btn small icon={<Plus size={12} />} onClick={addActivity}>Add Activity</Btn>}>
+            <p className="cw2-edit-hint">Plan activities, targets, owners and draft budget. All fields are editable.</p>
+            <div className="table-wrap cw2-table-wrap">
+              <table className="dt pm-table tm-table cw2-table">
+                <thead><tr><th>Activity</th><th>Planned units</th><th>Village / channel</th><th>Tentative timing</th><th>Assigned owner</th><th className="r">Draft budget</th><th aria-label="Actions" /></tr></thead>
+                <tbody>{lines.map((line, index) => (
+                  <tr key={index}>
+                    <td><div className="cw2-activity-cell"><i style={{ background: MIX_COLORS[index % MIX_COLORS.length] }} /><input value={line.activity} onChange={(e) => update(index, { activity: e.target.value })} aria-label={`Activity ${index + 1}`} /></div></td>
+                    <td><div className="cw2-units"><input type="number" min={0} value={line.units} onChange={(e) => update(index, { units: Number(e.target.value) })} aria-label={`Planned units ${index + 1}`} /><input value={line.unitLabel} onChange={(e) => update(index, { unitLabel: e.target.value })} aria-label={`Unit type ${index + 1}`} /></div></td>
+                    <td><input className="cw2-field" value={line.where} onChange={(e) => update(index, { where: e.target.value })} aria-label={`Village or channel ${index + 1}`} /></td>
+                    <td><input className="cw2-field" value={line.timing} onChange={(e) => update(index, { timing: e.target.value })} aria-label={`Tentative timing ${index + 1}`} /></td>
+                    <td><input className="cw2-field" value={line.owner} onChange={(e) => update(index, { owner: e.target.value })} placeholder="Select owner" aria-label={`Assigned owner ${index + 1}`} /></td>
+                    <td className="r"><label className="cw2-money"><span>₹</span><input type="number" min={0} step={0.05} value={line.budget} onChange={(e) => update(index, { budget: Number(e.target.value) })} aria-label={`Draft budget ${index + 1}`} /><span>L</span></label></td>
+                    <td><button type="button" className="cw2-delete" aria-label={`Remove ${line.activity}`} onClick={() => removeActivity(index)}><Trash2 size={14} /></button></td>
+                  </tr>
+                ))}</tbody>
+                <tfoot><tr><td>Total Draft Campaign Budget</td><td>{units} units</td><td colSpan={3} /><td className="r">{lakh(total, 2)}</td><td /></tr></tfoot>
+              </table>
+            </div>
+          </Panel>
+          <Panel title="Crop-Stage-Linked Campaign Calendar">
+            <div className="cw2-calendar-head"><span>Indicative placement of key activities across campaign phases</span><Status>Timing requires Agronomy validation</Status></div>
+            <div className="cw2-calendar-phases">{['Preparation', 'Relevant Onion Crop-Stage Window', 'Follow-up'].map((phase, phaseIndex) => (
+              <section key={phase} className={phaseIndex === 1 ? 'active' : ''}><b>{phase}</b><ul>{lines.filter((line) => phaseIndex === 0 ? /preparation|pre-activation/i.test(line.timing) : phaseIndex === 1 ? /stage window|bulb|crop-stage/i.test(line.timing) : /after|follow/i.test(line.timing)).map((line, i) => <li key={`${line.activity}-${i}`}>{line.activity}</li>)}</ul></section>
+            ))}</div>
+          </Panel>
+          <Panel title="Campaign Readiness (Key Checks)" className="cw2-readiness-panel">
+            <div className="cw2-readiness-grid"><Status>Owner assignment pending (2)</Status><Status>Agronomy content approval pending</Status><Status>Stock readiness not yet verified</Status><Status>Digital consent verification required</Status></div>
+          </Panel>
         </div>
-      </Panel>
-      <div className="pm-three">
-        <Panel title="Budget mix">
-          <Donut center={lakh(total, 2)} sub="draft budget" segments={lines.map((l, i) => ({ label: l.activity, value: l.budget, color: MIX_COLORS[i % MIX_COLORS.length] }))} />
-        </Panel>
-        <Panel title="Crop-stage-linked calendar (indicative)">
-          <div className="tm-swim">
-            {['Preparation', 'Onion stage window', 'Follow-up'].map((phase, p) => (
-              <div key={phase} className={cx('tm-swim-col', p === 1 && 'key')}>
-                <b>{phase}</b>
-                {lines.filter((l) => (p === 0 ? /preparation/i.test(l.timing) : p === 1 ? /stage window|before bulb/i.test(l.timing) : /after|follow/i.test(l.timing))).map((l) => (
-                  <span key={l.activity}>{l.activity} · {l.units}</span>
-                ))}
-              </div>
-            ))}
-          </div>
-          <small className="tm-muted">Timing is indicative and subject to agronomy validation; no dates are fixed yet.</small>
-        </Panel>
-        <AiPanel title="AI Activity Mix Recommendation">
-          <ul className="tm-ai-list">
-            <li>Prioritise demonstration execution and retailer engagement in Dhanora and Wadi Gaon.</li>
-            <li>Confirm the approved programme timing before booking demonstrations.</li>
-            <li>Verify stock and communication consent before activation — none of these is complete yet.</li>
-          </ul>
-        </AiPanel>
-      </div>
-      <div className="tm-readiness">
-        <Status>Owner assignment pending (2)</Status><Status>Agronomy content approval pending</Status><Status>Stock readiness not yet verified</Status><Status>Digital consent verification required</Status>
+        <aside className="cw2-side">
+          <Panel title="Budget Mix (Draft & Editable)" className="cw2-budget-panel">
+            {lines.map((line, index) => <div className="cw2-budget-row" key={index}><span>{line.activity}</span><div className="cw2-budget-track"><i style={{ width: `${total > 0 ? Math.max(0, line.budget / total * 100) : 0}%`, background: MIX_COLORS[index % MIX_COLORS.length] }} /></div><b>{total > 0 ? Math.round(line.budget / total * 100) : 0}%</b></div>)}
+            <div className="cw2-budget-total"><b>Total</b><b>{total > 0 ? Math.round(lines.reduce((sum, line) => sum + (total ? line.budget / total * 100 : 0), 0)) : 0}%</b></div>
+            <div className="cw2-budget-sum">Total draft budget <strong>{lakh(total, 2)}</strong></div>
+          </Panel>
+          <AiPanel title="AI Activity Mix Recommendation">
+            <ul className="tm-ai-list"><li>Prioritize demonstrations and retailer engagement in Dhanora and Wadi Gaon.</li><li>Confirm programme timing before booking demonstrations.</li><li>Verify stock and communication consent before activation.</li></ul>
+          </AiPanel>
+        </aside>
       </div>
       <Footer back={{ label: 'Back to Objective & Targeting', to: 'cw.1' }} source="Activity library unit costs (illustrative)" next="CW.3 — Scenario & Expected Outcomes"
         secondary={<Btn icon={<Save size={13} />} onClick={() => toast('Activity plan saved as draft.')}>Save Draft</Btn>}
