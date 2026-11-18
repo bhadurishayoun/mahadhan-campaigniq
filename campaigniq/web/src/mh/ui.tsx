@@ -26,7 +26,8 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
   children: ReactNode;
   className?: string;
 }) {
-  const { go } = useNav();
+  const { go, filters, marketingScope, marketingRegion } = useNav();
+  const filterKey = [marketingScope, marketingRegion, filters.geography, filters.crop, filters.portfolio].join('|');
   const pageRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const root = pageRef.current;
@@ -44,9 +45,9 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
     const observer = new MutationObserver(cleanLabels);
     observer.observe(root, { childList: true, subtree: true, characterData: true });
     return () => observer.disconnect();
-  }, [code]);
+  }, [code, filterKey]);
   return (
-    <div ref={pageRef} className={cx('pm-page', 'persona-page persona-page-mh', className)} data-screen={code}>
+    <div key={filterKey} ref={pageRef} className={cx('pm-page', 'persona-page persona-page-mh', className)} data-screen={code} data-filter-key={filterKey}>
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         <Home size={13} />
         <span className="crumb">

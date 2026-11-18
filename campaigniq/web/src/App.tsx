@@ -126,6 +126,13 @@ const FILTER_LABELS: Record<keyof Filters, string> = {
 
 const NATIONAL: Filters = { season: 'Late Rabi 2026-27', geography: 'India', district: 'All Districts', crop: 'All Crops', portfolio: 'All Products', campaignType: 'All' };
 const JALNA_ONION: Filters = { season: 'Late Rabi 2026-27', geography: 'Maharashtra', district: 'Jalna', crop: 'Onion', portfolio: 'Croptek', campaignType: 'Adoption' };
+const MH_REGION_STATES: Record<string, string[]> = {
+  'West Region': ['Maharashtra', 'Gujarat'],
+  'South Region': ['Karnataka', 'Telangana', 'Andhra Pradesh'],
+  'North Region': [],
+  'East Region': [],
+};
+const REGION_FOR_STATE = Object.fromEntries(Object.entries(MH_REGION_STATES).flatMap(([region, states]) => states.map((state) => [state, region])));
 
 const DEFAULT_FILTERS: Record<ModuleId, Filters> = {
   command: NATIONAL,
@@ -156,6 +163,8 @@ export default function App() {
   const [screen, setScreen] = useState<ScreenId>(readHash);
   const history = useRef<ScreenId[]>([]);
   const [filtersByModule, setFiltersByModule] = useState(DEFAULT_FILTERS);
+  const [marketingScope, setMarketingScope] = useState<'National' | 'Regional'>('Regional');
+  const [marketingRegion, setMarketingRegion] = useState('West Region');
   const [query, setQuery] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [navOpen, setNavOpen] = useState(false);
@@ -176,6 +185,11 @@ export default function App() {
   const { reference } = useReference();
   const options = useMemo(() => filterOptions(reference, filters), [reference, filters]);
   const scope = useMemo(() => scopeOf(reference, filters), [reference, filters]);
+  const mhStateOptions = reference.states
+    .filter((state) => marketingRegion === 'All Regions' || !MH_REGION_STATES[marketingRegion] || MH_REGION_STATES[marketingRegion].includes(state.name))
+    .map((state) => state.name);
+  const mhProductOptions = reference.products.filter((product) => product.active !== false
+    && (filters.crop === 'All Crops' || !product.crops?.length || product.crops.includes(filters.crop.toLowerCase())));
 
   useEffect(() => {
     const onHash = () => setScreen(readHash());
@@ -315,7 +329,7 @@ export default function App() {
   }
 
   return (
-    <NavContext.Provider value={{ screen, go, goBack, filters, setFilters, scope, reference, toast }}>
+    <NavContext.Provider value={{ screen, go, goBack, filters, setFilters, marketingScope, marketingRegion, setMarketingScope, setMarketingRegion, scope, reference, toast }}>
       <div className={`app${collapsed ? ' app-collapsed' : ''}${mh ? ' app-mh' : ''}`}>
         <aside className={navOpen ? 'sidebar open' : 'sidebar'} aria-label="Main navigation">
           <button type="button" className="brand" onClick={() => go(personaMeta.home)}>
@@ -369,11 +383,45 @@ export default function App() {
                 <span className="mh-topctx-person"><User size={14} /><b>Marketing Head</b><ChevronDown size={12} /></span>
                 <span><CalendarDays size={14} />FY 2025-26 <ChevronDown size={12} /></span>
                 <span><Layers size={14} />National Marketing Portfolio <ChevronDown size={12} /></span>
-                <label><small>Scope:</small><select value={filters.geography === 'India' ? 'National' : 'West Region'} onChange={(e) => setFilters({ ...filters, geography: e.target.value === 'National' ? 'India' : 'Maharashtra' })}><option>National</option><option>West Region</option></select></label>
-                <label><small>Region</small><select value={filters.geography === 'India' ? 'All Regions' : 'West Region'} onChange={(e) => setFilters({ ...filters, geography: e.target.value === 'All Regions' ? 'India' : 'Maharashtra' })}><option>All Regions</option><option>West Region</option><option>South Region</option><option>North Region</option><option>East Region</option></select></label>
-                <label><small>State</small><select value={filters.geography === 'India' ? 'All States' : filters.geography} onChange={(e) => setFilters({ ...filters, geography: e.target.value === 'All States' ? 'India' : e.target.value })}><option>All States</option><option>Maharashtra</option><option>Gujarat</option><option>Rajasthan</option><option>Madhya Pradesh</option></select></label>
-                <label><small>Crop</small><select value={filters.crop === 'All Crops' ? 'All Crops' : filters.crop} onChange={(e) => setFilters({ ...filters, crop: e.target.value })}><option>All Crops</option><option>Onion</option><option>Maize</option><option>Cotton</option><option>Soybean</option></select></label>
-                <label><small>Product</small><select value={filters.portfolio === 'All Products' ? 'All Products' : filters.portfolio} onChange={(e) => setFilters({ ...filters, portfolio: e.target.value })}><option>All Products</option><option>Croptek</option><option>NutriBoost</option></select></label>
+                <label><small>Scope:</small><select value={marketingScope} onChange={(e) => {
+                  const nextScope = e.target.value as 'National' | 'Regional';
+                  setMarketingScope(nextScope);
+                  if (nextScope === 'National') {
+                    setMarketingRegion('All Regions');
+                    setFilters({ ...filters, geography: 'India', district: 'All Districts' });
+                  } else {
+                    const nextRegion = marketingRegion === 'All Regions' ? 'West Region' : marketingRegion;
+                    setMarketingRegion(nextRegion);
+                    const allowed = MH_REGION_STATES[nextRegion] ?? [];
+                    if (filters.geography === 'India' || !allowed.length || !allowed.includes(filters.geography))
+                      setFilters({ ...filters, geography: allowed[0] ?? 'India', district: 'All Districts' });
+                  }
+                }}><option>National</option><option>Regional</option></select></label>
+                <label><small>Region</small><select value={marketingRegion} onChange={(e) => {
+                  const nextRegion = e.target.value;
+                  setMarketingRegion(nextRegion);
+                  setMarketingScope(nextRegion === 'All Regions' ? 'National' : 'Regional');
+                  const allowed = MH_REGION_STATES[nextRegion] ?? [];
+                  if (nextRegion === 'All Regions') setFilters({ ...filters, geography: 'India', district: 'All Districts' });
+                  else if (!allowed.length || (filters.geography !== 'India' && !allowed.includes(filters.geography)))
+                    setFilters({ ...filters, geography: 'India', district: 'All Districts' });
+                }}><option>All Regions</option><option>West Region</option><option>South Region</option><option>North Region</option><option>East Region</option></select></label>
+                <label><small>State</small><select value={filters.geography === 'India' ? 'All States' : filters.geography} onChange={(e) => {
+                  const selectedState = e.target.value;
+                  if (selectedState === 'All States') setFilters({ ...filters, geography: 'India', district: 'All Districts' });
+                  else {
+                    setMarketingScope('Regional');
+                    setMarketingRegion(REGION_FOR_STATE[selectedState] ?? marketingRegion);
+                    setFilters({ ...filters, geography: selectedState, district: 'All Districts' });
+                  }
+                }}><option>All States</option>{mhStateOptions.map((state) => <option key={state}>{state}</option>)}</select></label>
+                <label><small>Crop</small><select value={filters.crop} onChange={(e) => {
+                  const nextCrop = e.target.value;
+                  const validProducts = reference.products.filter((product) => product.active !== false && (!product.crops?.length || product.crops.includes(nextCrop.toLowerCase())));
+                  const productStillValid = filters.portfolio === 'All Products' || validProducts.some((product) => product.name === filters.portfolio);
+                  setFilters({ ...filters, crop: nextCrop, portfolio: productStillValid ? filters.portfolio : 'All Products' });
+                }}><option>All Crops</option>{reference.crops.map((crop) => <option key={crop.id}>{crop.name}</option>)}</select></label>
+                <label><small>Product</small><select value={filters.portfolio} onChange={(e) => setFilters({ ...filters, portfolio: e.target.value })}><option>All Products</option>{mhProductOptions.map((product) => <option key={product.id}>{product.name}</option>)}</select></label>
               </div>
             ) : bh ? (
               <div className="pm-topctx bh-topctx">

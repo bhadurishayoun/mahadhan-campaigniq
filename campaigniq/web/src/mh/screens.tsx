@@ -3,6 +3,7 @@ import { useNav, type ScreenId } from '../nav';
 import { MhPage } from './ui';
 import { MH_SCREENS } from './nav';
 import { MH_CHARTS } from './charts';
+import { FILTERED_DEMO_CROP, FILTERED_DEMO_PRODUCT, FILTERED_DEMO_REGION, MARKET_PULSE, marketPulseForFilters } from './filtering';
 import { Activity, ArrowLeft, ArrowRight, BarChart3, CalendarDays, CheckCircle2, CircleHelp, Clock3, Database, FileText, Info, Layers3, Link2, Map, MapPin, Megaphone, MessageCircle, PencilLine, Send, Sparkles, Sprout, Store, Target, TrendingUp, Users } from 'lucide-react';
 type Spec = {
   code: string;
@@ -16,11 +17,34 @@ type Spec = {
   extra?: ReactNode;
 };
 function Workspace(spec: Spec) {
-  const { go, goBack } = useNav();
+  const { go, goBack, filters, marketingScope, marketingRegion, setFilters, setMarketingScope, setMarketingRegion } = useNav();
+  const filteredMarkets = spec.code === 'MH.1' ? marketPulseForFilters(MARKET_PULSE, filters, marketingScope, marketingRegion) : [];
+  const selectionMatchesDetail = marketingScope === 'Regional' && marketingRegion === FILTERED_DEMO_REGION
+    && filters.geography === 'Maharashtra' && filters.crop === FILTERED_DEMO_CROP
+    && (filters.portfolio === FILTERED_DEMO_PRODUCT || filters.portfolio === 'All Products');
+  if (spec.code !== 'MH.1' && !selectionMatchesDetail) return (
+    <MhPage crumbs={spec.crumbs} code={spec.code} title={spec.title}>
+      <section className="mh-filter-empty">
+        <Sparkles aria-hidden="true" />
+        <h2>No records match these filters</h2>
+        <p>{marketingScope} · {marketingRegion} · {filters.geography === 'India' ? 'All States' : filters.geography} · {filters.crop} · {filters.portfolio}</p>
+        <button type="button" onClick={() => {
+          setMarketingScope('Regional');
+          setMarketingRegion(FILTERED_DEMO_REGION);
+          setFilters({ ...filters, geography: 'Maharashtra', district: 'Jalna', crop: FILTERED_DEMO_CROP, portfolio: FILTERED_DEMO_PRODUCT });
+        }}>Show Maharashtra Onion data</button>
+      </section>
+    </MhPage>
+  );
   const insightTitle = spec.code === 'MH.2' ? 'AI Strategic Opportunity Insight' : spec.code.startsWith('MH.9') ? 'AI Performance Insight' : 'AI Marketing Insight';
   const summaryIcons = spec.code === 'MH.1' ? [Layers3, TrendingUp, Target] : spec.code === 'MH.3A' ? [Layers3, Sprout, Target] : spec.code === 'MH.9' ? [Target, Users, CircleHelp] : [Activity, TrendingUp, CircleHelp, CheckCircle2];
   const insightIcons = [Target, Activity, Info];
   const summaryNotes = spec.code === 'MH.1' ? ['(Illustrative, market-sizing view)', '(Illustrative YoY range)', '(Illustrative incremental sales range)'] : spec.code === 'MH.9' ? ['', '(Adopters, illustrative)', ''] : [];
+  const summaryMetrics: [string, string, string?][] = spec.code === 'MH.1'
+    ? filteredMarkets.length
+      ? [['Markets matching filters', String(filteredMarkets.length)], ['Selected crop / product', `${filters.crop} / ${filters.portfolio}`], ['Selected geography', `${marketingRegion} / ${filters.geography === 'India' ? 'All States' : filters.geography}`]]
+      : [['Markets matching filters', '0', 'amber']]
+    : spec.metrics;
   return (
     <MhPage
       crumbs={spec.crumbs}
@@ -30,7 +54,10 @@ function Workspace(spec: Spec) {
     >
       {(spec.code === 'MH.3A' || spec.code === 'MH.3B') && <div className="mh-review-context"><span><MapPin/><b>Region</b><strong>West</strong></span><span><Map/><b>State</b><strong>Maharashtra</strong></span><span><Sprout/><b>Crop</b><strong>Onion</strong></span><span><Layers3/><b>Priority Product</b><strong>Croptek</strong></span><span><Users/><b>Zonal Manager Review</b><strong className="mh-status-good"><CheckCircle2/>Reviewed</strong></span><span><Target/><b>Marketing Assessment</b><strong className="mh-status-review"><Clock3/>Pending</strong></span></div>}
       {spec.code === 'MH.4A' && <div className="mh-diagnosis-context"><span><MapPin/><b>Region</b>West</span><span><Map/><b>State</b>Maharashtra</span><span><Sprout/><b>Crop</b>Onion</span><span><Layers3/><b>Product</b>Croptek</span><span><Database/><b>Data Scope</b>Market, Sales, Campaigns, Business Plan</span><span><CalendarDays/><b>Assessment Period</b>FY 2024–25 (Historical)</span></div>}
-      {spec.code !== 'MH.AI1' && spec.code !== 'MH.3B' && <div className={`mh-summary-row mh-summary-count-${spec.metrics.length} ${spec.code === 'MH.3A' ? 'mh-3a-summary' : ''}`} style={{ gridTemplateColumns: `repeat(${spec.code === 'MH.3A' ? 4 : spec.metrics.length}, minmax(0, 1fr))` }}>{spec.metrics.map(([label, value, tone], i) => { const Icon = summaryIcons[i % summaryIcons.length]; const displayValue = spec.code === 'MH.1' ? [value.replace('INR ', '₹').replace('-', '–'), value, value][i] : value; return <div key={label} className={`mh-summary-card mh-summary-card-${i} ${tone ? `mh-summary-${tone}` : ''}`}><span className="mh-summary-icon"><Icon aria-hidden="true" /></span><div className="mh-summary-copy"><span>{label}</span><strong>{displayValue}</strong>{summaryNotes[i] && <small>{summaryNotes[i]}</small>}{spec.code === 'MH.9' && i === 0 && <span className="mh-summary-progress"><i/></span>}</div></div>; })}{spec.code === 'MH.3A' && <div className="mh-summary-note"><Info/><span>₹1.90 Cr is the approved all-product Onion allocation for Ambad, not a Croptek-specific committed revenue.</span></div>}</div>}
+      {spec.code !== 'MH.AI1' && spec.code !== 'MH.3B' && <div className={`mh-summary-row mh-summary-count-${summaryMetrics.length} ${spec.code === 'MH.3A' ? 'mh-3a-summary' : ''}`} style={{ gridTemplateColumns: `repeat(${spec.code === 'MH.3A' ? 4 : summaryMetrics.length}, minmax(0, 1fr))` }}>
+        {summaryMetrics.map(([label, value, tone], i) => { const Icon = spec.code === 'MH.1' ? [Layers3, Sprout, MapPin][i] : summaryIcons[i % summaryIcons.length]; return <div key={label} className={`mh-summary-card mh-summary-card-${i} ${tone ? `mh-summary-${tone}` : ''}`}><span className="mh-summary-icon"><Icon aria-hidden="true" /></span><div className="mh-summary-copy"><span>{label}</span><strong>{value}</strong>{spec.code !== 'MH.1' && summaryNotes[i] && <small>{summaryNotes[i]}</small>}{spec.code === 'MH.9' && i === 0 && <span className="mh-summary-progress"><i/></span>}</div></div>; })}
+        {spec.code === 'MH.3A' && <div className="mh-summary-note"><Info/><span>₹1.90 Cr is the approved all-product Onion allocation for Ambad, not a Croptek-specific committed revenue.</span></div>}
+      </div>}
       <div className={`mh-workspace-grid ${spec.code === 'MH.3A' ? 'mh-workspace-review-detail' : ''} ${spec.code === 'MH.3B' ? 'mh-workspace-review-region' : ''}`}>
         <main className="mh-workspace-main">
           {MH_CHARTS[spec.code]}

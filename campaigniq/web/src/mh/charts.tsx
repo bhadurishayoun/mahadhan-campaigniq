@@ -3,6 +3,7 @@ import { useNav } from '../nav';
 import { BarChart3, Grid3x3, ListChecks, Target } from '../icons';
 import { Activity, ArrowLeft, ArrowRight, Boxes, CheckCircle2, CircleHelp, Clock3, Database, FileText, Info, Layers3, MapPin, Megaphone, Play, Save, Send, ShieldCheck, Sparkles, Sprout, Store, Users } from 'lucide-react';
 import { QuestionChips, ChartCard, HeatGrid, RankBars } from '../ui/index';
+import { MARKET_PULSE, marketPulseForFilters } from './filtering';
 
 /* Illustrative figures only; they reuse the numbers shown on the BH / MH screens. */
 const REGIONS = ['West', 'South', 'North', 'East'];
@@ -21,18 +22,15 @@ function MhAssessment({ title, steps }: { title: string; steps: [string, string,
 }
 
 function Mh1Charts() {
-  const { go } = useNav();
+  const { go, filters, marketingScope, marketingRegion } = useNav();
+  const rows = marketPulseForFilters(MARKET_PULSE, filters, marketingScope, marketingRegion);
   return (
     <div className="mh-national-reports">
       <section className="mh-section mh-report-card">
         <h2><Activity />National &amp; Regional Opportunity Pulse</h2>
         <div className="mh-report-table-wrap"><table className="mh-report-table"><thead><tr><th>Region</th><th>Regional Market<br/>Opportunity <small>(Illustrative)</small></th><th>Priority Crop / Product</th><th>Historical Product Sales Trend<br/><small>(Past 3–4 seasons, illustrative)</small></th><th>Opportunity / Performance Gap</th><th>Explore</th></tr></thead><tbody>
-          {[
-            { region:'West Region', size:'High', crop:'Croptek + Onion', gap:'High potential – under-indexing', points:'0,24 12,19 24,21 36,12 48,16 60,6 72,4', cls:'priority' },
-            { region:'South Region', size:'High', crop:'Maize – Croptek', gap:'Strong momentum – scale further', points:'0,22 12,16 24,18 36,11 48,14 60,8 72,5' },
-            { region:'North Region', size:'Medium–High', crop:'Cotton – Croptek', gap:'Stable – improve penetration', points:'0,18 12,16 24,18 36,14 48,15 60,11 72,9' },
-            { region:'East Region', size:'Medium', crop:'Soybean – Croptek', gap:'Emerging – expansion opportunity', points:'0,23 12,20 24,18 36,13 48,14 60,7 72,3' },
-          ].map((r)=><tr key={r.region} className={r.cls}><td><b>{r.region}</b></td><td>{r.size}</td><td><b>{r.crop}</b></td><td><svg className="mh-sparkline" viewBox="0 0 76 30" role="img" aria-label={`${r.region} sales trend rising`}><polyline points={r.points} transform="translate(2 2)"/><path d={`M2 27 L${r.points.split(' ').map(p=>p.split(',').join(' ')).join(' L')} L74 27 Z`} className="mh-sparkline-fill"/><circle cx="73" cy={Number(r.points.split(' ').at(-1)?.split(',')[1])+2} r="2.5"/></svg></td><td>{r.gap}</td><td><button className={`mh-explore ${r.region==='West Region'?'mh-explore-primary':''}`} onClick={()=>go('mh.2')}>Explore <span>→</span></button></td></tr>)}
+          {rows.map((r)=><tr key={r.region} className={r.tone}><td><b>{r.region}</b></td><td>{r.market}</td><td><b>{r.product} + {r.crop}</b></td><td><svg className="mh-sparkline" viewBox="0 0 76 30" role="img" aria-label={`${r.region} sales trend rising`}><polyline points={r.points} transform="translate(2 2)"/><path d={`M2 27 L${r.points.split(' ').map(p=>p.split(',').join(' ')).join(' L')} L74 27 Z`} className="mh-sparkline-fill"/><circle cx="73" cy={Number(r.points.split(' ').at(-1)?.split(',')[1])+2} r="2.5"/></svg></td><td>{r.gap}</td><td><button className={`mh-explore ${r.region==='West Region'?'mh-explore-primary':''}`} onClick={()=>go('mh.2')}>Explore <span>→</span></button></td></tr>)}
+          {rows.length === 0 && <tr><td colSpan={6} className="mh-filter-empty-row">No market records match the selected scope, region, state, crop and product.</td></tr>}
         </tbody></table></div>
       </section>
       <section className="mh-section mh-report-card mh-efficacy-card">

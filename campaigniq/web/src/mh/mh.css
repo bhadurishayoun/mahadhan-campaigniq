@@ -767,3 +767,10 @@
   .mh-plan-kpis { grid-template-columns:1fr 1fr; }
   .mh-opportunity-to-plan > div { grid-template-columns:1fr; }
 }
+
+.mh-filter-empty { display: grid; justify-items: center; gap: 12px; margin: 24px 0; padding: 48px 24px; border: 1px solid #dce7d8; border-radius: 14px; background: linear-gradient(135deg,#f6faf3,#fff); text-align: center; color: #315d37; }
+.mh-filter-empty > svg { width: 30px; height: 30px; color: #4d9b53; }
+.mh-filter-empty h2 { margin: 0; font-size: 20px; }
+.mh-filter-empty p { margin: 0; color: #5c6a5d; }
+.mh-filter-empty button { padding: 10px 16px; border: 1px solid #2f803b; border-radius: 8px; background: #2f803b; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+.mh-filter-empty-row { padding: 22px !important; color: #6a756b; text-align: center; }

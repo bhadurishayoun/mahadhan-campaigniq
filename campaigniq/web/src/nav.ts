@@ -131,6 +131,10 @@ export interface NavState {
   goBack: (fallback?: ScreenId) => void;
   filters: Filters;
   setFilters: (filters: Filters) => void;
+  marketingScope: 'National' | 'Regional';
+  marketingRegion: string;
+  setMarketingScope: (scope: 'National' | 'Regional') => void;
+  setMarketingRegion: (region: string) => void;
   /** Master-id version of the filters, used by datasets and the copilot. */
   scope: Scope;
   reference: ReferenceData;
