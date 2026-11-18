@@ -147,7 +147,7 @@ export function Cw1() {
         <Panel title="Campaign configuration">
           <div className="pm-form pm-form-2">
             <label className="pm-field"><span>Campaign name</span><input defaultValue={CAMPAIGN.name} /></label>
-            <label className="pm-field"><span>Campaign objective</span><input defaultValue="Convert conventional nutrition users" /></label>
+            <label className="pm-field"><span>Campaign objective</span><input defaultValue="Convert Non Saarthi nutrition users" /></label>
           </div>
           <div className="pm-field"><span>Geography — target villages (or click the map)</span>
             <div className="tm-chips">{VILLAGE_CHOICES.map((v) => <button key={v} type="button" className={cx(villages.includes(v) && 'active')} onClick={() => setVillages((l) => toggle(l, v))}>{villages.includes(v) ? '✓ ' : ''}{v}</button>)}</div>
@@ -159,7 +159,7 @@ export function Cw1() {
           </div>
           <div className="pm-form pm-form-2">
             <div className="pm-field"><span>Target farmer audience</span>
-              <div className="tm-audience"><b>Conventional-nutrition onion growers in selected villages</b><Status>Pending CRM cohort validation</Status></div>
+              <div className="tm-audience"><b>Conventional - Non Saarthi Onion Growers in selected Villages</b><Status>Pending CRM cohort validation</Status></div>
             </div>
             <label className="pm-field"><span>Preferred campaign type</span>
               <select value={type} onChange={(e) => setType(e.target.value)}>
@@ -415,7 +415,7 @@ export function Cw4() {
         <div className="tm-brief">
           <dl className="tm-facts">
             <div><dt>Villages</dt><dd>Dhanora and Wadi Gaon</dd></div>
-            <div><dt>Approach</dt><dd>Retailer-led conversion of eligible conventional-nutrition users</dd></div>
+            <div><dt>Approach</dt><dd>Retailer-led conversion of eligible Non Saarthi nutrition users</dd></div>
             <div><dt>Linked retailers</dt><dd>3</dd></div>
             <div><dt>Audience</dt><dd><Status>{items[4].resolved ? 'Validated' : 'Validation pending'}</Status></dd></div>
           </dl>
