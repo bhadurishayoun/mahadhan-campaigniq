@@ -1,8 +1,8 @@
 # Builds the web app (campaigniq/web) and publishes it to GitHub Pages on every push to main.
 # One-time setup: Settings -> Pages -> Source: "GitHub Actions".
-# Optional: Settings -> Secrets and variables -> Actions -> Variables -> VITE_API_URL
-#   (e.g. https://mahadhan-campaigniq-api.onrender.com/api) to connect the live backend.
-#   Without it the site is published as a static demo (all dashboards and maps work).
+# Backend: the site connects to the Render API https://mahadhan-campaigniq-api.onrender.com/api by default.
+#   To use another backend set Settings -> Secrets and variables -> Actions -> Variables -> VITE_API_URL.
+#   If the backend is unreachable the site still works: dashboards use built-in data, the copilot calls the LLM directly.
 name: Deploy to GitHub Pages
 
 on:
@@ -42,7 +42,7 @@ jobs:
       - name: Build static site
         run: npm run build --workspace web
         env:
-          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_API_URL: ${{ vars.VITE_API_URL || 'https://mahadhan-campaigniq-api.onrender.com/api' }}
 
       - name: Check the build contains the page and the map data
         run: |
@@ -51,7 +51,7 @@ jobs:
           test -s web/dist/geo/jalna-talukas.topo.json
           echo "Backend: ${VITE_API_URL:-none (static demo)}"
         env:
-          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_API_URL: ${{ vars.VITE_API_URL || 'https://mahadhan-campaigniq-api.onrender.com/api' }}
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

@@ -34,8 +34,10 @@ available through their existing routes; see `campaigniq/docs/product-manager-pe
 * **Website - GitHub Pages (free):** every push to `main` builds `campaigniq/web` and publishes it.
   All dashboard screens and maps work on their own with built-in demo data.
 * **Backend - Render (free, optional):** the three *Prototype Showcase* screens (live planning engine),
-  CSV uploads and a real AI model need the Python API. It runs on Render; the website finds it through the
-  repository variable `VITE_API_URL`. Without it the site still works as a static demo.
+  CSV uploads and backend-grounded AI answers need the Python API. It runs on Render at
+  `https://mahadhan-campaigniq-api.onrender.com`, and the website connects to it by default (override with the
+  repository variable `VITE_API_URL`). If the backend is asleep or unreachable the site still works: dashboards use
+  built-in data and the AI Copilot calls the free LLM directly from the browser.
   The free Render server sleeps when idle - the first visit after a while can take up to a minute.
 
 Step-by-step setup: **[DEPLOYMENT.md](DEPLOYMENT.md)**.
