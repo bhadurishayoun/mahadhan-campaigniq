@@ -556,7 +556,7 @@ export function CopilotWorkspace() {
                 </Panel>
               </div>
 
-              <Panel title="Evidence Sources (Cross-Module)" icon={<Link2 size={16} />}>
+              <Panel title="Evidence Sources (Cross-Module)" icon={<Link2 size={16} />} className="ai1-source-panel">
                 <div className="ai1-sources">
                   {answer.sources.map((source, index) => (
                     <button type="button" key={index} className="ai1-source" onClick={() => go(source.to)}>

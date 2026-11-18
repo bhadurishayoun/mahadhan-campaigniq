@@ -406,12 +406,6 @@ export function TmAi1() {
             <Btn variant="primary" to="tm.ex2">Create Corrective Action</Btn>
             <Btn to="tm.im2">View Detailed Diagnostics</Btn>
           </Panel>
-          <Panel title="Sources">
-            <div className="tm-source-links">
-              <Btn small to="tm.ex1">TM.EX1 Activity Tracker</Btn><Btn small to="tm.ex2">TM.EX2 Activity Follow-up</Btn>
-              <Btn small to="tm.im1">TM.IM1 Impact Dashboard</Btn><Btn small to="tm.im2">TM.IM2 Diagnostics</Btn>
-            </div>
-          </Panel>
         </aside>
       </div>
       <Footer back={{ label: 'Back to Diagnostics', to: 'tm.im2' }} source="Campaign records TM.1–TM.IM2 (illustrative) · live LLM" next="Final Field Sales Manager screen — switch persona to continue the journey"

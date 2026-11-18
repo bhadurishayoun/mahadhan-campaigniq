@@ -669,12 +669,8 @@ export function PageHeader({ code, title, subtitle, badge, actions, back }: {
 }
 
 export function SourceBar({ children, right, tone = 'green' }: { children: ReactNode; right?: ReactNode; tone?: 'green' | 'plain' }) {
-  return (
-    <div className={cx('source-bar', tone === 'plain' && 'source-plain')}>
-      <div>{children}</div>
-      {right && <div className="source-right">{right}</div>}
-    </div>
-  );
+  void children; void right; void tone;
+  return null;
 }
 
 export function FlowFooter({ steps }: {

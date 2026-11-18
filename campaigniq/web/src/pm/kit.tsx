@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { ArrowRight, ChevronRight, ExternalLink, Home, Lock, Sparkles, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronRight, Home, Lock, Sparkles, X } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import { Btn, Pill, cx, type Tone } from '../ui';
 import { PulseStrip, type PulseItem } from '../ui/index';
@@ -69,13 +69,8 @@ export function PmPage({ crumbs, code, title, status, subtitle, actions, childre
 }
 
 export function Source({ children, right }: { children: ReactNode; right?: ReactNode }) {
-  return (
-    <div className="pm-source">
-      <span className="pm-source-tag">Source</span>
-      <span className="pm-source-text">{children}</span>
-      {right && <span className="pm-source-right">{right}</span>}
-    </div>
-  );
+  void children; void right;
+  return null;
 }
 
 function DrawerSummary({ title, status, back }: { title: string; status?: string; back: ScreenId }) {
@@ -258,15 +253,8 @@ export function AiBox({ title = 'AI Insight', items, children, className }: {
 }
 
 export function Sources({ items, label = 'Sources' }: { items: { label: string; to?: ScreenId; note?: string }[]; label?: string }) {
-  const { go } = useNav();
-  return (
-    <div className="pm-sources">
-      <span className="pm-sources-label">{label}</span>
-      {items.map((item) => item.to
-        ? <button type="button" key={item.label} className="pm-source-chip" onClick={() => go(item.to!)} title={item.note}>{item.label}</button>
-        : <span key={item.label} className="pm-source-chip" title={item.note}>{item.label}</span>)}
-    </div>
-  );
+  void items; void label;
+  return null;
 }
 
 export function Checklist({ items }: { items: { label: ReactNode; status: string; note?: ReactNode }[] }) {
@@ -312,11 +300,9 @@ export function Act({ children, message, to, small, icon }: { children: ReactNod
 }
 
 export function Next({ label, to }: { label: string; to: ScreenId; sub?: string }) {
-  return (
-    <div className="pm-next-link">
-      <Btn to={to} variant="outline" icon={<ExternalLink size={13} />}>{label}</Btn>
-    </div>
-  );
+  void label; void to;
+  const { goBack } = useNav();
+  return <div className="pm-next-link"><Btn variant="outline" icon={<ArrowLeft size={13} />} onClick={() => goBack('pm.1')}>Back</Btn></div>;
 }
 
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: ReactNode }) {
