@@ -37,7 +37,20 @@ All data is **illustrative**: the backend is filled from a synthetic data workbo
 
 ## 0. Project status & next steps (start here)
 
-*Last updated: 18 Nov 2026 (commit after `a825e30`). Update this section with every change.*
+*Last updated: 18 Nov 2026 (after commit `a127d87`, plain-language screen titles). Update this section with every change.*
+
+### Recent changes (newest first)
+
+| Commit | Change |
+|---|---|
+| `a127d87` | Screen, tab, breadcrumb and panel titles rewritten in plain business language across all personas (e.g. "National Business & Marketing Command Centre" → "Business & Marketing Overview"); docs use the new names; naming convention added below |
+| `93585cc` | README / DEPLOYMENT rewritten as a handover guide (this section) |
+| `a825e30` | Website connected to the Render backend by default |
+| `6694bbb` | Live AI Copilot on free keyless LLMs (backend `/api/copilot/chat` + browser fallback) for AI.1 and the TM / PM / MH / BH copilots |
+| `24d2330` | Master showcase login; Territory Manager rebuilt to mirror the V2 mockups, with maps, campaign visuals, Approval Status and Campaign Portfolio screens |
+| `d6c55d8` | Synthetic data workbook and loader; backend seeds itself from it |
+
+Full history: `git log --oneline`.
 
 ### Where things run
 
