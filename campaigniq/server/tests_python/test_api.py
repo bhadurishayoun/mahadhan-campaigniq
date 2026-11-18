@@ -1,3 +1,4 @@
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -6,6 +7,7 @@ from unittest.mock import patch
 from fastapi.testclient import TestClient
 
 import campaign_api.db as database
+from campaign_api import workbook
 from campaign_api.main import app
 
 
@@ -38,7 +40,7 @@ class CampaignApiTests(unittest.TestCase):
         }
 
     def test_seeded_market_and_calculator_golden_case(self):
-        self.assertEqual(self.market["total"], 7)
+        self.assertEqual(self.market["total"], 9)  # Nashik MUs in the synthetic seed workbook
         response = self.client.post("/api/plans/calculate", json=self.plan_payload())
         self.assertEqual(response.status_code, 200)
         result = response.json()
@@ -91,9 +93,61 @@ class CampaignApiTests(unittest.TestCase):
         response = self.client.get("/api/performance")
         self.assertEqual(response.status_code, 200)
         result = response.json()
-        self.assertEqual(result["kpis"]["converted_farmers"], 3)
+        self.assertGreater(result["kpis"]["converted_farmers"], 0)
         self.assertTrue(result["conversion_by_activity"])
         self.assertIsNotNone(result["kpis"]["demo_yield_gain"])
+        self.assertGreater(result["kpis"]["report_quality"], 0.5)
+        self.assertLess(result["kpis"]["liquidation_vs_plan"], 1.5)
+
+    def test_workbook_seed_fills_every_screen_dataset(self):
+        items = self.client.get("/api/datasets").json()["items"]
+        self.assertTrue(items)
+        self.assertEqual({item["status"] for item in items}, {"live"})
+        scope = {"season": "late-rabi-2026-27", "state": "maharashtra", "district": "jalna", "crop": "onion"}
+        villages = self.client.get("/api/datasets/readiness.village_demand", params=scope).json()["rows"]
+        self.assertEqual([row["village"] for row in villages][:2], ["Wadi Gaon", "Dhanora"])  # storyline anchors
+        nashik = self.client.get("/api/datasets/readiness.village_demand", params={**scope, "district": "nashik"}).json()["rows"]
+        self.assertTrue(nashik)
+        self.assertNotIn("Wadi Gaon", [row["village"] for row in nashik])
+        self.assertTrue(self.client.get("/api/risks").json())
+        self.assertTrue(self.client.get("/api/callbacks/queue").json())
+        self.assertTrue(self.client.get("/api/audit-queue").json())
+
+    def test_workbook_import_is_guarded_and_validated(self):
+        files = {"file": ("data.xlsx", b"not a workbook", "application/octet-stream")}
+        self.assertEqual(self.client.post("/api/import/workbook", files=files).status_code, 403)
+        with patch.dict(os.environ, {"CAMPAIGNIQ_ADMIN_TOKEN": "secret"}):
+            self.assertEqual(self.client.post("/api/import/workbook", files=files, headers={"X-Admin-Token": "wrong"}).status_code, 403)
+            rejected = self.client.post("/api/import/workbook", files=files, headers={"X-Admin-Token": "secret"})
+            self.assertEqual(rejected.status_code, 422)
+        self.assertEqual(self.client.get("/api/market/mus?district=Nashik").json()["total"], 9)  # nothing was changed
+        download = self.client.get("/api/import/workbook")
+        self.assertEqual(download.status_code, 200)
+        self.assertTrue(download.content.startswith(b"PK"))
+
+    def test_workbook_reload_round_trip(self):
+        with patch.dict(os.environ, {"CAMPAIGNIQ_ADMIN_TOKEN": "secret"}):
+            response = self.client.post(
+                "/api/import/workbook",
+                files={"file": ("seed.xlsx", workbook.SEED_WORKBOOK.read_bytes(), "application/octet-stream")},
+                headers={"X-Admin-Token": "secret"},
+            )
+        self.assertEqual(response.status_code, 200)
+        summary = response.json()
+        self.assertEqual(summary["rows"]["datasets"], 12)
+        self.assertGreater(summary["rows"]["campaign_plan_recomputed"], 100)
+        self.assertEqual(self.client.get("/api/market/mus?district=Nashik").json()["total"], 9)
+
+
+class BuiltinSeedTests(unittest.TestCase):
+    """The small hand-written seed remains available as a fallback (CAMPAIGNIQ_SEED=builtin)."""
+
+    def test_builtin_seed_still_works(self):
+        with tempfile.TemporaryDirectory() as folder, patch.object(database, "DB_PATH", Path(folder) / "builtin.db"), \
+                patch.dict(os.environ, {"CAMPAIGNIQ_SEED": "builtin"}):
+            with TestClient(app) as client:
+                self.assertEqual(client.get("/api/market/mus?district=Nashik").json()["total"], 7)
+                self.assertEqual(client.get("/api/performance").json()["kpis"]["converted_farmers"], 3)
 
 
 if __name__ == "__main__":

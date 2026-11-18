@@ -65,7 +65,7 @@ Then open **http://localhost:5173**. The app opens on **P.1 Prototype Overview**
 
 * Each screen has its own address, for example `http://localhost:5173/#/s4.3` or `#/ai.1`.
 * The API documentation (Swagger) is at **http://localhost:8000/docs**.
-* On first start the API creates and seeds the SQLite database `server/data/campaigniq-python.db`.
+* On first start the API creates the SQLite database `server/data/campaigniq-python.db` and fills it from the synthetic data workbook `server/data/seed/mahadhan_synthetic_data.xlsx` (see [5.3](#53-replace-demo-data-with-real-data)).
 * The **Data Sources & Integrations** link at the bottom of the sidebar (`#/admin.1`) shows which screens use demo or live data, and whether an LLM is connected.
 
 ### Demo script (prototype walkthrough, ~10 minutes)
@@ -95,6 +95,8 @@ Screens are labelled as:
 | `npm test` | Python tests (planning engine, API, extension points) plus the legacy TypeScript tests |
 | `npm run build` | Python compile check, legacy server type check and the production web build (`web/dist`) |
 | `npm run seed -w server` | Creates the database schema and loads the demo seed (idempotent) |
+| `python scripts/generate_synthetic_workbook.py` (in `server/`) | Rebuilds the synthetic data workbook and the filter masters (`data/reference/*.json`) |
+| `python -m campaign_api.workbook [file.xlsx]` (in `server/`) | Wipes the database and reloads it from a workbook (default: the seed workbook) |
 | `npm run build -w web` | Builds only the web app |
 
 ---
@@ -363,6 +365,27 @@ Edit `server/data/reference/geography.json`:
 * To make the *planning engine* use a new product or crop, also add it to the database master tables (`db.py` seed, or import with `POST /api/import/market` / `POST /api/import/sales`).
 
 ### 5.3 Replace demo data with real data
+
+**The data workbook (all backend data in one Excel file):**
+
+`server/data/seed/mahadhan_synthetic_data.xlsx` holds every backend table (geography, MUs, field force, crops and
+stages, products and doses, market data, segment rules, activities, playbooks, campaign plans, field events,
+farmers, call-backs, audit flags, sales and demo results), plus one `ds.<dataset>` sheet per screen dataset. Its
+README sheet lists the calibration assumptions. All of it is **synthetic**: it is calibrated to approximate public
+figures (district crop areas, mandi prices and MSP, typical doses, Mahadhan pack sizes), not Mahadhan actuals.
+
+* An empty database is filled from the workbook automatically on start-up (Render rebuilds its database on every
+  deploy). `CAMPAIGNIQ_SEED=builtin` uses the small hand-written seed in `db.py` instead.
+* Campaign plan budgets, activity counts and checks are recomputed by the planning engine when the workbook loads.
+* Dates are moved forward by (today − the workbook's reference date) so the season stays current;
+  `CAMPAIGNIQ_SEED_SHIFT_DATES=0` turns this off.
+* To patch in edited or real data, keep the sheet and column names and either run
+  `python -m campaign_api.workbook my_data.xlsx` (in `server/`), or upload the file to the running API. Upload
+  replaces all data, so it is disabled unless `CAMPAIGNIQ_ADMIN_TOKEN` is set:
+  `curl.exe -H "X-Admin-Token: <token>" -F "file=@my_data.xlsx" http://localhost:8000/api/import/workbook`.
+  `GET /api/import/workbook` downloads the bundled workbook as a template.
+* `server/scripts/generate_synthetic_workbook.py` regenerates the synthetic workbook (fixed random seed, so the
+  output is repeatable) and the filter masters in `data/reference/`.
 
 **From the UI:**
 

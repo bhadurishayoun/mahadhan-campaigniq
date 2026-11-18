@@ -47,7 +47,9 @@ class ExtensionPointTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         root = Path(self.temporary.name)
-        self.patches = [patch.object(database, "DB_PATH", root / "test.db")]
+        # These tests exercise the upload mechanism from an empty dataset store, so use the built-in seed
+        # (the default workbook seed uploads every dataset).
+        self.patches = [patch.object(database, "DB_PATH", root / "test.db"), patch.dict(os.environ, {"CAMPAIGNIQ_SEED": "builtin"})]
         reference_dir = root / "reference"
         reference_dir.mkdir()
         for path in reference.REFERENCE_DIR.glob("*.json"):

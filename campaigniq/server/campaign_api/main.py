@@ -14,7 +14,7 @@ from typing import Any
 
 from fastapi import FastAPI, File, Header, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from .db import (
@@ -23,7 +23,7 @@ from .db import (
     get_playbook_lines,
     initialize_database,
 )
-from . import datasets, reference
+from . import datasets, reference, workbook
 from .copilot import router as copilot_router
 from .engine import DEFAULT_CONFIG, SEGMENT_RULES, calculate_plan, format_inr
 from .settings import load_env_file
@@ -967,10 +967,17 @@ def performance(mu_id: int | None = None, crop_id: int | None = None) -> dict[st
             """,
             (mu_id, mu_id, crop_id, crop_id),
         ).fetchall()
+        # Liquidation vs plan compares like with like: only the planned MU x crop x product, within the plan's season months.
         sales_rows = db.execute(
             """
-            SELECT SUM(packs_liquidated) AS liquidated, SUM(po_packs) AS po_packs
-            FROM sales_import WHERE (? IS NULL OR mu_id = ?) AND (? IS NULL OR crop_id = ?)
+            SELECT SUM(s.packs_liquidated) AS liquidated, SUM(s.po_packs) AS po_packs
+            FROM sales_import s
+            WHERE (? IS NULL OR s.mu_id = ?) AND (? IS NULL OR s.crop_id = ?)
+              AND EXISTS (
+                SELECT 1 FROM campaign_plan p JOIN season se ON se.id = p.season_id
+                WHERE p.mu_id = s.mu_id AND p.crop_id = s.crop_id AND p.product_id = s.product_id
+                  AND s.month BETWEEN substr(se.start_date, 1, 7) AND substr(se.end_date, 1, 7)
+              )
             """,
             (mu_id, mu_id, crop_id, crop_id),
         ).fetchone()
@@ -993,6 +1000,13 @@ def performance(mu_id: int | None = None, crop_id: int | None = None) -> dict[st
             """,
             (mu_id, mu_id, crop_id, crop_id),
         ).fetchall()
+        # One query each instead of two connections per event (the seed has thousands of reported events).
+        flagged_events = {row[0] for row in db.execute("SELECT DISTINCT activity_event_id FROM audit_flag WHERE resolved = 0")}
+        reused_hashes = {
+            row[0] for row in db.execute(
+                "SELECT photo_hash FROM activity_event WHERE photo_hash IS NOT NULL GROUP BY photo_hash HAVING COUNT(*) > 1"
+            )
+        }
     today = date.today()
     due_events = [event for event in events if date.fromisoformat(event["scheduled_date"]) <= today]
     done = [event for event in due_events if event["status"] == "done"]
@@ -1028,8 +1042,8 @@ def performance(mu_id: int | None = None, crop_id: int | None = None) -> dict[st
         if event["gps_lat"] is not None
         and event["gps_lng"] is not None
         and event["photo_hash"]
-        and not _has_open_flag(event["id"])
-        and _photo_is_unique(event["id"], event["photo_hash"])
+        and event["id"] not in flagged_events
+        and event["photo_hash"] not in reused_hashes
     ]) / len(done) if done else 0
     demo_yield_gain = (
         sum((row["treated_yield"] - row["control_yield"]) / row["control_yield"] for row in demo_rows if row["control_yield"] > 0) / len(demo_rows)
@@ -1367,6 +1381,44 @@ async def import_market(file: UploadFile = File(...)) -> dict[str, Any]:
             rows,
         )
     return {"imported_rows": len(rows)}
+
+
+@app.get("/api/import/workbook")
+def download_seed_workbook() -> FileResponse:
+    """Download the seed data workbook (synthetic) - the template for patching data back in."""
+    if not workbook.SEED_WORKBOOK.exists():
+        raise HTTPException(404, detail="No seed workbook is bundled with this server")
+    return FileResponse(
+        workbook.SEED_WORKBOOK,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        filename=workbook.SEED_WORKBOOK.name,
+    )
+
+
+@app.post("/api/import/workbook")
+async def import_workbook(
+    file: UploadFile = File(...),
+    shift_dates: bool = False,
+    x_admin_token: str | None = Header(default=None),
+) -> dict[str, Any]:
+    """Replace ALL planning, market, execution and dataset data with an uploaded workbook (same layout as the seed).
+
+    Destructive, so it is disabled unless CAMPAIGNIQ_ADMIN_TOKEN is set and sent as the X-Admin-Token header.
+    """
+    expected = os.environ.get("CAMPAIGNIQ_ADMIN_TOKEN")
+    if not expected:
+        raise HTTPException(403, detail="Workbook import is disabled: set CAMPAIGNIQ_ADMIN_TOKEN on the server")
+    if x_admin_token != expected:
+        raise HTTPException(403, detail="Invalid admin token")
+    if not file.filename or not file.filename.lower().endswith(".xlsx"):
+        raise HTTPException(422, detail="Upload an .xlsx workbook")
+    content = io.BytesIO(await file.read())
+    try:
+        with connect() as db:
+            summary = workbook.load_workbook_into(db, content, shift_dates=shift_dates)
+    except (workbook.WorkbookError, LookupError, ValueError, sqlite3.IntegrityError) as exc:
+        raise HTTPException(422, detail=f"Workbook rejected, nothing was changed: {exc}") from exc
+    return summary
 
 
 @app.get("/api/reports/weekly")

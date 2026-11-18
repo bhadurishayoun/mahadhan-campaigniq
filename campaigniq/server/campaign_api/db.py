@@ -1,8 +1,13 @@
-"""SQLite schema and repeatable demo seed data."""
+"""SQLite schema and seed data.
+
+The default seed is the synthetic data workbook (server/data/seed/mahadhan_synthetic_data.xlsx, loaded by
+workbook.py). The small hand-written seed in this module is the fallback (CAMPAIGNIQ_SEED=builtin).
+"""
 
 from __future__ import annotations
 
 import json
+import logging
 import os
 import sqlite3
 from contextlib import contextmanager
@@ -70,7 +75,30 @@ def connect() -> Iterator[sqlite3.Connection]:
         connection.close()
 
 
-def initialize_database() -> None:
+def initialize_database(seed: bool = True) -> None:
+    """Create the schema; on an empty database load the seed workbook (or the built-in seed as a fallback).
+
+    The seed source is ``CAMPAIGNIQ_SEED``: ``workbook`` (default - server/data/seed/*.xlsx, see workbook.py)
+    or ``builtin`` (the small hand-written demo seed below).
+    """
+    _create_schema()
+    if not seed:
+        return
+    with connect() as db:
+        empty = db.execute("SELECT COUNT(*) FROM crop").fetchone()[0] == 0
+    if empty and os.environ.get("CAMPAIGNIQ_SEED", "workbook").lower() != "builtin":
+        from . import workbook
+
+        if workbook.SEED_WORKBOOK.exists():
+            try:
+                with connect() as db:
+                    workbook.load_workbook_into(db, workbook.SEED_WORKBOOK)
+            except Exception as exc:  # keep the API usable: fall back to the built-in seed
+                logging.getLogger(__name__).warning("Seed workbook could not be loaded (%s); using the built-in seed", exc)
+    _seed_builtin_if_empty()
+
+
+def _create_schema() -> None:
     with connect() as db:
         db.executescript(
             """
@@ -296,6 +324,17 @@ def initialize_database() -> None:
                 key TEXT PRIMARY KEY,
                 value TEXT NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS field_staff (
+                id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                role TEXT NOT NULL,
+                zone TEXT,
+                region TEXT,
+                territory TEXT,
+                district TEXT,
+                mu_id INTEGER REFERENCES mu(id),
+                phone TEXT
+            );
             """
         )
         _ensure_column(db, "farmer", "consent_record", "INTEGER NOT NULL DEFAULT 0")
@@ -303,6 +342,13 @@ def initialize_database() -> None:
         _ensure_column(db, "farmer", "language", "TEXT NOT NULL DEFAULT 'en'")
         _ensure_column(db, "farmer", "area_acres", "REAL NOT NULL DEFAULT 0")
         _ensure_column(db, "crop_product_dose", "stage_id", "INTEGER REFERENCES crop_stage(id)")
+        _ensure_column(db, "mu", "taluka", "TEXT")
+        _ensure_column(db, "mu", "lat", "REAL")
+        _ensure_column(db, "mu", "lng", "REAL")
+
+
+def _seed_builtin_if_empty() -> None:
+    with connect() as db:
         if db.execute("SELECT COUNT(*) FROM crop").fetchone()[0] == 0:
             _seed_reference(db)
             _seed_market(db)

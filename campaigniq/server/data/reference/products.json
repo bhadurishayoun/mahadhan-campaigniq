@@ -1,8 +1,96 @@
 {
-  "_comment": "Product master. Add Mahadhan products here (or PUT /api/reference/products). `id` is the filter key used in dataset rows (column `product`). Doses and prices are NOT stored here - agronomy-approved values belong in the backend product / crop_product_dose tables.",
+  "_comment": "Product master. Add Mahadhan products here (or PUT /api/reference/products). `id` is the filter key used in dataset rows (column `product`). Doses and prices are NOT stored here - agronomy-approved values belong in the backend product / crop_product_dose tables. Written by server/scripts/generate_synthetic_workbook.py.",
   "products": [
-    { "id": "croptek", "name": "Croptek", "family": "Speciality nutrition", "pack_sizes_kg": [50, 25, 20, 10], "crops": ["onion", "sugarcane", "cotton", "maize"], "active": true },
-    { "id": "solutek", "name": "Solutek", "family": "Water-soluble fertiliser", "pack_sizes_kg": [25, 1], "crops": ["grapes", "onion"], "active": true },
-    { "id": "smartek", "name": "Smartek", "family": "Speciality nutrition", "pack_sizes_kg": [50, 25], "crops": ["sugarcane"], "active": true }
+    {
+      "id": "croptek",
+      "name": "Croptek",
+      "family": "Speciality nutrition",
+      "pack_sizes_kg": [
+        50,
+        25
+      ],
+      "crops": [
+        "banana",
+        "cotton",
+        "grapes",
+        "groundnut",
+        "maize",
+        "onion",
+        "pomegranate",
+        "soybean",
+        "sugarcane",
+        "tomato"
+      ],
+      "active": true
+    },
+    {
+      "id": "smartek",
+      "name": "Smartek",
+      "family": "Speciality nutrition",
+      "pack_sizes_kg": [
+        50,
+        25
+      ],
+      "crops": [
+        "banana",
+        "cotton",
+        "groundnut",
+        "maize",
+        "soybean",
+        "sugarcane"
+      ],
+      "active": true
+    },
+    {
+      "id": "solutek",
+      "name": "Solutek",
+      "family": "Water-soluble fertiliser",
+      "pack_sizes_kg": [
+        25,
+        1
+      ],
+      "crops": [
+        "banana",
+        "grapes",
+        "onion",
+        "pomegranate",
+        "tomato"
+      ],
+      "active": true
+    },
+    {
+      "id": "bensulf",
+      "name": "Bensulf",
+      "family": "Sulphur nutrition",
+      "pack_sizes_kg": [
+        10,
+        3
+      ],
+      "crops": [
+        "cotton",
+        "grapes",
+        "groundnut",
+        "onion",
+        "soybean",
+        "sugarcane"
+      ],
+      "active": true
+    },
+    {
+      "id": "mahadhan-24-24-0",
+      "name": "Mahadhan 24:24:0",
+      "family": "Complex fertiliser",
+      "pack_sizes_kg": [
+        50
+      ],
+      "crops": [
+        "cotton",
+        "maize",
+        "onion",
+        "soybean",
+        "sugarcane"
+      ],
+      "active": true
+    }
   ]
 }
