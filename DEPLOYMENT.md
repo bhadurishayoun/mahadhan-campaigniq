@@ -66,13 +66,19 @@ Replace `bhadurishayoun` everywhere with your GitHub username.
 7. **Settings -> Pages** shows "Your site is live at **https://bhadurishayoun.github.io/mahadhan-campaigniq/**".
    It is also shown on the finished run in the Actions tab. Open it - the site works now as a static demo.
 
-## Part C - Connect the backend on Render (optional, for the live engine)
+## Part C - Connect the backend on Render (already done for this repository)
+
+> Status (18 Nov 2026): the service `mahadhan-campaigniq-api` is live on Render and the website connects to it by
+> default - the deploy workflow falls back to `https://mahadhan-campaigniq-api.onrender.com/api` when the
+> `VITE_API_URL` variable is not set. Steps 12–13 are only needed to point the site at a *different* backend.
+> Follow these steps only when setting the project up in a new GitHub / Render account.
 
 8. Sign up free at https://render.com with **Sign in with GitHub**.
 9. **New -> Blueprint** -> choose the `mahadhan-campaigniq` repository -> **Apply**.
    Render reads `render.yaml` and creates the service `mahadhan-campaigniq-api`.
 10. When asked for **CAMPAIGNIQ_CORS_ORIGINS**, enter `https://bhadurishayoun.github.io` (no slash, no path).
-    Leave **COPILOT_API_KEY** empty unless you have an AI key.
+    Leave **COPILOT_API_KEY** empty: the copilot uses free keyless LLMs (`COPILOT_PROVIDER=free`) unless you add a
+    paid model.
 11. Wait until the service says **Live**. Copy its address, e.g. `https://mahadhan-campaigniq-api.onrender.com`.
     Check it works: open `<that address>/api/health` - you should see `{"ok":true,...}`.
 12. Back on GitHub: **Settings -> Secrets and variables -> Actions -> Variables tab -> New repository variable**.
@@ -80,7 +86,7 @@ Replace `bhadurishayoun` everywhere with your GitHub username.
 13. **Actions -> Deploy to GitHub Pages -> Run workflow** to rebuild the site with the backend connected.
 
 The free Render server sleeps after ~15 minutes without visitors; the first request then takes up to a minute.
-Its database is temporary and is re-created with the demo data every time it restarts.
+Its database is temporary and is re-created from the synthetic data workbook every time it restarts.
 
 ## Updating the tool later
 

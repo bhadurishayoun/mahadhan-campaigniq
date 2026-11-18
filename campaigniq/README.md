@@ -1,19 +1,21 @@
 # Mahadhan CampaignIQ
 
-CampaignIQ is a crop-nutrition campaign-management tool for Mahadhan. It covers the campaign lifecycle: finding opportunities, building nutrition programmes, planning campaigns, checking demand and channel readiness, running field execution and measuring impact. An AI Co-pilot sits on top.
+CampaignIQ is a crop-nutrition campaign-management tool for Mahadhan (Deepak NextGen). It covers the campaign lifecycle: finding opportunities, building nutrition programmes, planning campaigns, checking demand and channel readiness, running field execution and measuring impact. An AI Co-pilot sits on top.
 
-The user interface follows the 28 mockups in `ui-mockups/Sayak's Mockups/` exactly. Every screen currently shows the mockups' **illustrative demo data**. The code has placeholders so that:
+The tool has two layers:
 
-* **More states, districts, talukas and products** can be added by editing JSON files, with no code change.
-* **Real data** can replace the demo data on a screen by uploading a CSV/JSON file. Until then the screen keeps its demo values.
-* **An LLM** (OpenAI, Azure OpenAI or any OpenAI-compatible model) can power the AI Co-pilot by setting a few environment variables. Until then the co-pilot shows its built-in example answers.
+* **Version 2 persona workspaces** (the main experience): Business Head, Marketing Head, Product Manager and Territory Manager, built from the approved mockup specs in `ui-mockups/V2-persona-mockup-specs.md`.
+* **Version 1 module screens** (S1–S7, AI.1) from the 28 mockups in `ui-mockups/Sayak's Mockups/`, plus the Prototype Showcase (P.1–P.3) that drives the live planning engine.
 
-This README explains how to run the tool, how it is built (step by step), and how to extend it.
+All data is **illustrative**: the backend is filled from a synthetic data workbook and the persona screens use mockup figures. Nothing is Mahadhan's actual data. The code has placeholders so that more states, districts and products can be added by editing JSON, real data can replace the synthetic rows sheet by sheet, and a paid or self-hosted LLM can replace the free one by changing settings.
+
+**New to the project? Read [0. Project status & next steps](#0-project-status--next-steps-start-here) first.** The rest of this README explains how to run the tool, how it is built and how to extend it.
 
 ---
 
 ## Contents
 
+0. [Project status & next steps (start here)](#0-project-status--next-steps-start-here)
 1. [Quick start](#1-quick-start)
 2. [Architecture](#2-architecture)
 3. [Folder structure](#3-folder-structure)
@@ -30,6 +32,57 @@ This README explains how to run the tool, how it is built (step by step), and ho
 8. [Testing and building](#8-testing-and-building)
 9. [Troubleshooting](#9-troubleshooting)
 10. [Before going to production](#10-before-going-to-production)
+
+---
+
+## 0. Project status & next steps (start here)
+
+*Last updated: 18 Nov 2026 (commit after `a825e30`). Update this section with every change.*
+
+### Where things run
+
+| What | Where | Notes |
+|---|---|---|
+| Website | https://bhadurishayoun.github.io/mahadhan-campaigniq/ | GitHub Pages, rebuilt on every push to `main` (`.github/workflows/deploy.yml`) |
+| Backend API | https://mahadhan-campaigniq-api.onrender.com/api | Render free tier (`render.yaml`), redeploys on push. Sleeps after ~15 min idle (first call up to 1 min). Its SQLite database is rebuilt from the seed workbook on every start, so demo changes do not persist. |
+| Login | `MASTER001` / `Mahadhan@2026` | Opens every persona; switch with the avatar menu. Per-persona IDs: SH001 (Business Head), PM001, TM001, MH001 (passwords in `web/src/personaAuth.ts`). Front-end only - not real security. |
+
+### What is done
+
+| Area | Status | Where |
+|---|---|---|
+| Territory Manager persona | **17 screens mirroring the approved mockups**: My Plan TM.1–TM.5, My Campaigns TM.C1 → wizard CW.1–CW.4 → TM.C2 Review & Approval → TM.C3 My Campaign Portfolio, Execution TM.EX1–EX2, Impact TM.IM1–IM2, AI Copilot TM.AI1. Jalna/Ambad maps, donuts, approval pipeline, editable plans that recalculate. | `web/src/tm/` (`plan.tsx`, `campaigns.tsx`, `execution.tsx`, figures in `data.ts`, visuals in `viz.tsx`, session state in `state.ts`) |
+| Product Manager persona | 48 screens (PM.1 – PM.AI1) | `web/src/pm/`, notes in `docs/product-manager-persona.md` |
+| Marketing Head, Business Head personas | Workspaces exist; **not yet checked screen-by-screen against the mockups** (MH uses a generic workspace template) | `web/src/mh/`, `web/src/bh/` |
+| Master login | One login for all personas, persona switching without re-login | `web/src/personaAuth.ts`, `login.tsx`, `App.tsx` |
+| Synthetic data | Excel workbook (20 districts, 95 marketing units, 3 seasons, plans, field events, farmers, call-backs, sales, 12 screen datasets) loaded into the backend automatically | `server/scripts/generate_synthetic_workbook.py` → `server/data/seed/mahadhan_synthetic_data.xlsx` → `server/campaign_api/workbook.py` (see [5.3](#53-replace-demo-data-with-real-data)) |
+| Live AI Copilot | All copilots answer with a real LLM, no API key: free keyless endpoints (LLM7, then Pollinations). Through the backend when reachable, otherwise straight from the browser. | `server/campaign_api/copilot/`, `web/src/data/copilot.ts`, `web/src/ui/LiveCopilot.tsx` (see [5.5](#55-connect-the-ai-co-pilot-to-an-llm)) |
+| Hosting | Website and backend deployed and connected | see table above |
+
+### Known limitations (be aware before demoing or building on it)
+
+1. **Persona screens do not read the backend.** TM/PM/MH/BH figures come from `web/src/*/data.ts` (mockup storyline numbers). Only the S1–S7 dataset panels, P.1–P.3, AI.1 and the copilots use backend data. The two can disagree (e.g. Dhanora conversion 38.7% on TM screens vs 32% in the impact dataset).
+2. **Synthetic data needs recalibration** (found in an audit): field-crop areas per marketing unit (cotton, soybean, groundnut) are 2–3× too high because the generator divides district area by the listed talukas instead of all talukas; total liquidation (~₹100 Cr/year) is 3–4× the storyline scale; Croptek doses were raised to 3–4 bags/acre so the engine's spend caps pass; prices and district crop areas are approximate and unverified.
+3. **About a third of current-season plans stay drafts**: with the spec's activity costs, Growing-segment onion plans sit just above the 20% spend cap (expected to use "Suggest cheaper mix").
+4. **Free LLM limits**: rate-limited (Pollinations ≈ 1 reply / 45 s per IP), best-effort availability, a 20B-class open model that occasionally gets details wrong; questions and on-screen figures go to third-party services.
+5. **Approvals in the TM campaign journey are simulated** for the showcase ("Showcase: advance approval"); state lives in the browser session only.
+6. **No real authentication or authorisation** (front-end credentials, `X-User-Role` header). The workbook import endpoint is disabled unless `CAMPAIGNIQ_ADMIN_TOKEN` is set.
+
+### Suggested next steps (in priority order)
+
+1. **Recalibrate the synthetic data**: in `generate_synthetic_workbook.py` derive marketing-unit crop area from each district's real village count, and lower the treated share so a taluka-sized territory sells ≈ ₹3–4 Cr/year; regenerate, run `python -m campaign_api.workbook`, run the tests.
+2. **Rework the Marketing Head and Business Head workspaces** against `ui-mockups/V2-persona-mockup-specs.md`, the same way TM was done (hero element per screen, sub-tabs, footer with "Recommended next", no decorative charts). BH had only a brief in the mockup chat, no image prompts.
+3. **Connect persona screens to backend data**: replace the constants in `web/src/*/data.ts` with `useDataset()` / API calls, keeping the current values as the demo fallback.
+4. **Real data**: get Mahadhan's price list, agronomy-approved doses and one season of territory sales; replace the matching workbook sheets (same column names) and reload.
+5. **Production hardening**: real login and roles, a paid or self-hosted LLM (`COPILOT_PROVIDER=openai`), a managed database, see [10](#10-before-going-to-production).
+
+### Working conventions
+
+* Every persona lives in `web/src/<persona>/`: `nav.ts` (screen registry), screen files, `data.ts` (figures), CSS. Register new screens in `nav.ts` and the persona's `index.tsx`.
+* Keep figures consistent across screens (totals must reconcile); keep everything labelled illustrative.
+* Before pushing: `npx tsc --noEmit -p web`, `npm run build -w web`, `cd server; python -m unittest discover -s tests_python`.
+* On Windows, `npm run dev`'s auto-reload can leave an old API worker running on port 8000; if API changes don't show up, stop all `uvicorn` Python processes and restart.
+* Update this README (this section first) in the same commit as any change.
 
 ---
 
@@ -61,7 +114,7 @@ Copy-Item .env.example server/.env
 npm run dev
 ```
 
-Then open **http://localhost:5173**. The app opens on **P.1 Prototype Overview**.
+Then open **http://localhost:5173** and sign in (any name, user ID `MASTER001`, password `Mahadhan@2026`). You land on the Business Head workspace; switch personas from the avatar menu at the top right. The Prototype Showcase is at `#/p.1`.
 
 * Each screen has its own address, for example `http://localhost:5173/#/s4.3` or `#/ai.1`.
 * The API documentation (Swagger) is at **http://localhost:8000/docs**.
@@ -81,7 +134,7 @@ The **Prototype Showcase** module (top of the sidebar) explains the prototype an
 The dark **Backend Activity** console on P.2/P.3 lists every API call (method, path, status, milliseconds), including rejected calls and their reasons. Follow with the designed mockup screens (S1–S7, AI.1) using the Guided Demo Path on P.1.
 
 Screens are labelled as:
-- **Live · backend connected:** P.1–P.3, ADM and AI.1.
+- **Live · backend connected:** P.1–P.3, ADM, AI.1 and the persona AI copilots.
 - **Interactive UI · API ready:** S1–S7. These show the approved designs with illustrative data, and their backing endpoints exist.
 - **Proposed:** roadmap items.
 
@@ -94,7 +147,7 @@ Screens are labelled as:
 | `npm run dev` | Starts FastAPI (with auto-reload) and Vite together |
 | `npm test` | Python tests (planning engine, API, extension points) plus the legacy TypeScript tests |
 | `npm run build` | Python compile check, legacy server type check and the production web build (`web/dist`) |
-| `npm run seed -w server` | Creates the database schema and loads the demo seed (idempotent) |
+| `npm run seed -w server` | Creates the database schema and, if the database is empty, loads the seed workbook (idempotent) |
 | `python scripts/generate_synthetic_workbook.py` (in `server/`) | Rebuilds the synthetic data workbook and the filter masters (`data/reference/*.json`) |
 | `python -m campaign_api.workbook [file.xlsx]` (in `server/`) | Wipes the database and reloads it from a workbook (default: the seed workbook) |
 | `npm run build -w web` | Builds only the web app |
@@ -107,35 +160,35 @@ Screens are labelled as:
                          ┌───────────────────────────────────────────────┐
   Browser                │  web/ (React 18 + TypeScript + Vite)          │
   http://localhost:5173  │                                               │
+                         │  login.tsx ─ sign-in (master + persona IDs)   │
                          │  App.tsx  ── sidebar, filter bar, routing     │
-                         │  screens/s1..s7, ai, admin  (29 screens)      │
-                         │  ui.tsx   ── shared components (Panel, KPI…)  │
+                         │  bh/ mh/ pm/ tm/ ─ V2 persona workspaces      │
+                         │  screens/ ─ P.1–P.3, S1–S7, AI.1, ADM (V1)    │
+                         │  ui/LiveCopilot.tsx ─ live AI chat            │
                          │  data/reference.ts ─ states/districts/products│
                          │  data/datasets.ts  ─ useDataset() demo↔live   │
-                         │  data/copilot.ts   ─ AI Co-pilot client       │
-                         └──────────────┬────────────────────────────────┘
-                                        │ fetch  http://localhost:8000/api/...
-                         ┌──────────────▼────────────────────────────────┐
-                         │  server/campaign_api (Python FastAPI)         │
-                         │                                               │
-                         │  main.py      planning, plans, field, reports │
-                         │  engine.py    campaign planning engine        │
-                         │  reference.py /api/reference  (masters)       │
-                         │  datasets.py  /api/datasets   (data uploads)  │
-                         │  copilot/     /api/copilot    (LLM)           │
-                         └───────┬───────────────┬───────────────┬───────┘
-                                 │               │               │
-                    SQLite DB ◄──┘   server/data/reference/*.json │
-             (plans, events, uploads)  server/data/datasets/catalog.json
-                                                                 ▼
-                                               LLM provider (optional):
-                                               OpenAI / Azure OpenAI /
-                                               Ollama / vLLM / gateway
+                         │  data/copilot.ts   ─ AI Co-pilot client ──────┼──┐ no backend:
+                         └──────────────┬────────────────────────────────┘  │ browser calls
+                                        │ fetch  VITE_API_URL (/api/...)    │ the free LLM
+                         ┌──────────────▼────────────────────────────────┐  │ directly
+                         │  server/campaign_api (Python FastAPI)         │  │
+                         │  main.py      planning, plans, field, reports │  │
+                         │  engine.py    campaign planning engine        │  │
+                         │  workbook.py  seed / import data workbook     │  │
+                         │  reference.py /api/reference  (masters)       │  │
+                         │  datasets.py  /api/datasets   (screen data)   │  │
+                         │  copilot/     /api/copilot    (LLM)  ─────────┼──┤
+                         └───────┬───────────────┬───────────────────────┘  │
+                                 │               │                          ▼
+     SQLite DB ◄─ filled from ───┘   server/data/reference/*.json     LLM provider:
+     data/seed/mahadhan_synthetic_   server/data/datasets/catalog.json  free (default: LLM7 →
+     data.xlsx on first start                                          Pollinations, no key) /
+                                                                       OpenAI / Azure / Ollama
 ```
 
 Design rules used throughout:
 
-1. **Demo first, live when available.** Every placeholder has a working fallback. If the API is down, no data is uploaded or no LLM is configured, the UI still renders the mockup exactly.
+1. **Demo first, live when available.** Every placeholder has a working fallback. If the API is down or no data is uploaded, the UI still renders the mockup; if the backend's LLM call fails, the browser calls the free LLM itself, and only then do the built-in answers appear.
 2. **One source of truth per concept.** Masters live in `server/data/reference/*.json`. Dataset definitions live in `server/data/datasets/catalog.json`. The API and the web app both read these same files.
 3. **Configuration over code.** Adding a district, product or dataset upload, or switching the LLM, needs no code change.
 
@@ -154,24 +207,28 @@ campaigniq/
 │   ├── engine.md             planning-engine equations + worked example
 │   └── gaps.md               open data/product questions
 ├── server/
-│   ├── requirements.txt      fastapi, uvicorn, python-multipart
+│   ├── requirements.txt      fastapi, uvicorn, python-multipart, openpyxl
 │   ├── campaign_api/
-│   │   ├── main.py           FastAPI app + planning/plan/field/report endpoints
+│   │   ├── main.py           FastAPI app + planning/plan/field/report/import endpoints
 │   │   ├── engine.py         pure planning engine (segment → goal → farmers → activity mix → budget → checks)
-│   │   ├── db.py             SQLite schema, migrations and demo seed
+│   │   ├── db.py             SQLite schema, migrations; seeds from the workbook (built-in seed = fallback)
+│   │   ├── workbook.py       loads a data workbook (.xlsx) into the DB + datasets; CLI and /api/import/workbook
 │   │   ├── settings.py       loads server/.env
 │   │   ├── reference.py      /api/reference - states, districts, products, crops, seasons, campaign types
 │   │   ├── datasets.py       /api/datasets  - CSV/JSON upload that replaces screen demo data
 │   │   └── copilot/
-│   │       ├── providers.py  LLM adapters (demo, openai, azure_openai) - add new vendors here
+│   │       ├── providers.py  LLM adapters (free [default], demo, openai, azure_openai) - add new vendors here
 │   │       ├── context.py    builds the grounded evidence sent to the LLM (+ document-retrieval placeholder)
-│   │       ├── schema.py     request/answer contract (matches the AI.1 screen layout)
-│   │       └── router.py     /api/copilot/status, /api/copilot/ask
+│   │       ├── schema.py     request/answer contracts (AI.1 structured answer, persona chat)
+│   │       └── router.py     /api/copilot/status, /api/copilot/ask, /api/copilot/chat
+│   ├── scripts/
+│   │   └── generate_synthetic_workbook.py   builds data/seed/*.xlsx and data/reference/*.json (fixed seed)
 │   ├── data/
+│   │   ├── seed/             mahadhan_synthetic_data.xlsx                    ← all backend demo data (synthetic)
 │   │   ├── reference/        geography.json, products.json, masters.json   ← edit to add states/districts/products
 │   │   ├── datasets/         catalog.json                                   ← list of data placeholders
-│   │   └── prompts/          copilot_system.md                              ← LLM instructions
-│   ├── tests_python/         unittest suites (engine, API, extension points)
+│   │   └── prompts/          copilot_system.md (AI.1), copilot_chat.md (persona copilots) ← LLM instructions
+│   ├── tests_python/         unittest suites (engine, API, workbook, copilot, extension points)
 │   ├── src/, tests/          legacy TypeScript/Express prototype (kept for its tests; not used by the web app)
 └── web/
     ├── index.html, vite.config.ts, tsconfig.json
@@ -184,11 +241,17 @@ campaigniq/
         ├── responsive.css    phone / tablet layouts, container queries
         ├── enhance.css       visible scrollbars, tooltips, full-screen panels, sortable tables, motion
         ├── api.ts            fetch helper (VITE_API_URL) + live API call log (useApiLog)
+        ├── login.tsx, personaAuth.ts, session.ts   sign-in page, master + persona credentials, session shape
         ├── data/
         │   ├── reference.ts  useReference(), filter options, filter → scope ids
         │   ├── datasets.ts   useDataset(name, demoRows), refreshDatasets()
-        │   └── copilot.ts    getCopilotStatus(), askCopilot()
+        │   └── copilot.ts    getCopilotStatus(), askCopilot(), chatCopilot() (backend first, browser LLM fallback)
+        ├── ui/               shared kit (KpiCard, MapCard, charts) + LiveCopilot.tsx (live AI chat)
+        ├── map/              IndiaDistrictMap (districts, Jalna talukas, verified places in places.json)
+        ├── bh/               Business Head persona (V2)
+        ├── mh/               Marketing Head persona (V2)
         ├── pm/               Product Manager persona (V2): 48 screens PM.1 – PM.AI1, see docs/product-manager-persona.md
+        ├── tm/               Territory Manager persona (V2): 17 screens, see section 0
         └── screens/
             ├── prototype.tsx/.css  P.1–P.3 Prototype Showcase (overview, live planner, live execution)
             ├── s1.tsx/.css   S1.1–S1.5 Strategy Command Centre
@@ -304,7 +367,8 @@ Each screen's mockup photo is listed in [docs/screen-inventory.md](docs/screen-i
 ### Step 11 - AI Co-pilot LLM integration
 
 1. **Answer contract.** `copilot/schema.py` defines `CopilotAnswer`, which has the same shape as the answer cards on AI.1: title, summary, table, chart, factors, confidence, sources, actions, primary and secondary call-to-action.
-2. **Providers.** `copilot/providers.py` has an `LLMProvider` base class and three implementations:
+2. **Providers.** `copilot/providers.py` has an `LLMProvider` base class and four implementations:
+   * `free` (default): keyless free endpoints, LLM7 then Pollinations (open-weight `gpt-oss-20b` and similar). Honours short `Retry-After` waits, then falls back to the next endpoint.
    * `demo`: no LLM.
    * `openai`: OpenAI or any OpenAI-compatible server, such as Ollama, vLLM, LM Studio or a corporate gateway.
    * `azure_openai`.
@@ -317,9 +381,10 @@ Each screen's mockup photo is listed in [docs/screen-inventory.md](docs/screen-i
    * Strips code fences and validates the JSON.
    * **Removes links to screens that do not exist** and fixes invalid table highlights.
    * Returns `mode: "demo"` when no LLM is configured, and 502 when the LLM fails or returns malformed output.
-6. **Screen.** `ai.tsx` checks `/api/copilot/status`:
-   * In LLM mode, typed and suggested questions go to the LLM. The header shows "LLM connected · model".
-   * In demo mode, or if the LLM call fails, it falls back to the built-in keyword-matched answers. The layout is identical either way.
+6. **Screen.** `ai.tsx` checks the copilot status (`web/src/data/copilot.ts`):
+   * Typed and suggested questions go to the LLM: through the backend when it is connected, otherwise straight from the browser to the same free endpoints. The header shows "LLM connected · model".
+   * If every LLM call fails, it falls back to the built-in keyword-matched answers. The layout is identical either way.
+7. **Persona copilots.** TM.AI1, PM.AI1, MH.AI1 and BH.AI1 embed `web/src/ui/LiveCopilot.tsx`. Each screen passes a fact sheet of the figures that persona's screens show (e.g. `TM_FACTS` in `tm/execution.tsx`); `POST /api/copilot/chat` adds matching datasets and live KPIs and applies `server/data/prompts/copilot_chat.md`. Answers are short Markdown, labelled with the model and the route (backend or browser).
 
 ### Step 12 - Data Sources & Integrations screen (`admin.tsx`)
 
@@ -333,6 +398,8 @@ It lists all datasets with their status, the screens that use them, the expected
   * Reference listing and editing, including duplicate rejection.
   * Dataset demo → upload → scope filter → revert, and column validation.
   * Copilot demo mode, a grounded LLM answer (mock provider) with link sanitising, and malformed LLM output.
+  * Free-provider default, rate-limit wait and endpoint fallback, all-endpoints-busy error, and the persona chat endpoint (all mocked, no network).
+* `tests_python/test_api.py` also covers the workbook seed (all 12 datasets live), the guarded workbook import, a full reload round trip and the built-in seed fallback.
 * Every screen was checked in a browser at 1536 px wide against its mockup.
 
 ---
@@ -505,14 +572,20 @@ Settings come from real environment variables, or from `server/.env` (environmen
 | `CAMPAIGNIQ_REFERENCE_DIR` | `server/data/reference` | Folder with geography/products/masters JSON |
 | `CAMPAIGNIQ_DATASET_CATALOG` | `server/data/datasets/catalog.json` | Dataset catalog |
 | `CAMPAIGNIQ_ENV_FILE` | `server/.env` | Settings file location |
-| `COPILOT_PROVIDER` | `demo` | `demo`, `openai` or `azure_openai` |
+| `CAMPAIGNIQ_SEED` | `workbook` | Seed for an empty database: `workbook` (synthetic data workbook) or `builtin` (small hand-written seed in `db.py`) |
+| `CAMPAIGNIQ_SEED_WORKBOOK` | `server/data/seed/mahadhan_synthetic_data.xlsx` | Workbook used for seeding and by `python -m campaign_api.workbook` |
+| `CAMPAIGNIQ_SEED_SHIFT_DATES` | `1` | `0` stops moving workbook dates forward to today when loading |
+| `CAMPAIGNIQ_ADMIN_TOKEN` | - | Enables `POST /api/import/workbook` (sent as `X-Admin-Token`); unset = import disabled |
+| `CAMPAIGNIQ_CORS_ORIGINS` | - | Extra browser origins allowed to call the API (comma-separated), e.g. `https://bhadurishayoun.github.io` (set on Render) |
+| `COPILOT_PROVIDER` | `free` | `free` (keyless LLM7 → Pollinations), `demo` (no LLM), `openai` or `azure_openai` |
+| `COPILOT_FREE_URL`, `COPILOT_FREE_MODEL` | - | Pin the `free` provider to one OpenAI-compatible endpoint / model |
 | `COPILOT_MODEL` | - | Model name (OpenAI-compatible) |
 | `COPILOT_API_KEY` | - | API key (OpenAI / Azure) |
 | `COPILOT_BASE_URL` | `https://api.openai.com/v1` | OpenAI-compatible endpoint |
 | `COPILOT_AZURE_ENDPOINT`, `COPILOT_AZURE_DEPLOYMENT`, `COPILOT_AZURE_API_VERSION` | -, -, `2024-06-01` | Azure OpenAI |
 | `COPILOT_TIMEOUT_SECONDS` | `60` | LLM request timeout |
-| `COPILOT_SYSTEM_PROMPT` | `server/data/prompts/copilot_system.md` | System prompt file |
-| `VITE_API_URL` (in `web/.env`) | `http://localhost:8000/api` | API address used by the web app |
+| `COPILOT_SYSTEM_PROMPT` | `server/data/prompts/copilot_system.md` | AI.1 system prompt file (the persona chat prompt is `copilot_chat.md` next to it) |
+| `VITE_API_URL` (build time) | dev: `http://localhost:8000/api`; GitHub Pages: `https://mahadhan-campaigniq-api.onrender.com/api` | API address used by the web app. The Pages workflow uses the repository variable `VITE_API_URL` if set, else the Render URL. A local `npm run build` without it produces a site with no backend. |
 
 ---
 
@@ -524,7 +597,8 @@ Interactive documentation: **http://localhost:8000/docs**.
 |---|---|
 | Reference masters | `GET /api/reference`, `GET /api/reference/{geography\|products\|masters}`, `PUT /api/reference/{kind}` |
 | Screen datasets | `GET /api/datasets`, `GET /api/datasets/{name}?season=&state=&district=&taluka=&crop=&product=&campaign_type=`, `GET /api/datasets/{name}/template`, `POST /api/datasets/{name}` (multipart `file`), `DELETE /api/datasets/{name}` |
-| AI Co-pilot | `GET /api/copilot/status`, `POST /api/copilot/ask` `{question, scope, screen, history}` |
+| AI Co-pilot | `GET /api/copilot/status`, `POST /api/copilot/ask` `{question, scope, screen, history}` (AI.1 structured answer), `POST /api/copilot/chat` `{question, persona, screen, page_context, scope, history}` (persona copilots, Markdown answer) |
+| Data workbook | `GET /api/import/workbook` (download the seed workbook), `POST /api/import/workbook` (multipart `file`, header `X-Admin-Token`; replaces all data) |
 | Planning & workflow | `GET /api/meta/filters`, `/api/market/mus`, `/api/segments/summary`, `POST /api/plans/calculate`, plan lifecycle `/api/plans/{id}/submit\|approve\|lock\|revise`, `/generate-calendar`, `/stock-needs`, field events, callbacks, consent, imports and reports. Full map: [docs/screen-api-map.md](docs/screen-api-map.md) |
 
 ---
@@ -536,13 +610,13 @@ npm test            # Python unittest (engine, API, extension points) + legacy v
 npm run build       # compile checks + production web build in web/dist
 ```
 
-Run only the Python tests: `cd server; python -m unittest discover -s tests_python`.
+Run only the Python tests: `cd server; python -m unittest discover -s tests_python` (25 tests; they never call the real LLM). Type-check the web app: `npx tsc --noEmit -p web`.
 
-**Deploying:**
+**Deploying (current setup):** pushing to `main` deploys both parts automatically.
 
-1. Build the web app (`npm run build -w web`) and serve `web/dist` from any static host or CDN. Set `VITE_API_URL` at build time.
-2. Run the API with `python -m uvicorn campaign_api.main:app --host 0.0.0.0 --port 8000` (working directory `server/`) behind a reverse proxy.
-3. Add the production web origin to the CORS list in `main.py`.
+1. **Website:** `.github/workflows/deploy.yml` builds `web/` with `VITE_API_URL` and publishes it to GitHub Pages. Check the run under the repository's **Actions** tab.
+2. **Backend:** Render (`render.yaml`, service `mahadhan-campaigniq-api`) redeploys from `main`, installs `requirements.txt` and starts uvicorn. Environment variables are set in the Render dashboard (`CAMPAIGNIQ_CORS_ORIGINS`, `COPILOT_PROVIDER=free`, optionally `COPILOT_API_KEY`). Step-by-step first-time setup: [DEPLOYMENT.md](../DEPLOYMENT.md).
+3. **Other hosts:** serve `web/dist` from any static host (set `VITE_API_URL` at build time) and run `python -m uvicorn campaign_api.main:app --host 0.0.0.0 --port 8000` from `server/`, with the web origin in `CAMPAIGNIQ_CORS_ORIGINS`.
 
 ---
 
@@ -556,8 +630,12 @@ Run only the Python tests: `cd server; python -m unittest discover -s tests_pyth
 | Upload error "Missing required columns" | Start from the **Template** CSV; column names must match exactly. |
 | Upload error "Unknown dataset" | Add the dataset to `server/data/datasets/catalog.json` first. |
 | Uploaded data not shown on a screen | The rows' scope columns don't match the filter bar (for example `district=nashik` while the filter is Jalna). Change the filters or leave scope columns empty. |
-| Copilot still shows "Illustrative AI output" | `COPILOT_PROVIDER` is `demo`, or a key/model is missing. Check `/api/copilot/status` and restart after editing `.env`. |
-| Toast "Copilot LLM unavailable (...)" | The LLM call failed (network, key, quota) or returned invalid JSON. The message shows the reason; the built-in answer is shown instead. |
+| Copilot still shows "Illustrative AI output" / `/api/copilot/status` says `demo` | `server/.env` sets `COPILOT_PROVIDER=demo` (an old copy of `.env.example`). Set it to `free` and restart the API. |
+| Copilot says "the free service limits how often it replies" (HTTP 402/429) | The free endpoints are rate-limited (Pollinations ≈ 1 reply per 45 s per IP). Wait a minute; the client already waits out short limits and switches endpoints. For heavy use configure a paid model (section 5.5). |
+| Toast "Copilot LLM unavailable (...)" on AI.1 | Both the backend and the browser LLM calls failed, or the model returned invalid JSON. The built-in answer is shown instead. |
+| API changes don't take effect locally (Windows) | `uvicorn --reload` left an old worker on port 8000. Stop all `uvicorn` Python processes (Task Manager or `Get-CimInstance Win32_Process -Filter "Name='python.exe'"`), then `npm run dev` again. |
+| Live site: Prototype screens say "backend unreachable" or the first copilot answer is slow | The free Render backend is waking up (up to 1 minute). Reload after a minute. |
+| Local database still has the old data after changing the workbook | Seeding runs only on an empty database. Run `python -m campaign_api.workbook` in `server/` (it backs nothing up - copy the `.db` file first if you need it). |
 | ₹ / — show as strange characters after editing a file | Save files as UTF-8 (without BOM). |
 | Layout looks too small or too large | Expected scaling: below 1200 px the layout reflows; 1200–1535 px is scaled down; above 1920 px it is scaled up (see section 4, step 7.6). Browser zoom (Ctrl + / Ctrl −) still works on top of it. |
 
@@ -565,8 +643,10 @@ Run only the Python tests: `cd server; python -m unittest discover -s tests_pyth
 
 ## 10. Before going to production
 
-* **Authentication and authorisation:** the API has no login. `X-User-Role` is a demo header, not security. The admin endpoints (`PUT /api/reference/*`, `POST`/`DELETE /api/datasets/*`) must be restricted to administrators.
+* **Authentication and authorisation:** the API has no login. `X-User-Role` is a demo header, not security, and the web sign-in (including the `MASTER001` showcase login) checks credentials in the browser only. The admin endpoints (`PUT /api/reference/*`, `POST`/`DELETE /api/datasets/*`, `POST /api/import/workbook`) must be restricted to administrators.
+* **LLM provider:** the default `free` provider uses third-party, rate-limited, best-effort services that receive the questions and on-screen figures. Use a contracted or self-hosted model (`COPILOT_PROVIDER=openai` / `azure_openai`) for real data, and remove the browser-side fallback in `web/src/data/copilot.ts` if data must not leave your network.
+* **Data:** replace the synthetic workbook with real exports (see section 0, limitations 1–2) and move persona screens from hard-coded figures to backend data.
 * **Data governance:** uploaded datasets are stored as JSON rows in SQLite. For production, move to a managed database and replace manual uploads with scheduled ETL jobs that call the same endpoints or write to the same table.
-* **Agronomy content:** doses, prices and crop-stage rules in the seed are placeholders. They must come from approved Mahadhan sources.
+* **Agronomy content:** doses, prices and crop-stage rules in the seed workbook are approximations (doses were raised to fit the engine's spend caps). They must come from approved Mahadhan sources.
 * **LLM safety:** keep the system prompt's grounding rules, log questions and answers for review, and do not send personal farmer data to an external model without consent and a data-processing agreement.
 * Open product and data questions are tracked in [docs/gaps.md](docs/gaps.md).
