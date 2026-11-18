@@ -322,7 +322,7 @@ export function OpportunityAtlas() {
               { key: 'potential', label: 'Market Potential (₹ Cr)', align: 'right' },
               { key: 'gap', label: 'Penetration Gap (pp)', align: 'right' },
               { key: 'readiness', label: 'Campaign Readiness', render: (row) => <Pill tone={row.readiness === 'High' ? 'green' : 'amber'}>{row.readiness}</Pill> },
-              { key: 'next', label: 'Next Action', render: (row) => <Btn small to={row.to}>Open Jalna Taluka View ›</Btn> },
+              { key: 'next', label: 'Action', render: (row) => <Btn small to={row.to}>Open Jalna Taluka View ›</Btn> },
             ]}
           />
         </Panel>
@@ -393,7 +393,7 @@ export function OpportunityAtlas() {
         steps={[
           { label: 'Source: Business Overview', to: 's1.1' },
           { label: 'Current: Opportunities by Crop & District', current: true },
-          { label: 'On click of Jalna / Dhule: Next: Jalna Taluka View', to: 's2.2' },
+          { label: 'Jalna Taluka View', to: 's2.2' },
         ]}
         next={{ label: 'Jalna Taluka View', to: 's2.2', sub: ' Opens when clicking a district / taluka such as Jalna or Dhule' }}
       />
@@ -620,7 +620,7 @@ export function DistrictIntelligence() {
               { key: 'gap', label: 'Penetration Gap', align: 'right' },
               { key: 'retailers', label: 'Active Retailers', align: 'right' },
               { key: 'readiness', label: 'Campaign Readiness', render: (row) => <Pill tone={row.readiness === 'High' ? 'green' : 'amber'}>{row.readiness}</Pill> },
-              { key: 'next', label: 'Next Action', render: () => <Btn small to="s2.3">View segments ›</Btn> },
+              { key: 'next', label: 'Action', render: () => <Btn small to="s2.3">View segments ›</Btn> },
             ]}
             total={{
               rank: <strong>District Total (Jalna)</strong>,
@@ -1114,7 +1114,7 @@ export function CompetitionChannel() {
             { key: 'cluster', label: 'Retailer Cluster / Key Retailers' },
             { key: 'issue', label: 'Key Issue / Barrier' },
             { key: 'opportunity', label: 'Opportunity' },
-            { key: 'action', label: 'Suggested Next Action', render: (row) => <span className="row" style={{ flexWrap: 'nowrap' }}><span style={{ color: COLORS.green }}>{row.icon}</span>{row.action}</span> },
+            { key: 'action', label: 'Suggested Action', render: (row) => <span className="row" style={{ flexWrap: 'nowrap' }}><span style={{ color: COLORS.green }}>{row.icon}</span>{row.action}</span> },
           ]}
         />
       </Panel>

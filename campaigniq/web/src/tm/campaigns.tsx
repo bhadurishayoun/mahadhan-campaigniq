@@ -109,7 +109,7 @@ export function TmC1() {
           markerLegend={[{ label: 'Priority focus', color: MAP_COLORS.green }, { label: 'Other Ambad villages', color: MAP_COLORS.grey }]} />
         <div className="pm-stack">
           <AiPanel title="AI Planning Insight"><p className="tm-ai-text">Prioritise the plan-linked Onion conversion; confirm reach, budget and expected incremental contribution in the Wizard.</p></AiPanel>
-          <Panel title="Next: Campaign Wizard">
+          <Panel title="Campaign Wizard">
             <div className="tm-mini-flow">
               {['Objective', 'Activities', 'Forecast', 'Submit'].map((s, i) => <span key={s}><b>{i + 1}</b>{s}</span>)}
             </div>
@@ -192,7 +192,7 @@ export function Cw1() {
       </div>
       <Footer back={{ label: 'Back to Business Priorities', to: 'tm.c1' }} source="Approved business & crop plan · CRM cohort · selected outlets" next="CW.2 — Activity & Budget Mix"
         secondary={<Btn icon={<Save size={13} />} onClick={() => toast('Campaign draft saved.')}>Save Draft</Btn>}
-        primary={{ label: 'Next: Plan Activities & Budget', to: 'cw.2' }} />
+        primary={{ label: 'Plan Activities & Budget', to: 'cw.2' }} />
     </TmPage>
   );
 }
@@ -271,7 +271,7 @@ export function Cw2() {
       </div>
       <Footer back={{ label: 'Back to Objective & Targeting', to: 'cw.1' }} source="Activity library unit costs (illustrative)" next="CW.3 — Scenario & Expected Outcomes"
         secondary={<Btn icon={<Save size={13} />} onClick={() => toast('Activity plan saved as draft.')}>Save Draft</Btn>}
-        primary={{ label: 'Next: Scenario & Expected Outcomes', to: 'cw.3' }} />
+        primary={{ label: 'Scenario & Expected Outcomes', to: 'cw.3' }} />
     </TmPage>
   );
 }

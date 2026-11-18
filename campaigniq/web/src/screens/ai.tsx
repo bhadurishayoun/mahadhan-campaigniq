@@ -568,7 +568,7 @@ export function CopilotWorkspace() {
                 </div>
               </Panel>
 
-              <Panel title="Next-Best Actions" icon={<Target size={16} />}>
+              <Panel title="Recommended Actions" icon={<Target size={16} />}>
                 <div className="ai1-nba">
                   {answer.actions.map((action, index) => (
                     <div key={index}><span className="num">{index + 1}</span><span>{action}</span></div>

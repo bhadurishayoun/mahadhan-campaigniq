@@ -777,7 +777,7 @@ export function ActivityWorkspace() {
 
         <aside className="s6-rail">
           {aiOpen ? (
-            <Panel className="ai-panel" icon={<Sparkles size={16} />} title="AI Next-Best-Action" actions={<button type="button" className="s6-close" aria-label="Close" onClick={() => setAiOpen(false)}><X size={14} /></button>}>
+            <Panel className="ai-panel" icon={<Sparkles size={16} />} title="AI Recommended Action" actions={<button type="button" className="s6-close" aria-label="Close" onClick={() => setAiOpen(false)}><X size={14} /></button>}>
               <div className="s6-rail-block" style={{ borderTop: 0, marginTop: 0, paddingTop: 0 }}>
                 <h4><Target size={13} color="var(--green)" />Recommended Action</h4>
                 <p>Reschedule the Dhanora demonstration to <b>26 Jan 2027</b> after stock receipt confirmation, notify affected farmers, and coordinate <span style={{ color: '#8a5b00' }}>retailer support for on-ground execution.</span></p>
@@ -789,7 +789,7 @@ export function ActivityWorkspace() {
                 <CheckRow status="done">Retailer support is needed to ensure timely stock availability for the rescheduled demo.</CheckRow>
               </div>
             </Panel>
-          ) : <Btn small icon={<Sparkles size={13} />} onClick={() => setAiOpen(true)}>Show AI Next-Best-Action</Btn>}
+          ) : <Btn small icon={<Sparkles size={13} />} onClick={() => setAiOpen(true)}>Show AI Recommended Action</Btn>}
 
           {riskOpen ? (
             <Panel icon={<AlertTriangle size={16} color="var(--amber)" />} title="Risk Analysis" actions={<button type="button" className="s6-close" aria-label="Close" onClick={() => setRiskOpen(false)}><X size={14} /></button>}>

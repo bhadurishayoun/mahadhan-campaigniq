@@ -184,7 +184,7 @@ export function ImpactDashboard() {
           </p>
         </Panel>
 
-        <Panel icon={<Network size={16} />} title="Next Action" info className="ai-panel">
+        <Panel icon={<Network size={16} />} title="Action" info className="ai-panel">
           <button type="button" className="s7-next" onClick={() => go('s7.2')}>
             <span>Investigate Conversion &amp; ROI Drivers<small>What Worked &amp; Why</small></span>
             <ArrowRight size={16} />

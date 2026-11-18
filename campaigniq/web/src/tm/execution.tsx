@@ -70,7 +70,7 @@ export function TmEx1() {
             <li><ShieldAlert size={15} /><div><b>Wadi Gaon farmer meeting · Week 2</b><span>Requires field confirmation of venue and attendance.</span></div><Btn small to="tm.ex2">View</Btn></li>
           </ul>
         </Panel>
-        <AiPanel title="AI Next-Best Actions">
+        <AiPanel title="AI Recommended Actions">
           <ol className="tm-ai-list tm-ol">
             <li>Confirm stock with the channel manager before the Dhanora demo.</li>
             <li>Contact the assigned field owner (R. Jadhav).</li>
@@ -152,7 +152,7 @@ export function TmEx2() {
           </Panel>
         </div>
         <div className="pm-stack">
-          <AiPanel title="AI Next-Best Action">
+        <AiPanel title="AI Recommended Action">
             <ol className="tm-ai-list tm-ol">
               <li>Confirm stock with the channel manager for the Week 2 date.</li>
               <li>Contact R. Jadhav to check venue and farmer mobilisation.</li>

@@ -73,7 +73,6 @@ function Mh2Charts() {
           {icon:<Megaphone/>,name:'Awareness',value:'~74%',effect:'Strong reach and interest generation',quality:'Limited evidence',tone:'review'},
         ].map(r=><tr key={r.name}><td><span className="mh-intervention-icon">{r.icon}</span><b>{r.name}</b></td><td><span className="mh-meter"><i style={{width:r.value.replace('~','')}}/></span><strong>{r.value}</strong></td><td>{r.effect}</td><td><span className={`mh-confidence mh-confidence-${r.tone}`}>{r.tone==='good'?<CheckCircle2/>:<CircleHelp/>}{r.quality}</span></td></tr>)}</tbody></table></div></ChartCard>
       </div>
-      <div className="mh-source-notes"><b><Database />Source &amp; Measure Notes<br/><small>(Illustrative, for interpretation only)</small></b><span><Layers3 />Market estimates: addressable market / opportunity<br/><small>Not a sales measure</small></span><span><BarChart3 />Sales data: secondary sales (product offtake)<br/><small>Illustrative trade-based measure</small></span><span><Megaphone />Campaign evidence: engagement / adoption<br/><small>Illustrative, non-sales performance evidence</small></span><span><CircleHelp />Measure basis (not interchangeable)<br/><small>Primary vs. direct offtake and liquidations</small></span></div>
     </div>
   );
 }

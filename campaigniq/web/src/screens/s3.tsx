@@ -439,7 +439,7 @@ export function StageNutrition() {
         </Panel>
         <Panel>
           <div className="s3-next-card">
-            <span className="s3-eyebrow">Next step</span>
+            <span className="s3-eyebrow">Action</span>
             <strong>Nutrition programme configuration</strong>
             <span className="small muted">{resolved === inputs.length ? 'Field checks actioned — ready for programme review' : 'Field checks pending before programme review'}</span>
             <Btn variant="primary" to="s3.3" icon={<ArrowRight size={14} />}>Configure Nutrition Programme</Btn>

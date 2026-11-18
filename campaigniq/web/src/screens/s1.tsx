@@ -332,7 +332,7 @@ export function CommandCentre() {
     { key: 'risk', label: 'Risk', render: (r: CampaignRow) => <button type="button" className="s1-pill-btn" onClick={(e) => { e.stopPropagation(); go('s1.4'); }}><Pill tone={riskTone(r.risk)}>{r.risk}</Pill></button> },
     { key: 'roi', label: 'ROI', align: 'right' as const },
     {
-      key: 'next', label: 'Next Decision', render: (r: CampaignRow) => (
+      key: 'next', label: 'Decision Action', render: (r: CampaignRow) => (
         <button type="button" className="s1-link" onClick={(e) => {
           e.stopPropagation();
           if (r.name === 'Croptek Onion Adoption') go('s1.3');
@@ -395,7 +395,7 @@ export function CommandCentre() {
                   <Btn small to="s1.4">View Root Cause</Btn>
                   <Btn small variant="primary" to="s1.5">Create Action Plan</Btn>
                 </div>}>
-                <span className="small"><b>Next action:</b> {item.next}</span>
+                <span className="small"><b>Action:</b> {item.next}</span>
               </AiItem>
             ))}
           </div>
@@ -764,7 +764,7 @@ export function ExecutiveSummary() {
               <Btn small variant="primary" to="s5.2">Open Demand &amp; Channel View</Btn>
             </div>
           </Panel>
-          <Panel title="Next Decisions" icon={<Layers size={15} />}>
+          <Panel title="Recommended Actions" icon={<Layers size={15} />}>
             <DataTable<DecisionRow> compact rows={decisions}
               onRowClick={(_, i) => setDone({ ...done, [i]: !done[i] })}
               columns={[
@@ -1305,7 +1305,7 @@ export function RecoveryReplanning() {
         </Panel>
       </Grid>
 
-      <Panel title="Approval & Next Decisions" icon={<Wheat size={15} />}>
+      <Panel title="Approval Decisions" icon={<Wheat size={15} />}>
         <div className="s1-approval">
           <div className="cell"><Layers size={22} color={COLORS.dark} /><div>Recommended Plan<strong>{scen.short}</strong></div></div>
           <div className="cell"><CircleDollarSign size={22} color={COLORS.amber} /><div>Additional Budget Required<strong>{scen.cost}</strong></div></div>

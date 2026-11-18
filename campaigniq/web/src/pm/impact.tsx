@@ -419,14 +419,14 @@ export function Pm11d() {
       <div className="pm-two">
         <Box title="Learning-to-Action Matrix" icon={<Lightbulb size={15} />}>
           <Table
-            head={['Recorded finding', 'Evidence / confidence', 'Recommended next-season change', 'Priority', 'Source', 'Select']}
-            rows={LEARNINGS.map((item, index) => [<b>{item.finding}</b>, <Status>{item.confidence}</Status>, <span className="small">{item.change}</span>, <Status tone={item.priority === 'High' ? 'amber' : 'grey'}>{item.priority}</Status>, <Muted>{item.source}</Muted>, <input type="checkbox" checked={picked.includes(index)} onChange={() => toggle(index)} />])}
+            head={['Recorded finding', 'Evidence / confidence', 'Recommended season change', 'Priority', 'Select']}
+            rows={LEARNINGS.map((item, index) => [<b>{item.finding}</b>, <Status>{item.confidence}</Status>, <span className="small">{item.change}</span>, <Status tone={item.priority === 'High' ? 'amber' : 'grey'}>{item.priority}</Status>, <input type="checkbox" checked={picked.includes(index)} onChange={() => toggle(index)} />])}
             highlight={(index) => picked.includes(index)}
           />
           <Muted>Hypotheses are not presented as causes; no invented verified benefits.</Muted>
         </Box>
         <div className="pm-stack">
-          <Box title="Next-Season Recommendation Package" tone="soft">
+          <Box title="Season Recommendation Package" tone="soft">
             <Facts rows={[
               ['Selected recommendations', `${picked.length} of ${LEARNINGS.length}`],
               ['Validation owner roles', 'Field Sales Manager · Agronomy · Master Data · Finance'],
@@ -440,7 +440,7 @@ export function Pm11d() {
             </div>
           </Box>
           <Sources items={[{ label: 'Village', to: 'pm.11a' }, { label: 'Intervention', to: 'pm.11b' }, { label: 'Collateral', to: 'pm.11c' }, { label: 'Attribution', to: 'pm.10c' }, { label: 'Diagnostic' }, { label: 'Forecast', to: 'pm.8' }]} />
-          <AiBox title="AI Next-Season Guidance" items={[{ text: 'Validate exposure and purchase linkage.' }, { text: 'Test intervention / retailer readiness hypotheses.' }, { text: 'Update campaign measurement and collateral controls.' }]} />
+          <AiBox title="AI Season Guidance" items={[{ text: 'Validate exposure and purchase linkage.' }, { text: 'Test intervention / retailer readiness hypotheses.' }, { text: 'Update campaign measurement and collateral controls.' }]} />
           <Workflow compact steps={[{ label: 'PM Learning Draft', state: 'active' }, { label: 'PM Review' }, { label: 'Submit to Marketing Head' }, { label: 'MH Strategic Theme Alignment' }, { label: 'New Concept Draft' }]} />
         </div>
       </div>
@@ -503,7 +503,7 @@ export function PmAi1() {
           <Box title="Context" tone="soft">
             <Facts rows={[['Product', 'Croptek'], ['Crop', 'Onion'], ['Geography', 'Ambad'], ['Campaign', C1.name], ['Activities', `${IMPACT.activities} completed (interim)`], ['Tracked linked sales', <>{IMPACT.linkedSales} <Status>Provisional — not incremental</Status></>]]} />
           </Box>
-          <Box title="Next-best actions" icon={<BarChart3 size={15} />}>
+          <Box title="Recommended Actions" icon={<BarChart3 size={15} />}>
             <ol className="pm-list">
               <li>Validate follow-up and contact evidence in Dhanora.</li>
               <li>Compare retailer participation, stock and execution across villages.</li>
