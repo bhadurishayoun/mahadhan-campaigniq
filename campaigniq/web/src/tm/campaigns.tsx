@@ -26,7 +26,7 @@ const JOURNEY: { label: string; to: ScreenId }[] = [
   { label: 'Select Business Priority', to: 'tm.c1' },
   { label: 'Campaign Wizard', to: 'cw.1' },
   { label: 'Review & Approval', to: 'tm.c2' },
-  { label: 'My Campaign Portfolio', to: 'tm.c3' },
+  { label: 'Campaign Portfolio', to: 'tm.c3' },
 ];
 
 function PlanLink({ extra }: { extra?: { label: string; value: string; sub?: string }[] }) {
@@ -47,7 +47,7 @@ export function TmC1() {
   const focusVillages: Record<string, string[]> = { onion: ['Dhanora', 'Wadi Gaon'], maize: ['Ambad HQ', 'Pimpalgaon'], retail: VILLAGE_CHOICES };
   return (
     <TmPage crumbs={[{ label: 'My Plan', to: 'tm.1' }, { label: 'Approved Ambad Plan', to: 'tm.5' }, { label: 'My Campaigns' }]}
-      code="TM.C1" title="My Campaigns — Select a Business Priority" status="Plan approved · ready for campaign design"
+      code="TM.C1" title="Choose a Growth Priority" status="Plan approved · ready for campaign design"
       subtitle="Create campaigns against approved growth objectives — not against unverified market opportunities.">
       <Steps active={0} steps={JOURNEY} onStep />
       <div className="tm-approved">
@@ -117,7 +117,7 @@ export function TmC1() {
         </div>
       </div>
       <Footer back={{ label: 'Back to My Plan (Approved)', to: 'tm.5' }} source="Approved Ambad Plan v3" next="CW.1 — Campaign Wizard"
-        secondary={<Btn to="tm.c3">My Campaign Portfolio</Btn>}
+        secondary={<Btn to="tm.c3">Campaign Portfolio</Btn>}
         primary={{ label: 'Create Campaign Draft', to: 'cw.1' }} />
     </TmPage>
   );
@@ -134,7 +134,7 @@ export function Cw1() {
   const covered = villages.reduce((sum, v) => sum + (onionTarget[v] ?? 0), 0);
   return (
     <TmPage crumbs={[{ label: 'My Campaigns', to: 'tm.c1' }, { label: 'Approved Ambad Plan', to: 'tm.c1' }, { label: 'Onion Croptek Conversion' }, { label: 'Campaign Wizard' }]}
-      code="CW.1" title="Campaign Objective & Targeting" status="Draft">
+      code="CW.1" title="Objective & Target Villages" status="Draft">
       <Steps steps={WIZARD} active={0} onStep />
       <PlanLink />
       <IconTiles items={[
@@ -206,7 +206,7 @@ export function Cw2() {
   const update = (index: number, patch: Partial<ActivityLine>) => setLines((all) => all.map((l, i) => (i === index ? { ...l, ...patch } : l)));
   return (
     <TmPage crumbs={[{ label: 'My Campaigns', to: 'tm.c1' }, { label: CAMPAIGN.name, to: 'cw.1' }, { label: 'Campaign Wizard' }, { label: 'Activity & Budget Mix' }]}
-      code="CW.2" title="Campaign Activity & Budget Mix Planner" status="Budget draft · editable">
+      code="CW.2" title="Activities & Budget" status="Budget draft · editable">
       <Steps steps={WIZARD} active={1} onStep />
       <Context items={[
         { label: 'Campaign', value: CAMPAIGN.name },
@@ -304,7 +304,7 @@ export function Cw3() {
   const coverage = (base.sales / 25) * 100;
   return (
     <TmPage crumbs={[{ label: 'My Campaigns', to: 'tm.c1' }, { label: CAMPAIGN.name, to: 'cw.1' }, { label: 'Campaign Wizard' }, { label: 'Scenario & Expected Outcomes' }]}
-      code="CW.3" title="Campaign Scenario & Expected Outcomes" status="Forecast · assumptions unvalidated">
+      code="CW.3" title="Expected Results" status="Forecast · assumptions unvalidated">
       <Steps steps={WIZARD} active={2} onStep />
       <Context items={[
         { label: 'Campaign', value: CAMPAIGN.name, sub: CAMPAIGN.villages },
@@ -485,7 +485,7 @@ export function TmC2() {
   const daysOpen = submitted ? [0, 1, 3, 4][stage] : 0;
   return (
     <TmPage crumbs={[{ label: 'My Campaigns', to: 'tm.c1' }, { label: CAMPAIGN.name, to: 'cw.4' }, { label: 'Review & Approval' }]}
-      code="TM.C2" title="Campaign Review & Approval Tracker" status={submitted ? stageLabel(stage) : 'Not yet submitted'}
+      code="TM.C2" title="Approval Status" status={submitted ? stageLabel(stage) : 'Not yet submitted'}
       subtitle="Follow the campaign through content review and Marketing Head approval. Launch unlocks only after approval.">
       <Steps active={2} steps={JOURNEY} onStep />
       {!submitted && (
@@ -531,9 +531,9 @@ export function TmC2() {
         </div>
       </div>
       <Footer back={{ label: 'Back to Review & Submit', to: 'cw.4' }} source="Approval workflow (showcase simulation)"
-        next={approved ? 'TM.C3 — My Campaign Portfolio, then Campaign Execution' : 'Await reviewer decisions'}
-        secondary={approved ? <Btn to="tm.ex1">Open Execution Control Tower</Btn> : undefined}
-        primary={{ label: 'My Campaign Portfolio', to: 'tm.c3' }} />
+        next={approved ? 'TM.C3 — Campaign Portfolio, then Campaign Execution' : 'Await reviewer decisions'}
+        secondary={approved ? <Btn to="tm.ex1">Open Activity Tracker</Btn> : undefined}
+        primary={{ label: 'Campaign Portfolio', to: 'tm.c3' }} />
     </TmPage>
   );
 }
@@ -552,8 +552,8 @@ export function TmC3() {
   const open = campaigns.find((c) => c.name === selected)!;
   const villageCampaigns = (village: string) => current.filter((c) => c.villages.includes(village));
   return (
-    <TmPage crumbs={[{ label: 'My Campaigns', to: 'tm.c1' }, { label: 'My Campaign Portfolio' }]}
-      code="TM.C3" title="My Campaign Portfolio" subtitle="All campaigns supporting the approved Ambad plan this season, with last season's results for reference.">
+    <TmPage crumbs={[{ label: 'My Campaigns', to: 'tm.c1' }, { label: 'Campaign Portfolio' }]}
+      code="TM.C3" title="Campaign Portfolio" subtitle="All campaigns supporting the approved Ambad plan this season, with last season's results for reference.">
       <Steps active={3} steps={JOURNEY} onStep />
       <IconTiles items={[
         { icon: Target, value: current.length, label: 'Campaigns this season', note: `1 ${onionStage.toLowerCase()} · 1 draft · 1 idea`, tone: 'green' },
@@ -627,7 +627,7 @@ export function TmC3() {
           <div className="tm-row-actions">
             {open.name === CAMPAIGN.name && <>
               <Btn small onClick={() => go('tm.c2')}>Approval tracker</Btn>
-              <Btn small variant="primary" onClick={() => go(stage >= 3 ? 'tm.ex1' : 'cw.4')}>{stage >= 3 ? 'Open Control Tower' : 'Open in Wizard'}</Btn>
+              <Btn small variant="primary" onClick={() => go(stage >= 3 ? 'tm.ex1' : 'cw.4')}>{stage >= 3 ? 'Open Activity Tracker' : 'Open in Wizard'}</Btn>
             </>}
             {open.stage === 'Draft' && <Btn small onClick={() => go('tm.c1')}>Continue draft</Btn>}
             {open.stage === 'Not drafted' && <Btn small onClick={() => go('tm.c1')}>Create from priority</Btn>}
@@ -643,7 +643,7 @@ export function TmC3() {
         </AiPanel>
       </div>
       <Footer back={{ label: 'Back to Business Priorities', to: 'tm.c1' }} source="Campaign records, Kharif 2025 results (illustrative)"
-        next={stage >= 3 ? 'Campaign Execution — Live Control Tower' : 'Campaign approval, then execution'}
+        next={stage >= 3 ? 'Campaign Execution — Activity Tracker' : 'Campaign approval, then execution'}
         primary={{ label: stage >= 3 ? 'Go to Campaign Execution' : 'Track Approval', to: stage >= 3 ? 'tm.ex1' : 'tm.c2' }} />
     </TmPage>
   );

@@ -88,25 +88,25 @@ const STATUS_META: Record<FeatureStatus, { label: string; tone: Tone }> = {
 };
 
 const FEATURES: { module: string; screens: string; to: ScreenId; what: string; backend: string; status: FeatureStatus; icon: ReactNode }[] = [
-  { module: 'Live Planning Engine', screens: 'P.2', to: 'p.2', icon: <Calculator size={16} />, status: 'live',
+  { module: 'Live Campaign Planner', screens: 'P.2', to: 'p.2', icon: <Calculator size={16} />, status: 'live',
     what: 'Market → goal → farmers → activity mix → budget, with guardrail checks and the full approval workflow.', backend: 'POST /plans/calculate · /plans · submit / approve / generate-calendar · stock-needs' },
-  { module: 'Live Execution & Performance', screens: 'P.3', to: 'p.3', icon: <Activity size={16} />, status: 'live',
+  { module: 'Execution & Results (Live)', screens: 'P.3', to: 'p.3', icon: <Activity size={16} />, status: 'live',
     what: 'Field completion, verified reach, conversions, liquidation, MDO queue, call-centre callbacks and audit flags.', backend: 'GET /performance · /dashboard · /mdo/today · /callbacks/queue · /audit-queue' },
   { module: 'Data Sources & Integrations', screens: 'ADM', to: 'admin.1', icon: <Database size={16} />, status: 'live',
     what: 'Upload CSV/JSON to replace demo data on any screen; geography & product masters; LLM status.', backend: '/datasets · /reference' },
-  { module: 'AI Co-pilot', screens: 'AI.1', to: 'ai.1', icon: <Bot size={16} />, status: 'live',
+  { module: 'AI Copilot', screens: 'AI.1', to: 'ai.1', icon: <Bot size={16} />, status: 'live',
     what: 'Grounded Q&A over CampaignIQ data. Pluggable LLM (OpenAI / Azure / local); demo answers until a key is set.', backend: 'POST /copilot/ask · GET /copilot/status' },
-  { module: 'Strategy Command Centre', screens: 'related screens', to: 's1.1', icon: <Gauge size={16} />, status: 'ready',
+  { module: 'Business Overview', screens: 'related screens', to: 's1.1', icon: <Gauge size={16} />, status: 'ready',
     what: 'National portfolio, campaign scorecard, strategic risk root-cause and recovery replanning.', backend: '/dashboard · /risks · /reports/weekly|monthly · /plans/{id}/replan' },
-  { module: 'Opportunity Atlas', screens: 'related screens', to: 's2.1', icon: <MapPin size={16} />, status: 'ready',
+  { module: 'Market Opportunities', screens: 'related screens', to: 's2.1', icon: <MapPin size={16} />, status: 'ready',
     what: 'Crop × geography opportunity, district/taluka intelligence, micro-market segments, competition, recommendations.', backend: '/market/mus · /segments/summary · PATCH /mus/{id}/segment-override' },
-  { module: 'Crop Nutrition Intelligence', screens: 'related screens', to: 's3.1', icon: <Sprout size={16} />, status: 'ready',
+  { module: 'Crop Nutrition', screens: 'related screens', to: 's3.1', icon: <Sprout size={16} />, status: 'ready',
     what: 'Crop-stage calendar, stage-wise nutrition, programme builder and campaign trigger engine.', backend: 'Crop stages & dose schedule in DB; trigger rules engine proposed' },
-  { module: 'Campaign Strategy Studio', screens: 'related screens', to: 's4.1', icon: <Layers size={16} />, status: 'ready',
-    what: 'Templates, creation wizard, activity & channel mix, scenario simulator, approval routing.', backend: 'Same engine & workflow as Live Campaign Planning Engine (/plans/*, /activities, /playbooks)' },
+  { module: 'Campaign Planning', screens: 'related screens', to: 's4.1', icon: <Layers size={16} />, status: 'ready',
+    what: 'Templates, creation wizard, activity & channel mix, scenario simulator, approval routing.', backend: 'Same engine & workflow as Campaign Planner (Live) (/plans/*, /activities, /playbooks)' },
   { module: 'Demand & Channel Readiness', screens: 'S5.1–S5.4', to: 's5.1', icon: <Truck size={16} />, status: 'ready',
     what: 'Demand projection, stock readiness, dealer/retailer readiness, supply risk & replenishment.', backend: '/plans/{id}/stock-needs · POST /import/sales; ERP feed proposed' },
-  { module: 'Orchestration & Control Tower', screens: 'S6.1–S6.2', to: 's6.1', icon: <CalendarDays size={16} />, status: 'ready',
+  { module: 'Field Execution & Activity Tracker', screens: 'S6.1–S6.2', to: 's6.1', icon: <CalendarDays size={16} />, status: 'ready',
     what: 'Execution calendar, owner allocation, activity workspace, evidence capture and replanning.', backend: '/calendar · /mdo/today · POST /events/{id}/report · /audit-flags' },
   { module: 'Impact & Learning', screens: 'S7.1–S7.2', to: 's7.1', icon: <LineChart size={16} />, status: 'ready',
     what: 'Impact dashboard, cluster/channel effectiveness, root-cause diagnostics and learnings library.', backend: '/performance · /callbacks · learned conversion rates in engine' },
@@ -118,7 +118,7 @@ const ROADMAP: { phase: string; when: string; tone: Tone; items: string[] }[] = 
     'Python planning engine with 8 guardrail checks and plan lifecycle (draft → live)',
     'Field execution, callbacks, consent log, imports and weekly / monthly reports APIs',
     'Data placeholders: upload CSV/JSON to replace demo data screen by screen',
-    'AI Co-pilot with pluggable LLM, responsive layout for phone, tablet and desktop',
+    'AI Copilot with pluggable LLM, responsive layout for phone, tablet and desktop',
   ] },
   { phase: 'Phase 2 · Pilot', when: 'Next 8–12 weeks', tone: 'blue', items: [
     'Single sign-on, role-based access and territory scoping (HO, zone, region, MDO, call centre)',
@@ -136,14 +136,14 @@ const ROADMAP: { phase: string; when: string; tone: Tone; items: string[] }[] = 
 ];
 
 const DEMO_PATH: { step: string; detail: string; to: ScreenId }[] = [
-  { step: 'Command Centre', detail: 'National view and portfolio risks', to: 's1.1' },
-  { step: 'Opportunity Atlas', detail: 'Where to play: crop × geography', to: 's2.1' },
+  { step: 'Business Overview', detail: 'National view and portfolio risks', to: 's1.1' },
+  { step: 'Market Opportunities', detail: 'Where to play: crop × geography', to: 's2.1' },
   { step: 'Nutrition triggers', detail: 'When to act: crop-stage triggers', to: 's3.4' },
   { step: 'Live planning engine', detail: 'Real calculation & approval', to: 'p.2' },
   { step: 'Channel readiness', detail: 'Stock & dealer readiness', to: 's5.3' },
   { step: 'Live execution', detail: 'Field, callbacks, conversions', to: 'p.3' },
   { step: 'Impact & learning', detail: 'What worked and why', to: 's7.1' },
-  { step: 'AI Co-pilot', detail: 'Ask questions across modules', to: 'ai.1' },
+  { step: 'AI Copilot', detail: 'Ask questions across modules', to: 'ai.1' },
 ];
 
 type Dashboard = { kpis: Record<string, number>; market_units: MarketRow[]; liquidation_by_month: { month: string; liquidated: number; po_packs: number }[] };
@@ -179,7 +179,7 @@ export function PrototypeOverview() {
     { label: 'Planning engine', value: 'Python · 8 guardrails', ok: apiUp, sub: 'Segment → goal → farmers → mix → budget' },
     { label: 'Reference masters', value: `${reference.states.length} states · ${districts} districts`, ok: true, sub: `${reference.products.length} products · editable JSON` },
     { label: 'Screen datasets', value: datasets.data ? `${liveDatasets} live · ${datasets.data.items.length - liveDatasets} demo` : '…', ok: datasets.data ? true : datasets.error ? false : null, sub: 'Upload CSV/JSON in Data Sources' },
-    { label: 'AI Co-pilot', value: copilot.data ? (copilot.data.mode === 'llm' ? `LLM · ${copilot.data.model}` : 'Demo answers') : '…', ok: copilot.data ? true : copilot.error ? false : null, sub: copilot.data?.mode === 'llm' ? copilot.data.provider : 'Set COPILOT_PROVIDER to connect an LLM' },
+    { label: 'AI Copilot', value: copilot.data ? (copilot.data.mode === 'llm' ? `LLM · ${copilot.data.model}` : 'Demo answers') : '…', ok: copilot.data ? true : copilot.error ? false : null, sub: copilot.data?.mode === 'llm' ? copilot.data.provider : 'Set COPILOT_PROVIDER to connect an LLM' },
   ];
 
   return (
@@ -191,7 +191,7 @@ export function PrototypeOverview() {
         badge={<Pill tone="green">Prototype v1</Pill>}
         actions={<>
           <Btn variant="primary" icon={<PlayCircle size={14} />} to="p.2">Start live demo</Btn>
-          <Btn icon={<Gauge size={14} />} to="s1.1">Open Command Centre</Btn>
+          <Btn icon={<Gauge size={14} />} to="s1.1">Open Business Overview</Btn>
         </>}
       />
 
@@ -201,7 +201,7 @@ export function PrototypeOverview() {
           <h2>One workspace for every Mahadhan crop-nutrition campaign</h2>
           <p>
             CampaignIQ finds where adoption headroom is, plans the right activity mix and budget for each market,
-            checks stock and channel readiness, runs field execution and proves impact, with an AI Co-pilot on top.
+            checks stock and channel readiness, runs field execution and proves impact, with an AI Copilot on top.
           </p>
         </div>
         <div className="proto-hero-stats">
@@ -469,7 +469,7 @@ export function LivePlanner() {
     <div className="stack proto">
       <PageHeader
         code="P.2"
-        title="Live Campaign Planning Engine"
+        title="Campaign Planner (Live)"
         subtitle="Every number on this screen is computed by the Python backend from the database. Change the market or target and watch the engine, guardrails and workflow respond."
         badge={<Pill tone="green"><span className="proto-live-dot" />Live backend</Pill>}
         back="p.1"
@@ -534,7 +534,7 @@ export function LivePlanner() {
                 <Kpi compact tone={red.some((check) => check.check_name === 'spend_ratio') ? 'red' : undefined} icon={<Gauge size={16} />} label="Spend ratio" value={pct(calc.spend_ratio, 1)} sub={`cap ${pct(calc.spend_cap_pct)} for ${calc.segment}`} />
               </KpiRow>
 
-              <Panel icon={<Layers size={16} />} title="2 · Activity Mix Generated by the Engine" subtitle="Units = farmers allocated ÷ (reach × conversion). Conversion is 'learned' when enough callback data exists, otherwise the configured default.">
+              <Panel icon={<Layers size={16} />} title="2 · Recommended Activity Mix" subtitle="Units = farmers allocated ÷ (reach × conversion). Conversion is 'learned' when enough callback data exists, otherwise the configured default.">
                 <DataTable compact columns={lineColumns} rows={calc.lines as LineRow[]} total={{ name: <b>Total</b>, share_pct: '100%', n: <b>{num(calc.total_units)}</b>, budget: <b>{inr(calc.budget)}</b>, planned_converts: <b>{num(calc.planned_converts, 1)}</b> }} />
                 <div className="proto-phasing">
                   <span className="small muted">Budget phasing</span>
@@ -697,7 +697,7 @@ export function LiveOperations() {
     <div className="stack proto">
       <PageHeader
         code="P.3"
-        title="Live Execution & Performance"
+        title="Execution & Results (Live)"
         subtitle="Field execution, call-centre callbacks, conversions and liquidation, read live from the backend. Record a callback below and watch the KPIs update."
         badge={<Pill tone="green"><span className="proto-live-dot" />Live backend</Pill>}
         back="p.2"
@@ -766,7 +766,7 @@ export function LiveOperations() {
       </Grid>
 
       <Grid cols="1.4fr 1fr">
-        <Panel icon={<MapPin size={16} />} title="Market Units · Segmentation from the Engine">
+        <Panel icon={<MapPin size={16} />} title="Market Units by Segment">
           <DataTable compact rows={dash.data?.market_units ?? []} columns={[
             { key: 'mu_name', label: 'Market unit', render: (row: MarketRow) => <strong>{row.mu_name}</strong> },
             { key: 'district', label: 'District' },

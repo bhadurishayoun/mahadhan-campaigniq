@@ -1,6 +1,6 @@
 # Mahadhan CampaignIQ
 
-CampaignIQ is a crop-nutrition campaign-management tool for Mahadhan (Deepak NextGen). It covers the campaign lifecycle: finding opportunities, building nutrition programmes, planning campaigns, checking demand and channel readiness, running field execution and measuring impact. An AI Co-pilot sits on top.
+CampaignIQ is a crop-nutrition campaign-management tool for Mahadhan (Deepak NextGen). It covers the campaign lifecycle: finding opportunities, building nutrition programmes, planning campaigns, checking demand and channel readiness, running field execution and measuring impact. An AI Copilot sits on top.
 
 The tool has two layers:
 
@@ -25,7 +25,7 @@ All data is **illustrative**: the backend is filled from a synthetic data workbo
    * [5.2 Add products, crops, seasons, campaign types](#52-add-products-crops-seasons-and-campaign-types)
    * [5.3 Replace demo data with real data](#53-replace-demo-data-with-real-data)
    * [5.4 Put a placeholder on another table or chart](#54-put-a-data-placeholder-on-another-table-or-chart)
-   * [5.5 Connect the AI Co-pilot to an LLM](#55-connect-the-ai-co-pilot-to-an-llm)
+   * [5.5 Connect the AI Copilot to an LLM](#55-connect-the-ai-copilot-to-an-llm)
    * [5.6 Add a new screen](#56-add-a-new-screen)
 6. [Configuration reference](#6-configuration-reference)
 7. [API reference](#7-api-reference)
@@ -51,13 +51,14 @@ All data is **illustrative**: the backend is filled from a synthetic data workbo
 
 | Area | Status | Where |
 |---|---|---|
-| Territory Manager persona | **17 screens mirroring the approved mockups**: My Plan TM.1–TM.5, My Campaigns TM.C1 → wizard CW.1–CW.4 → TM.C2 Review & Approval → TM.C3 My Campaign Portfolio, Execution TM.EX1–EX2, Impact TM.IM1–IM2, AI Copilot TM.AI1. Jalna/Ambad maps, donuts, approval pipeline, editable plans that recalculate. | `web/src/tm/` (`plan.tsx`, `campaigns.tsx`, `execution.tsx`, figures in `data.ts`, visuals in `viz.tsx`, session state in `state.ts`) |
+| Territory Manager persona | **17 screens mirroring the approved mockups**: My Plan TM.1–TM.5, My Campaigns TM.C1 → wizard CW.1–CW.4 → TM.C2 Review & Approval → TM.C3 Campaign Portfolio, Execution TM.EX1–EX2, Impact TM.IM1–IM2, AI Copilot TM.AI1. Jalna/Ambad maps, donuts, approval pipeline, editable plans that recalculate. | `web/src/tm/` (`plan.tsx`, `campaigns.tsx`, `execution.tsx`, figures in `data.ts`, visuals in `viz.tsx`, session state in `state.ts`) |
 | Product Manager persona | 48 screens (PM.1 – PM.AI1) | `web/src/pm/`, notes in `docs/product-manager-persona.md` |
 | Marketing Head, Business Head personas | Workspaces exist; **not yet checked screen-by-screen against the mockups** (MH uses a generic workspace template) | `web/src/mh/`, `web/src/bh/` |
 | Master login | One login for all personas, persona switching without re-login | `web/src/personaAuth.ts`, `login.tsx`, `App.tsx` |
 | Synthetic data | Excel workbook (20 districts, 95 marketing units, 3 seasons, plans, field events, farmers, call-backs, sales, 12 screen datasets) loaded into the backend automatically | `server/scripts/generate_synthetic_workbook.py` → `server/data/seed/mahadhan_synthetic_data.xlsx` → `server/campaign_api/workbook.py` (see [5.3](#53-replace-demo-data-with-real-data)) |
-| Live AI Copilot | All copilots answer with a real LLM, no API key: free keyless endpoints (LLM7, then Pollinations). Through the backend when reachable, otherwise straight from the browser. | `server/campaign_api/copilot/`, `web/src/data/copilot.ts`, `web/src/ui/LiveCopilot.tsx` (see [5.5](#55-connect-the-ai-co-pilot-to-an-llm)) |
+| Live AI Copilot | All copilots answer with a real LLM, no API key: free keyless endpoints (LLM7, then Pollinations). Through the backend when reachable, otherwise straight from the browser. | `server/campaign_api/copilot/`, `web/src/data/copilot.ts`, `web/src/ui/LiveCopilot.tsx` (see [5.5](#55-connect-the-ai-copilot-to-an-llm)) |
 | Hosting | Website and backend deployed and connected | see table above |
+| Screen titles | All ~150 screen, tab and panel titles rewritten in plain business language (no "Command Centre", "Intelligence", "Studio" …); docs updated to match | `web/src/*/nav.ts`, screen files, `docs/` |
 
 ### Known limitations (be aware before demoing or building on it)
 
@@ -80,6 +81,11 @@ All data is **illustrative**: the backend is filled from a synthetic data workbo
 
 * Every persona lives in `web/src/<persona>/`: `nav.ts` (screen registry), screen files, `data.ts` (figures), CSS. Register new screens in `nav.ts` and the persona's `index.tsx`.
 * Keep figures consistent across screens (totals must reconcile); keep everything labelled illustrative.
+* **Screen and panel titles must read like a person named them:** short, plain business words that say what the
+  user does or sees (e.g. "Plan Reviews", "Outlet Targets", "Approval Status"). Avoid buzzwords such as Command Centre,
+  Intelligence, Studio, Workspace, Control Tower, Engine, Hub, Unified, Deep-dive, and stacked "Strategic … &
+  … & …" chains. Every assistant is called "AI Copilot". When renaming a screen, change its `nav.ts` title and every
+  breadcrumb, link and doc that uses it (titles are plain strings, so a project-wide search finds them all).
 * Before pushing: `npx tsc --noEmit -p web`, `npm run build -w web`, `cd server; python -m unittest discover -s tests_python`.
 * On Windows, `npm run dev`'s auto-reload can leave an old API worker running on port 8000; if API changes don't show up, stop all `uvicorn` Python processes and restart.
 * Update this README (this section first) in the same commit as any change.
@@ -128,8 +134,8 @@ The **Prototype Showcase** module (top of the sidebar) explains the prototype an
 | Screen | What to show |
 |---|---|
 | **P.1 Prototype Overview** (`#/p.1`) | What the tool does; live system status (API, database, engine, masters, datasets, Co-pilot); architecture (built vs proposed integrations); feature map with honest status per module; roadmap (Prototype → Pilot → Scale); guided demo path. |
-| **P.2 Live Planning Engine** (`#/p.2`) | Pick a market unit and move the target slider: the Python engine recalculates segment, goal, farmers, activity mix, budget and 8 guardrails. Then **Save draft → Submit → Approve as Marketing (blocked, HTTP 403) → Approve as Region Manager → Generate calendar & stock plan**. Raise the target until the spend-ratio check turns red to show the API refusing submission. |
-| **P.3 Live Execution & Performance** (`#/p.3`) | Real KPIs from the database. Record a call-centre callback ("Bought") and watch *Converted farmers* update; resolve an audit flag. |
+| **P.2 Live Campaign Planner** (`#/p.2`) | Pick a market unit and move the target slider: the Python engine recalculates segment, goal, farmers, activity mix, budget and 8 guardrails. Then **Save draft → Submit → Approve as Marketing (blocked, HTTP 403) → Approve as Region Manager → Generate calendar & stock plan**. Raise the target until the spend-ratio check turns red to show the API refusing submission. |
+| **P.3 Execution & Results (Live)** (`#/p.3`) | Real KPIs from the database. Record a call-centre callback ("Bought") and watch *Converted farmers* update; resolve an audit flag. |
 
 The dark **Backend Activity** console on P.2/P.3 lists every API call (method, path, status, milliseconds), including rejected calls and their reasons. Follow with the designed mockup screens (S1–S7, AI.1) using the Guided Demo Path on P.1.
 
@@ -167,7 +173,7 @@ Screens are labelled as:
                          │  ui/LiveCopilot.tsx ─ live AI chat            │
                          │  data/reference.ts ─ states/districts/products│
                          │  data/datasets.ts  ─ useDataset() demo↔live   │
-                         │  data/copilot.ts   ─ AI Co-pilot client ──────┼──┐ no backend:
+                         │  data/copilot.ts   ─ AI Copilot client ──────┼──┐ no backend:
                          └──────────────┬────────────────────────────────┘  │ browser calls
                                         │ fetch  VITE_API_URL (/api/...)    │ the free LLM
                          ┌──────────────▼────────────────────────────────┐  │ directly
@@ -254,14 +260,14 @@ campaigniq/
         ├── tm/               Territory Manager persona (V2): 17 screens, see section 0
         └── screens/
             ├── prototype.tsx/.css  P.1–P.3 Prototype Showcase (overview, live planner, live execution)
-            ├── s1.tsx/.css   S1.1–S1.5 Strategy Command Centre
-            ├── s2.tsx/.css   S2.1–S2.5 Opportunity Atlas
-            ├── s3.tsx/.css   S3.1–S3.4 Crop Nutrition Intelligence
-            ├── s4.tsx/.css   S4.1–S4.5 Campaign Strategy Studio
+            ├── s1.tsx/.css   S1.1–S1.5 Business Overview
+            ├── s2.tsx/.css   S2.1–S2.5 Market Opportunities
+            ├── s3.tsx/.css   S3.1–S3.4 Crop Nutrition
+            ├── s4.tsx/.css   S4.1–S4.5 Campaign Planning
             ├── s5.tsx/.css   S5.1–S5.4 Demand & Channel Readiness
-            ├── s6.tsx/.css   S6.1–S6.2 Orchestration Hub / Live Control Tower
-            ├── s7.tsx/.css   S7.1–S7.2 Campaign Impact & Learning
-            ├── ai.tsx/.css   AI.1 Intelligent Copilot Workspace
+            ├── s6.tsx/.css   S6.1–S6.2 Orchestration Hub / Activity Tracker
+            ├── s7.tsx/.css   S7.1–S7.2 Campaign Results
+            ├── ai.tsx/.css   AI.1 AI Copilot
             └── admin.tsx     ADM Data Sources & Integrations
 ```
 
@@ -330,12 +336,12 @@ Each module is one file, with one exported component per screen, built by readin
 
 | File | Screens | Main interactions |
 |---|---|---|
-| `s1.tsx` | S1.1 Command Centre, S1.2 Portfolio, S1.3 Executive Summary, S1.4 Risk Analysis, S1.5 Recovery & Replanning | State map drill-down, portfolio search/risk filter, risk → root cause, replanning options |
-| `s2.tsx` | S2.1 Opportunity Atlas, S2.2 District Intelligence, S2.3 Micro-Market Segmentation, S2.4 Competition & Channel, S2.5 Recommendations | Market ranking → district → taluka → segment → campaign recommendation |
+| `s1.tsx` | S1.1 Business Overview, S1.2 Portfolio, S1.3 Executive Summary, S1.4 Risk Analysis, S1.5 Recovery Plan | State map drill-down, portfolio search/risk filter, risk → root cause, replanning options |
+| `s2.tsx` | S2.1 Market Opportunities, S2.2 Jalna Taluka View, S2.3 Micro-Market Segmentation, S2.4 Competition & Channel, S2.5 Recommendations | Market ranking → district → taluka → segment → campaign recommendation |
 | `s3.tsx` | S3.1 Nutrition Calendar, S3.2 Stage Intelligence, S3.3 Programme Builder, S3.4 Trigger Engine | Growth-stage tracker, editable programme rows, trigger queue → campaign draft |
-| `s4.tsx` | S4.1 Templates, S4.2 Creation Wizard, S4.3 Activity Mix, S4.4 Scenario Simulator, S4.5 Approval | Shared campaign state across the studio, live budget/reach maths, approval routing and audit log |
+| `s4.tsx` | S4.1 Templates, S4.2 Creation Wizard, S4.3 Activity Mix, S4.4 Campaign Scenarios, S4.5 Approval | Shared campaign state across the studio, live budget/reach maths, approval routing and audit log |
 | `s5.tsx` | S5.1 Demand Projection, S5.2 Stock Readiness, S5.3 Dealer Readiness, S5.4 Supply Risk Planner | Forecast assumptions → demand, stock-gap heatmap, dealer matrix, replenishment plan |
-| `s6.tsx` | S6.1 Execution Control Tower, S6.2 Activity Workspace | Calendar, owner allocation, kanban, attendance capture, replanning |
+| `s6.tsx` | S6.1 Activity Tracker, S6.2 Activity Follow-up | Calendar, owner allocation, kanban, attendance capture, replanning |
 | `s7.tsx` | S7.1 Impact Dashboard, S7.2 Diagnostics & Learning | Cluster/channel effectiveness, root-cause factors, learnings library |
 | `ai.tsx` | AI.1 Copilot Workspace | Suggested questions, history, free-text questions (LLM or built-in answers) |
 | `admin.tsx` | ADM Data Sources & Integrations | Dataset status, template download, upload or revert, masters, LLM status |
@@ -364,7 +370,7 @@ Each screen's mockup photo is listed in [docs/screen-inventory.md](docs/screen-i
 4. Panels pass the result to `<Panel data={...}>`, which shows a small **DEMO** or **LIVE** badge. Clicking the badge opens the Data Sources screen.
 5. Twelve key tables are already connected: S1.1/S1.2/S1.3 campaign portfolio, S2.1 top markets, S2.2 taluka ranking, S3.4 trigger queue, S5.1 village demand, S5.2 stock heatmap, S5.3 dealers and cluster supply, S6.1 field owners, S7.1 cluster conversion and channel effectiveness, and S7.2 geography performance.
 
-### Step 11 - AI Co-pilot LLM integration
+### Step 11 - AI Copilot LLM integration
 
 1. **Answer contract.** `copilot/schema.py` defines `CopilotAnswer`, which has the same shape as the answer cards on AI.1: title, summary, table, chart, factors, confidence, sources, actions, primary and secondary call-to-action.
 2. **Providers.** `copilot/providers.py` has an `LLMProvider` base class and four implementations:
@@ -502,7 +508,7 @@ Example: make the S2.4 competitor table data-driven.
 
 Good next candidates (still hard-coded): S1 KPI tiles and funnels, S2.3 segments, S2.4 competitors, S3.1 crop calendar, S4.1 templates, S5.4 transfers, S6.2 tasks and S7.2 learnings.
 
-### 5.5 Connect the AI Co-pilot to an LLM
+### 5.5 Connect the AI Copilot to an LLM
 
 **Default: live AI with no API key.** `COPILOT_PROVIDER=free` (the default) calls free, keyless OpenAI-compatible
 endpoints: LLM7 first, Pollinations as the fallback. Both serve open-weight models (mainly `gpt-oss-20b`).
@@ -597,7 +603,7 @@ Interactive documentation: **http://localhost:8000/docs**.
 |---|---|
 | Reference masters | `GET /api/reference`, `GET /api/reference/{geography\|products\|masters}`, `PUT /api/reference/{kind}` |
 | Screen datasets | `GET /api/datasets`, `GET /api/datasets/{name}?season=&state=&district=&taluka=&crop=&product=&campaign_type=`, `GET /api/datasets/{name}/template`, `POST /api/datasets/{name}` (multipart `file`), `DELETE /api/datasets/{name}` |
-| AI Co-pilot | `GET /api/copilot/status`, `POST /api/copilot/ask` `{question, scope, screen, history}` (AI.1 structured answer), `POST /api/copilot/chat` `{question, persona, screen, page_context, scope, history}` (persona copilots, Markdown answer) |
+| AI Copilot | `GET /api/copilot/status`, `POST /api/copilot/ask` `{question, scope, screen, history}` (AI.1 structured answer), `POST /api/copilot/chat` `{question, persona, screen, page_context, scope, history}` (persona copilots, Markdown answer) |
 | Data workbook | `GET /api/import/workbook` (download the seed workbook), `POST /api/import/workbook` (multipart `file`, header `X-Admin-Token`; replaces all data) |
 | Planning & workflow | `GET /api/meta/filters`, `/api/market/mus`, `/api/segments/summary`, `POST /api/plans/calculate`, plan lifecycle `/api/plans/{id}/submit\|approve\|lock\|revise`, `/generate-calendar`, `/stock-needs`, field events, callbacks, consent, imports and reports. Full map: [docs/screen-api-map.md](docs/screen-api-map.md) |
 

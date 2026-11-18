@@ -25,7 +25,7 @@ const fmt = (value: number, digits = 1) => value.toLocaleString('en-IN', { minim
 const int = (value: number) => Math.round(value).toLocaleString('en-IN');
 
 /* ------------------------------------------------------------------ */
-/* S5.1 Campaign Demand Projection                                     */
+/* S5.1 Demand Forecast                                     */
 /* ------------------------------------------------------------------ */
 
 const TARGET_FARMERS = 1832;
@@ -100,15 +100,15 @@ export function DemandProjection() {
     <div className="stack">
       <Breadcrumbs items={[
         { label: 'Campaign Recommendations', to: 's2.5' },
-        { label: 'Campaign Creation Wizard', to: 's4.2' },
+        { label: 'Create a Campaign', to: 's4.2' },
         { label: 'Activity Planner', to: 's4.3' },
-        { label: 'Scenario Simulator', to: 's4.4' },
+        { label: 'Campaign Scenarios', to: 's4.4' },
         { label: 'Approval & Review', to: 's4.5' },
-        { label: 'Campaign Demand Projection' },
+        { label: 'Demand Forecast' },
       ]} />
       <PageHeader
         back="s4.5"
-        title="Campaign Demand Projection"
+        title="Demand Forecast"
         subtitle="Project and plan product demand, SKU requirements and supply for the approved Croptek (Onion) campaign in Ambad, Jalna"
       />
       <SourceBar right={<Pill tone="green"><CheckCircle2 size={12} /> Campaign Status: {status === 'submitted' ? 'Demand Submitted for Approval' : 'Approved — Supply Planning'}</Pill>}>
@@ -300,7 +300,7 @@ export function DemandProjection() {
       <div className="s5-action-bar">
         <div className="row">
           <Btn icon={<Save size={14} />} onClick={() => { setStatus('draft'); toast('Demand projection saved as draft'); }}>Save Draft</Btn>
-          <Btn icon={<MessageSquare size={14} />} onClick={() => { setStatus('changes'); toast('Change request sent to Campaign Strategy Studio'); }}>Request Changes</Btn>
+          <Btn icon={<MessageSquare size={14} />} onClick={() => { setStatus('changes'); toast('Change request sent to Campaign Planning'); }}>Request Changes</Btn>
           <Btn variant="primary" icon={<Send size={14} />} disabled={status === 'submitted'} onClick={() => { setStatus('submitted'); toast(`Demand projection (${fmt(result.demand, 0)} MT) submitted for approval`); }}>
             {status === 'submitted' ? 'Submitted for Approval' : 'Submit for Approval'}
           </Btn>
@@ -310,18 +310,18 @@ export function DemandProjection() {
 
       <FlowFooter steps={[
         { label: 'Campaign Recommendations', to: 's2.5' },
-        { label: 'Campaign Creation Wizard', to: 's4.2' },
+        { label: 'Create a Campaign', to: 's4.2' },
         { label: 'Activity Planner', to: 's4.3' },
-        { label: 'Scenario Simulator', to: 's4.4' },
+        { label: 'Campaign Scenarios', to: 's4.4' },
         { label: 'Approval & Review', to: 's4.5' },
-        { label: 'Campaign Demand Projection (Current)', current: true },
+        { label: 'Demand Forecast (Current)', current: true },
       ]} next={{ label: 'Check Stock Readiness', to: 's5.2', sub: '' }} />
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* S5.2 Stock Readiness & Supply Gap Intelligence                      */
+/* S5.2 Stock & Supply Gaps                      */
 /* ------------------------------------------------------------------ */
 
 function Waterfall() {
@@ -419,22 +419,22 @@ export function StockReadiness() {
     <div className="stack">
       <Breadcrumbs items={[
         { label: 'Approved Campaign', to: 's4.5' },
-        { label: 'Campaign Demand Projection', to: 's5.1' },
-        { label: 'Campaign Stock Readiness & Supply Gap Intelligence' },
+        { label: 'Demand Forecast', to: 's5.1' },
+        { label: 'Campaign Stock & Supply Gaps' },
       ]} />
       <PageHeader
         back="s5.1"
-        title="Campaign Stock Readiness & Supply Gap Intelligence"
+        title="Campaign Stock & Supply Gaps"
         subtitle="Validate stock availability, quantify supply gap, assess timing risks and recommend replenishment actions for the approved campaign."
       />
       <SourceBar right={<Pill tone="green"><CheckCircle2 size={12} /> Approved — Stock Validation in Progress</Pill>}>
-        Opened from <strong>Campaign Demand Projection</strong> by clicking <strong>Check Stock Readiness</strong>.
+        Opened from <strong>Demand Forecast</strong> by clicking <strong>Check Stock Readiness</strong>.
       </SourceBar>
       <ContextStrip items={[
         CAMPAIGN_ITEM,
         { icon: <Users size={22} />, label: 'Target Farmers', value: '1,832', sub: '(Confirmed,)' },
         { icon: <CalendarDays size={22} />, label: 'Campaign Period', value: '15 Dec 2026 – 15 Mar 2027' },
-        { icon: <Coins size={22} />, label: 'Projected Demand', value: '209 MT', sub: '(From Campaign Demand Projection)' },
+        { icon: <Coins size={22} />, label: 'Projected Demand', value: '209 MT', sub: '(From Demand Forecast)' },
         { icon: <Warehouse size={22} />, label: 'Reported Available', value: '138 MT' },
         { icon: <Truck size={22} />, label: 'In-transit', value: '28 MT' },
       ]} />
@@ -599,15 +599,15 @@ export function StockReadiness() {
 
       <FlowFooter steps={[
         { label: 'Approved Campaign', to: 's4.5' },
-        { label: 'Campaign Demand Projection', to: 's5.1' },
-        { label: 'Campaign Stock Readiness & Supply Gap Intelligence (Current)', current: true },
+        { label: 'Demand Forecast', to: 's5.1' },
+        { label: 'Campaign Stock & Supply Gaps (Current)', current: true },
       ]} next={{ label: 'Review Dealer & Retailer Readiness', to: 's5.3', sub: '' }} />
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* S5.3 Dealer & Retailer Readiness Intelligence                       */
+/* S5.3 Dealer & Retailer Readiness                       */
 /* ------------------------------------------------------------------ */
 
 type DealerRow = {
@@ -678,16 +678,16 @@ export function DealerReadiness() {
     <div className="stack">
       <Breadcrumbs items={[
         { label: 'Approved Campaign', to: 's4.5' },
-        { label: 'Campaign Demand Projection', to: 's5.1' },
-        { label: 'Campaign Stock Readiness & Supply Gap Intelligence', to: 's5.2' },
-        { label: 'Dealer & Retailer Readiness Intelligence' },
+        { label: 'Demand Forecast', to: 's5.1' },
+        { label: 'Campaign Stock & Supply Gaps', to: 's5.2' },
+        { label: 'Dealer & Retailer Readiness' },
       ]} />
       <PageHeader
         back="s5.2"
-        title="Dealer & Retailer Readiness Intelligence"
+        title="Dealer & Retailer Readiness"
         subtitle="Validates channel readiness, stocking, compliance, and activation for the approved campaign."
       />
-      <SourceBar>Opened from <strong>Stock Readiness & Supply Gap Intelligence</strong> by clicking <strong>Review Dealer & Retailer Readiness</strong>.</SourceBar>
+      <SourceBar>Opened from <strong>Stock & Supply Gaps</strong> by clicking <strong>Review Dealer & Retailer Readiness</strong>.</SourceBar>
       <ContextStrip items={[
         { ...CAMPAIGN_ITEM, sub: 'Ambad, Jalna' },
         { icon: <Package size={20} />, label: 'Projected Demand', value: '209 MT' },
@@ -701,8 +701,8 @@ export function DealerReadiness() {
         <Kpi compact icon={<Store size={18} />} label="Active Retailers" value="74" sub="— mapped for campaign" trend="up" />
         <Kpi compact icon={<Boxes size={18} />} label="Croptek Stocking Retailers" value="46" sub="62% of active retailers" trend="up" />
         <Kpi compact icon={<Users size={18} />} label="High-Influence Retailers" value="18" sub="24% of active retailers" trend="up" />
-        <Kpi compact icon={<Package size={18} />} label="Projected Demand" value="209 MT" sub="same as Stock Readiness & Supply Gap Intelligence" trend="up" />
-        <Kpi compact icon={<Boxes size={18} />} label="Potential Supply" value="166 MT" sub="same as Stock Readiness & Supply Gap Intelligence" trend="up" />
+        <Kpi compact icon={<Package size={18} />} label="Projected Demand" value="209 MT" sub="same as Stock & Supply Gaps" trend="up" />
+        <Kpi compact icon={<Boxes size={18} />} label="Potential Supply" value="166 MT" sub="same as Stock & Supply Gaps" trend="up" />
         <Kpi compact icon={<AlertTriangle size={18} />} label="Channel Gap" value="43 MT" tone="amber" />
         <Kpi compact icon={<BarChart3 size={18} />} label="Channel Readiness Score" value="72%" sub="(53 / 74 retailers ready)" />
         <Kpi compact icon={<ShieldCheck size={18} />} label="Stock Data Confidence" value={<Pill tone="amber">Medium</Pill>} />
@@ -779,7 +779,7 @@ export function DealerReadiness() {
       </Grid>
 
       <Panel
-        title="Dealer / Retailer Intelligence — Stock, Compliance, Readiness & Actions"
+        title="Dealer & Retailer View — Stock, Compliance, Readiness & Actions"
         data={dealers}
         icon={<Store size={15} />}
         info
@@ -886,15 +886,15 @@ export function DealerReadiness() {
       <div className="warn-box small"><AlertTriangle size={13} /> <strong>Note:</strong> Retailer stock figures are illustrative and unverified until confirmed through field validation or dealer ERP update.</div>
 
       <FlowFooter label="Source:" steps={[
-        { label: 'Campaign Stock Readiness & Supply Gap Intelligence', to: 's5.2' },
-        { label: 'Current: Dealer & Retailer Readiness Intelligence', current: true },
+        { label: 'Campaign Stock & Supply Gaps', to: 's5.2' },
+        { label: 'Current: Dealer & Retailer Readiness', current: true },
       ]} nextLabel="" next={{ label: 'Create Replenishment Plan', to: 's5.4', sub: '' }} />
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* S5.4 Supply Risk & Replenishment Planner                            */
+/* S5.4 Stock Replenishment Plan                            */
 /* ------------------------------------------------------------------ */
 
 const SCENARIOS = [
@@ -915,12 +915,12 @@ export function SupplyRiskPlanner() {
   return (
     <div className="stack">
       <Breadcrumbs items={[
-        { label: 'Campaign Demand Projection', to: 's5.1' },
+        { label: 'Demand Forecast', to: 's5.1' },
         { label: 'Stock Readiness', to: 's5.2' },
         { label: 'Dealer & Retailer Readiness', to: 's5.3' },
-        { label: 'Supply Risk & Replenishment Planner' },
+        { label: 'Stock Replenishment Plan' },
       ]} />
-      <PageHeader back="s5.3" title="Supply Risk & Replenishment Planner" subtitle="Plan inventory recovery to close the 43 MT supply gap and ensure campaign success" />
+      <PageHeader back="s5.3" title="Stock Replenishment Plan" subtitle="Plan inventory recovery to close the 43 MT supply gap and ensure campaign success" />
       <SourceBar><CheckCircle2 size={15} /> <strong>Campaign Context: Croptek Onion Conversion — Ambad, Jalna</strong></SourceBar>
       <KpiRow>
         <Kpi icon={<Target size={22} />} label="Projected Demand" value="209 MT" />
@@ -1074,13 +1074,13 @@ export function SupplyRiskPlanner() {
             toast(`Supply plan confirmed (Scenario ${chosen.name}) — opening Campaign Calendar`);
             go('s6.1');
           }}>Confirm Supply Plan & Open Campaign Calendar</Btn>
-          <span className="muted small" style={{ textAlign: 'center' }}>Go to Unified Campaign Orchestration Calendar</span>
+          <span className="muted small" style={{ textAlign: 'center' }}>Go to Campaign Calendar</span>
         </Panel>
       </Grid>
 
       <FlowFooter label="Source:" steps={[
         { label: 'Dealer & Retailer Readiness', to: 's5.3' },
-        { label: 'Current: Supply Risk & Replenishment Planner', current: true },
+        { label: 'Current: Stock Replenishment Plan', current: true },
       ]} next={{ label: 'Unified Campaign Orchestration Calendar', to: 's6.1' }} />
       <Note>ⓘ All figures are illustrative and for planning purposes only.</Note>
     </div>

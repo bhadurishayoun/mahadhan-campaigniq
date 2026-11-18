@@ -13,7 +13,7 @@ import {
 import './s7.css';
 
 /* ------------------------------------------------------------------ */
-/* S7.1 Campaign Impact & Effectiveness Dashboard                      */
+/* S7.1 Campaign Results                      */
 /* ------------------------------------------------------------------ */
 
 type ClusterRow = { cluster: string; trials: number; rate: number; adopters: number; signal: 'ok' | 'risk' | 'moderate'; text: string };
@@ -50,12 +50,12 @@ export function ImpactDashboard() {
   return (
     <div className="s7-page">
       <Breadcrumbs items={[
-        { label: 'Activity Execution & Action Workspace', to: 's6.2' },
+        { label: 'Activity Follow-up', to: 's6.2' },
         { label: 'Proceed to Impact Review', to: 's6.2' },
-        { label: 'Campaign Impact & Effectiveness Dashboard' },
+        { label: 'Campaign Results' },
       ]} />
       <PageHeader
-        title="Campaign Impact & Effectiveness Dashboard"
+        title="Campaign Results"
         badge={<Pill tone="grey">Product- detailer version 1</Pill>}
         subtitle="Measure campaign performance, farmer conversion, commercial impact, and effectiveness for Croptek Onion Conversion — Ambad, Jalna"
         actions={<>
@@ -186,7 +186,7 @@ export function ImpactDashboard() {
 
         <Panel icon={<Network size={16} />} title="Next Action" info className="ai-panel">
           <button type="button" className="s7-next" onClick={() => go('s7.2')}>
-            <span>Investigate Conversion &amp; ROI Drivers<small>Campaign Diagnostics &amp; Learning Studio</small></span>
+            <span>Investigate Conversion &amp; ROI Drivers<small>What Worked &amp; Why</small></span>
             <ArrowRight size={16} />
           </button>
           <p className="muted small" style={{ marginTop: 10 }}>Focus cluster: <b>{cluster}</b> · Channel in view: <b>{channel}</b></p>
@@ -195,17 +195,17 @@ export function ImpactDashboard() {
 
       <FlowFooter
         steps={[
-          { label: '‹ Source: Activity Execution & Action Workspace', to: 's6.2' },
-          { label: 'Current: Campaign Impact & Effectiveness Dashboard', current: true },
+          { label: '‹ Source: Activity Follow-up', to: 's6.2' },
+          { label: 'Current: Campaign Results', current: true },
         ]}
-        next={{ label: 'Campaign Diagnostics & Learning Studio', to: 's7.2' }}
+        next={{ label: 'What Worked & Why', to: 's7.2' }}
       />
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* S7.2 Campaign Diagnostics & Learning Studio                         */
+/* S7.2 What Worked & Why                         */
 /* ------------------------------------------------------------------ */
 
 type GeoRow = { cluster: string; trials: number; adopters: number; conv: string; vs: string; dir: 'up' | 'down' | 'flat' | 'none' };
@@ -261,11 +261,11 @@ export function DiagnosticsStudio() {
     <div className="s7-page">
       <Breadcrumbs items={[
         { label: 'Campaign Impact & Effectiveness', to: 's7.1' },
-        { label: 'Campaign Diagnostics & Learning Studio' },
+        { label: 'What Worked & Why' },
       ]} />
       <PageHeader
         back="s7.1"
-        title="Campaign Diagnostics & Learning Studio"
+        title="What Worked & Why"
         subtitle="Understand performance drivers, quantify impact and capture learnings for future campaigns"
       />
       <SourceBar><CheckCircle2 size={14} style={{ verticalAlign: 'middle', marginRight: 6 }} />Source: Campaign Impact &amp; Effectiveness Dashboard <ArrowRight size={12} style={{ verticalAlign: 'middle', margin: '0 6px' }} /> <b>Investigate Conversion &amp; ROI Drivers</b></SourceBar>
@@ -407,7 +407,7 @@ export function DiagnosticsStudio() {
             ))}
           </div>
           <div className="row" style={{ marginTop: 10, justifyContent: 'flex-end' }}>
-            <Btn icon={<Wrench size={14} />} to="s6.2" onClick={() => toast('Corrective action drafted for Dhanora — opening Activity Execution & Action Workspace')}>Create Corrective Action</Btn>
+            <Btn icon={<Wrench size={14} />} to="s6.2" onClick={() => toast('Corrective action drafted for Dhanora — opening Activity Follow-up')}>Create Corrective Action</Btn>
             <Btn variant="primary" icon={<Target size={14} />} to="s2.5">Create Next-Season Campaign Strategy</Btn>
           </div>
         </Panel>
@@ -434,8 +434,8 @@ export function DiagnosticsStudio() {
 
       <FlowFooter
         steps={[
-          { label: '‹ Back to Campaign Impact & Effectiveness Dashboard', to: 's7.1' },
-          { label: 'Current: Campaign Diagnostics & Learning Studio', current: true },
+          { label: '‹ Back to Campaign Results', to: 's7.1' },
+          { label: 'Current: What Worked & Why', current: true },
         ]}
         next={{ label: 'Next-Season Campaign Recommendations', to: 's2.5' }}
       />

@@ -6,7 +6,7 @@ Extension points are in place so this content can be replaced without redesignin
 
 - **Masters:** states, districts, talukas, products, crops, seasons and campaign types come from `server/data/reference/*.json` via `GET /api/reference`. Only Jalna (Maharashtra) is marked `has_data`; the other states and districts are placeholders.
 - **Screen datasets:** 12 key tables use `useDataset()` and switch from demo rows to uploaded rows (`/api/datasets`). The remaining panels (KPI tiles, funnels, charts, S2.3/S2.4, S3.1–S3.3, S4, S5.4, S6.2, S7.2 factors and learnings) are still hard-coded and need catalog entries.
-- **AI Co-pilot:** `POST /api/copilot/ask` calls the configured LLM (OpenAI, Azure OpenAI or OpenAI-compatible) with grounded context. With `COPILOT_PROVIDER=demo` the screen shows the canned example answers.
+- **AI Copilot:** `POST /api/copilot/ask` calls the configured LLM (OpenAI, Azure OpenAI or OpenAI-compatible) with grounded context. With `COPILOT_PROVIDER=demo` the screen shows the canned example answers.
 
 ## Frontend integration still required
 

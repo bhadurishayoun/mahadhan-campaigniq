@@ -206,14 +206,14 @@ export function OpportunityAtlas() {
     <div className="stack">
       <TopLine
         crumbs={[
-          { label: 'Executive Strategy Command Centre', to: 's1.1' },
-          { label: 'Opportunity Atlas' },
-          { label: 'Crop × Geography Opportunity Atlas' },
+          { label: 'Business Overview', to: 's1.1' },
+          { label: 'Market Opportunities' },
+          { label: 'Opportunities by Crop & District' },
         ]}
-        opened="Opened from Opportunity Atlas / Explore Opportunity"
+        opened="Opened from Market Opportunities / Explore Opportunity"
       />
       <PageHeader
-        title="Crop × Geography Opportunity Atlas"
+        title="Opportunities by Crop & District"
         subtitle="Identify high-potential crop nutrition markets, penetration gaps and campaign-ready micro-markets"
         actions={
           <>
@@ -259,8 +259,8 @@ export function OpportunityAtlas() {
                 'Tamil Nadu': { tone: 1 },
               }}
               markers={[
-                { id: 'dhule', info: '₹1.8 Cr | Score 88 · priority district', action: { label: 'Open District Intelligence', run: () => go('s2.2') } },
-                { id: 'jalna', info: '₹2.4 Cr | Score 92 · priority district', action: { label: 'Open District Intelligence', run: () => go('s2.2') } },
+                { id: 'dhule', info: '₹1.8 Cr | Score 88 · priority district', action: { label: 'Open Jalna Taluka View', run: () => go('s2.2') } },
+                { id: 'jalna', info: '₹2.4 Cr | Score 92 · priority district', action: { label: 'Open Jalna Taluka View', run: () => go('s2.2') } },
                 { id: 'nashik', info: '₹1.6 Cr | Score 78', onSelect: () => setHover('Nashik') },
                 { id: 'sangli', info: '₹1.1 Cr | Score 76', onSelect: () => setHover('Sangli') },
                 { id: 'anantapur', info: '₹1.0 Cr | Score 74', onSelect: () => setHover('Anantapur') },
@@ -277,7 +277,7 @@ export function OpportunityAtlas() {
           </div>
           <div className="row-between" style={{ marginTop: 8 }}>
             <span className="small muted">Opportunity Intensity (Market Potential, ₹ Cr)</span>
-            <span className="s2-hint"><MousePointerClick size={14} />Click district to open District / Taluka Intelligence</span>
+            <span className="s2-hint"><MousePointerClick size={14} />Click a district to open its taluka view</span>
           </div>
         </Panel>
 
@@ -322,7 +322,7 @@ export function OpportunityAtlas() {
               { key: 'potential', label: 'Market Potential (₹ Cr)', align: 'right' },
               { key: 'gap', label: 'Penetration Gap (pp)', align: 'right' },
               { key: 'readiness', label: 'Campaign Readiness', render: (row) => <Pill tone={row.readiness === 'High' ? 'green' : 'amber'}>{row.readiness}</Pill> },
-              { key: 'next', label: 'Next Action', render: (row) => <Btn small to={row.to}>Open Jalna District / Taluka Intelligence ›</Btn> },
+              { key: 'next', label: 'Next Action', render: (row) => <Btn small to={row.to}>Open Jalna Taluka View ›</Btn> },
             ]}
           />
         </Panel>
@@ -391,11 +391,11 @@ export function OpportunityAtlas() {
 
       <FlowFooter
         steps={[
-          { label: 'Source: Executive Strategy Command Centre', to: 's1.1' },
-          { label: 'Current: Crop × Geography Opportunity Atlas', current: true },
-          { label: 'On click of Jalna / Dhule: Next District / Taluka Intelligence', to: 's2.2' },
+          { label: 'Source: Business Overview', to: 's1.1' },
+          { label: 'Current: Opportunities by Crop & District', current: true },
+          { label: 'On click of Jalna / Dhule: Next: Jalna Taluka View', to: 's2.2' },
         ]}
-        next={{ label: 'District / Taluka Intelligence', to: 's2.2', sub: ' Opens when clicking a district / taluka such as Jalna or Dhule' }}
+        next={{ label: 'Jalna Taluka View', to: 's2.2', sub: ' Opens when clicking a district / taluka such as Jalna or Dhule' }}
       />
     </div>
   );
@@ -488,15 +488,15 @@ export function DistrictIntelligence() {
     <div className="stack">
       <TopLine
         crumbs={[
-          { label: 'Executive Strategy Command Centre', to: 's1.1' },
-          { label: 'Opportunity Atlas', to: 's2.1' },
-          { label: 'Crop × Geography Opportunity Atlas', to: 's2.1' },
-          { label: 'Jalna District / Taluka Intelligence' },
+          { label: 'Business Overview', to: 's1.1' },
+          { label: 'Market Opportunities', to: 's2.1' },
+          { label: 'Opportunities by Crop & District', to: 's2.1' },
+          { label: 'Jalna Taluka View' },
         ]}
         opened="Opened from Clicked Jalna / Open District View"
       />
       <PageHeader
-        title="Jalna District / Taluka Intelligence"
+        title="Jalna Taluka View"
         subtitle="Deep dive into taluka-level opportunity, penetration gaps, farmer segments and campaign readiness for Croptek onion adoption."
         actions={
           <>
@@ -689,8 +689,8 @@ export function DistrictIntelligence() {
 
       <FlowFooter
         steps={[
-          { label: 'Source: Crop × Geography Opportunity Atlas', to: 's2.1' },
-          { label: 'Current: Jalna District / Taluka Intelligence', current: true },
+          { label: 'Source: Opportunities by Crop & District', to: 's2.1' },
+          { label: 'Current: Jalna Taluka View', current: true },
           { label: "On click of 'Explore Target Segments' Micro-Market Segmentation", to: 's2.3' },
         ]}
         next={{ label: 'Micro-Market Segmentation', to: 's2.3' }}
@@ -746,9 +746,9 @@ export function MicroMarketSegmentation() {
     <div className="stack">
       <TopLine
         crumbs={[
-          { label: 'Executive Command Centre', to: 's1.1' },
-          { label: 'Opportunity Atlas', to: 's2.1' },
-          { label: 'Jalna District Intelligence', to: 's2.2' },
+          { label: 'Business Overview', to: 's1.1' },
+          { label: 'Market Opportunities', to: 's2.1' },
+          { label: 'Jalna Taluka View', to: 's2.2' },
           { label: 'Ambad Segmentation' },
         ]}
         opened="From Ambad / Explore Target Segments"
@@ -888,11 +888,11 @@ export function MicroMarketSegmentation() {
 
       <FlowFooter
         steps={[
-          { label: 'Source: Jalna District Intelligence', to: 's2.2' },
+          { label: 'Source: Jalna Taluka View', to: 's2.2' },
           { label: 'Ambad → Explore Target Segments', to: 's2.2' },
           { label: 'Current Screen: Ambad Segmentation', current: true },
         ]}
-        next={{ label: 'Competition & Channel Intelligence', to: 's2.4' }}
+        next={{ label: 'Competition & Dealers', to: 's2.4' }}
       />
       <p className="s2-footnote">Illustrative concept data connected user journey</p>
     </div>
@@ -961,14 +961,14 @@ export function CompetitionChannel() {
     <div className="stack">
       <TopLine
         crumbs={[
-          { label: 'Crop × Geography Opportunity Atlas', to: 's2.1' },
-          { label: 'Jalna District / Taluka Intelligence', to: 's2.2' },
-          { label: 'Ambad Micro-Market Segmentation & Campaign Targeting', to: 's2.3' },
-          { label: 'Ambad Competition & Channel Intelligence' },
+          { label: 'Opportunities by Crop & District', to: 's2.1' },
+          { label: 'Jalna Taluka View', to: 's2.2' },
+          { label: 'Ambad Village Segments & Campaign Targeting', to: 's2.3' },
+          { label: 'Ambad Competition & Dealers' },
         ]}
       />
       <PageHeader
-        title="Ambad Competition & Channel Intelligence"
+        title="Ambad Competition & Dealers"
         subtitle="Understand competitive pressure, retailer influence and channel readiness to improve Croptek onion conversion in Ambad."
         actions={
           <>
@@ -980,12 +980,12 @@ export function CompetitionChannel() {
       />
 
       <KpiRow>
-        <Kpi icon={<Coins size={18} />} label="Estimated Opportunity" value="₹52 Lakh" sub="+8% vs. Jalna District / Taluka Intelligence (₹48 Lakh)" trend="up" spark />
-        <Kpi icon={<Target size={18} />} label="Penetration Gap" value="28 pp" sub="-2 pp vs. Jalna District / Taluka Intelligence (30 pp)" trend="down" spark={[8, 7, 7, 6, 6, 5, 5, 4]} />
-        <Kpi icon={<Store size={18} />} label="Active Retailers" value="74" sub="+5 vs. Jalna District / Taluka Intelligence (69)" trend="up" spark />
-        <Kpi icon={<Users size={18} />} label="Conventional NPK Users" value="1,832" sub="+1% vs. Jalna District / Taluka Intelligence (1,820)" trend="up" spark />
-        <Kpi icon={<MapPin size={18} />} label="Retailer-ready Villages" value="18" sub="+2 vs. Jalna District / Taluka Intelligence (16)" trend="up" spark />
-        <Kpi icon={<BarChart3 size={18} />} label="Channel Readiness Score" value="79" sub="+4 vs. Jalna District / Taluka Intelligence (75)" trend="up" spark />
+        <Kpi icon={<Coins size={18} />} label="Estimated Opportunity" value="₹52 Lakh" sub="+8% vs. Jalna Taluka View (₹48 Lakh)" trend="up" spark />
+        <Kpi icon={<Target size={18} />} label="Penetration Gap" value="28 pp" sub="-2 pp vs. Jalna Taluka View (30 pp)" trend="down" spark={[8, 7, 7, 6, 6, 5, 5, 4]} />
+        <Kpi icon={<Store size={18} />} label="Active Retailers" value="74" sub="+5 vs. Jalna Taluka View (69)" trend="up" spark />
+        <Kpi icon={<Users size={18} />} label="Conventional NPK Users" value="1,832" sub="+1% vs. Jalna Taluka View (1,820)" trend="up" spark />
+        <Kpi icon={<MapPin size={18} />} label="Retailer-ready Villages" value="18" sub="+2 vs. Jalna Taluka View (16)" trend="up" spark />
+        <Kpi icon={<BarChart3 size={18} />} label="Channel Readiness Score" value="79" sub="+4 vs. Jalna Taluka View (75)" trend="up" spark />
       </KpiRow>
 
       <Grid cols="1.3fr 1fr 1fr">
@@ -1121,8 +1121,8 @@ export function CompetitionChannel() {
 
       <FlowFooter
         steps={[
-          { label: 'Source: Ambad Micro-Market Segmentation & Campaign Targeting', to: 's2.3' },
-          { label: 'Ambad Competition & Channel Intelligence (Current Screen)', current: true },
+          { label: 'Source: Ambad Village Segments & Campaign Targeting', to: 's2.3' },
+          { label: 'Ambad Competition & Dealers (Current Screen)', current: true },
           { label: "On click of 'Generate Conversion Strategy'", to: 's2.5' },
         ]}
         next={{ label: 'Opportunity Prioritization & Campaign Recommendations', to: 's2.5' }}
@@ -1192,10 +1192,10 @@ export function CampaignRecommendations() {
     <div className="stack">
       <Breadcrumbs
         items={[
-          { label: 'Opportunity Atlas', to: 's2.1' },
-          { label: 'District Intelligence', to: 's2.2' },
+          { label: 'Market Opportunities', to: 's2.1' },
+          { label: 'Jalna Taluka View', to: 's2.2' },
           { label: 'Micro-Market Segmentation', to: 's2.3' },
-          { label: 'Competition & Channel Intelligence', to: 's2.4' },
+          { label: 'Competition & Dealers', to: 's2.4' },
           { label: 'Campaign Recommendations' },
         ]}
       />
@@ -1207,7 +1207,7 @@ export function CampaignRecommendations() {
       <SourceBar>
         <MousePointerClick size={14} />
         <strong>Source Click:</strong>
-        <span className="code-chip">Competition &amp; Channel Intelligence → Generate Conversion Strategy</span>
+        <span className="code-chip">Competition &amp; Dealers → Generate Conversion Strategy</span>
       </SourceBar>
 
       <KpiRow>
@@ -1343,19 +1343,19 @@ export function CampaignRecommendations() {
           <div style={{ marginTop: 10 }}>
             <Btn variant="primary" className="s2-cta" icon={<Wand2 size={16} />} to="s4.2">Create Campaign →</Btn>
           </div>
-          <p className="s2-footnote" style={{ marginTop: 6 }}>On clicking Create Campaign → Open Campaign Creation Wizard</p>
+          <p className="s2-footnote" style={{ marginTop: 6 }}>On clicking Create Campaign → Open Create a Campaign</p>
         </Panel>
       </Grid>
 
       <FlowFooter
         steps={[
-          { label: 'Opportunity Atlas', to: 's2.1' },
-          { label: 'District Intelligence', to: 's2.2' },
+          { label: 'Market Opportunities', to: 's2.1' },
+          { label: 'Jalna Taluka View', to: 's2.2' },
           { label: 'Micro-Market Segmentation', to: 's2.3' },
-          { label: 'Competition & Channel Intelligence', to: 's2.4' },
+          { label: 'Competition & Dealers', to: 's2.4' },
           { label: 'Campaign Recommendations (Current)', current: true },
         ]}
-        next={{ label: 'Campaign Creation Wizard', to: 's4.2' }}
+        next={{ label: 'Create a Campaign', to: 's4.2' }}
       />
     </div>
   );

@@ -60,7 +60,7 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
         </div>
         {actions && <div className="page-actions">{actions}</div>}
       </div>
-      <PulseStrip title="Strategic Control" ariaLabel="Marketing Head visual summary" items={pulse ?? MH_PULSE} />
+      <PulseStrip title="Status at a glance" ariaLabel="Marketing Head visual summary" items={pulse ?? MH_PULSE} />
       {children}
     </div>
   );

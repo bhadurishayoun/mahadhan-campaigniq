@@ -14,7 +14,7 @@ import { AMBAD, CROP_PLAN, CROP_TOTAL, DHANORA, ONION_APPROVED_LATER, PORTFOLIO,
 
 export function Pm1() {
   return (
-    <PmPage crumbs={[{ label: 'My Performance' }]} code="PM.1" title="My Performance & Product Portfolio ABP" subtitle="Crop Nutrition Portfolio · FY 2025–26 planning context">
+    <PmPage crumbs={[{ label: 'My Performance' }]} code="PM.1" title="My Performance & ABP" subtitle="Crop Nutrition Portfolio · FY 2025–26 planning context">
       <Strip items={[
         { label: 'FY 2024–25 portfolio sales', value: '₹4.80 Cr', sub: 'Previous year, all three product categories' },
         { label: 'FY 2025–26 Product Portfolio ABP', value: '₹6.00 Cr', sub: 'Annual business plan assigned to this portfolio', tone: 'green' },
@@ -79,8 +79,8 @@ export function Pm2() {
     <PmPage
       crumbs={[{ label: 'My Performance', to: 'pm.1' }, { label: 'Territory Plan Reviews' }, { label: 'Consolidated Territory Plans' }]}
       code="PM.2"
-      title="Consolidated Territory Business & Crop Plans vs Portfolio ABP"
-      actions={<Act icon={<RefreshCw size={13} />} message="Source submissions refreshed from Outlet Business Planning & Target Allocation / Village-wise Crop, Product & Coverage Planning (no TM plan was edited)">Import / Refresh Source Submissions</Act>}
+      title="Territory Plans vs Portfolio ABP"
+      actions={<Act icon={<RefreshCw size={13} />} message="Source submissions refreshed from Outlet Targets / Village Crop Plan (no TM plan was edited)">Import / Refresh Source Submissions</Act>}
     >
       <Source>Opened by clicking <b>Review Consolidated Territory Plans</b>. Territory Managers prepare the plans; this screen only reviews and consolidates them.</Source>
 
@@ -128,7 +128,7 @@ export function Pm2() {
       </div>
 
       <Actions
-        left={<Btn to="pm.1">← Back to My Performance & Product Portfolio ABP</Btn>}
+        left={<Btn to="pm.1">← Back to My Performance & ABP</Btn>}
         right={<Cta to="pm.3">Review Selected Territory Plan</Cta>}
        
       />
@@ -146,7 +146,7 @@ export function Pm2a() {
     <PmPage
       crumbs={[{ label: 'Territory Plan Reviews', to: 'pm.2' }, { label: 'Consolidated Territory Plans', to: 'pm.2' }, { label: 'SKU-to-Portfolio Reconciliation' }]}
       code="PM.2A"
-      title="SKU-to-Portfolio ABP Reconciliation"
+      title="SKU vs ABP Reconciliation"
     >
       <Source>Opened by clicking <b>Pending SKU Mapping</b> on the Ambad, Jalna submission.</Source>
       <Strip items={[
@@ -180,14 +180,14 @@ export function Pm2a() {
             { label: 'Primary vs secondary sales basis', status: 'To Verify', note: 'Territory plan is primary (dealer) sales' },
             { label: 'Validity period', status: 'To Verify', note: 'FY 2025–26' },
             { label: 'Duplicate mapping check', status: 'Pending' },
-            { label: 'Source lineage', status: 'Unverified Input', note: 'Outlet Business Planning & Target Allocation / submission v1' },
+            { label: 'Source lineage', status: 'Unverified Input', note: 'Outlet Targets / submission v1' },
           ]} />
-          <Sources items={[{ label: 'View Submitted TM Plan', note: 'Outlet Business Planning & Target Allocation / Village-wise Crop, Product & Coverage Planning (read-only)' }, { label: 'Product / SKU Master' }, { label: 'ERP / DMS', note: 'Integration verification pending' }]} />
+          <Sources items={[{ label: 'View Submitted TM Plan', note: 'Outlet Targets / Village Crop Plan (read-only)' }, { label: 'Product / SKU Master' }, { label: 'ERP / DMS', note: 'Integration verification pending' }]} />
         </Box>
       </div>
 
       <Actions
-        left={<><Btn to="pm.2">← Back to Consolidated Territory Business & Crop Plans</Btn><Btn to="pm.2b" icon={<MessageSquare size={13} />}>Request Mapping Correction</Btn><Cta locked="Validate Mapping is enabled when all mandatory checks pass">Validate Mapping</Cta></>}
+        left={<><Btn to="pm.2">← Back to Territory Plans</Btn><Btn to="pm.2b" icon={<MessageSquare size={13} />}>Request Mapping Correction</Btn><Cta locked="Validate Mapping is enabled when all mandatory checks pass">Validate Mapping</Cta></>}
         right={<Cta locked="Proceed to once valid mapping records exist (remains reachable)">Proceed to Territory Plan Review</Cta>}
       />
     </PmPage>
@@ -202,7 +202,7 @@ export function Pm2b() {
       footer={<>
         <Act message="Source record (TM submitted plan v1) opened read-only">View Source Record</Act>
         <Act message="Correction request saved as draft — not sent">Save Draft</Act>
-        <Btn to="pm.2a">Back to SKU-to-Portfolio ABP Reconciliation</Btn>
+        <Btn to="pm.2a">Back to SKU vs ABP Reconciliation</Btn>
         <span className="pm-foot-right"><Cta message="Correction request created as draft — not sent to the owner">Create Mapping Correction Request</Cta></span>
       </>}
     >
@@ -238,7 +238,7 @@ export function Pm2b() {
         { label: 'Draft', state: 'active' }, { label: 'Assigned' }, { label: 'Source Corrected' }, { label: 'Submitted for Validation' }, { label: 'Validated' }, { label: 'ABP Reconciled' },
       ]} />
 
-      <AiBox title="AI Data Quality Insight" items={[{ text: 'Do not count all-product territory figures as portfolio-specific SKU contributions. After source correction and validation, return to SKU-to-Portfolio ABP Reconciliation, recalculate the in-scope contribution and only then proceed to plan review.', tone: 'amber' }]} />
+      <AiBox title="AI Data Quality Insight" items={[{ text: 'Do not count all-product territory figures as portfolio-specific SKU contributions. After source correction and validation, return to SKU vs ABP Reconciliation, recalculate the in-scope contribution and only then proceed to plan review.', tone: 'amber' }]} />
     </Drawer>
   );
 }
@@ -323,7 +323,7 @@ export function Pm3() {
       </div>
 
       <Actions
-        left={<Btn to="pm.2">← Back to Consolidated Territory Business & Crop Plans</Btn>}
+        left={<Btn to="pm.2">← Back to Territory Plans</Btn>}
         right={<><Btn to="pm.3c" icon={<History size={13} />}>Revised plan review (after TM resubmission)</Btn><Cta to="pm.4">Assigned Marketing Themes</Cta></>}
        
       />
@@ -345,11 +345,11 @@ export function Pm3b() {
   const [selected, setSelected] = useState(1);
   const row = EXCEPTIONS[selected];
   return (
-    <Drawer title="Territory Plan Correction Request" status="Draft — Not Sent" back="pm.3" subtitle={`Ambad, Jalna · ABP ${AMBAD.abp} · submitted ${AMBAD.submitted} · gap ${AMBAD.gap} · original Onion ₹1.65 Cr (pre-approval)`}
+    <Drawer title="Request Plan Correction" status="Draft — Not Sent" back="pm.3" subtitle={`Ambad, Jalna · ABP ${AMBAD.abp} · submitted ${AMBAD.submitted} · gap ${AMBAD.gap} · original Onion ₹1.65 Cr (pre-approval)`}
       footer={<>
         <Act message="Original TM plan v1 opened read-only">View Original TM Plan</Act>
         <Act message="Correction request saved as draft — not sent">Save Draft</Act>
-        <Btn to="pm.3">Back to Territory Plan Validation & Endorsement</Btn>
+        <Btn to="pm.3">Back to Validate Territory Plan</Btn>
         <span className="pm-foot-right"><Cta message="Correction request drafted — sending requires confirmation (not sent)">Send Correction Request to Territory Manager</Cta></span>
       </>}
     >
@@ -363,7 +363,7 @@ export function Pm3b() {
       <Box title={`Selected correction · ${row.exception}`} tone="soft">
         <div className="pm-form pm-form-2">
           <Field label="Reason"><Input rows={2} value={`${row.fix}. Current value: ${row.value}.`} /></Field>
-          <Field label="Supporting source reference"><Input value="Village-wise Crop, Product & Coverage Planning (v1)" /></Field>
+          <Field label="Supporting source reference"><Input value="Village Crop Plan (v1)" /></Field>
           <Field label="Assigned to"><Select options={['Territory Manager — Jalna Cluster']} /></Field>
           <Field label="Due date" hint="No committed date"><Input placeholder="Select due date" /></Field>
           <Field label="Required evidence"><Input placeholder="e.g. historical sales records, agronomy note" /></Field>
@@ -434,7 +434,7 @@ export function Pm3c() {
         </Box>
       </div>
 
-      <Actions left={<Btn to="pm.3">← Back to Territory Plan Validation & Endorsement</Btn>} right={<Btn to="pm.3d" icon={<MessageSquare size={13} />}>Marketing Head clarification (later state)</Btn>} />
+      <Actions left={<Btn to="pm.3">← Back to Validate Territory Plan</Btn>} right={<Btn to="pm.3d" icon={<MessageSquare size={13} />}>Marketing Head clarification (later state)</Btn>} />
     </PmPage>
   );
 }

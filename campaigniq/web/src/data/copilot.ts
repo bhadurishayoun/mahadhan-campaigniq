@@ -1,5 +1,5 @@
 /**
- * AI Co-pilot client.
+ * AI Copilot client.
  *
  * 1. Backend first: POST /api/copilot/ask (structured AI.1 answers) and /api/copilot/chat (persona copilots) ground
  *    the question in the tool's data and call the configured LLM (default: a free keyless endpoint).

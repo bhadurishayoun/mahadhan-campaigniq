@@ -34,7 +34,7 @@ const STATUS_TONE: Record<string, Tone> = {
 const StatusPill = ({ s }: { s: string }) => <Pill tone={STATUS_TONE[s] ?? 'grey'}>{s}</Pill>;
 
 /* ------------------------------------------------------------------ */
-/* S6.1 Unified Campaign Execution Control Tower                       */
+/* S6.1 Campaign Execution Tracker                       */
 /* ------------------------------------------------------------------ */
 
 type Seg = { from: number; to: number; kind: 'plan' | 'actual' | 'revised' | 'risk' };
@@ -61,7 +61,7 @@ const TODAY_WEEK = 7.5;
 const wk = (w: number) => `${(w / WEEKS.length) * 100}%`;
 
 const INITIAL_ACTIVITIES: CalActivity[] = [
-  { id: 'retail', name: 'Retailer Activation', icon: <Store size={14} />, status: 'On Track', progress: 62, segs: [{ from: 0.2, to: 6.9, kind: 'actual' }], done: 6.9, annot: [{ at: 8.7, text: 'View Activity Activity Execution & Action Workspace', tone: 'link' }] },
+  { id: 'retail', name: 'Retailer Activation', icon: <Store size={14} />, status: 'On Track', progress: 62, segs: [{ from: 0.2, to: 6.9, kind: 'actual' }], done: 6.9, annot: [{ at: 8.7, text: 'View Activity Activity Follow-up', tone: 'link' }] },
   { id: 'demo', name: 'Demonstration Plots', icon: <Sprout size={14} />, status: 'Delayed', progress: 40, segs: [{ from: 1.2, to: 4.6, kind: 'actual' }, { from: 4.6, to: 6.6, kind: 'plan' }, { from: 6.6, to: 8.6, kind: 'risk' }], annot: [{ at: 8.9, text: '▲ Delayed – Stock not yet arrived (Dhanora)', tone: 'red' }] },
   { id: 'meet', name: 'Farmer Meetings', icon: <Users size={14} />, status: 'On Track', progress: 58, segs: [{ from: 2.0, to: 6.6, kind: 'actual' }], done: 6.6 },
   { id: 'digital', name: 'Digital Advisory', icon: <Smartphone size={14} />, status: 'Ahead', progress: 78, segs: [{ from: 2.1, to: 9.4, kind: 'actual' }], done: 9.4 },
@@ -208,9 +208,9 @@ export function ControlTower() {
 
   return (
     <div className="s6-page">
-      <Breadcrumbs items={[{ label: 'Supply Risk & Replenishment Planner', to: 's5.4' }, { label: 'Unified Campaign Execution Control Tower' }]} />
+      <Breadcrumbs items={[{ label: 'Stock Replenishment Plan', to: 's5.4' }, { label: 'Campaign Execution Tracker' }]} />
       <PageHeader
-        title="Unified Campaign Execution Control Tower"
+        title="Campaign Execution Tracker"
         badge={VERSION_BADGE}
         subtitle="Live execution control, campaign orchestration, supply alignment and field operations for Ambad Croptek Onion Conversion"
         actions={<>
@@ -280,7 +280,7 @@ export function ControlTower() {
                 onRowClick={(r) => { setForm((f) => ({ ...f, owner: `${r.owner} (Field Owner)`, cluster: r.cluster })); toast(`${r.owner} (${r.cluster}) loaded into Replanning`); }}
               />
             </Panel>
-            <Panel icon={<Truck size={16} />} title={<>Supply Commitments &amp; Dependencies <span className="muted">(from Supply Risk & Replenishment Planner)</span></>}>
+            <Panel icon={<Truck size={16} />} title={<>Supply Commitments &amp; Dependencies <span className="muted">(from Stock Replenishment Plan)</span></>}>
               <DataTable<SupplyRow>
                 compact
                 columns={[
@@ -421,17 +421,17 @@ export function ControlTower() {
 
       <FlowFooter
         steps={[
-          { label: 'Source: Supply Risk & Replenishment Planner', to: 's5.4' },
-          { label: 'Current: Unified Campaign Execution Control Tower', current: true },
+          { label: 'Source: Stock Replenishment Plan', to: 's5.4' },
+          { label: 'Current: Campaign Execution Tracker', current: true },
         ]}
-        next={{ label: 'Activity Execution & Action Workspace', to: 's6.2' }}
+        next={{ label: 'Activity Follow-up', to: 's6.2' }}
       />
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* S6.2 Activity Execution & Action Workspace                          */
+/* S6.2 Activity Follow-up                          */
 /* ------------------------------------------------------------------ */
 
 type ColId = 'planned' | 'assigned' | 'progress' | 'completed' | 'delayed';
@@ -570,12 +570,12 @@ export function ActivityWorkspace() {
   return (
     <div className="s6-page">
       <Breadcrumbs items={[
-        { label: 'Supply Risk & Replenishment Planner', to: 's5.4' },
-        { label: 'Unified Campaign Execution Control Tower', to: 's6.1' },
-        { label: 'Activity Execution & Action Workspace' },
+        { label: 'Stock Replenishment Plan', to: 's5.4' },
+        { label: 'Campaign Execution Tracker', to: 's6.1' },
+        { label: 'Activity Follow-up' },
       ]} />
       <PageHeader
-        title="Activity Execution & Action Workspace"
+        title="Activity Follow-up"
         badge={VERSION_BADGE}
         subtitle="Execute, monitor and resolve field activities for Ambad Croptek Onion Conversion campaign"
         actions={<>
@@ -831,8 +831,8 @@ export function ActivityWorkspace() {
 
       <FlowFooter
         steps={[
-          { label: '‹ Return to Unified Campaign Execution Control Tower', to: 's6.1' },
-          { label: 'Current: Activity Execution & Action Workspace', current: true },
+          { label: '‹ Return to Campaign Execution Tracker', to: 's6.1' },
+          { label: 'Current: Activity Follow-up', current: true },
         ]}
         nextLabel=""
         next={{ label: 'Proceed to Impact Review', to: 's7.1' }}

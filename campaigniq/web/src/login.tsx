@@ -50,11 +50,11 @@ export function LoginPage({ onLogin, initialPersona }: { onLogin: (payload: Logi
             <Sprout size={30} className="login-leaf" />
             <div>
               <div className="login-title">Mahadhan CampaignIQ</div>
-              <div className="login-sub">Strategic campaign command center</div>
+              <div className="login-sub">Campaign planning, approvals and tracking</div>
             </div>
           </div>
           <h2>Build. Approve. Execute. Learn.</h2>
-          <p>Unified planning and execution workspaces for Business Head, Marketing Head, Product Manager and Territory Manager.</p>
+          <p>Planning and execution workspaces for Business Head, Marketing Head, Product Manager and Territory Manager.</p>
           <div className="login-hero-points">
             <span><ShieldCheck size={14} /> Secure persona-based access</span>
             <span><ShieldCheck size={14} /> Map-rich planning intelligence</span>

@@ -1,6 +1,6 @@
 # Product Manager persona (CampaignIQ V2)
 
-The app now has a **persona layer**. The original module view (Strategy Command Centre, Opportunity Atlas, ... ) is the
+The app now has a **persona layer**. The original module view (Business Overview, Market Opportunities, ... ) is the
 *Strategy Head* persona; the *Product Manager* persona is the first of the V2 persona-wise journeys. Switch personas from
 the avatar menu at the top-right. Every screen has its own hash route (for example `#/pm.3b`), so any state can be linked
 directly or found with the top-bar search.
@@ -36,54 +36,54 @@ unchanged. `App.tsx` swaps the sidebar and the filter bar when the current scree
 
 | Tab | Screen | Kind | Route |
 |---|---|---|---|
-| My Performance | PM.1 My Performance & Product Portfolio ABP | page | `#/pm.1` |
-| Territory Plan Reviews | PM.2 Consolidated Territory Business & Crop Plans | page | `#/pm.2` |
-| | PM.2A SKU-to-Portfolio ABP Reconciliation | page | `#/pm.2a` |
+| My Performance | PM.1 My Performance & ABP | page | `#/pm.1` |
+| Territory Plan Reviews | PM.2 Territory Plans | page | `#/pm.2` |
+| | PM.2A SKU vs ABP Reconciliation | page | `#/pm.2a` |
 | | PM.2B SKU Mapping Correction Request | drawer over PM.2A | `#/pm.2b` |
-| | PM.3 Territory Plan Validation & Endorsement | page | `#/pm.3` |
-| | PM.3B Territory Plan Correction Request | drawer over PM.3 | `#/pm.3b` |
-| | PM.3C Revised Plan Comparison & Revalidation | page | `#/pm.3c` |
-| | PM.3D Marketing Head Feedback & Clarification | drawer over PM.3C | `#/pm.3d` |
-| Assigned Themes | PM.4 Assigned Marketing Themes & Brief Review | page | `#/pm.4` |
-| | PM.4A Strategic Theme Brief & Evidence | drawer over PM.4 | `#/pm.4a` |
-| | PM.4B Theme Clarification Request | drawer over PM.4 | `#/pm.4b` |
-| | PM.4C Theme Acknowledgement & Commitment | modal over PM.4 | `#/pm.4c` |
-| Campaign Studio | PM.5 Campaign Concept Development Studio | page | `#/pm.5` |
-| | PM.5A Campaign Concept Builder | drawer over PM.5 | `#/pm.5a` |
-| | PM.5B AI Concept Rationale & Evidence | drawer over PM.5 | `#/pm.5b` |
-| | PM.5C Concept Comparison & Consolidation | page | `#/pm.5c` |
-| | PM.6 Product Proposition & Intervention Designer | page | `#/pm.6` |
-| | PM.6A Intervention Configuration & KPI Design | drawer over PM.6 | `#/pm.6a` |
-| | PM.6B Proposition, Claim & Agronomy Validation | drawer over PM.6 | `#/pm.6b` |
-| | PM.7 Campaign Collateral & Content Studio | page | `#/pm.7` |
-| | PM.7A AI Collateral Designer | page | `#/pm.7a` |
-| | PM.7B Collateral Template Selection & AI Draft | page | `#/pm.7b` |
-| | PM.7C Collateral Version Comparison | page | `#/pm.7c` |
-| | PM.7D Collateral Approval Tracker | page | `#/pm.7d` |
-| | PM.7E Collateral Packaging & Playbook Release | page | `#/pm.7e` |
-| | PM.8 Campaign Business Case & Scenario Simulator | page | `#/pm.8` |
-| | PM.8A Proposal Consolidation & Submission | page | `#/pm.8a` |
-| | PM.8B Financial Assumptions & Calculation Logic | page | `#/pm.8b` |
-| | PM.8C Scenario Comparison & Sensitivity | page | `#/pm.8c` |
-| | PM.8D Audience Overlap & Benefit Reconciliation | page | `#/pm.8d` |
-| | PM.8E Proposal Submission Confirmation | modal over PM.8A | `#/pm.8e` |
-| | PM.8F Returned Proposal Revision & Resubmission | page | `#/pm.8f` |
-| Activity Approvals | PM.9B Activity Plan Approval Inbox | page (tab home) | `#/pm.9b` |
-| | PM.9 Territory Activity Plan Review & Approval | page | `#/pm.9` |
-| | PM.9A Activity Detail & Exception Review | drawer over PM.9 | `#/pm.9a` |
-| | PM.9C Activity Plan Correction Request | drawer over PM.9 | `#/pm.9c` |
-| | PM.9D Exception & Authorization Review | drawer over PM.9 | `#/pm.9d` |
-| | PM.9E Consolidated Plan Approval & Handoff | modal over PM.9 | `#/pm.9e` |
-| Impact & Learning | PM.10 Campaign Performance & Crop-wise Uplift | page | `#/pm.10` |
-| | PM.10A Crop × Product × Geography Detail | page | `#/pm.10a` |
-| | PM.10B Territory Campaign Impact Explorer | drawer over PM.10A | `#/pm.10b` |
-| | PM.10C Source Evidence & Attribution Validation | drawer over PM.10A | `#/pm.10c` |
-| | PM.11 Campaign Diagnostics & Learning Studio | page | `#/pm.11` |
-| | PM.11A Village Conversion Driver Investigation | drawer over PM.11 | `#/pm.11a` |
-| | PM.11B Intervention Effectiveness Diagnostics | drawer over PM.11 | `#/pm.11b` |
-| | PM.11C Collateral Effectiveness Diagnostics | drawer over PM.11 | `#/pm.11c` |
-| | PM.11D Next-Season Learning & Recommendations | page | `#/pm.11d` |
-| AI Copilot | PM.AI1 Product & Campaign Intelligence Copilot | page | `#/pm.ai1` |
+| | PM.3 Validate Territory Plan | page | `#/pm.3` |
+| | PM.3B Request Plan Correction | drawer over PM.3 | `#/pm.3b` |
+| | PM.3C Revised Plan Check | page | `#/pm.3c` |
+| | PM.3D Marketing Head Feedback | drawer over PM.3C | `#/pm.3d` |
+| Assigned Themes | PM.4 Assigned Themes | page | `#/pm.4` |
+| | PM.4A Theme Brief | drawer over PM.4 | `#/pm.4a` |
+| | PM.4B Ask for Clarification | drawer over PM.4 | `#/pm.4b` |
+| | PM.4C Accept Theme | modal over PM.4 | `#/pm.4c` |
+| Campaign Planning | PM.5 Campaign Concepts | page | `#/pm.5` |
+| | PM.5A Build a Concept | drawer over PM.5 | `#/pm.5a` |
+| | PM.5B Why This Concept | drawer over PM.5 | `#/pm.5b` |
+| | PM.5C Compare Concepts | page | `#/pm.5c` |
+| | PM.6 Product Proposition | page | `#/pm.6` |
+| | PM.6A Activities & KPIs | drawer over PM.6 | `#/pm.6a` |
+| | PM.6B Claims & Agronomy Check | drawer over PM.6 | `#/pm.6b` |
+| | PM.7 Campaign Collateral | page | `#/pm.7` |
+| | PM.7A Collateral Draft | page | `#/pm.7a` |
+| | PM.7B Choose a Template | page | `#/pm.7b` |
+| | PM.7C Compare Versions | page | `#/pm.7c` |
+| | PM.7D Collateral Approvals | page | `#/pm.7d` |
+| | PM.7E Release Campaign Kit | page | `#/pm.7e` |
+| | PM.8 Business Case | page | `#/pm.8` |
+| | PM.8A Submit Proposal | page | `#/pm.8a` |
+| | PM.8B Assumptions & Calculations | page | `#/pm.8b` |
+| | PM.8C Scenarios & Sensitivity | page | `#/pm.8c` |
+| | PM.8D Audience Overlap Check | page | `#/pm.8d` |
+| | PM.8E Proposal Submitted | modal over PM.8A | `#/pm.8e` |
+| | PM.8F Revise & Resubmit | page | `#/pm.8f` |
+| Activity Approvals | PM.9B Activity Plan Approvals | page (tab home) | `#/pm.9b` |
+| | PM.9 Review Activity Plan | page | `#/pm.9` |
+| | PM.9A Activity Detail | drawer over PM.9 | `#/pm.9a` |
+| | PM.9C Request Corrections | drawer over PM.9 | `#/pm.9c` |
+| | PM.9D Exceptions to Approve | drawer over PM.9 | `#/pm.9d` |
+| | PM.9E Approve & Hand Off | modal over PM.9 | `#/pm.9e` |
+| Impact & Learning | PM.10 Campaign Results by Crop | page | `#/pm.10` |
+| | PM.10A Crop, Product & Area Detail | page | `#/pm.10a` |
+| | PM.10B Results by Territory | drawer over PM.10A | `#/pm.10b` |
+| | PM.10C Check the Evidence | drawer over PM.10A | `#/pm.10c` |
+| | PM.11 What Worked & Why | page | `#/pm.11` |
+| | PM.11A Village Conversion Gaps | drawer over PM.11 | `#/pm.11a` |
+| | PM.11B Activity Effectiveness | drawer over PM.11 | `#/pm.11b` |
+| | PM.11C Collateral Effectiveness | drawer over PM.11 | `#/pm.11c` |
+| | PM.11D Next-Season Changes | page | `#/pm.11d` |
+| AI Copilot | PM.AI1 AI Copilot | page | `#/pm.ai1` |
 
 PM.1 – PM.9E use FY 2025–26; PM.10 – PM.AI1 are a later interim checkpoint (FY 2026–27, reporting Jan–Feb 2027), and the
 top bar shows the period of the current screen.

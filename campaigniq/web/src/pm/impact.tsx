@@ -95,7 +95,7 @@ export function Pm10a() {
                 [<b>Documented trials</b>, '—', IMPACT.trials, 'TM.IM1', <Status>Recorded</Status>, ''],
                 [<b>Recorded adopters</b>, '—', IMPACT.adopters, 'TM.IM1', <Status>Recorded — not incremental</Status>, ''],
                 [<b>Trial-to-adoption (observed)</b>, '—', `${IMPACT.adopters} / ${IMPACT.trials} = ${IMPACT.rate}`, 'Derived', <Status>Observed rate, not intervention effect</Status>, ''],
-                [<b>Provisional campaign-linked sales</b>, '—', IMPACT.linkedSales, 'Campaign Impact & Business Performance / DMS', <Status>Provisional — not verified incremental</Status>, <Btn small to="pm.10c">Validate</Btn>],
+                [<b>Provisional campaign-linked sales</b>, '—', IMPACT.linkedSales, 'Campaign Results / DMS', <Status>Provisional — not verified incremental</Status>, <Btn small to="pm.10c">Validate</Btn>],
                 [<b>Incremental commercial uplift & ROI</b>, '—', <Status>Pending Attribution</Status>, 'method', <Status>Not Established</Status>, <Btn small to="pm.10c">Method</Btn>],
               ]}
             />
@@ -120,7 +120,7 @@ export function Pm10a() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.10">← Back to Campaign Performance & Crop-wise Uplift</Btn><Btn to="pm.10b">View Territory Impact</Btn><Btn to="pm.10c">View Source & Attribution Method</Btn></>}
+        left={<><Btn to="pm.10">← Back to Campaign Results by Crop</Btn><Btn to="pm.10b">View Territory Impact</Btn><Btn to="pm.10c">View Source & Attribution Method</Btn></>}
         right={<Cta to="pm.11">Investigate Conversion & Learning</Cta>}
       />
     </PmPage>
@@ -133,7 +133,7 @@ export function Pm10b() {
   const [territory, setTerritory] = useState('Ambad / Jalna');
   const isAmbad = territory === 'Ambad / Jalna';
   return (
-    <Drawer title="Territory Campaign Impact Explorer" status="Product Manager Read-Only" back="pm.10a" subtitle={`${C1.name} · Croptek · Onion · Maharashtra`}
+    <Drawer title="Results by Territory" status="Product Manager Read-Only" back="pm.10a" subtitle={`${C1.name} · Croptek · Onion · Maharashtra`}
       footer={<>
         <Act message="Territory clarification requested from TM">Request Territory Clarification</Act>
         <Btn to="pm.10c">View Source Evidence</Btn>
@@ -214,7 +214,7 @@ export function Pm11() {
     <PmPage
       crumbs={[{ label: 'Impact & Learning', to: 'pm.10' }, { label: 'Crop-wise Uplift', to: 'pm.10a' }, { label: 'Diagnostics & Learning' }]}
       code="PM.11"
-      title="Campaign Diagnostics & Next-Season Learning Studio"
+      title="What Worked & Next Season"
     >
       <Source>Selected Onion / Croptek / Ambad campaign impact. Future illustrative interim reporting, not real Mahadhan results.</Source>
       <Strip items={[
@@ -266,12 +266,12 @@ export function Pm11() {
             <div className="pm-stack" style={{ gap: 6 }}>
               <Btn to="pm.10c">View Source Evidence</Btn>
               <Act message="Next-season learning saved">Save Next-Season Learning</Act>
-              <Btn to="pm.11d">Submit Strategic Recommendations to Marketing Head (review required)</Btn>
+              <Btn to="pm.11d">Submit Recommendations to Marketing Head (review required)</Btn>
             </div>
           </Box>
         </div>
       </div>
-      <Actions left={<Btn to="pm.10">← Back to Campaign Performance & Crop-wise Uplift</Btn>} right={<Cta to="pm.ai1">Ask Product & Campaign Copilot</Cta>} />
+      <Actions left={<Btn to="pm.10">← Back to Campaign Results by Crop</Btn>} right={<Cta to="pm.ai1">Ask Product & Campaign Copilot</Cta>} />
     </PmPage>
   );
 }
@@ -322,7 +322,7 @@ export function Pm11b() {
   return (
     <Drawer title="Intervention Effectiveness & Execution Diagnostics" status="PM Read-Only" width="50%" back="pm.11" subtitle={`${C1.name} · Onion / Croptek · Ambad / Jalna`}
       footer={<>
-        <Btn to="pm.11">Back to Campaign Diagnostics & Learning Studio</Btn>
+        <Btn to="pm.11">Back to What Worked & Why</Btn>
         <Act message="Activity source evidence opened">View Activity Source Evidence</Act>
         <Act message="Territory clarification requested">Request Territory Clarification</Act>
         <span className="pm-foot-right"><Cta to="pm.11c">Investigate Collateral Effectiveness</Cta></span>
@@ -361,7 +361,7 @@ export function Pm11c() {
   return (
     <Drawer title="Campaign Collateral & Creative Effectiveness" status="Evidence Analysis — Pending" width="50%" back="pm.11" subtitle={`${C1.name} · Croptek / Onion · Ambad / Jalna · future illustrative interim reporting`}
       footer={<>
-        <Btn to="pm.11">Back to Campaign Diagnostics & Learning Studio</Btn>
+        <Btn to="pm.11">Back to What Worked & Why</Btn>
         <Act message="Authorized asset record opened (registry match pending)">View Authorized Asset Record</Act>
         <Act message="Territory usage evidence requested">Request Territory Usage Evidence</Act>
         <Btn to="pm.7c">View Creative Version History</Btn>
@@ -405,9 +405,9 @@ export function Pm11d() {
   const toggle = (index: number) => setPicked((current) => (current.includes(index) ? current.filter((item) => item !== index) : [...current, index]));
   return (
     <PmPage
-      crumbs={[{ label: 'Impact & Learning', to: 'pm.10' }, { label: 'Campaign Diagnostics', to: 'pm.11' }, { label: 'Next-Season Learning & Recommendations' }]}
+      crumbs={[{ label: 'Impact & Learning', to: 'pm.10' }, { label: 'Campaign Diagnostics', to: 'pm.11' }, { label: 'Next-Season Changes' }]}
       code="PM.11D"
-      title="Next-Season Campaign Learning & Strategic Recommendation Studio"
+      title="Next-Season Changes"
       status="Draft Recommendations / Not Submitted"
     >
       <Source><b>Consolidate Next-Season Learnings</b>, after village diagnostics and intervention effectiveness. Future illustrative interim learning checkpoint, not season-end impact.</Source>
@@ -436,7 +436,7 @@ export function Pm11d() {
             ]} />
             <div className="pm-stack" style={{ gap: 6 }}>
               <Btn to="pm.5">Create Draft Campaign Concept (subject to theme alignment)</Btn>
-              <Cta locked="Conditionally disabled while mandatory evidence governance is unmet">Submit Strategic Recommendations for Marketing Head Review</Cta>
+              <Cta locked="Conditionally disabled while mandatory evidence governance is unmet">Submit Recommendations for Marketing Head Review</Cta>
             </div>
           </Box>
           <Sources items={[{ label: 'Village', to: 'pm.11a' }, { label: 'Intervention', to: 'pm.11b' }, { label: 'Collateral', to: 'pm.11c' }, { label: 'Attribution', to: 'pm.10c' }, { label: 'Diagnostic' }, { label: 'Forecast', to: 'pm.8' }]} />
@@ -445,8 +445,8 @@ export function Pm11d() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.11">← Back to Campaign Diagnostics & Learning Studio</Btn><Btn to="pm.10c">View Source Evidence</Btn><Act message="Learning draft saved">Save Learning Draft</Act><Act message="Missing evidence requested">Request Missing Evidence</Act></>}
-        right={<Cta locked="Submitting does not approve a new campaign, modify the current programme or launch next-season activities; disabled while evidence governance is unmet">Submit Strategic Recommendations to Marketing Head</Cta>}
+        left={<><Btn to="pm.11">← Back to What Worked & Why</Btn><Btn to="pm.10c">View Source Evidence</Btn><Act message="Learning draft saved">Save Learning Draft</Act><Act message="Missing evidence requested">Request Missing Evidence</Act></>}
+        right={<Cta locked="Submitting does not approve a new campaign, modify the current programme or launch next-season activities; disabled while evidence governance is unmet">Submit Recommendations to Marketing Head</Cta>}
       />
     </PmPage>
   );
@@ -475,7 +475,7 @@ export function PmAi1() {
     <PmPage
       crumbs={[{ label: 'AI Copilot' }, { label: THEME.name }, { label: 'Ambad' }, { label: 'Campaign Diagnostics' }]}
       code="PM.AI1"
-      title="Product & Campaign Intelligence Copilot"
+      title="AI Copilot"
     >
       <Source><b>Ask Product & Campaign Copilot</b>. Final Product Manager persona screen.</Source>
       <div className="pm-chat">
@@ -514,7 +514,7 @@ export function PmAi1() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.11">← Back to Campaign Diagnostics & Learning Studio</Btn><Btn to="pm.10c">View Source Evidence</Btn><Act message="Territory clarification requested">Request Territory Clarification</Act></>}
+        left={<><Btn to="pm.11">← Back to What Worked & Why</Btn><Btn to="pm.10c">View Source Evidence</Btn><Act message="Territory clarification requested">Request Territory Clarification</Act></>}
         right={<Cta to="pm.5">Create Draft Next-Season Campaign Recommendation</Cta>}
       />
     </PmPage>

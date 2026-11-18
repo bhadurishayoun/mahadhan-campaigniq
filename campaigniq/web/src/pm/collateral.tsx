@@ -1,5 +1,5 @@
 /**
- * Product Manager - Campaign Collateral & Content Studio (PM.7, 7A, 7B, 7C, 7D, 7E).
+ * Product Manager - Campaign Collateral (PM.7, 7A, 7B, 7C, 7D, 7E).
  */
 import { useState } from 'react';
 import { Eye, Image as ImageIcon, Languages, LayoutTemplate, Palette, RefreshCw, Sparkles, Wand2 } from 'lucide-react';
@@ -18,13 +18,13 @@ export function Pm7() {
   const asset = COLLATERALS[selected];
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Collateral & Content Studio' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Campaign Collateral' }]}
       code="PM.7"
-      title="Campaign Collateral & Content Studio"
+      title="Campaign Collateral"
       status="Draft / Not Approved"
       actions={<Btn to="pm.7b" icon={<Wand2 size={13} />}>Add Asset / Generate with AI</Btn>}
     >
-      <Source>Product Proposition & Intervention Designer.</Source>
+      <Source>Product Proposition.</Source>
       <Strip items={[
         { label: 'Parent theme', value: THEME.name },
         { label: 'Product · Crop', value: 'Croptek · Maharashtra Onion' },
@@ -81,7 +81,7 @@ export function Pm7() {
       </div>
 
       <Actions
-        left={<><Btn to="pm.6">← Back to Product Proposition & Intervention Designer</Btn><Act message="Collateral drafts saved">Save Collateral Drafts</Act></>}
+        left={<><Btn to="pm.6">← Back to Product Proposition</Btn><Act message="Collateral drafts saved">Save Collateral Drafts</Act></>}
         right={<Cta to="pm.8">Develop Campaign Business Case</Cta>}
       />
     </PmPage>
@@ -96,9 +96,9 @@ export function Pm7a() {
   const { toast } = useNav();
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'Retailer Product Detailer' }, { label: 'Edit Design' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'Retailer Product Detailer' }, { label: 'Edit Design' }]}
       code="PM.7A"
-      title="AI Collateral Designer & Content Approval Workspace"
+      title="Collateral Draft & Approval"
       status="v0.3 Draft — Not Approved"
     >
       <Source><b>Open / Edit</b> on Retailer Product Detailer. {THEME.name} · {C1.name} · Maharashtra Onion.</Source>
@@ -117,7 +117,7 @@ export function Pm7a() {
         </Box>
 
         <div className="pm-stack">
-          <Box title="AI Design Studio" icon={<Sparkles size={15} />}>
+          <Box title="AI Draft" icon={<Sparkles size={15} />}>
             <div className="pm-form">
               <Field label="Headline"><Input value={lang === 'Marathi' ? 'कांदा पिकासाठी क्रॉपटेक' : 'Croptek for Onion — product education'} key={lang} /></Field>
               <Field label="Audience"><Input value="Retailer" /></Field>
@@ -142,7 +142,7 @@ export function Pm7a() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7">← Back to Campaign Collateral & Content Studio</Btn><Act message="Draft v0.3 saved">Save Draft</Act><Btn to="pm.7c">Preview</Btn></>}
+        left={<><Btn to="pm.7">← Back to Campaign Collateral</Btn><Act message="Draft v0.3 saved">Save Draft</Act><Btn to="pm.7c">Preview</Btn></>}
         right={<><Btn to="pm.7d">Submit for Technical Review</Btn><Cta to="pm.8">Business Case</Cta></>}
       />
     </PmPage>
@@ -155,7 +155,7 @@ export function Pm7b() {
   const [selected, setSelected] = useState(0);
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'AI Draft Generator' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'AI Draft Generator' }]}
       code="PM.7B"
       title="AI Campaign Collateral Template Selection & Draft Generation"
       status="Draft / Not Approved"
@@ -186,11 +186,11 @@ export function Pm7b() {
             <Facts rows={[['Source inputs', 'Product Master Draft Claims Intervention Design · authorized imagery library'], ['Supporting evidence status', <P />]]} />
           </Box>
           <p className="pm-callout">claims ("{CLAIMS[1]}", "{CLAIMS[2]}", "{CLAIMS[3]}") are still technically <b>unvalidated</b>. AI drafts use neutral placeholder content with explicit pending-review tags, never approved claims or invented dosages.</p>
-          <Workflow compact steps={[{ label: 'Select Template', state: 'active' }, { label: 'Configure Inputs', state: 'active' }, { label: 'Generate Draft' }, { label: 'Edit' }, { label: 'Technical Approval Collateral Approval Tracker' }]} />
+          <Workflow compact steps={[{ label: 'Select Template', state: 'active' }, { label: 'Configure Inputs', state: 'active' }, { label: 'Generate Draft' }, { label: 'Edit' }, { label: 'Technical Approval Collateral Approvals' }]} />
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7">← Back to Campaign Collateral & Content Studio</Btn><Btn to="pm.7c">Preview Template</Btn><Act message="Draft setup saved">Save Draft Setup</Act></>}
+        left={<><Btn to="pm.7">← Back to Campaign Collateral</Btn><Btn to="pm.7c">Preview Template</Btn><Act message="Draft setup saved">Save Draft Setup</Act></>}
         right={<Cta to="pm.7a" message="Draft generated with pending-review tags — opening editor">Generate Draft & Open Editor</Cta>}
       />
     </PmPage>
@@ -212,7 +212,7 @@ export function Pm7c() {
   const { toast } = useNav();
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'Retailer Product Detailer', to: 'pm.7a' }, { label: 'Version Comparison' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'Retailer Product Detailer', to: 'pm.7a' }, { label: 'Version Comparison' }]}
       code="PM.7C"
       title="Collateral Preview, Version Comparison & Change Tracking"
       status="Draft / Not Approved"
@@ -275,7 +275,7 @@ export function Pm7d() {
   const row = REVIEW_ROWS[selected];
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'Retailer Product Detailer', to: 'pm.7a' }, { label: 'Approval Tracker' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'Retailer Product Detailer', to: 'pm.7a' }, { label: 'Approval Tracker' }]}
       code="PM.7D"
       title="Collateral Technical, Brand & Language Approval Tracker"
       status="Submitted — Technical Review Pending"
@@ -305,7 +305,7 @@ export function Pm7d() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7c">← Back to Collateral Version Comparison</Btn><Btn to="pm.7a">Open in to Create Corrected v0.4</Btn><Act message="Approval tracking subscribed">Track Approval</Act></>}
+        left={<><Btn to="pm.7c">← Back to Compare Versions</Btn><Btn to="pm.7a">Open in to Create Corrected v0.4</Btn><Act message="Approval tracking subscribed">Track Approval</Act></>}
         right={<><Btn to="pm.7e">Playbook release readiness (later state)</Btn><Cta locked="Disabled until technical and required brand / language approvals are complete and campaign release authorization permits publishing">Release Approved Asset to Campaign Playbook</Cta></>}
       />
     </PmPage>
@@ -317,7 +317,7 @@ export function Pm7d() {
 export function Pm7e() {
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'Playbook Release' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Collateral Library', to: 'pm.7' }, { label: 'Playbook Release' }]}
       code="PM.7E"
       title="Approved Collateral Packaging & Campaign Playbook Release Readiness"
       status="Release Readiness — Pending"
@@ -365,7 +365,7 @@ export function Pm7e() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7d">← Back to Collateral Approval Tracker</Btn><Act message="Authorized version preview (registry match pending)">Preview Authorized Version</Act><Btn to="pm.7d">View Approval Records</Btn><Act message="Playbook draft saved">Save Playbook Draft</Act></>}
+        left={<><Btn to="pm.7d">← Back to Collateral Approvals</Btn><Act message="Authorized version preview (registry match pending)">Preview Authorized Version</Act><Btn to="pm.7d">View Approval Records</Btn><Act message="Playbook draft saved">Save Playbook Draft</Act></>}
         right={<><Btn to="pm.8b">Financial Assumptions</Btn><Cta locked="Disabled until all required approvals and recipient checks pass">Publish Approved Assets to Eligible Territory Managers</Cta></>}
       />
     </PmPage>

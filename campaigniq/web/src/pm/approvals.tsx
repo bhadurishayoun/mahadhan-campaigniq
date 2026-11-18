@@ -17,7 +17,7 @@ export function Pm9b() {
     <PmPage
       crumbs={[{ label: 'Activity Approvals' }, { label: 'Territory Campaign Submissions' }, { label: 'Approval Inbox' }]}
       code="PM.9B"
-      title="Territory Campaign Activity Plan Approval Inbox & Submission Tracking"
+      title="Territory Campaign Activity Plan Approvals & Submission Tracking"
     >
       <Source>Separate later hypothetical state: the PM campaign was approved by Marketing Head, released, and at least one Territory Manager submitted a local plan. Publication does not automatically authorize execution.</Source>
       <Chips items={['All', 'Pending PM Review', 'Returned to TM', 'Approved', 'Awaiting Submission']} active={filter} onSelect={setFilter} />
@@ -49,7 +49,7 @@ export function Pm9b() {
         </div>
       </div>
       <Actions
-        left={<><Act message="Approved PM campaign playbook opened read-only">View Approved PM Campaign</Act><Act message="Territory Manager tracking opened">Track Territory Manager</Act><Btn to="pm.9c" icon={<MessageSquare size={13} />}>Request Clarification</Btn><Btn to="pm.5">Back to Campaign Studio</Btn></>}
+        left={<><Act message="Approved PM campaign playbook opened read-only">View Approved PM Campaign</Act><Act message="Territory Manager tracking opened">Track Territory Manager</Act><Btn to="pm.9c" icon={<MessageSquare size={13} />}>Request Clarification</Btn><Btn to="pm.5">Back to Campaign Planning</Btn></>}
         right={<Cta to="pm.9">Review Selected Territory Activity Plan</Cta>}
       />
     </PmPage>
@@ -127,7 +127,7 @@ export function Pm9() {
 
 export function Pm9a() {
   return (
-    <Drawer title="Field Demonstrations — Activity Detail & Exception Review" status="PM Review Pending" back="pm.9" subtitle={`Linked approved campaign ${C1.name} · Onion / Croptek · Dhanora & Wadi Gaon`}
+    <Drawer title="Field Demonstrations — Activity Detail" status="PM Review Pending" back="pm.9" subtitle={`Linked approved campaign ${C1.name} · Onion / Croptek · Dhanora & Wadi Gaon`}
       footer={<>
         <Btn to="pm.9c">Request Changes to Territory Manager</Btn>
         <Btn to="pm.9d">Flag Exception</Btn>
@@ -171,11 +171,11 @@ const CORRECTIONS = [
 export function Pm9c() {
   const [selected, setSelected] = useState(0);
   return (
-    <Drawer title="Territory Activity Plan Correction Request" status="Draft / Not Sent" width="50%" back="pm.9" subtitle={`${LOCAL_PLAN.name} · Maharashtra Onion · parent ${APPROVED_CAMPAIGN} · 13 units · ₹3.00 L local (within ₹12 L envelope, not additive)`}
+    <Drawer title="Territory Request Corrections" status="Draft / Not Sent" width="50%" back="pm.9" subtitle={`${LOCAL_PLAN.name} · Maharashtra Onion · parent ${APPROVED_CAMPAIGN} · 13 units · ₹3.00 L local (within ₹12 L envelope, not additive)`}
       footer={<>
         <Act message="Original TM plan v1 opened read-only">View Original TM Plan</Act>
         <Act message="Draft request saved — not sent">Save Draft Request</Act>
-        <Btn to="pm.9">Back to Territory Activity Plan Review & Approval</Btn>
+        <Btn to="pm.9">Back to Review Activity Plan</Btn>
         <span className="pm-foot-right"><Cta message="Correction request drafted — send requires confirmation (not sent)">Send Correction Request to Territory Manager</Cta></span>
       </>}
     >
@@ -216,9 +216,9 @@ export function Pm9d() {
   const [selected, setSelected] = useState(0);
   const row = EXCEPTIONS[selected];
   return (
-    <Drawer title="Campaign Exception & Authorization Review" status="Exception Draft / Not Escalated" width="50%" back="pm.9" subtitle={`Maharashtra Onion / Croptek · 13 local units · ₹3.00 L within approved ₹12.00 L regional envelope · remaining allocation not yet verified`}
+    <Drawer title="Campaign Exceptions to Approve" status="Exception Draft / Not Escalated" width="50%" back="pm.9" subtitle={`Maharashtra Onion / Croptek · 13 local units · ₹3.00 L within approved ₹12.00 L regional envelope · remaining allocation not yet verified`}
       footer={<>
-        <Btn to="pm.9">Back to Territory Activity Plan Review & Approval</Btn>
+        <Btn to="pm.9">Back to Review Activity Plan</Btn>
         <Act message="Policy & authority matrix opened">View Policy & Authority</Act>
         <Btn to="pm.9c">Request TM Clarification</Btn>
         <Act message="Exception draft saved — not escalated">Save Exception Draft</Act>
@@ -257,7 +257,7 @@ export function Pm9e() {
   return (
     <Modal title="Consolidated Territory Campaign Plan Approval" status="PM Approval Pending" width="75%" back="pm.9" subtitle={`Ambad, Jalna · Maharashtra Onion · parent approved ${C1.name} · local plan submitted by Territory Manager`}
       footer={<>
-        <Btn to="pm.9">Back to Territory Activity Plan Review & Approval</Btn>
+        <Btn to="pm.9">Back to Review Activity Plan</Btn>
         <Btn to="pm.9d">View Activity Exceptions</Btn>
         <Act message="Approval review saved — plan not approved">Save Approval Review</Act>
         <Btn to="pm.9c">Request Further Changes</Btn>

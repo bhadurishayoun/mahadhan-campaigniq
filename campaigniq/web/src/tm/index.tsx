@@ -1,7 +1,7 @@
 /**
  * Territory Manager persona: screen registry and the shell that renders the current screen.
  * Screens mirror the approved V2 mockups (ui-mockups/V2-persona-mockup-specs.md); TM.C2 / TM.C3 complete the
- * TM.C1 journey (Review & Approval, My Campaign Portfolio).
+ * TM.C1 journey (Review & Approval, Campaign Portfolio).
  */
 import type { ComponentType } from 'react';
 import { useNav } from '../nav';

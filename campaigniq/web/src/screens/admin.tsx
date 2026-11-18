@@ -10,7 +10,7 @@ import { Btn, Grid, Kpi, KpiRow, Note, PageHeader, Panel, Pill } from '../ui';
 /**
  * ADM - Data Sources & Integrations.
  * Shows which screen datasets are still illustrative, lets an admin upload CSV/JSON to replace them,
- * lists the reference masters (states, districts, products) and the AI Co-pilot provider status.
+ * lists the reference masters (states, districts, products) and the AI Copilot provider status.
  */
 export function DataSources() {
   const { go, toast, reference } = useNav();
@@ -77,7 +77,7 @@ export function DataSources() {
       <PageHeader
         code="ADM"
         title="Data Sources & Integrations"
-        subtitle="Replace illustrative screen data with real feeds, manage geography and product masters, and connect the AI Co-pilot to an LLM."
+        subtitle="Replace illustrative screen data with real feeds, manage geography and product masters, and connect the AI Copilot to an LLM."
       />
       {apiDown && <Note>{API_BASE ? <>The API is not reachable at {API_BASE}. {import.meta.env.DEV ? <>Start it with <code>npm run dev</code></> : 'The free backend may still be waking up (up to a minute) - reload shortly'} to upload data; screens keep showing demo data meanwhile.</> : 'No backend is connected to this published demo, so uploads are disabled; every screen shows its built-in demo data.'}</Note>}
 
@@ -85,7 +85,7 @@ export function DataSources() {
         <Kpi icon={<Database size={18} />} label="Screen datasets" value={String(items?.length ?? DATASET_CATALOG.length)} sub={`${live} live · ${(items?.length ?? 0) - live} demo`} />
         <Kpi icon={<Globe2 size={18} />} label="States / districts" value={`${reference.states.length} / ${districts}`} sub={`${withData} district(s) with data`} />
         <Kpi icon={<Package size={18} />} label="Products" value={String(reference.products.filter((product) => product.active !== false).length)} sub={reference.products.map((product) => product.name).join(', ')} />
-        <Kpi icon={<Bot size={18} />} label="AI Co-pilot" value={copilot?.mode === 'llm' ? 'LLM' : 'Demo'} sub={copilot ? `${copilot.provider}${copilot.model ? ` · ${copilot.model}` : ''}` : 'API offline'} />
+        <Kpi icon={<Bot size={18} />} label="AI Copilot" value={copilot?.mode === 'llm' ? 'LLM' : 'Demo'} sub={copilot ? `${copilot.provider}${copilot.model ? ` · ${copilot.model}` : ''}` : 'API offline'} />
       </KpiRow>
 
       <div className="adm-cards" aria-label="Data source overview">
@@ -165,7 +165,7 @@ export function DataSources() {
           </div>
         </Panel>
 
-        <Panel title="AI Co-pilot (LLM)" icon={<Bot size={16} />} actions={<Pill tone={copilot?.mode === 'llm' ? 'green' : 'amber'}>{copilot?.mode === 'llm' ? 'LLM connected' : 'Demo answers'}</Pill>}>
+        <Panel title="AI Copilot (LLM)" icon={<Bot size={16} />} actions={<Pill tone={copilot?.mode === 'llm' ? 'green' : 'amber'}>{copilot?.mode === 'llm' ? 'LLM connected' : 'Demo answers'}</Pill>}>
           <p className="small" style={{ marginTop: 0 }}>
             The copilot sends the question, the filter scope and matching rows from uploaded datasets to the configured LLM and renders the JSON answer.
             Without an LLM it shows the built-in illustrative answers.

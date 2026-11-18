@@ -100,13 +100,13 @@ const ANSWERS: Record<AnswerId, Answer> = {
     },
     factors: ['Croptek stock receipt pending in Dhanora (update Jan 12).', 'Retailer meetings delayed in Pimpalgaon and Other Villages.'],
     confidence: { level: 'Medium', text: 'Plan attainment is measured; drivers of the gap are inferred from execution logs and not yet verified.' },
-    sources: [{ label: 'From Portfolio Dashboard', to: 's1.2' }, { label: 'From Control Tower', to: 's6.1' }, { label: 'From Impact Dashboard', to: 's7.1' }],
+    sources: [{ label: 'From Portfolio Dashboard', to: 's1.2' }, { label: 'From Activity Tracker', to: 's6.1' }, { label: 'From Impact Dashboard', to: 's7.1' }],
     actions: [
       'Open a recovery plan for the Dhanora conversion workstream.',
       'Re-sequence retailer meetings, starting with the 18 high-influence retailers.',
       'Keep the Wadi Gaon and Ambad HQ follow-up cadence unchanged.',
     ],
-    primary: { label: 'Open Recovery & Replanning', to: 's1.5' },
+    primary: { label: 'Open Recovery Plan', to: 's1.5' },
     secondary: { label: 'View Diagnostics', to: 's7.2' },
   },
   priorities: {
@@ -143,7 +143,7 @@ const ANSWERS: Record<AnswerId, Answer> = {
       'Assign trial-user follow-up (~49 farmers) to the field team.',
     ],
     primary: { label: 'Create Corrective Action', to: 's6.2' },
-    secondary: { label: 'Open Control Tower', to: 's6.1' },
+    secondary: { label: 'Open Activity Tracker', to: 's6.1' },
   },
   jalna: {
     question: 'Create an onion nutrition awareness campaign for Jalna',
@@ -171,10 +171,10 @@ const ANSWERS: Record<AnswerId, Answer> = {
       ],
     },
     factors: ['Market opportunity of ~₹52 Lakh in Ambad (illustrative).', '43 MT supply gap should be closed before activation.'],
-    confidence: { level: 'Medium', text: 'Audience and window are well supported; channel mix is a starting point and should be tested in the Scenario Simulator.' },
-    sources: [{ label: 'From Trigger Engine', to: 's3.4' }, { label: 'From Prioritization', to: 's2.5' }, { label: 'From Stock Readiness', to: 's5.2' }],
+    confidence: { level: 'Medium', text: 'Audience and window are well supported; channel mix is a starting point and should be tested in Campaign Scenarios.' },
+    sources: [{ label: 'From Campaign Triggers', to: 's3.4' }, { label: 'From Prioritization', to: 's2.5' }, { label: 'From Stock Readiness', to: 's5.2' }],
     actions: [
-      'Review the draft in the Campaign Creation Wizard.',
+      'Review the draft in the Create a Campaign.',
       'Confirm advisory content with agronomy before launch.',
       'Check stock coverage against 209 MT projected demand.',
     ],
@@ -243,7 +243,7 @@ const ANSWERS: Record<AnswerId, Answer> = {
       ],
     },
     factors: ['Stock receipt pending in Dhanora.', 'Replenishment lead time not yet confirmed.'],
-    confidence: { level: 'High', text: 'Demand and stock positions come from Campaign Demand Projection/Stock Readiness & Supply Gap Intelligence; the timing of replenishment remains uncertain.' },
+    confidence: { level: 'High', text: 'Demand and stock positions come from Demand Forecast/Stock & Supply Gaps; the timing of replenishment remains uncertain.' },
     sources: [{ label: 'From Demand Projection', to: 's5.1' }, { label: 'From Stock Readiness', to: 's5.2' }, { label: 'From Replenishment', to: 's5.4' }],
     actions: [
       'Raise a replenishment request for 43 MT.',
@@ -278,7 +278,7 @@ const ANSWERS: Record<AnswerId, Answer> = {
     },
     factors: ['POS material not yet delivered to 11 retailers.', 'Stock receipt pending at Dhanora retailers.'],
     confidence: { level: 'Medium', text: 'Readiness is self-reported in field visits; stock positions are verified only for high-influence retailers.' },
-    sources: [{ label: 'From Dealer Readiness', to: 's5.3' }, { label: 'From Channel Intelligence', to: 's2.4' }, { label: 'From Stock Readiness', to: 's5.2' }],
+    sources: [{ label: 'From Dealer Readiness', to: 's5.3' }, { label: 'From Competition & Dealers', to: 's2.4' }, { label: 'From Stock Readiness', to: 's5.2' }],
     actions: [
       'Dispatch POS kits to the 11 pending retailers.',
       'Confirm stock with Dhanora retailers.',
@@ -294,10 +294,10 @@ const ANSWERS: Record<AnswerId, Answer> = {
     table: {
       columns: ['Topic', 'Best Screen', 'Current Signal'],
       rows: [
-        ['Campaign health', 'Command Centre', status('In progress', 'green')],
+        ['Campaign health', 'Business Overview', status('In progress', 'green')],
         ['Crop timing', 'Crop Nutrition Calendar', status('Bulb initiation in 6–9 days', 'amber')],
         ['Demand & stock', 'Stock Readiness', status('43 MT gap', 'red')],
-        ['Execution', 'Control Tower', status('Demo plots delayed', 'amber')],
+        ['Execution', 'Activity Tracker', status('Demo plots delayed', 'amber')],
         ['Impact', 'Impact Dashboard', status('532 adopters', 'green')],
       ],
     },
@@ -309,9 +309,9 @@ const ANSWERS: Record<AnswerId, Answer> = {
     },
     factors: ['No prepared analysis matched the question keywords.'],
     confidence: { level: 'Low', text: 'Response is a navigation suggestion only, not an analysis.' },
-    sources: [{ label: 'Command Centre', to: 's1.1' }, { label: 'Stock Readiness', to: 's5.2' }, { label: 'Impact Dashboard', to: 's7.1' }],
+    sources: [{ label: 'Business Overview', to: 's1.1' }, { label: 'Stock Readiness', to: 's5.2' }, { label: 'Impact Dashboard', to: 's7.1' }],
     actions: ['Rephrase the question using a campaign, cluster or activity name.', 'Open the most relevant screen from the evidence sources above.'],
-    primary: { label: 'Open Command Centre', to: 's1.1' },
+    primary: { label: 'Open Business Overview', to: 's1.1' },
     secondary: { label: 'View Diagnostics', to: 's7.2' },
   },
 };
@@ -457,9 +457,9 @@ export function CopilotWorkspace() {
 
   return (
     <div className="stack">
-      <Breadcrumbs items={[{ label: 'Strategy Command Centre', to: 's1.1' }, { label: 'AI Copilot' }, { label: 'Intelligent Copilot Workspace' }]} />
+      <Breadcrumbs items={[{ label: 'Business Overview', to: 's1.1' }, { label: 'AI Copilot' }, { label: 'AI Copilot' }]} />
       <PageHeader
-        title="Intelligent Copilot Workspace"
+        title="AI Copilot"
         badge={<Pill tone="amber">Product-detailer Version 1</Pill>}
         subtitle="AI-powered campaign decision workspace for product-detailers to diagnose, prioritize, and take action with evidence from across CampaignIQ."
         actions={llmMode
@@ -513,7 +513,7 @@ export function CopilotWorkspace() {
               <h3>{thinking ? 'Analysing evidence across CampaignIQ…' : answer.title}</h3>
             </div>
             {thinking ? (
-              <p className="ai1-thinking">Reading Stock Readiness & Supply Gap Intelligence, and signals for Croptek Onion Conversion — Ambad, Jalna…</p>
+              <p className="ai1-thinking">Reading Stock & Supply Gaps, and signals for Croptek Onion Conversion — Ambad, Jalna…</p>
             ) : (
               <>
                 <p className="ai1-summary">{answer.summary}</p>
@@ -610,7 +610,7 @@ export function CopilotWorkspace() {
 
         {/* Right column */}
         <div className="stack">
-          <Panel title="Campaign Pulse" icon={<Leaf size={16} />}>
+          <Panel title="Campaign status" icon={<Leaf size={16} />}>
             <div className="small" style={{ fontWeight: 700, color: COLORS.dark, marginBottom: 8 }}>Croptek Onion Conversion — Ambad, Jalna</div>
             <div className="ai1-pulse">
               <Target size={14} /><span className="muted">Campaign Status</span><span><Pill tone="green">In Progress</Pill></span>
@@ -620,7 +620,7 @@ export function CopilotWorkspace() {
             </div>
           </Panel>
 
-          <Panel title="Operational Signals" icon={<BarChart3 size={16} />}>
+          <Panel title="Field updates" icon={<BarChart3 size={16} />}>
             {SIGNALS.map((signal) => (
               <div className="ai1-signal" key={signal.title}>
                 {signal.icon}
@@ -661,7 +661,7 @@ export function CopilotWorkspace() {
 
       <div className="ai1-footer">
         <Layers size={16} color={COLORS.dark} />
-        <span>Current: <strong>Intelligent Copilot Workspace</strong></span>
+        <span>Current: <strong>AI Copilot</strong></span>
         <span className="sep" />
         <span className="muted">Recommended actions:</span>
         <Btn small variant="outline" to={answer.primary.to} icon={<Zap size={12} />}>{answer.primary.label}</Btn>

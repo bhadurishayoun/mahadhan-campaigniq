@@ -31,7 +31,7 @@ approval and campaign portfolio, Execution, Impact, AI Copilot) and Marketing He
 
 **AI Copilot:** every copilot (AI.1 and the TM / PM / MH / BH copilots) answers live with a free, keyless LLM - no API
 key needed. Free services are rate-limited, so answers take 5–30 seconds and rapid-fire questions may need a short
-wait. See [section 5.5](campaigniq/README.md#55-connect-the-ai-co-pilot-to-an-llm) to switch to a paid model.
+wait. See [section 5.5](campaigniq/README.md#55-connect-the-ai-copilot-to-an-llm) to switch to a paid model.
 
 **Showcase login:** user ID `MASTER001`, password `Mahadhan@2026` opens every persona. Sign in with any persona tile
 selected; the avatar menu then switches personas without signing in again. The per-persona IDs (SH001, PM001,

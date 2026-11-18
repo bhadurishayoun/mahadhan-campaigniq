@@ -13,7 +13,7 @@ The CampaignIQ screens render the mockups' illustrative data (see [screen-invent
 | S3.4 | Prioritized Campaign Trigger Queue | `GET /api/datasets/nutrition.triggers` | |
 | S5.1 | Village / Cluster Demand Distribution | `GET /api/datasets/readiness.village_demand` | Scaled by the forecast assumptions |
 | S5.2 | Village / Cluster Stock Gap Heatmap | `GET /api/datasets/readiness.stock_heatmap` | |
-| S5.3 | Dealer / Retailer Intelligence; Village Cluster Summary | `GET /api/datasets/readiness.dealers`, `readiness.cluster_supply` | |
+| S5.3 | Dealer & Retailer View; Village Cluster Summary | `GET /api/datasets/readiness.dealers`, `readiness.cluster_supply` | |
 | S6.1 | Field Owner Allocation | `GET /api/datasets/orchestration.owners` | |
 | S7.1 | Cluster Adoption Performance; Channel Effectiveness | `GET /api/datasets/impact.cluster_conversion`, `impact.channel_effectiveness` | |
 | S7.2 | Geography-wise Performance | `GET /api/datasets/impact.geo_performance` | |

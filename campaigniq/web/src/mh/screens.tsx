@@ -92,7 +92,7 @@ function visualFor(code: string, go: (screen: ScreenId) => void): { visual?: Rea
           />
         </div>
       ),
-      visualNote: 'Map-led national lens highlights where campaign scale and readiness should be sequenced first.',
+      visualNote: 'The map shows where to scale campaigns first, based on opportunity and readiness.',
     };
   }
 
@@ -220,7 +220,7 @@ function visualFor(code: string, go: (screen: ScreenId) => void): { visual?: Rea
   return {
     visual: (
       <MhVizBars
-        title="Strategic progression snapshot"
+        title="Progress snapshot"
         items={[
           { label: 'Readiness', value: 74, note: 'Tracked in workflow', tone: 'green' },
           { label: 'Evidence confidence', value: 63, note: 'Needs validation', tone: 'amber' },
@@ -266,7 +266,7 @@ function Workspace(spec: Spec) {
 
       <div className="pm-two pm-two-balanced">
         <div className="pm-box">
-          <div className="pm-box-head"><h3>Workspace</h3></div>
+          <div className="pm-box-head"><h3>Details</h3></div>
           <table className="pm-table">
             <tbody>
               {spec.board.map(([label, value, to]) => (
@@ -299,36 +299,36 @@ function Workspace(spec: Spec) {
 function S(spec: Spec) { return <Workspace {...spec} />; }
 
 const C = {
-  m1: [{ label: 'National Marketing Overview (Active)' }],
-  m2: [{ label: 'Market Opportunity Intelligence (Active)' }],
-  m3: [{ label: 'Business & Crop Plan Reviews (Active)' }],
-  m3a: [{ label: 'Business & Crop Plan Reviews' }, { label: 'Regional Plan Detail (Active)' }],
-  m3b: [{ label: 'Business & Crop Plan Reviews' }, { label: 'Territory Contribution (Active)' }],
-  m4: [{ label: 'Campaign Strategy Studio (Active)' }],
-  m4a: [{ label: 'Campaign Strategy Studio' }, { label: 'Barrier Diagnosis (Active)' }],
-  m4i2: [{ label: 'Campaign Strategy Studio' }, { label: 'Regional Barrier Lens (Active)' }],
-  m4i3: [{ label: 'Campaign Strategy Studio' }, { label: 'Territory Barrier Deep-dive (Active)' }],
-  m4i4: [{ label: 'Campaign Strategy Studio' }, { label: 'Updated Investigation (Active)' }],
-  m4b: [{ label: 'Campaign Strategy Studio' }, { label: 'Recommendation Refresh (Active)' }],
-  m5: [{ label: 'Campaign Strategy Studio' }, { label: 'Strategy Brief (Active)' }],
-  m6: [{ label: 'Campaign Strategy Studio' }, { label: 'Mix, Budget & Calendar (Active)' }],
-  m7: [{ label: 'Campaign Strategy Studio' }, { label: 'Portfolio Review (Active)' }],
-  m7a: [{ label: 'Campaign Strategy Studio' }, { label: 'Proposal Detail (Active)' }],
-  m7b: [{ label: 'Campaign Strategy Studio' }, { label: 'Exception Review (Active)' }],
-  m8: [{ label: 'Approvals & Rollout (Active)' }],
-  m8a: [{ label: 'Approvals & Rollout' }, { label: 'Release & Rollout (Active)' }],
-  m9: [{ label: 'Portfolio Performance & Learning (Active)' }],
-  m9a: [{ label: 'Portfolio Performance & Learning' }, { label: 'Regional Programme (Active)' }],
-  m9b: [{ label: 'Portfolio Performance & Learning' }, { label: 'Driver Diagnostics (Active)' }],
-  m9c: [{ label: 'Portfolio Performance & Learning' }, { label: 'Territory Impact Explorer (Drawer)' }],
-  m9d: [{ label: 'Portfolio Performance & Learning' }, { label: 'Optimization Review Request (Drawer)' }],
-  ai: [{ label: 'AI Copilot (Active)' }],
+  m1: [{ label: 'Marketing Overview' }],
+  m2: [{ label: 'Market Opportunities' }],
+  m3: [{ label: 'Plan Reviews' }],
+  m3a: [{ label: 'Plan Reviews' }, { label: 'Regional Plan Detail' }],
+  m3b: [{ label: 'Plan Reviews' }, { label: 'Territory Plan Detail' }],
+  m4: [{ label: 'Campaign Planning' }],
+  m4a: [{ label: 'Campaign Planning' }, { label: 'Why Farmers Are Not Converting' }],
+  m4i2: [{ label: 'Campaign Planning' }, { label: 'Barriers by Region' }],
+  m4i3: [{ label: 'Campaign Planning' }, { label: 'Barriers by Territory' }],
+  m4i4: [{ label: 'Campaign Planning' }, { label: 'Updated Findings' }],
+  m4b: [{ label: 'Campaign Planning' }, { label: 'Shortlist Campaigns' }],
+  m5: [{ label: 'Campaign Planning' }, { label: 'Campaign Brief' }],
+  m6: [{ label: 'Campaign Planning' }, { label: 'Mix, Budget & Calendar' }],
+  m7: [{ label: 'Campaign Planning' }, { label: 'Campaign Portfolio Review' }],
+  m7a: [{ label: 'Campaign Planning' }, { label: 'Proposal & Business Case' }],
+  m7b: [{ label: 'Campaign Planning' }, { label: 'Exceptions & Conditional Approval' }],
+  m8: [{ label: 'Approvals & Rollout' }],
+  m8a: [{ label: 'Approvals & Rollout' }, { label: 'Release to Territories' }],
+  m9: [{ label: 'Performance & Learnings' }],
+  m9a: [{ label: 'Performance & Learnings' }, { label: 'Regional Performance' }],
+  m9b: [{ label: 'Performance & Learnings' }, { label: 'What Is Driving Results' }],
+  m9c: [{ label: 'Performance & Learnings' }, { label: 'Territory Results' }],
+  m9d: [{ label: 'Performance & Learnings' }, { label: 'Request Campaign Changes' }],
+  ai: [{ label: 'AI Copilot' }],
 };
 
 const CORE_ROWS: [string, string][] = [
-  ['Strategic focus', 'Prioritize evidence-linked outcomes.'],
-  ['Execution control', 'Track conditional approvals and readiness gates before scale actions.'],
-  ['Data discipline', 'Keep observed performance signals separate from unverified causes.'],
+  ['Where to look first', 'West Region is 6 pp behind its execution plan.'],
+  ['Before approving', 'Check stock readiness and consent conditions on each campaign.'],
+  ['Reading the results', 'Figures are observed results; causes are not yet verified.'],
 ];
 
 function make(code: string, title: string, subtitle: string, crumbs: { label: string; to?: ScreenId }[], next: { label: string; to: ScreenId } | undefined, metric3: string, boardOpen?: ScreenId) {
@@ -338,33 +338,33 @@ function make(code: string, title: string, subtitle: string, crumbs: { label: st
     subtitle,
     crumbs,
     next,
-    metrics: [['Region/Scope', code.startsWith('MH.9') ? 'West Region' : 'National + West Lens'], ['Progress', code === 'MH.9A' || code === 'MH.9B' ? '72% vs 80% plan' : 'In workflow'], ['Attention', metric3, 'amber']],
-    board: [['Primary workspace', title], ['Operating context', subtitle], ['Evidence and controls', 'Source-aware and condition-driven governance'], ['Next action', next ? next.label : 'Review with AI Copilot', boardOpen ?? next?.to]],
+    metrics: [['Region/Scope', code.startsWith('MH.9') ? 'West Region' : 'All regions · West focus'], ['Progress', code === 'MH.9A' || code === 'MH.9B' ? '72% vs 80% plan' : 'In workflow'], ['Attention', metric3, 'amber']],
+    board: [['Screen', title], ['Purpose', subtitle], ['Data', 'Illustrative · each figure shows its source'], ['Next action', next ? next.label : 'Review with AI Copilot', boardOpen ?? next?.to]],
     insight: CORE_ROWS,
   } as Spec;
 }
 
-export function Mh1() { return S(make('MH.1', 'National Marketing Opportunity & Performance Command Centre', 'National overview of opportunity, performance and watchouts', C.m1, { label: 'View opportunity map', to: 'mh.2' }, '3 regional watchouts')); }
-export function Mh2() { return S(make('MH.2', 'Regional Market Opportunity & Product Sales Intelligence', 'West region opportunity stack with product-cluster context', C.m2, { label: 'Proceed to Plan Reviews', to: 'mh.3' }, 'High-priority pockets: 3')); }
-export function Mh3() { return S(make('MH.3', 'Business & Crop Plan Alignment Review', 'Cross-check territory plans with intervention assumptions', C.m3, { label: 'Open Regional Detail', to: 'mh.3a' }, 'Conditional plans: 4')); }
-export function Mh3a() { return S(make('MH.3A', 'Regional Business Plan Detail & Marketing Intervention Review', 'Regional intervention quality and business-case consistency', C.m3a, { label: 'Open Territory Contribution', to: 'mh.3b' }, 'Conditional interventions: 2')); }
-export function Mh3b() { return S(make('MH.3B', 'Contributing Territory Plan Detail and Marketing Opportunity Review', 'Ambad/Ghansawangi/Badnapur contribution audit', C.m3b, { label: 'Move to Strategy Studio', to: 'mh.4' }, 'Critical assumptions: 5')); }
-export function Mh4() { return S(make('MH.4', 'AI Campaign Discovery & Recommendation Studio', 'Candidate campaign themes ranked by strategic fit', C.m4, { label: 'Investigate Barriers', to: 'mh.4a' }, 'Top recommendations: 3')); }
-export function Mh4a() { return S(make('MH.4A', 'Farmer Conversion Investigation & Growth Barrier Diagnosis', 'Layered diagnostics for conversion frictions', C.m4a, { label: 'Open Regional Barrier Lens', to: 'mh.4a-i2' }, 'Unverified barriers: 2')); }
-export function Mh4aI2() { return S(make('MH.4A-I2', 'Regional Growth Barrier Investigation', 'West region barrier concentration and feasibility', C.m4i2, { label: 'Open Territory Deep-dive', to: 'mh.4a-i3' }, 'Hotspots: 3')); }
-export function Mh4aI3() { return S(make('MH.4A-I3', 'Territory Conversion Barrier Deep-dive', 'Ambad local workflow and conversion diagnosis', C.m4i3, { label: 'Update Investigation View', to: 'mh.4a-i4' }, 'Blockers: 3')); }
-export function Mh4aI4() { return S(make('MH.4A-I4', 'Updated Farmer Conversion Investigation & Diagnosis', 'Consolidated evidence after territory validation', C.m4i4, { label: 'Refresh Recommendations', to: 'mh.4b' }, 'Outstanding unknowns: 1')); }
-export function Mh4b() { return S(make('MH.4B', 'Refreshed AI Campaign Recommendations & Selection', 'Prioritized campaign set with revised evidence', C.m4b, { label: 'Build Strategy Brief', to: 'mh.5' }, 'Selected campaigns: 3')); }
-export function Mh5() { return S(make('MH.5', 'Campaign Strategy Brief & Portfolio Theme Alignment', 'Formal strategy brief with governance thresholds', C.m5, { label: 'Open Mix & Budget', to: 'mh.6' }, 'Open strategy questions: 2')); }
-export function Mh6() { return S(make('MH.6', 'Regional Campaign Mix, Budget & Calendar', 'Resource phasing by campaign theme and readiness', C.m6, { label: 'Review Portfolio', to: 'mh.7' }, 'Unallocated buffer: ₹0.3 Cr')); }
-export function Mh7() { return S(make('MH.7', 'Campaign Portfolio Review & Refinement', 'Final strategic quality gate before sign-off', C.m7, { label: 'Open Proposal Detail', to: 'mh.7a' }, 'Refinement items: 3')); }
-export function Mh7a() { return S(make('MH.7A', 'Detailed Campaign Proposal & Business Case Review', 'Evidence-linked proposal assessment', C.m7a, { label: 'Open Exception Review', to: 'mh.7b' }, 'Open concerns: 2')); }
-export function Mh7b() { return S(make('MH.7B', 'Exception Review & Conditional Authorization', 'Resolve conditions and define control gates', C.m7b, { label: 'Move to Approvals Inbox', to: 'mh.8' }, 'Pending authorization: 2')); }
-export function Mh8() { return S(make('MH.8', 'Approval Inbox & Rollout Planning', 'Finalize approvals and release sequencing', C.m8, { label: 'Release Approved Recommendations', to: 'mh.8a' }, 'Conditional requests: 4')); }
-export function Mh8a() { return S(make('MH.8A', 'Approved Campaign Recommendation Release & Territory Rollout', 'Controlled release to Territory Managers', C.m8a, { label: 'Open Portfolio Performance', to: 'mh.9' }, 'Conditional releases: 3')); }
-export function Mh9() { return S(make('MH.9', 'Portfolio Performance Summary', 'Executive outcome summary for active campaign portfolio', C.m9, { label: 'View Regional Programme', to: 'mh.9a' }, 'At-risk programmes: 2')); }
-export function Mh9a() { return S(make('MH.9A', 'Regional Programme Performance & Rollout', 'West region programme performance with source references', C.m9a, { label: 'Investigate Drivers', to: 'mh.9b' }, 'Regional execution gap: 8 pp')); }
-export function Mh9b() { return S(make('MH.9B', 'Regional Campaign Performance Driver Diagnostics', 'Observed workflow gaps vs unverified causal hypotheses', C.m9b, { label: 'View Territory Impact', to: 'mh.9c' }, 'Unverified drivers: 3')); }
+export function Mh1() { return S(make('MH.1', 'Marketing Overview', 'Opportunity, performance and watch-outs across regions', C.m1, { label: 'View opportunity map', to: 'mh.2' }, '3 regional watchouts')); }
+export function Mh2() { return S(make('MH.2', 'Market Opportunities by Region', 'West region opportunity stack with product-cluster context', C.m2, { label: 'Proceed to Plan Reviews', to: 'mh.3' }, 'High-priority pockets: 3')); }
+export function Mh3() { return S(make('MH.3', 'Plan Reviews', 'Cross-check territory plans with intervention assumptions', C.m3, { label: 'Open Regional Detail', to: 'mh.3a' }, 'Conditional plans: 4')); }
+export function Mh3a() { return S(make('MH.3A', 'Regional Plan Detail', 'Regional intervention quality and business-case consistency', C.m3a, { label: 'Open Territory Contribution', to: 'mh.3b' }, 'Conditional interventions: 2')); }
+export function Mh3b() { return S(make('MH.3B', 'Territory Plan Detail', 'Ambad/Ghansawangi/Badnapur contribution audit', C.m3b, { label: 'Move to Campaign Planning', to: 'mh.4' }, 'Critical assumptions: 5')); }
+export function Mh4() { return S(make('MH.4', 'Campaign Ideas', 'Candidate campaign themes ranked by strategic fit', C.m4, { label: 'Investigate Barriers', to: 'mh.4a' }, 'Top recommendations: 3')); }
+export function Mh4a() { return S(make('MH.4A', 'Why Farmers Are Not Converting', 'Layered diagnostics for conversion frictions', C.m4a, { label: 'Open Regional Barrier Lens', to: 'mh.4a-i2' }, 'Unverified barriers: 2')); }
+export function Mh4aI2() { return S(make('MH.4A-I2', 'Barriers by Region', 'West region barrier concentration and feasibility', C.m4i2, { label: 'Open Barriers by Territory', to: 'mh.4a-i3' }, 'Hotspots: 3')); }
+export function Mh4aI3() { return S(make('MH.4A-I3', 'Barriers by Territory', 'Ambad local workflow and conversion diagnosis', C.m4i3, { label: 'Update Investigation View', to: 'mh.4a-i4' }, 'Blockers: 3')); }
+export function Mh4aI4() { return S(make('MH.4A-I4', 'Conversion Barriers: Updated Findings', 'Consolidated evidence after territory validation', C.m4i4, { label: 'Refresh Recommendations', to: 'mh.4b' }, 'Outstanding unknowns: 1')); }
+export function Mh4b() { return S(make('MH.4B', 'Shortlist Campaigns', 'Prioritized campaign set with revised evidence', C.m4b, { label: 'Build Strategy Brief', to: 'mh.5' }, 'Selected campaigns: 3')); }
+export function Mh5() { return S(make('MH.5', 'Campaign Brief', 'Formal strategy brief with governance thresholds', C.m5, { label: 'Open Mix & Budget', to: 'mh.6' }, 'Open strategy questions: 2')); }
+export function Mh6() { return S(make('MH.6', 'Campaign Mix, Budget & Calendar', 'Resource phasing by campaign theme and readiness', C.m6, { label: 'Review Portfolio', to: 'mh.7' }, 'Unallocated buffer: ₹0.3 Cr')); }
+export function Mh7() { return S(make('MH.7', 'Campaign Portfolio Review', 'Final strategic quality gate before sign-off', C.m7, { label: 'Open Proposal Detail', to: 'mh.7a' }, 'Refinement items: 3')); }
+export function Mh7a() { return S(make('MH.7A', 'Proposal & Business Case', 'Evidence-linked proposal assessment', C.m7a, { label: 'Open Exception Review', to: 'mh.7b' }, 'Open concerns: 2')); }
+export function Mh7b() { return S(make('MH.7B', 'Exceptions & Conditional Approval', 'Resolve conditions and define control gates', C.m7b, { label: 'Move to Approvals Inbox', to: 'mh.8' }, 'Pending authorization: 2')); }
+export function Mh8() { return S(make('MH.8', 'Approvals & Rollout', 'Finalize approvals and release sequencing', C.m8, { label: 'Release Approved Recommendations', to: 'mh.8a' }, 'Conditional requests: 4')); }
+export function Mh8a() { return S(make('MH.8A', 'Release to Territories', 'Controlled release to Territory Managers', C.m8a, { label: 'Open Portfolio Performance', to: 'mh.9' }, 'Conditional releases: 3')); }
+export function Mh9() { return S(make('MH.9', 'Performance Summary', 'Executive outcome summary for active campaign portfolio', C.m9, { label: 'View Regional Programme', to: 'mh.9a' }, 'At-risk programmes: 2')); }
+export function Mh9a() { return S(make('MH.9A', 'Regional Performance', 'West region programme performance with source references', C.m9a, { label: 'Investigate Drivers', to: 'mh.9b' }, 'Regional execution gap: 8 pp')); }
+export function Mh9b() { return S(make('MH.9B', 'What Is Driving Results', 'Observed workflow gaps vs unverified causal hypotheses', C.m9b, { label: 'View Territory Impact', to: 'mh.9c' }, 'Unverified drivers: 3')); }
 
 export function Mh9c() {
   const { go } = useNav();
@@ -372,7 +372,7 @@ export function Mh9c() {
     <MhPage
       crumbs={C.m9c}
       code="MH.9C"
-      title="Territory Impact Explorer"
+      title="Territory Results"
       subtitle="Contextual drawer over with read-only territory inspection"
       actions={<button type="button" className="pm-btn" onClick={() => go('mh.9d')}>Request Optimization Review</button>}
     >
@@ -383,7 +383,7 @@ export function Mh9c() {
           <table className="pm-table"><tbody>
             <tr><th>Scope</th><td>West Region &gt; Croptek Conversion &gt; Retailer-led programme</td></tr>
             <tr><th>Current signal</th><td>72% execution vs 80% plan; causal evidence partial</td></tr>
-            <tr><th>Navigation</th><td><button type="button" className="pm-btn" onClick={() => go('mh.9b')}>Back to Regional Campaign Performance Driver Diagnostics</button></td></tr>
+            <tr><th>Navigation</th><td><button type="button" className="pm-btn" onClick={() => go('mh.9b')}>Back to What Is Driving Results</button></td></tr>
           </tbody></table>
         </div>
         <div className="pm-box pm-ai" style={{ borderLeft: '3px solid #2f8a3b' }}>
@@ -405,7 +405,7 @@ export function Mh9d() {
     <MhPage
       crumbs={C.m9d}
       code="MH.9D"
-      title="Campaign Optimization Review Request"
+      title="Request Campaign Changes"
       subtitle="Draft request drawer for Product Manager optimization review"
       actions={<button type="button" className="pm-btn" onClick={() => go('mh.ai1')}>Discuss in AI Copilot</button>}
     >
@@ -426,7 +426,7 @@ export function Mh9d() {
             <tr><th>Responsible PM</th><td>Crop Nutrition Product Manager</td></tr>
             <tr><th>Deliverable</th><td>Revised campaign proposal + updated business case if material</td></tr>
           </tbody></table>
-          <div className="pm-box-actions"><button type="button" className="pm-btn" onClick={() => go('pm.opt1')}>Submit Optimization Request to Product Manager</button><button type="button" className="pm-btn pm-btn-soft" onClick={() => go('mh.9b')}>Back to Regional Campaign Performance Driver Diagnostics</button></div>
+          <div className="pm-box-actions"><button type="button" className="pm-btn" onClick={() => go('pm.opt1')}>Submit Optimization Request to Product Manager</button><button type="button" className="pm-btn pm-btn-soft" onClick={() => go('mh.9b')}>Back to What Is Driving Results</button></div>
         </div>
       </div>
     </MhPage>
@@ -445,7 +445,7 @@ const MH_FACTS = [
 
 export function MhAi1() {
   return S({
-    ...make('MH.AI1', 'Strategic Marketing Intelligence Copilot', 'Conversational decision support across all Marketing Head workflows', C.ai, undefined, 'Assistive mode only'),
+    ...make('MH.AI1', 'AI Copilot', 'Conversational decision support across all Marketing Head workflows', C.ai, undefined, 'Assistive mode only'),
     extra: <LiveCopilot persona="Marketing Head" screen="mh.ai1" pageContext={MH_FACTS}
       suggestions={['Should I approve the Ambad onion campaign as submitted?', 'Why is West Region execution behind plan?', 'Which theme should I scale next season?', 'What evidence is missing before scaling Croptek conversion?']}
       intro="Ask about regional strategy, campaign approvals, rollout or performance learning. The live model answers from the Marketing Head figures in this tool." />,

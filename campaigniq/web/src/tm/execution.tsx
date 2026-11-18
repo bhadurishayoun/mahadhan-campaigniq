@@ -29,8 +29,8 @@ export function TmEx1() {
   const { go } = useNav();
   const total = allUnits.length;
   return (
-    <TmPage crumbs={[{ label: 'Campaign Execution' }, { label: 'Approved Campaigns' }, { label: CAMPAIGN.name }, { label: 'Live Control Tower' }]}
-      code="TM.EX1" title="Campaign Execution & Live Control Tower" status="In progress"
+    <TmPage crumbs={[{ label: 'Campaign Execution' }, { label: 'Approved Campaigns' }, { label: CAMPAIGN.name }, { label: 'Activity Tracker' }]}
+      code="TM.EX1" title="Activity Tracker" status="In progress"
       banner={<Note>Future illustrative scenario: the campaign has cleared its approvals and mandatory launch checks after CW.4.</Note>}
       actions={<span className="tm-sync"><Clock size={12} /> Last synced 18 Nov 2026, 09:40 · field app (not a live ERP feed)</span>}>
       <CampaignStrip />
@@ -86,7 +86,7 @@ export function TmEx1() {
           ]}
           markerLegend={[{ label: 'Blocking risk', color: MAP_COLORS.red }, { label: 'Watch', color: MAP_COLORS.amber }, { label: 'Scheduled', color: MAP_COLORS.grey }]} />
       </div>
-      <Footer back={{ label: 'Back to My Campaigns', to: 'tm.c3' }} source="Field app activity reports (last sync)" next="TM.EX2 — Activity Workspace"
+      <Footer back={{ label: 'Back to My Campaigns', to: 'tm.c3' }} source="Field app activity reports (last sync)" next="TM.EX2 — Activity Follow-up"
         primary={{ label: 'View Activity & Take Action', to: 'tm.ex2' }} />
     </TmPage>
   );
@@ -104,8 +104,8 @@ export function TmEx2() {
   const [saved, setSaved] = useState<string | null>(null);
   const [evidence, setEvidence] = useState<Record<string, string>>({});
   return (
-    <TmPage crumbs={[{ label: 'Campaign Execution', to: 'tm.ex1' }, { label: 'Live Control Tower', to: 'tm.ex1' }, { label: 'Dhanora Field Demonstration' }, { label: 'Activity Workspace' }]}
-      code="TM.EX2" title="Activity Execution & Corrective Action Workspace" status="At risk">
+    <TmPage crumbs={[{ label: 'Campaign Execution', to: 'tm.ex1' }, { label: 'Activity Tracker', to: 'tm.ex1' }, { label: 'Dhanora Field Demonstration' }, { label: 'Activity Follow-up' }]}
+      code="TM.EX2" title="Activity Follow-up" status="At risk">
       <div className="pm-two">
         <div className="pm-stack">
           <Panel title="Dhanora field demonstration">
@@ -178,11 +178,11 @@ export function TmEx2() {
           </Panel>
           <Panel title="Related exception">
             <p className="tm-muted"><b>Wadi Gaon farmer meeting (Week 2)</b> — field confirmation pending.</p>
-            <Btn small to="tm.ex1">Open in Control Tower</Btn>
+            <Btn small to="tm.ex1">Open in Activity Tracker</Btn>
           </Panel>
         </div>
       </div>
-      <Footer back={{ label: 'Return to Live Control Tower', to: 'tm.ex1' }} source="Field app · activity record" next="Impact & Learning → TM.IM1 once outcome data is available"
+      <Footer back={{ label: 'Return to Activity Tracker', to: 'tm.ex1' }} source="Field app · activity record" next="Impact & Learning → TM.IM1 once outcome data is available"
         primary={{ label: 'Go to Impact & Learning', to: 'tm.im1' }} />
     </TmPage>
   );
@@ -198,8 +198,8 @@ export function TmIm1() {
   const completed = IMPACT_VILLAGES.reduce((s, v) => s + v.completed, 0);
   return (
     <TmPage crumbs={[{ label: 'Impact & Learning' }, { label: CAMPAIGN.name }, { label: 'Campaign Performance' }]}
-      code="TM.IM1" title="Campaign Impact & Business Performance" status="Interim checkpoint"
-      banner={<Note>Later illustrative checkpoint, after more field activity and data updates — not the same moment as the Control Tower view.</Note>}>
+      code="TM.IM1" title="Campaign Results" status="Interim checkpoint"
+      banner={<Note>Later illustrative checkpoint, after more field activity and data updates — not the same moment as the Activity Tracker view.</Note>}>
       <CampaignStrip />
       <Metrics items={[
         { label: 'Base-case forecast campaign sales', value: '₹12.0 L', sub: 'Planning forecast (CW.3)' },
@@ -269,7 +269,7 @@ export function TmIm2() {
   const gap = conversion(w.adopters, w.trials) - conversion(d.adopters, d.trials);
   return (
     <TmPage crumbs={[{ label: 'Impact & Learning', to: 'tm.im1' }, { label: CAMPAIGN.name }, { label: 'Campaign Performance', to: 'tm.im1' }, { label: 'Diagnostics & Learning' }]}
-      code="TM.IM2" title="Campaign Diagnostics & Learning Studio" status="Interim · causes unverified"
+      code="TM.IM2" title="What Worked & Why" status="Interim · causes unverified"
       banner={<Note>Illustrative interim checkpoint of an approved campaign — not a claim of actual Mahadhan results.</Note>}>
       <div className="pm-two">
         <Panel title="Village-wise conversion diagnostic">
@@ -298,7 +298,7 @@ export function TmIm2() {
           </ul>
           <div className="tm-evidence-links">
             <span>Evidence:</span>
-            <Btn small to="tm.ex1">TM.EX1 Control Tower</Btn><Btn small to="tm.ex2">TM.EX2 Activity Workspace</Btn><span className="tm-muted">CRM / field interaction data</span>
+            <Btn small to="tm.ex1">TM.EX1 Activity Tracker</Btn><Btn small to="tm.ex2">TM.EX2 Activity Follow-up</Btn><span className="tm-muted">CRM / field interaction data</span>
           </div>
           <div className="tm-confidence"><span>Data confidence</span><Status tone="amber">Medium — causal attribution unresolved</Status></div>
         </Panel>
@@ -363,7 +363,7 @@ const TM_SUGGESTIONS = [
 export function TmAi1() {
   return (
     <TmPage crumbs={[{ label: 'AI Copilot' }, { label: CAMPAIGN.name }, { label: 'Campaign Diagnostics' }]}
-      code="TM.AI1" title="Territory Business & Campaign Copilot" status="Live AI · evidence-linked · causation not yet verified">
+      code="TM.AI1" title="AI Copilot" status="Live AI · evidence-linked · causation not yet verified">
       <div className="tm-copilot">
         <aside className="tm-copilot-left">
           <div><h5>What the copilot can see</h5>
@@ -408,7 +408,7 @@ export function TmAi1() {
           </Panel>
           <Panel title="Sources">
             <div className="tm-source-links">
-              <Btn small to="tm.ex1">TM.EX1 Live Control Tower</Btn><Btn small to="tm.ex2">TM.EX2 Activity Workspace</Btn>
+              <Btn small to="tm.ex1">TM.EX1 Activity Tracker</Btn><Btn small to="tm.ex2">TM.EX2 Activity Follow-up</Btn>
               <Btn small to="tm.im1">TM.IM1 Impact Dashboard</Btn><Btn small to="tm.im2">TM.IM2 Diagnostics</Btn>
             </div>
           </Panel>

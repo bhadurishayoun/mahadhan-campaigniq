@@ -17,15 +17,15 @@ export function Pm8() {
   const current = SCENARIOS[scenario];
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Business Case & Scenarios' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Business Case & Scenarios' }]}
       code="PM.8"
-      title="Campaign Business Case & Scenario Simulator"
+      title="Business Case"
       status="Draft — Not Submitted / Not Approved"
     >
-      <Source>Campaign Collateral & Content Studio. Parent theme {THEME.name} · PM-developed {C1.name} · priority Maharashtra Onion.</Source>
+      <Source>Campaign Collateral. Parent theme {THEME.name} · PM-developed {C1.name} · priority Maharashtra Onion.</Source>
       <div className="pm-two">
         <div className="pm-stack">
-          <Box title="Campaign Financial Business Case · Scenario Simulator" icon={<Calculator size={15} />}>
+          <Box title="Business Case · Scenarios" icon={<Calculator size={15} />}>
             <Table
               head={['', ...SCENARIOS.map((item, index) => <span className={cx(index === scenario && 'pm-selected-col')}>{item.name}{index === scenario ? ' · SELECTED' : ''}</span>)]}
               align={['l', 'r', 'r', 'r']}
@@ -72,7 +72,7 @@ export function Pm8() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.7">← Back to Campaign Collateral & Content Studio</Btn><Btn to="pm.8b" icon={<SlidersHorizontal size={13} />}>Adjust Assumptions</Btn><Btn to="pm.8c" icon={<GitCompare size={13} />}>Compare Scenarios</Btn><Act message="Draft business case saved">Save Draft Business Case</Act></>}
+        left={<><Btn to="pm.7">← Back to Campaign Collateral</Btn><Btn to="pm.8b" icon={<SlidersHorizontal size={13} />}>Adjust Assumptions</Btn><Btn to="pm.8c" icon={<GitCompare size={13} />}>Compare Scenarios</Btn><Act message="Draft business case saved">Save Draft Business Case</Act></>}
         right={<><Btn to="pm.8a">Proposal review</Btn><Cta locked="Conditional: enabled once mandatory financial / content checks are resolved or authorized exceptions accepted. Submission is not Marketing approval.">Review & Submit Proposal to Marketing Head</Cta></>}
        
       />
@@ -86,7 +86,7 @@ export function Pm8a() {
   const [selected, setSelected] = useState(0);
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: 'Campaign Proposals' }, { label: 'Review & Submit' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: 'Campaign Proposals' }, { label: 'Review & Submit' }]}
       code="PM.8A"
       title="Campaign Proposal Consolidation, Review & Submission to Marketing Head"
       status="Pre-Submission Draft"
@@ -109,7 +109,7 @@ export function Pm8a() {
           </Box>
           <Box title="Submission readiness checklist" tone="soft">
             <Checklist items={[
-              { label: 'Technical / agronomy claims (incl. draft Croptek collateral AI Collateral Designer)', status: 'Pending' },
+              { label: 'Technical / agronomy claims (incl. draft Croptek collateral Collateral Draft)', status: 'Pending' },
               { label: 'Collateral approval', status: 'Pending' },
               { label: 'Eligible audience / consent', status: 'Pending' },
               { label: 'Financial incrementality & ABP reconciliation', status: 'Pending' },
@@ -137,7 +137,7 @@ export function Pm8a() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.8">← Back to Campaign Business Case & Scenario Simulator</Btn><Act message="Draft saved">Save Draft</Act><Btn to="pm.6b">Request Technical Validation</Btn></>}
+        left={<><Btn to="pm.8">← Back to Business Case</Btn><Act message="Draft saved">Save Draft</Act><Btn to="pm.6b">Request Technical Validation</Btn></>}
         right={<><Btn to="pm.8f" icon={<RotateCcw size={13} />}>Revise & Resubmit</Btn><Btn to="pm.8e" icon={<Send size={13} />}>Open submission confirmation</Btn><Cta locked="Disabled until mandatory checks are cleared or an authorized conditional submission is recorded">Submit Selected Proposals to Marketing Head</Cta></>}
       />
     </PmPage>
@@ -148,7 +148,7 @@ export function Pm8a() {
 
 const ASSUMPTIONS = [
   { parameter: 'Eligible farmers', value: 'Pending validation', method: 'From CRM eligible cohort', source: 'CRM', status: 'Pending' },
-  { parameter: 'Incremental first-purchase conversion', value: 'Benchmark pending', method: 'Forecast conversion − valid comparable baseline', source: 'Updated Farmer Conversion Investigation & Diagnosis + benchmark', status: 'Pending' },
+  { parameter: 'Incremental first-purchase conversion', value: 'Benchmark pending', method: 'Forecast conversion − valid comparable baseline', source: 'Conversion Barriers: Updated Findings + benchmark', status: 'Pending' },
   { parameter: 'Expected incremental purchasers', value: 'Pending', method: 'Eligible audience × attributable incremental conversion', source: 'Derived', status: 'Pending' },
   { parameter: 'Incremental product volume', value: 'Pending', method: 'Incremental purchasers × forecast quantity per purchaser', source: 'Derived', status: 'Pending' },
   { parameter: 'Net realization per SKU', value: 'Pending', method: 'Authorized price list less schemes', source: 'Product Master / ERP', status: 'Pending' },
@@ -160,7 +160,7 @@ const ASSUMPTIONS = [
 export function Pm8b() {
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Business Case', to: 'pm.8' }, { label: 'Calculation Logic' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Business Case', to: 'pm.8' }, { label: 'Calculation Logic' }]}
       code="PM.8B"
       title="Financial Assumptions, Calculation Logic & Source Validation"
       status="Draft / Not Approved"
@@ -197,7 +197,7 @@ export function Pm8b() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.8">← Back to Campaign Business Case & Scenario Simulator</Btn><Act message="Draft assumptions saved">Save Draft Assumptions</Act><Act message="Source records opened">View Source Records</Act><Act message="Finance validation requested">Request Finance Validation</Act></>}
+        left={<><Btn to="pm.8">← Back to Business Case</Btn><Act message="Draft assumptions saved">Save Draft Assumptions</Act><Act message="Source records opened">View Source Records</Act><Act message="Finance validation requested">Request Finance Validation</Act></>}
         right={<Cta to="pm.8c">Compare Financial Scenarios</Cta>}
       />
     </PmPage>
@@ -214,9 +214,9 @@ export function Pm8c() {
   const roi = (contrib - invest) / invest;
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Business Case', to: 'pm.8' }, { label: 'Scenario Simulator' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: C1.name, to: 'pm.6' }, { label: 'Business Case', to: 'pm.8' }, { label: 'Campaign Scenarios' }]}
       code="PM.8C"
-      title="Campaign Financial Scenario Comparison & Sensitivity Simulator"
+      title="Scenarios & Sensitivity"
       status="Draft / Not Approved"
     >
       <Source><b>Compare Financial Scenarios</b>. Selected draft C1 {C1.name}, Maharashtra Onion.</Source>
@@ -263,7 +263,7 @@ export function Pm8c() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.8b">← Back to Financial Assumptions & Calculation Logic</Btn><Btn to="pm.8b">Adjust Assumptions</Btn><Act message="Draft scenario saved">Save Draft Scenario</Act></>}
+        left={<><Btn to="pm.8b">← Back to Assumptions & Calculations</Btn><Btn to="pm.8b">Adjust Assumptions</Btn><Act message="Draft scenario saved">Save Draft Scenario</Act></>}
         right={<Cta to="pm.8d">Reconcile Campaign Benefits & Audience Overlap</Cta>}
       />
     </PmPage>
@@ -276,7 +276,7 @@ export function Pm8d() {
   const [decision, setDecision] = useState('Develop Separate Campaigns');
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: 'Business Case', to: 'pm.8' }, { label: 'Audience & Benefit Reconciliation' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: 'Business Case', to: 'pm.8' }, { label: 'Audience & Benefit Reconciliation' }]}
       code="PM.8D"
       title="Multi-Campaign Audience Overlap & Financial Benefit Reconciliation"
       status="Not Submitted / Not Approved"
@@ -328,7 +328,7 @@ export function Pm8d() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.8c">← Back to Scenario Comparison & Sensitivity</Btn><Act message="Source cohorts opened (CRM matching pending)">View Source Cohorts</Act><Act message="CRM matching requested">Request CRM Matching</Act><Act message="Reconciliation draft saved">Save Reconciliation Draft</Act></>}
+        left={<><Btn to="pm.8c">← Back to Scenarios & Sensitivity</Btn><Act message="Source cohorts opened (CRM matching pending)">View Source Cohorts</Act><Act message="CRM matching requested">Request CRM Matching</Act><Act message="Reconciliation draft saved">Save Reconciliation Draft</Act></>}
         right={<Cta to="pm.8a">Review Proposals & Submission Readiness</Cta>}
       />
     </PmPage>
@@ -341,7 +341,7 @@ export function Pm8e() {
   return (
     <Modal title="Review & Submit Campaign Proposals" status="Pre-Submission / Not Sent" width="72%" back="pm.8a" subtitle={`${THEME.name} · Maharashtra Onion · submitted by Crop Nutrition Product Manager · reviewer Marketing Head`}
       footer={<>
-        <Btn to="pm.8a">Back to Proposal Consolidation & Submission</Btn>
+        <Btn to="pm.8a">Back to Submit Proposal</Btn>
         <Act message="Missing checks listed in validation readiness">View Missing Checks</Act>
         <Act message="Submission draft saved — not sent">Save Submission Draft</Act>
         <Act message="Validation requested">Request Validation</Act>
@@ -394,12 +394,12 @@ export function Pm8f() {
   const [selected, setSelected] = useState(1);
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: 'Returned Proposals' }, { label: 'C1 Revision & Resubmission' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: THEME.name, to: 'pm.4' }, { label: 'Returned Proposals' }, { label: 'C1 Revision & Resubmission' }]}
       code="PM.8F"
       title="Marketing Head Returned Proposal — Revision & Resubmission"
       status="Returned for Revision — Not Approved"
     >
-      <Source>Hypothetical later state: C1's submission validations were resolved, a valid version was submitted to Detailed Campaign Proposal & Business Case Review / Approval Inbox & Rollout Planning, then returned for changes. The earlier blocked state is not shown as submitted. C2 remains a separate draft.</Source>
+      <Source>Hypothetical later state: C1's submission validations were resolved, a valid version was submitted to Proposal & Business Case / Approvals & Rollout, then returned for changes. The earlier blocked state is not shown as submitted. C2 remains a separate draft.</Source>
       <div className="pm-two">
         <Box title="Submitted v1 vs Revised v2">
           <Table
@@ -412,7 +412,7 @@ export function Pm8f() {
         </Box>
         <div className="pm-stack">
           <Box title="Marketing Head review notes" tone="soft">
-            <Facts rows={[['Selected comment', RETURNED[selected].comment], ['Source', 'Detailed Campaign Proposal & Business Case Review / Approval Inbox & Rollout Planning'], ['Priority', 'High'], ['Assigned to', 'Crop Nutrition Product Manager']]} />
+            <Facts rows={[['Selected comment', RETURNED[selected].comment], ['Source', 'Proposal & Business Case / Approvals & Rollout'], ['Priority', 'High'], ['Assigned to', 'Crop Nutrition Product Manager']]} />
             <Field label="Response"><Input rows={3} placeholder="Draft response to the comment…" /></Field>
           </Box>
           <Sources items={[{ label: 'Proposition', to: 'pm.6' }, { label: 'Collateral Approval', to: 'pm.7d' }, { label: 'Calculation Logic', to: 'pm.8b' }, { label: 'Scenarios', to: 'pm.8c' }, { label: 'Audience Reconciliation', to: 'pm.8d' }, { label: 'MH review source' }]} />
@@ -421,7 +421,7 @@ export function Pm8f() {
         </div>
       </div>
       <Actions
-        left={<><Btn to="pm.5">← Back to Campaign Studio</Btn><Act message="Original submission v1 opened read-only">View Original Submission</Act><Act message="Revised draft v2 saved">Save Revised Draft</Act><Act message="Validation requested">Request Validation</Act></>}
+        left={<><Btn to="pm.5">← Back to Campaign Planning</Btn><Act message="Original submission v1 opened read-only">View Original Submission</Act><Act message="Revised draft v2 saved">Save Revised Draft</Act><Act message="Validation requested">Request Validation</Act></>}
         right={<Cta locked="Disabled until all required checks pass (policy-authorized exception process is separate)">Resubmit Revised Proposal to Marketing Head</Cta>}
       />
     </PmPage>
@@ -435,13 +435,13 @@ export function PmOpt1() {
   const [status, setStatus] = useState('New Request · Not Accepted');
   return (
     <PmPage
-      crumbs={[{ label: 'Campaign Studio', to: 'pm.5' }, { label: 'Incoming Optimization Request' }]}
+      crumbs={[{ label: 'Campaign Planning', to: 'pm.5' }, { label: 'Incoming Optimization Request' }]}
       code="PM.OPT1"
-      title="Incoming Campaign Optimization & Revision Workspace"
+      title="Campaign Change Requests"
       status={status}
       subtitle="Review a Marketing Head request and develop a controlled revision to the currently approved campaign."
     >
-      <Source>Request from Campaign Optimization Review Request · West Region · Retailer-Led Croptek Conversion. The current approved campaign version remains effective until a replacement completes the required approvals and controlled release.</Source>
+      <Source>Request from Request Campaign Changes · West Region · Retailer-Led Croptek Conversion. The current approved campaign version remains effective until a replacement completes the required approvals and controlled release.</Source>
       <div className="pm-two">
         <div className="pm-stack">
           <Box title="Optimization request from Marketing Head" tone="soft">

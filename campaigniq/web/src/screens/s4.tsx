@@ -13,7 +13,7 @@ import {
 import './s4.css';
 
 /* ------------------------------------------------------------------ */
-/* Shared Campaign Strategy Studio state (persists across S4.x screens) */
+/* Shared Campaign Planning state (persists across S4.x screens) */
 /* ------------------------------------------------------------------ */
 
 type ActivityKey = 'demo' | 'retail' | 'meet' | 'digital' | 'follow' | 'cont';
@@ -70,8 +70,8 @@ let studio: StudioState = {
   scenario: 'base',
   status: 'Draft for Approval',
   audit: [
-    { when: '15 Dec 2026, 11:24 AM', user: 'Strategy Head', action: 'Scenario selected from Campaign Scenario Simulator (Base Case, ROI 0.71×)' },
-    { when: '15 Dec 2026, 10:41 AM', user: 'Strategy Head', action: 'Budget revised in Activity & Channel Mix Planner (₹8.0 Lakh; activity mix finalized)' },
+    { when: '15 Dec 2026, 11:24 AM', user: 'Strategy Head', action: 'Scenario selected from Campaign Scenarios (Base Case, ROI 0.71×)' },
+    { when: '15 Dec 2026, 10:41 AM', user: 'Strategy Head', action: 'Budget revised in Activity & Channel Plan (₹8.0 Lakh; activity mix finalized)' },
     { when: '14 Dec 2026, 04:32 PM', user: 'Field Manager', action: 'Risk note added: moderate weather risk (Feb–Mar)' },
     { when: '14 Dec 2026, 03:10 PM', user: 'Strategy Head', action: 'Ready for approval draft created (CAMP-R26-AMB-014)' },
   ],
@@ -209,7 +209,7 @@ export function TemplateLibrary() {
 
   return (
     <div className="stack">
-      <Breadcrumbs items={[{ label: 'Campaign Strategy Studio', to: 's4.1' }, { label: 'Campaign Portfolio & Template Library' }]} />
+      <Breadcrumbs items={[{ label: 'Campaign Planning', to: 's4.1' }, { label: 'Campaign Portfolio & Template Library' }]} />
       <PageHeader
         title="Campaign Portfolio & Template Library"
         subtitle="Manage campaigns, resume drafts and start new crop nutrition campaigns using recommended templates."
@@ -218,7 +218,7 @@ export function TemplateLibrary() {
           <Btn variant="primary" icon={<Plus size={14} />} to="s4.2">Create New Campaign</Btn>
         </>}
       />
-      <SourceBar right="recommendations can also open directly · Illustrative workspace">✓ Source: Campaign Strategy Studio → Campaign Portfolio &amp; Templates</SourceBar>
+      <SourceBar right="recommendations can also open directly · Illustrative workspace">✓ Source: Campaign Planning → Campaign Portfolio &amp; Templates</SourceBar>
       <KpiRow className="s4-kpi-big">
         <Kpi icon={<LayoutList size={18} />} label="Campaigns in Portfolio" value="04" sub="Across selected crop, region and season" />
         <Kpi icon={<CheckCircle2 size={18} />} label="Approved Campaign" value="01" sub="Croptek Onion Conversion — Ambad" />
@@ -257,7 +257,7 @@ export function TemplateLibrary() {
           <div className="stack">
             <div className="highlight-box">
               <strong>{sel.title}</strong>
-              <div className="small muted">{sel.recommended ? 'AI-recommended from Campaign Trigger Engine' : 'From template library'}</div>
+              <div className="small muted">{sel.recommended ? 'Recommended by Campaign Triggers' : 'From template library'}</div>
             </div>
             <dl className="kv">
               <dt>Crop / Geography</dt><dd>{sel.geo}</dd>
@@ -301,7 +301,7 @@ export function TemplateLibrary() {
       <Note>* Illustrative records and dates; approval controls remain.</Note>
       <FlowFooter
         label="Navigation:"
-        steps={[{ label: 'Campaign Strategy Studio' }, { label: 'Portfolio & Templates (Current)', current: true }, { label: 'Campaign Creation Wizard', to: 's4.2' }]}
+        steps={[{ label: 'Campaign Planning' }, { label: 'Portfolio & Templates (Current)', current: true }, { label: 'Create a Campaign', to: 's4.2' }]}
         next={{ label: 'Create Campaign', to: 's4.2' }}
       />
     </div>
@@ -309,7 +309,7 @@ export function TemplateLibrary() {
 }
 
 /* ------------------------------------------------------------------ */
-/* S4.2 Campaign Creation Wizard                                       */
+/* S4.2 Create a Campaign                                       */
 /* ------------------------------------------------------------------ */
 
 const BARRIERS = [
@@ -343,8 +343,8 @@ export function CreationWizard() {
 
   return (
     <div className="stack">
-      <Breadcrumbs items={[{ label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard' }]} />
-      <PageHeader back="s2.5" title="Campaign Creation Wizard" subtitle="Configure a targeted campaign based on recommended strategy for Croptek (Onion) in Ambad, Jalna" />
+      <Breadcrumbs items={[{ label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Create a Campaign' }]} />
+      <PageHeader back="s2.5" title="Create a Campaign" subtitle="Configure a targeted campaign based on recommended strategy for Croptek (Onion) in Ambad, Jalna" />
       <SourceBar>
         <strong>Source Click:</strong> Opportunity Prioritization &amp; Campaign Recommendations → Create Campaign
       </SourceBar>
@@ -419,7 +419,7 @@ export function CreationWizard() {
                 <span /><strong>Selected target audience</strong><strong>{inr(farmers)}</strong><strong>{inr(acres)} Acres</strong>
               </div>
             </Panel>
-            <Panel title={<>Key Adoption Barriers <span className="muted small">(from Ambad Competition & Channel Intelligence)</span></>} icon={<AlertTriangle size={16} />}>
+            <Panel title={<>Key Adoption Barriers <span className="muted small">(from Ambad Competition & Dealers)</span></>} icon={<AlertTriangle size={16} />}>
               <HBars rows={BARRIERS} max={45} valueSuffix="%" />
             </Panel>
           </Grid>
@@ -456,15 +456,15 @@ export function CreationWizard() {
         <Btn variant="primary" disabled={!segmentsOk || !durationOk} onClick={() => go('s4.3')}>Configure Activity Mix →</Btn>
       </div>
       <FlowFooter
-        steps={[{ label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard (Current)', current: true }]}
-        next={{ label: 'Activity & Channel Mix Planner', to: 's4.3' }}
+        steps={[{ label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Create a Campaign (Current)', current: true }]}
+        next={{ label: 'Activity & Channel Plan', to: 's4.3' }}
       />
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* S4.3 Activity & Channel Mix Planner                                 */
+/* S4.3 Activity & Channel Plan                                 */
 /* ------------------------------------------------------------------ */
 
 const GANTT_MONTHS = ['Nov (Pre-plant)', 'Dec (Vegetative)', 'Jan (Leaf growth)', 'Feb (Bulb development)', 'Mar (Maturity)'];
@@ -521,9 +521,9 @@ export function ActivityMixPlanner() {
 
   return (
     <div className="stack">
-      <Breadcrumbs items={[{ label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard', to: 's4.2' }, { label: 'Activity & Channel Mix Planner' }]} />
-      <PageHeader back="s4.2" title="Activity & Channel Mix Planner" subtitle="Design and optimize the intervention mix, budget and execution plan for Croptek (Onion) adoption in Ambad, Jalna" />
-      <SourceBar><strong>Source Click:</strong> Campaign Creation Wizard → Configure Activity Mix</SourceBar>
+      <Breadcrumbs items={[{ label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Create a Campaign', to: 's4.2' }, { label: 'Activity & Channel Plan' }]} />
+      <PageHeader back="s4.2" title="Activity & Channel Plan" subtitle="Design and optimize the intervention mix, budget and execution plan for Croptek (Onion) adoption in Ambad, Jalna" />
+      <SourceBar><strong>Source Click:</strong> Create a Campaign → Configure Activity Mix</SourceBar>
       <Stepper steps={WIZARD_STEPS} active={3} onSelect={stepNav} />
       <ContextStrip items={[
         { icon: <Target size={20} />, label: 'Campaign', value: 'Croptek Onion Conversion – Ambad' },
@@ -639,15 +639,15 @@ export function ActivityMixPlanner() {
         <Btn variant="primary" to="s4.4">Simulate Campaign Outcomes →</Btn>
       </div>
       <FlowFooter
-        steps={[{ label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard', to: 's4.2' }, { label: 'Activity & Channel Mix Planner (Current)', current: true }]}
-        next={{ label: 'Simulate Campaign Outcomes', to: 's4.4', sub: 'Campaign Scenario Simulator' }}
+        steps={[{ label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Create a Campaign', to: 's4.2' }, { label: 'Activity & Channel Plan (Current)', current: true }]}
+        next={{ label: 'Simulate Campaign Outcomes', to: 's4.4', sub: 'Campaign Scenarios' }}
       />
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* S4.4 Campaign Scenario Simulator                                    */
+/* S4.4 Campaign Scenarios                                    */
 /* ------------------------------------------------------------------ */
 
 function ScenarioCard({ id, o, selected, onSelect }: { id: ScenarioId; o: Outcome; selected: boolean; onSelect: () => void }) {
@@ -689,10 +689,10 @@ export function ScenarioSimulator() {
   return (
     <div className="stack">
       <Breadcrumbs items={[
-        { label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard', to: 's4.2' },
-        { label: 'Activity & Channel Mix Planner', to: 's4.3' }, { label: 'Campaign Scenario Simulator' },
+        { label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Create a Campaign', to: 's4.2' },
+        { label: 'Activity & Channel Plan', to: 's4.3' }, { label: 'Campaign Scenarios' },
       ]} />
-      <PageHeader back="s4.3" title="Campaign Scenario Simulator" subtitle="Simulate and compare campaign outcomes by adjusting assumptions and activity mix for Croptek (Onion) in Ambad, Jalna" />
+      <PageHeader back="s4.3" title="Campaign Scenarios" subtitle="Simulate and compare campaign outcomes by adjusting assumptions and activity mix for Croptek (Onion) in Ambad, Jalna" />
       <SourceBar><strong>Source Click:</strong> Activity &amp; Channel Mix Planner → Simulate Campaign Outcomes</SourceBar>
       <ContextStrip items={[
         { icon: <Target size={20} />, label: 'Campaign', value: 'Croptek Onion Conversion – Ambad' },
@@ -806,21 +806,21 @@ export function ScenarioSimulator() {
         </div>
       </Grid>
       <div className="s4-actionbar">
-        <Btn variant="primary" to="s4.5" onClick={() => addAudit(`Scenario selected from Campaign Scenario Simulator (${SCENARIO_LABEL[s.scenario]}, ROI ${sel.roi.toFixed(2)}×)`)}>Proceed to Approval →</Btn>
+        <Btn variant="primary" to="s4.5" onClick={() => addAudit(`Scenario selected from Campaign Scenarios (${SCENARIO_LABEL[s.scenario]}, ROI ${sel.roi.toFixed(2)}×)`)}>Proceed to Approval →</Btn>
       </div>
       <FlowFooter
         steps={[
-          { label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard', to: 's4.2' },
-          { label: 'Activity & Channel Mix Planner', to: 's4.3' }, { label: 'Campaign Scenario Simulator (Current)', current: true },
+          { label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Create a Campaign', to: 's4.2' },
+          { label: 'Activity & Channel Plan', to: 's4.3' }, { label: 'Campaign Scenarios (Current)', current: true },
         ]}
-        next={{ label: 'Proceed to Approval', to: 's4.5', sub: 'Campaign Approval & Review' }}
+        next={{ label: 'Proceed to Approval', to: 's4.5', sub: 'Campaign Approval' }}
       />
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* S4.5 Campaign Approval & Review                                     */
+/* S4.5 Campaign Approval                                     */
 /* ------------------------------------------------------------------ */
 
 const STATUS_TONE: Record<ApprovalStatus, Tone> = {
@@ -869,11 +869,11 @@ export function ApprovalReview() {
   return (
     <div className="stack">
       <Breadcrumbs items={[
-        { label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard', to: 's4.2' },
-        { label: 'Activity & Channel Mix Planner', to: 's4.3' }, { label: 'Campaign Scenario Simulator', to: 's4.4' },
-        { label: 'Campaign Approval & Review' },
+        { label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Create a Campaign', to: 's4.2' },
+        { label: 'Activity & Channel Plan', to: 's4.3' }, { label: 'Campaign Scenarios', to: 's4.4' },
+        { label: 'Campaign Approval' },
       ]} />
-      <PageHeader back="s4.4" title="Campaign Approval & Review" subtitle="Validate the recommended Ambad Croptek campaign, review outstanding dependencies, and route the plan for authorization before deployment." />
+      <PageHeader back="s4.4" title="Campaign Approval" subtitle="Validate the recommended Ambad Croptek campaign, review outstanding dependencies, and route the plan for authorization before deployment." />
       <SourceBar>Opened from Clicked 'Proceed to Approval'</SourceBar>
       <ContextStrip items={[
         { icon: <ClipboardList size={20} />, label: 'Campaign ID', value: <>CAMP-R26-AMB-014 <Pill tone={STATUS_TONE[status]}>{status}</Pill></> },
@@ -1038,17 +1038,17 @@ export function ApprovalReview() {
               <Btn small variant="primary" icon={<ThumbsUp size={12} />} disabled={!submitted} onClick={() => act('Approved', 'Campaign approved for deployment', 'Campaign approved', 'Regional Marketing Head')}>Approve</Btn>
               <Btn small icon={<RotateCcw size={12} />} disabled={!submitted} onClick={() => act('Sent Back', 'Rejected / sent back to campaign owner', 'Campaign sent back to owner', 'Regional Marketing Head')}>Reject / Send Back</Btn>
             </div>
-            <Note>{submitted ? 'Awaiting approver decision.' : approved ? 'Approved — proceed to Campaign Demand Projection.' : 'Visible to approvers based on your role; enabled after submission.'}</Note>
+            <Note>{submitted ? 'Awaiting approver decision.' : approved ? 'Approved — proceed to Demand Forecast.' : 'Visible to approvers based on your role; enabled after submission.'}</Note>
           </Panel>
         </div>
       </Grid>
       <FlowFooter
         steps={[
-          { label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Campaign Creation Wizard', to: 's4.2' },
-          { label: 'Activity & Channel Mix Planner', to: 's4.3' }, { label: 'Campaign Scenario Simulator', to: 's4.4' },
-          { label: 'Campaign Approval & Review (Current)', current: true },
+          { label: 'Campaign Recommendations', to: 's2.5' }, { label: 'Create a Campaign', to: 's4.2' },
+          { label: 'Activity & Channel Plan', to: 's4.3' }, { label: 'Campaign Scenarios', to: 's4.4' },
+          { label: 'Campaign Approval (Current)', current: true },
         ]}
-        next={{ label: 'Campaign Demand Projection', to: 's5.1', sub: 'After approval, open Campaign Demand Projection' }}
+        next={{ label: 'Demand Forecast', to: 's5.1', sub: 'After approval, open Demand Forecast' }}
       />
     </div>
   );

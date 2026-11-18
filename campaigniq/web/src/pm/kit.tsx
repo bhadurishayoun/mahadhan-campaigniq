@@ -61,7 +61,7 @@ export function PmPage({ crumbs, code, title, status, subtitle, actions, childre
         </div>
         {actions && <div className="page-actions">{actions}</div>}
       </div>
-      <PulseStrip title="Portfolio Signals" ariaLabel="Product Manager visual summary" items={pulse ?? PM_PULSE_BY_CODE[code] ?? PM_PULSE} />
+      <PulseStrip title="Status at a glance" ariaLabel="Product Manager visual summary" items={pulse ?? PM_PULSE_BY_CODE[code] ?? PM_PULSE} />
       {PM_CHARTS[code]}
       {children}
     </div>

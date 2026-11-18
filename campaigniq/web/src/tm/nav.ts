@@ -50,25 +50,25 @@ export const TM_TABS: { id: TmTabId; label: string; home: TmScreenId }[] = [
 ];
 
 export const TM_SCREENS: TmMeta[] = [
-  { id: 'tm.1', code: 'TM.1', title: 'My Performance & Annual Business Plan', tab: 'plan', period: FY25 },
-  { id: 'tm.2', code: 'TM.2', title: 'Territory Network & Channel Mapping', tab: 'plan', period: FY25 },
-  { id: 'tm.3', code: 'TM.3', title: 'Outlet Business Planning & Target Allocation', tab: 'plan', period: FY25 },
-  { id: 'tm.4', code: 'TM.4', title: 'Village-wise Crop, Product & Coverage Planning', tab: 'plan', period: FY25 },
-  { id: 'tm.5', code: 'TM.5', title: 'Business & Crop Plan Review and Approval', tab: 'plan', period: FY25 },
+  { id: 'tm.1', code: 'TM.1', title: 'My Performance & ABP', tab: 'plan', period: FY25 },
+  { id: 'tm.2', code: 'TM.2', title: 'Territory Network', tab: 'plan', period: FY25 },
+  { id: 'tm.3', code: 'TM.3', title: 'Outlet Targets', tab: 'plan', period: FY25 },
+  { id: 'tm.4', code: 'TM.4', title: 'Village Crop Plan', tab: 'plan', period: FY25 },
+  { id: 'tm.5', code: 'TM.5', title: 'Plan Review & Approval', tab: 'plan', period: FY25 },
 
-  { id: 'tm.c1', code: 'TM.C1', title: 'My Campaigns — Select a Business Priority', tab: 'campaigns', period: FY25 },
-  { id: 'cw.1', code: 'CW.1', title: 'Campaign Objective & Targeting', tab: 'campaigns', period: FY25 },
-  { id: 'cw.2', code: 'CW.2', title: 'Campaign Activity & Budget Mix Planner', tab: 'campaigns', period: FY25 },
-  { id: 'cw.3', code: 'CW.3', title: 'Campaign Scenario & Expected Outcomes', tab: 'campaigns', period: FY25 },
-  { id: 'cw.4', code: 'CW.4', title: 'Campaign Review & Submit', tab: 'campaigns', period: FY25 },
-  { id: 'tm.c2', code: 'TM.C2', title: 'Campaign Review & Approval Tracker', tab: 'campaigns', period: FY25 },
-  { id: 'tm.c3', code: 'TM.C3', title: 'My Campaign Portfolio', tab: 'campaigns', period: FY25 },
+  { id: 'tm.c1', code: 'TM.C1', title: 'Choose a Growth Priority', tab: 'campaigns', period: FY25 },
+  { id: 'cw.1', code: 'CW.1', title: 'Objective & Target Villages', tab: 'campaigns', period: FY25 },
+  { id: 'cw.2', code: 'CW.2', title: 'Activities & Budget', tab: 'campaigns', period: FY25 },
+  { id: 'cw.3', code: 'CW.3', title: 'Expected Results', tab: 'campaigns', period: FY25 },
+  { id: 'cw.4', code: 'CW.4', title: 'Review & Submit', tab: 'campaigns', period: FY25 },
+  { id: 'tm.c2', code: 'TM.C2', title: 'Approval Status', tab: 'campaigns', period: FY25 },
+  { id: 'tm.c3', code: 'TM.C3', title: 'Campaign Portfolio', tab: 'campaigns', period: FY25 },
 
-  { id: 'tm.ex1', code: 'TM.EX1', title: 'Campaign Execution & Live Control Tower', tab: 'execution', period: FY25 },
-  { id: 'tm.ex2', code: 'TM.EX2', title: 'Activity Execution & Corrective Action Workspace', tab: 'execution', period: FY25 },
-  { id: 'tm.im1', code: 'TM.IM1', title: 'Campaign Impact & Business Performance', tab: 'impact', period: FY25 },
-  { id: 'tm.im2', code: 'TM.IM2', title: 'Campaign Diagnostics & Learning Studio', tab: 'impact', period: FY25 },
-  { id: 'tm.ai1', code: 'TM.AI1', title: 'Territory Business & Campaign Copilot Workspace', tab: 'copilot', period: FY25 },
+  { id: 'tm.ex1', code: 'TM.EX1', title: 'Activity Tracker', tab: 'execution', period: FY25 },
+  { id: 'tm.ex2', code: 'TM.EX2', title: 'Activity Follow-up', tab: 'execution', period: FY25 },
+  { id: 'tm.im1', code: 'TM.IM1', title: 'Campaign Results', tab: 'impact', period: FY25 },
+  { id: 'tm.im2', code: 'TM.IM2', title: 'What Worked & Why', tab: 'impact', period: FY25 },
+  { id: 'tm.ai1', code: 'TM.AI1', title: 'AI Copilot', tab: 'copilot', period: FY25 },
 ];
 
 export const tmMeta = (id: TmScreenId) => TM_SCREENS.find((screen) => screen.id === id)!;

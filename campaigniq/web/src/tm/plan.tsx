@@ -16,7 +16,7 @@ const growth = (ly: number, target: number) => ((target - ly) / ly) * 100;
 export function Tm1() {
   const { go } = useNav();
   return (
-    <TmPage crumbs={[{ label: 'My Plan' }, { label: 'My Performance' }]} code="TM.1" title="My Performance & Annual Business Plan"
+    <TmPage crumbs={[{ label: 'My Plan' }, { label: 'My Performance' }]} code="TM.1" title="My Performance & ABP"
       subtitle="Jalna Cluster · FY 2025–26 · Review last year and plan this year's growth, territory by territory.">
       <PlanTabs active="tm.1" />
       <Metrics items={[
@@ -95,7 +95,7 @@ export function Tm2() {
   const missing = outlets.filter((o) => /missing|inactive|pending/i.test(o.status));
   return (
     <TmPage crumbs={[{ label: 'My Plan', to: 'tm.1' }, { label: 'My Performance', to: 'tm.1' }, { label: 'Ambad' }, { label: 'Territory Network' }]}
-      code="TM.2" title="Territory Network & Channel Mapping" subtitle="Explore Ambad's villages, dealers and linked retailers before setting outlet targets.">
+      code="TM.2" title="Territory Network" subtitle="Explore Ambad's villages, dealers and linked retailers before setting outlet targets.">
       <PlanTabs active="tm.2" />
       <Context items={[
         { label: 'Territory', value: 'Ambad', sub: 'Jalna district' },
@@ -183,7 +183,7 @@ export function Tm3() {
   const allocated = (proposed / ABP_LAKH) * 100;
   return (
     <TmPage crumbs={[{ label: 'My Plan', to: 'tm.1' }, { label: 'Territory Network', to: 'tm.2' }, { label: 'Ambad' }, { label: 'Outlet Planning' }]}
-      code="TM.3" title="Outlet Business Planning & Target Allocation" subtitle="Allocate Ambad's ABP across dealers. Retailer demand is shown for context only."
+      code="TM.3" title="Outlet Targets" subtitle="Allocate Ambad's ABP across dealers. Retailer demand is shown for context only."
       actions={<>
         <Btn icon={<Upload size={13} />} onClick={() => toast('Import Excel Plan: choose a filled template (illustrative).')}>Import Excel Plan</Btn>
         <Btn icon={<Download size={13} />} onClick={() => toast('Template downloaded: Ambad_outlet_plan_template.xlsx (illustrative)')}>Download Template</Btn>
@@ -279,7 +279,7 @@ export function Tm4() {
   const onionTotal = ONION_VILLAGES.reduce((sum, v) => sum + v.tgtRev, 0);
   return (
     <TmPage crumbs={[{ label: 'My Plan', to: 'tm.1' }, { label: 'Outlet Planning', to: 'tm.3' }, { label: 'Ambad' }, { label: 'Crop & Product Plan' }]}
-      code="TM.4" title="Village-wise Crop, Product & Coverage Planning" subtitle="Turn the onion business target into village volumes and the crop area that must be covered.">
+      code="TM.4" title="Village Crop Plan" subtitle="Turn the onion business target into village volumes and the crop area that must be covered.">
       <PlanTabs active="tm.4" />
       <Context items={[
         { label: 'Territory', value: 'Ambad, Jalna', sub: 'FY 2025–26' },
@@ -371,7 +371,7 @@ export function Tm5() {
   const cropTotal = CROP_PLAN.reduce((sum, c) => sum + c.value, 0);
   return (
     <TmPage crumbs={[{ label: 'My Plan', to: 'tm.1' }, { label: 'Ambad' }, { label: 'Crop & Product Plan', to: 'tm.4' }, { label: 'Review & Approval' }]}
-      code="TM.5" title="Business & Crop Plan Review and Approval" status="Draft — Reconciliation Required"
+      code="TM.5" title="Plan Review & Approval" status="Draft — Reconciliation Required"
       subtitle="Check that the outlet and crop views reconcile, resolve the ABP gap, then submit for leadership approval.">
       <PlanTabs active="tm.5" />
       <Context items={[

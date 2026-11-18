@@ -362,7 +362,7 @@ export default function App() {
               <div className="pm-topctx bh-topctx">
                 <span><b>Business Head</b></span>
                 <span>FY 2026–27</span>
-                <span>National Portfolio · YTD</span>
+                <span>All regions · YTD</span>
               </div>
             ) : (
               <>
