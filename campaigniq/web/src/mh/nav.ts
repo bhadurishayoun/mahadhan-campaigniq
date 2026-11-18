@@ -44,7 +44,7 @@ export interface MhMeta {
 const FY25_WEST = 'FY 2025–26 · West Region';
 
 export const MH_TABS: { id: MhTabId; label: string; home: MhScreenId }[] = [
-  { id: 'national', label: 'National Marketing Overview', home: 'mh.1' },
+  { id: 'national', label: 'Marketing Opportunity', home: 'mh.1' },
   { id: 'opportunity', label: 'Market Opportunity Intelligence', home: 'mh.2' },
   { id: 'reviews', label: 'Business & Crop Plan Reviews', home: 'mh.3' },
   { id: 'studio', label: 'Campaign Strategy Studio', home: 'mh.4' },
@@ -54,7 +54,7 @@ export const MH_TABS: { id: MhTabId; label: string; home: MhScreenId }[] = [
 ];
 
 export const MH_SCREENS: MhMeta[] = [
-  { id: 'mh.1', code: 'MH.1', title: 'National Marketing Opportunity & Performance Command Centre', tab: 'national', period: FY25_WEST },
+  { id: 'mh.1', code: 'MH.1', title: 'Marketing Opportunity & Performance Command Centre', tab: 'national', period: FY25_WEST },
   { id: 'mh.2', code: 'MH.2', title: 'Regional Market Opportunity & Product Sales Intelligence', tab: 'opportunity', period: FY25_WEST },
   { id: 'mh.3', code: 'MH.3', title: 'Business & Crop Plan Alignment Review', tab: 'reviews', period: FY25_WEST },
   { id: 'mh.3a', code: 'MH.3A', title: 'Contributing Territory Plan Detail & Marketing Opportunity Review', tab: 'reviews', period: FY25_WEST },

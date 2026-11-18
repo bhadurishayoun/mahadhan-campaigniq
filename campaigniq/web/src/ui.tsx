@@ -677,40 +677,20 @@ export function SourceBar({ children, right, tone = 'green' }: { children: React
   );
 }
 
-export function FlowFooter({ label = 'Navigation Flow:', steps, next, nextLabel = '' }: {
+export function FlowFooter({ steps }: {
   label?: string;
   steps: { label: string; to?: ScreenId; current?: boolean }[];
   next?: { label: ReactNode; to: ScreenId; sub?: ReactNode };
   nextLabel?: string;
 }) {
-  const { go } = useNav();
+  const { goBack } = useNav();
+  const currentIndex = steps.findIndex((step) => step.current);
+  const fallback = currentIndex > 0 ? [...steps.slice(0, currentIndex)].reverse().find((step) => step.to)?.to : steps.find((step) => step.to)?.to;
   return (
     <footer className="flow-footer">
-      <span className="flow-label">{label}</span>
-      <div className="flow-steps">
-        {steps.map((step, index) => (
-          <span key={step.label} className="flow-step-wrap">
-            {index > 0 && <ArrowRight size={12} className="flow-arrow" />}
-            <button
-              type="button"
-              className={cx('flow-step', step.current && 'flow-current')}
-              onClick={() => step.to && go(step.to)}
-              disabled={!step.to}
-            >
-              {step.label}
-            </button>
-          </span>
-        ))}
-      </div>
-      {next && (
-        <div className="flow-next">
-          {nextLabel ? <span className="flow-label">{nextLabel}</span> : null}
-          <button type="button" className="btn btn-primary" onClick={() => go(next.to)}>
-            <span>{next.label}{next.sub && <small>{next.sub}</small>}</span>
-            <ArrowRight size={14} />
-          </button>
-        </div>
-      )}
+      <button type="button" className="btn btn-outline" onClick={() => goBack(fallback)}>
+        <ChevronLeft size={14} />Back
+      </button>
     </footer>
   );
 }

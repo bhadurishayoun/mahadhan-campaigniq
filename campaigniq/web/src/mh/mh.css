@@ -28,7 +28,7 @@
 .persona-page-mh .page-title-row h1 { color: #154c2b; font-size: 22px; letter-spacing: -.025em; }
 .persona-page-mh .page-subtitle { max-width: 900px; color: #526457; }
 .persona-page-mh .breadcrumbs { font-size: 11px; }
-.persona-page-mh .page-header { position: relative; isolation: isolate; min-height: 92px; align-items: center; overflow: hidden; padding: 12px 15px; border: 1px solid #e4eadf; border-radius: 8px; background-color: #fff; background-image: linear-gradient(90deg, #fff 0%, #fff 43%, rgba(255,255,255,.78) 62%, rgba(255,255,255,.04) 100%), url('/mh/onion-field-hero.png'); background-position: center, right 48%; background-size: cover, 58% auto; background-repeat: no-repeat; }
+.persona-page-mh .page-header { position: relative; isolation: isolate; min-height: 92px; align-items: center; overflow: hidden; padding: 12px 15px; border: 1px solid #e4eadf; border-radius: 8px; background: #fff; }
 .persona-page-mh .page-title-block { position: relative; z-index: 1; max-width: 78%; }
 .persona-page-mh .page-title-row h1 { font-size: 21px; line-height: 1.15; }
 .persona-page-mh .page-subtitle { max-width: 760px; font-size: 11.5px; line-height: 1.35; }
@@ -90,7 +90,8 @@
 .mh-insight-copy b { color: #263b2b; font-size: 9.5px; }
 .mh-insight-rail .mh-section:not(.mh-insight-card) > h2 { background: #f1f6ef; color: #214e2f; border-bottom: 1px solid #dbe8d8; }
 .mh-source-card p { color: #59675d; font-size: 10.5px; padding: 4px 0; border-bottom: 1px solid #edf1ec; }
-.mh-next-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 7px 10px; border-top: 1px solid #dce7dc; color: #526457; font-size: 11.5px; }
+.mh-next-footer { display: flex; justify-content: flex-start; align-items: center; gap: 12px; padding: 7px 10px; border-top: 1px solid #dce7dc; color: #526457; font-size: 11.5px; }
+.mh-next-footer button { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid #cfdcc6; border-radius: 6px; background: #fff; color: #1f5f2c; font: inherit; font-weight: 600; }
 .mh-next-footer b { color: #1b4d2c; }
 .mh-national-insight { background: linear-gradient(160deg,#fffdf6 0%,#fff 62%); border-color: #eadfbd; }
 .mh-national-insight > h2 { background: #fff8e4; color: #29362d; border-bottom-color: #efe5c8; }

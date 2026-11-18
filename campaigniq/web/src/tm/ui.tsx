@@ -172,17 +172,18 @@ export function Note({ children, tone = 'info' }: { children: ReactNode; tone?: 
 }
 
 /** Bottom bar: source on the left, back / primary on the right, recommended next screen below. */
-export function Footer({ back, primary, secondary, source, next }: {
+export function Footer({ back, primary, secondary }: {
   back?: { label: string; to: ScreenId };
   primary?: { label: string; to?: ScreenId; onClick?: () => void; disabled?: boolean };
   secondary?: ReactNode;
   source?: string;
   next?: string;
 }) {
+  const { goBack } = useNav();
   return (
     <footer className="tm-footer">
       <div className="tm-footer-bar">
-        {back && <Btn to={back.to} icon={<ArrowLeft size={13} />}>{back.label}</Btn>}
+        {back ? <Btn to={back.to} icon={<ArrowLeft size={13} />}>{back.label}</Btn> : <button type="button" className="btn btn-outline" onClick={() => goBack('tm.1')}><ArrowLeft size={13} />Back</button>}
         <div className="tm-footer-right">
           {secondary}
           {primary && (
@@ -192,12 +193,6 @@ export function Footer({ back, primary, secondary, source, next }: {
           )}
         </div>
       </div>
-      {(source || next) && (
-        <div className="tm-footer-meta">
-          {source && <span>Source: {source}</span>}
-          {next && <span>Recommended next: <b>{next}</b></span>}
-        </div>
-      )}
     </footer>
   );
 }

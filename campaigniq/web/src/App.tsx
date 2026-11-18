@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
   BarChart3, Bell, ChevronsLeft, ChevronsRight, CalendarDays, CheckSquare, ChevronDown, ClipboardCheck, Database, Gauge, Presentation, HelpCircle, Home, Inbox, Layers, MapPin, Menu, Radio, Search, ShoppingCart, SlidersHorizontal, Sparkles, Sprout, User, Wallet, X,
@@ -154,6 +154,7 @@ export default function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [loginPersona, setLoginPersona] = useState<PersonaId | undefined>(undefined);
   const [screen, setScreen] = useState<ScreenId>(readHash);
+  const history = useRef<ScreenId[]>([]);
   const [filtersByModule, setFiltersByModule] = useState(DEFAULT_FILTERS);
   const [query, setQuery] = useState('');
   const [message, setMessage] = useState<string | null>(null);
@@ -191,11 +192,21 @@ export default function App() {
   }, [meta]);
 
   const go = useCallback((id: ScreenId) => {
+    if (id !== screen) history.current.push(screen);
     window.location.hash = `/${id}`;
     setScreen(id);
     setNavOpen(false);
     document.querySelector('.main-scroll')?.scrollTo({ top: 0 });
-  }, []);
+  }, [screen]);
+
+  const goBack = useCallback((fallback?: ScreenId) => {
+    const previous = history.current.pop() ?? fallback;
+    if (!previous || previous === screen) return;
+    window.location.hash = `/${previous}`;
+    setScreen(previous);
+    setNavOpen(false);
+    document.querySelector('.main-scroll')?.scrollTo({ top: 0 });
+  }, [screen]);
 
   useEffect(() => {
     if (!navOpen) return;
@@ -304,7 +315,7 @@ export default function App() {
   }
 
   return (
-    <NavContext.Provider value={{ screen, go, filters, setFilters, scope, reference, toast }}>
+    <NavContext.Provider value={{ screen, go, goBack, filters, setFilters, scope, reference, toast }}>
       <div className={`app${collapsed ? ' app-collapsed' : ''}${mh ? ' app-mh' : ''}`}>
         <aside className={navOpen ? 'sidebar open' : 'sidebar'} aria-label="Main navigation">
           <button type="button" className="brand" onClick={() => go(personaMeta.home)}>

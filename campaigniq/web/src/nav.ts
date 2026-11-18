@@ -128,6 +128,7 @@ export type { Filters, Scope } from './data/reference';
 export interface NavState {
   screen: ScreenId;
   go: (id: ScreenId) => void;
+  goBack: (fallback?: ScreenId) => void;
   filters: Filters;
   setFilters: (filters: Filters) => void;
   /** Master-id version of the filters, used by datasets and the copilot. */

@@ -67,6 +67,7 @@
 
 * { box-sizing: border-box; }
 body { margin: 0; }
+body, body *:not(code):not(pre) { font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif !important; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 h1, h2, h3, h4, p { margin: 0; }
@@ -130,6 +131,7 @@ h1, h2, h3, h4, p { margin: 0; }
 .back-btn { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid var(--line); border-radius: 50%; background: #fff; }
 
 .source-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: linear-gradient(90deg, #e5f2dc, #f2f8ec); border: 1px solid #d3e7c5; padding: 6px 12px; border-radius: 8px; font-size: 12px; color: #2d4a32; }
+.page-subtitle, .source-bar, .pm-sources, .tm-footer-meta, .mh-source-notes, .mh-source-card, .mh-plan-source-row, .mh-portfolio-source, .mh-source-links, .mh-playbook-side:has(.mh-source-links) { display: none !important; }
 .source-bar > div:first-child { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .source-plain { background: #fff; border-color: var(--line); }
 .source-right { display: flex; gap: 8px; align-items: center; }
