@@ -1,6 +1,6 @@
 .s6-page { display: flex; flex-direction: column; gap: 12px; }
 .s6-layout { display: grid; grid-template-columns: minmax(0, 1fr) 272px; gap: 12px; align-items: start; }
-.s6-rail { display: flex; flex-direction: column; gap: 12px; position: sticky; top: 0; }
+.s6-rail { display: flex; flex-direction: column; gap: 12px; position: static; }
 .s6-close { border: 0; background: none; color: var(--muted); padding: 2px; display: inline-flex; }
 
 /* Calendar */
@@ -71,3 +71,5 @@
 .s6-tasks label.done span { text-decoration: line-through; color: var(--muted); }
 .s6-actions { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; justify-content: start; }
 .s6-panel-flash { box-shadow: var(--sh-1); }
+/* The rail stays in view only in the wide two-column layout. */
+@media (min-width: 1536px) { .s6-layout > .s6-rail { position: sticky; top: 0; } }

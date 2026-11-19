@@ -19,6 +19,8 @@ export const PORTFOLIO = [
   { product: 'Product B', ly: 0.5, abp: 0.58 },
   { product: 'Product C', ly: 0.3, abp: 0.33 },
 ];
+/** FY 2024–25 campaign indicators for PM.1 card 5 (attainment as a 0–1 share, campaign sales in ₹ Cr). */
+export const PREV_YEAR = { attainment: 0.94, campaignSales: 0.62, closedWithLearning: 3, campaigns: 4 };
 /** Portfolio totals are always computed from PORTFOLIO - never hard-code them on a screen. */
 export const PORTFOLIO_TOTAL = (() => {
   const ly = r2(PORTFOLIO.reduce((s, p) => s + p.ly, 0));

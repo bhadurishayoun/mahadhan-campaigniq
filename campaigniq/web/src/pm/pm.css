@@ -451,3 +451,20 @@
 /* PM.1: the product table needs every column visible - it takes the full row; contribution + indicators sit below side by side. */
 .app .cq-page .pm-two:has(.pm-portfolio-table) { grid-template-columns: minmax(0, 1fr) !important; }
 .app .cq-page .pm-two:has(.pm-portfolio-table) > .pm-stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); align-items: stretch; gap: 16px; }
+/* PM.1 cards 4 & 5: two equal columns, equal height, never sticky; one column below 1100px. */
+.app .cq-page .pm-two:has(.pm-portfolio-table) > .pm-stack { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; position: static; }
+@media (max-width: 1100px) { .app .cq-page .pm-two:has(.pm-portfolio-table) > .pm-stack { grid-template-columns: minmax(0, 1fr) !important; } }
+/* PM.1 card 5: three equal tiles that fill the card. */
+.pm-prev-card { display: flex; flex-direction: column; }
+.pm-prev-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; flex: 1 1 auto; align-items: stretch; }
+.pm-prev-tile { display: flex; flex-direction: column; gap: 8px; padding: 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); min-width: 0; }
+.pm-prev-tile > small { font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-600); }
+.pm-prev-value { font-size: 22px; line-height: 28px; font-weight: 700; color: var(--ink-900); }
+.pm-prev-share { display: block; height: 10px; border-radius: 3px; background: var(--brand-100); overflow: hidden; }
+.pm-prev-share i { display: block; height: 100%; background: var(--brand-700); }
+.pm-prev-cap { margin-top: auto; font-size: 12px; line-height: 16px; color: var(--ink-600); }
+.pm-prev-icons { display: flex; flex-wrap: wrap; gap: 6px; }
+.pm-prev-icons i { display: grid; place-items: center; width: 34px; height: 34px; border-radius: var(--r-sm); }
+.pm-prev-icons i.ok { background: var(--ok-bg); color: var(--ok); }
+.pm-prev-icons i.warn { background: var(--warn-bg); color: var(--warn); }
+@media (max-width: 760px) { .pm-prev-tiles { grid-template-columns: minmax(0, 1fr); } }

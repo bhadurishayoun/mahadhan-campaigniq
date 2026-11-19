@@ -8,7 +8,9 @@ import { Btn, COLORS } from '../ui';
 import {
   Act, Actions, AiBox, Bars, Box, Checklist, Cta, Drawer, Facts, Field, Input, Muted, P, PmPage, Select, Source, Sources, Status, Strip, Table, Workflow,
 } from './kit';
-import { AMBAD, CROP_PLAN, CROP_TOTAL, DHANORA, ONION_APPROVED_LATER, PORTFOLIO, PORTFOLIO_LABEL, PORTFOLIO_SHARE, PORTFOLIO_TOTAL, cr, growthPct } from './data';
+import { AMBAD, CROP_PLAN, CROP_TOTAL, DHANORA, ONION_APPROVED_LATER, PORTFOLIO, PORTFOLIO_LABEL, PORTFOLIO_SHARE, PORTFOLIO_TOTAL, PREV_YEAR, cr, growthPct } from './data';
+import { GaugeMetric } from '../ui/viz';
+import { CheckCircle2 } from 'lucide-react';
 import { Card, useSideFilters } from '../ui/index';
 
 /* ------------------------------------------------------------------ PM.1 */
@@ -19,6 +21,8 @@ export function Pm1() {
   const byGap = [...PORTFOLIO].sort((a, b) => (b.abp - b.ly) - (a.abp - a.ly));
   const placeholders = PORTFOLIO.filter((p) => /^Product [A-Z]$/.test(p.product));
   const phShare = placeholders.reduce((s, p) => s + PORTFOLIO_SHARE[p.product], 0);
+  const campaignShare = (PREV_YEAR.campaignSales / PORTFOLIO_TOTAL.ly) * 100;
+  const prevInsight = `Last year hit ${Math.round(PREV_YEAR.attainment * 100)}% of target; campaigns were linked to ${cr(PREV_YEAR.campaignSales)} (${campaignShare.toFixed(1)}% of sales) and ${PREV_YEAR.closedWithLearning} of ${PREV_YEAR.campaigns} closed with a recorded learning.`;
   const portfolioInsight = `${byGap[0].product} delivers ${PORTFOLIO_SHARE[byGap[0].product]}% of the required portfolio growth${placeholders.length ? `; Products ${placeholders[0].product.slice(-1)}–${placeholders[placeholders.length - 1].product.slice(-1)} add ${phShare}%` : ''}.`;
   return (
     <PmPage crumbs={[{ label: 'My Performance' }]} code="PM.1" title="My Performance & ABP" subtitle="Crop Nutrition Portfolio · FY 2025–26 planning context">
@@ -49,15 +53,31 @@ export function Pm1() {
               data={PORTFOLIO.map((row) => ({ label: row.product.replace('Specialty ', 'Spec. '), values: [row.ly, row.abp] }))}
               series={[{ label: 'FY 2024–25 sales', color: COLORS.light }, { label: 'FY 2025–26 ABP', color: COLORS.dark }]}
               format={(value) => `₹${value.toFixed(2)} Cr`}
+              insight={`${byGap[0].product} has the widest gap to ABP (${cr(byGap[0].ly)} → ${cr(byGap[0].abp)}, +${cr(byGap[0].abp - byGap[0].ly)}).`}
             />
           </Box>
-          <Box title="Previous-year campaign indicators" tone="soft">
-            <Facts cols={3} rows={[
-              ['Target attainment FY 2024–25', <>94%</>],
-              ['Campaign-linked sales FY 2024–25', <>₹0.62 Cr</>],
-              ['Campaigns closed with learning', <>3 of 4</>],
-            ]} />
-          </Box>
+          <Card title="Previous-year campaign indicators" context="FY 2024–25" subtitle="How last year's campaigns performed against plan" className="pm-prev-card" insight={prevInsight}>
+            <div className="pm-prev-tiles">
+              <div className="pm-prev-tile">
+                <small>Target attainment FY 2024–25</small>
+                <GaugeMetric value={PREV_YEAR.attainment} label="Target attainment" caption="of target · FY 2024–25 vs ABP" />
+              </div>
+              <div className="pm-prev-tile">
+                <small>Campaign-linked sales FY 2024–25</small>
+                <b className="pm-prev-value">{cr(PREV_YEAR.campaignSales)}</b>
+                <span className="pm-prev-share" title={`${campaignShare.toFixed(1)}% of ${cr(PORTFOLIO_TOTAL.ly)} FY 2024–25 sales`}><i style={{ width: `${campaignShare}%` }} /></span>
+                <span className="pm-prev-cap">Campaign-linked {campaignShare.toFixed(1)}% · of {cr(PORTFOLIO_TOTAL.ly)} sales</span>
+              </div>
+              <div className="pm-prev-tile">
+                <small>Campaigns closed with learning</small>
+                <b className="pm-prev-value">{PREV_YEAR.closedWithLearning} of {PREV_YEAR.campaigns}</b>
+                <span className="pm-prev-icons">{Array.from({ length: PREV_YEAR.campaigns }, (_, i) => i < PREV_YEAR.closedWithLearning
+                  ? <i key={i} className="ok" title="Closed with a recorded learning"><CheckCircle2 size={16} aria-hidden="true" /></i>
+                  : <i key={i} className="warn" title="Closed without a recorded learning"><AlertTriangle size={16} aria-hidden="true" /></i>)}</span>
+                <span className="pm-prev-cap">{PREV_YEAR.campaigns - PREV_YEAR.closedWithLearning} campaign{PREV_YEAR.campaigns - PREV_YEAR.closedWithLearning === 1 ? '' : 's'} closed without a recorded learning</span>
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
 

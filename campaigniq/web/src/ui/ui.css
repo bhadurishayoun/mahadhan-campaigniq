@@ -155,7 +155,6 @@
 .pm-two-balanced > .pm-ai .pm-ai-list { flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; }
 
 /* Other two-column screens: the shorter column stays in view while the longer one scrolls. */
-.pm-two:not(.pm-two-balanced) > *, .pm-two-even > * { position: sticky; top: 12px; }
 
 /* Business Head cards: equal heights with bars spread to fill. */
 .bh-grid > .bh-card { display: flex; flex-direction: column; }
@@ -177,7 +176,6 @@ td .btn, td .iq-btn, td .pm-btn { white-space: nowrap; }
 /* Legacy dashboards: cards hug their content (no stretched empty boxes). */
 div.grid { align-items: start; }
 /* Business Head wide + side layouts: the side card stays in view while the main card scrolls. */
-.bh-grid.wide-side > * { position: sticky; top: 12px; }
 
 /* Business Head side panels */
 .bh-side-section { border-top: 1px solid var(--n200); margin-top: 12px; padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }

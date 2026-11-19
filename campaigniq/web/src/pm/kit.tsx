@@ -320,14 +320,15 @@ export function Tabs({ items, active, onSelect }: { items: string[]; active: str
   );
 }
 
-export function Bars({ data, series, height = 200, format = (value: number) => String(value) }: {
+export function Bars({ data, series, height = 200, format = (value: number) => String(value), insight }: {
+  insight?: ReactNode;
   data: { label: string; values: number[] }[];
   series: { name?: string; label?: string; color: string }[];
   height?: number;
   format?: (value: number) => string;
 }) {
   const rows = data.map((d) => ({ x: d.label, ...Object.fromEntries(d.values.map((v, j) => [`s${j}`, v])) }));
-  return <GroupedColumns data={rows} x="x" series={series.map((s, j) => ({ key: `s${j}`, name: s.name ?? s.label ?? `Series ${j + 1}` }))} fmt={format} height={Math.max(height, 200)} insight />;
+  return <GroupedColumns data={rows} x="x" series={series.map((s, j) => ({ key: `s${j}`, name: s.name ?? s.label ?? `Series ${j + 1}` }))} fmt={format} height={Math.max(height, 200)} insight={insight ?? true} />;
 }
 
 export function Meter({ value, max, label, tone = 'green' }: { value: number; max: number; label?: ReactNode; tone?: Tone }) {

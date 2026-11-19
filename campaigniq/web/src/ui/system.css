@@ -362,3 +362,12 @@
 .cq-sbar-labels span { flex-basis: 0; min-width: max-content; display: grid; gap: 0; }
 .cq-sbar-labels b { font-size: 12px; line-height: 16px; font-weight: 600; color: var(--ink-900); white-space: nowrap; }
 .cq-sbar-labels small { font-size: 12px; line-height: 16px; color: var(--ink-600); }
+
+/* ---------- GaugeMetric */
+.cq-gauge { display: grid; justify-items: center; gap: 4px; margin-top: auto; }
+.cq-gauge svg { width: 100%; max-width: 160px; height: auto; }
+.cq-gauge-track, .cq-gauge-fill { fill: none; stroke-width: 14; }
+.cq-gauge-track { stroke: var(--brand-100); }
+.cq-gauge-fill { stroke: var(--brand-700); }
+.cq-gauge-value { font-size: 20px; font-weight: 700; fill: var(--ink-900); }
+.cq-gauge small { font-size: 12px; line-height: 16px; color: var(--ink-600); text-align: center; }

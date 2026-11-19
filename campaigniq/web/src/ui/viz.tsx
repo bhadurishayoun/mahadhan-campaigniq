@@ -84,7 +84,7 @@ export function GroupedColumns({ data, x, series, fmt = plain, height = 240, ins
         <BarChart data={data} margin={{ ...chartTheme.margin, top: valueLabels ? 20 : chartTheme.margin.top }} barGap={4}>
           <CartesianGrid {...chartTheme.grid} />
           <XAxis dataKey={x} {...chartTheme.axis} />
-          <YAxis {...chartTheme.axis} tickFormatter={fmt} width={48} domain={yDomain} ticks={yTicks} />
+          <YAxis {...chartTheme.axis} tickFormatter={fmt} width={yAxisWidth(data, series, fmt, yTicks)} domain={yDomain} ticks={yTicks} />
           <Tooltip {...chartTheme.tooltip} shared={!tooltipText} formatter={(v: number) => fmt(v)}
             content={tooltipText ? ({ active, payload, label }: { active?: boolean; payload?: { dataKey?: string | number; value?: number }[]; label?: string | number }) => {
               const p = active && payload?.[0]; const s = p && series.find((x) => x.key === p.dataKey);
@@ -105,13 +105,22 @@ export function GroupedColumns({ data, x, series, fmt = plain, height = 240, ins
   );
 }
 
+/** Y-axis width that fits the longest formatted tick (12px text ≈ 7px per character). */
+function yAxisWidth(data: Record<string, string | number>[], series: VizSeries[], fmt: Fmt, ticks?: number[]) {
+  const max = Math.max(0, ...(ticks ?? []), ...data.flatMap((d) => series.map((s) => Number(d[s.key]) || 0)));
+  return Math.max(40, String(fmt(max)).length * 7 + 14);
+}
+
+/** Lower-case a series name inside a sentence unless it starts with an acronym ("FY 2024–25 sales", "ABP"). */
+const lcName = (name: string) => (/^[A-Z][a-z]/.test(name) ? name[0].toLowerCase() + name.slice(1) : name);
+
 function columnsInsight(data: Record<string, string | number>[], x: string, series: VizSeries[], fmt: Fmt) {
   const s0 = series[0];
   const top = [...data].sort((a, b) => Number(b[s0.key]) - Number(a[s0.key]))[0];
   if (series.length > 1) {
     const s1 = series[1];
     const gap = [...data].sort((a, b) => Math.abs(Number(b[s0.key]) - Number(b[s1.key])) - Math.abs(Number(a[s0.key]) - Number(a[s1.key])))[0];
-    return `${top[x]} has the highest ${s0.name.toLowerCase()} (${fmt(Number(top[s0.key]))}); the widest gap to ${s1.name.toLowerCase()} is in ${gap[x]} (${fmt(Number(gap[s0.key]))} vs ${fmt(Number(gap[s1.key]))}).`;
+    return `${top[x]} has the highest ${lcName(s0.name)} (${fmt(Number(top[s0.key]))}); the widest gap to ${lcName(s1.name)} is in ${gap[x]} (${fmt(Number(gap[s0.key]))} vs ${fmt(Number(gap[s1.key]))}).`;
   }
   return `${top[x]} is highest at ${fmt(Number(top[s0.key]))}.`;
 }
@@ -353,6 +362,23 @@ export function StackedBar({ segments, height = 18, label }: { segments: StackSe
           <span key={s.label} style={{ flexGrow: s.value }}><b>{s.label} {s.display ?? s.value}</b><small>{pct(s.value)}%</small></span>
         ))}
       </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- GaugeMetric */
+/** Semicircle (180°) gauge: brand-100 track, brand-700 fill, value centred, caption below. `value` is 0–1. */
+export function GaugeMetric({ value, label, caption }: { value: number; label?: string; caption?: ReactNode }) {
+  const v = Math.max(0, Math.min(1, value));
+  const r = 52, c = Math.PI * r;
+  return (
+    <div className="cq-gauge">
+      <svg viewBox="0 0 128 72" role="img" aria-label={`${label ?? 'Gauge'}: ${Math.round(v * 100)}%`}>
+        <path d="M 12 64 A 52 52 0 0 1 116 64" className="cq-gauge-track" />
+        <path d="M 12 64 A 52 52 0 0 1 116 64" className="cq-gauge-fill" strokeDasharray={`${c * v} ${c}`} />
+        <text x="64" y="60" textAnchor="middle" className="cq-gauge-value">{Math.round(v * 100)}%</text>
+      </svg>
+      {caption && <small>{caption}</small>}
     </div>
   );
 }
