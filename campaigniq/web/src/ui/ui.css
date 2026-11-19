@@ -112,13 +112,7 @@
 .iq-kpi-body strong { overflow-wrap: anywhere; }
 
 /* Login: persona cards + password toggle */
-.login-personas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 4px; }
-.login-persona { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--n300); border-radius: var(--r-sm); background: var(--card); color: var(--n800); text-align: left; transition: border-color .15s, background .15s; }
-.login-persona:hover { border-color: var(--g500); }
-.login-persona.active { border-color: var(--g700); background: var(--g50); color: var(--g800); box-shadow: var(--sh-1); }
-.login-persona b { font-size: 12.5px; }
-.login-eye { display: grid; place-items: center; border: 0; background: none; color: var(--n600); padding: 2px; border-radius: var(--r-sm); }
-.login-eye:hover { color: var(--g700); background: var(--g50); }
+
 
 /* Admin source cards */
 .adm-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-2); }
