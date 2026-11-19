@@ -191,6 +191,7 @@
 .cw2-edit-hint { color: var(--n600); font-size: var(--fs-caption); margin-top: -3px; }
 .cw2-table-wrap { width: 100%; overflow-x: auto; }
 .cw2-table { width: 100%; min-width: 1080px; table-layout: fixed; }
+.cw2-table th { white-space: normal; overflow-wrap: normal; word-break: normal; }
 .cw2-table th:first-child, .cw2-table td:first-child { min-width: 180px; }
 .cw2-table th:nth-child(3), .cw2-table td:nth-child(3), .cw2-table th:nth-child(4), .cw2-table td:nth-child(4), .cw2-table th:nth-child(5), .cw2-table td:nth-child(5) { min-width: 150px; }
 .cw2-table th { background: var(--canvas); color: var(--n700); font-size: var(--fs-label); }

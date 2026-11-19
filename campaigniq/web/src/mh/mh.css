@@ -164,24 +164,28 @@
 .mh-meter i { display: block; min-width: 3px; height: 100%; border-radius: var(--r-sm); background: var(--brand-500); }
 .mh-meter-slim { width: 44px; height: 7px; }
 .mh-opportunity-table { width: 100%; max-width: 100%; table-layout: fixed; }
-.mh-opportunity-table th:nth-child(1), .mh-opportunity-table td:nth-child(1) { width: 24%; }
-.mh-opportunity-table th:nth-child(2), .mh-opportunity-table td:nth-child(2) { width: 22%; }
-.mh-opportunity-table th:nth-child(3), .mh-opportunity-table td:nth-child(3) { width: 13%; }
-.mh-opportunity-table th:nth-child(4), .mh-opportunity-table td:nth-child(4) { width: 20%; }
-.mh-opportunity-table th:nth-child(5), .mh-opportunity-table td:nth-child(5) { width: 21%; }
-.mh-opportunity-table th, .mh-opportunity-table td, .mh-effectiveness-table th, .mh-effectiveness-table td { min-width: 0; overflow-wrap: anywhere; }
+.mh-opportunity-table th:nth-child(1), .mh-opportunity-table td:nth-child(1) { width: 22%; }
+.mh-opportunity-table th:nth-child(2), .mh-opportunity-table td:nth-child(2) { width: 24%; }
+.mh-opportunity-table th:nth-child(3), .mh-opportunity-table td:nth-child(3) { width: 14%; }
+.mh-opportunity-table th:nth-child(4), .mh-opportunity-table td:nth-child(4) { width: 18%; }
+.mh-opportunity-table th:nth-child(5), .mh-opportunity-table td:nth-child(5) { width: 22%; }
+.mh-opportunity-table :is(th, td), .mh-effectiveness-table :is(th, td) { min-width: 0; overflow-wrap: normal; word-break: normal; hyphens: none; }
 .mh-opportunity-table .mh-meter { width: 100%; max-width: 70px; }
 .mh-opportunity-table .mh-meter-slim { max-width: 44px; }
 .mh-effectiveness-table { width: 100%; max-width: 100%; table-layout: fixed; }
-.mh-effectiveness-table th:nth-child(1), .mh-effectiveness-table td:nth-child(1) { width: 23%; }
+.mh-effectiveness-table th:nth-child(1), .mh-effectiveness-table td:nth-child(1) { width: 24%; }
 .mh-effectiveness-table th:nth-child(2), .mh-effectiveness-table td:nth-child(2) { width: 20%; }
-.mh-effectiveness-table th:nth-child(3), .mh-effectiveness-table td:nth-child(3) { width: 25%; }
-.mh-effectiveness-table th:nth-child(4), .mh-effectiveness-table td:nth-child(4) { width: 32%; }
+.mh-effectiveness-table th:nth-child(3), .mh-effectiveness-table td:nth-child(3) { width: 26%; }
+.mh-effectiveness-table th:nth-child(4), .mh-effectiveness-table td:nth-child(4) { width: 30%; }
 .mh-effectiveness-table td:nth-child(1) { white-space: normal; }
 .mh-effectiveness-table td:nth-child(2) { white-space: normal; }
 .mh-effectiveness-table td:nth-child(2) strong { margin-left: 4px; font-size: var(--fs-label); }
 .mh-effectiveness-table .mh-intervention-icon { margin-right: 3px; }
-.mh-effectiveness-table .mh-confidence { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.mh-effectiveness-table .mh-confidence { max-width: 100%; white-space: normal; overflow-wrap: normal; word-break: normal; }
+.app .cq-card table.mh-report-table th { white-space: normal; vertical-align: bottom; line-height: 16px; padding: 8px 12px; }
+.app .cq-card table.mh-report-table th small { display: block; text-transform: none; letter-spacing: 0; font-weight: 500; margin-top: 2px; }
+.app .cq-card table.mh-report-table td { padding: 8px 12px; line-height: 1.35; }
+.mh-report-table-wrap:has(.mh-opportunity-table, .mh-effectiveness-table) { overflow-x: visible; padding: 0; }
 .mh-detail-observations > h2 { background: var(--brand-700); }
 .mh-detail-observations > h2 .mh-selected-tag { margin-left: auto; padding: 3px 6px; border-radius: var(--r-md); background: var(--data-baseline); color: var(--ok); font-size: var(--fs-section); }
 .mh-village-stats { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; padding: 9px; }
