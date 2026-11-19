@@ -544,12 +544,12 @@ export function CopilotWorkspace() {
             <>
               <div className="ai1-split">
                 <Panel title="Documented Factors" icon={<ClipboardList size={16} />}>
-                  <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12.5, display: 'grid', gap: 4 }}>
+                  <ul style={{ margin: 0, paddingLeft: 18, display: 'grid', gap: 4 }}>
                     {answer.factors.map((factor, index) => <li key={index}>{factor}</li>)}
                   </ul>
                 </Panel>
                 <Panel title="Confidence & Uncertainty" icon={<Info size={16} />} actions={<Pill tone={LEVEL_TONE[answer.confidence.level]}>{answer.confidence.level}</Pill>}>
-                  <div className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start', fontSize: 12 }}>
+                  <div className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start'}}>
                     <AlertTriangle size={16} color={COLORS.amber} style={{ flexShrink: 0 }} />
                     <span>{answer.confidence.text}</span>
                   </div>
@@ -652,7 +652,7 @@ export function CopilotWorkspace() {
 
           <Panel>
             <div className="row-between">
-              <span className="row" style={{ fontWeight: 700, fontSize: 13 }}><ShieldCheck size={16} color={COLORS.green} /> Evidence Confidence <Info size={13} className="muted-icon" /></span>
+              <span className="row" style={{ fontWeight: 700}}><ShieldCheck size={16} color={COLORS.green} /> Evidence Confidence <Info size={13} className="muted-icon" /></span>
               <Pill tone={LEVEL_TONE[answer.confidence.level]}>{answer.confidence.level}</Pill>
             </div>
           </Panel>

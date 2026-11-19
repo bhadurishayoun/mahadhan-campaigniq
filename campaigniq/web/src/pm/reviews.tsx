@@ -485,7 +485,7 @@ export function Pm3d() {
 
 function Chipsy({ onPick }: { onPick: (value: string) => void }) {
   return (
-    <div className="row" style={{ fontSize: 11.5 }}>
+    <div className="row">
       <AlertTriangle size={13} color="var(--accent-600)" />
       <span className="muted">Choosing “Request Field Sales Manager Revision” routes the question back through TM revision.</span>
       <button type="button" className="pm-chip" onClick={() => onPick('Request Field Sales Manager Revision')}>Switch to TM revision</button>

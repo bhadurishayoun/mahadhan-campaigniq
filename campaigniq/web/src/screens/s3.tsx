@@ -852,7 +852,7 @@ export function TriggerEngine() {
         </Panel>
 
         <Panel title="AI Recommendation" icon={<Sparkles size={16} />} className="ai-panel">
-          <p style={{ margin: 0, fontSize: 13 }}>
+          <p style={{ margin: 0}}>
             Prioritize preparation of the bulb-initiation awareness and retailer-led adoption campaign in Ambad/Jalna. The crop-stage window is approaching, but programme approval and channel readiness must be confirmed before activation.
           </p>
           <div className="s3-ai-steps">

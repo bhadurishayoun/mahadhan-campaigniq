@@ -116,7 +116,7 @@ export function ImpactDashboard() {
             highlight={(r) => r.cluster === cluster}
             onRowClick={(r) => setCluster(r.cluster)}
           />
-          <div className={cx('row-between', sel.signal === 'ok' ? 'highlight-box' : sel.signal === 'risk' ? 'danger-box' : 'warn-box')} style={{ marginTop: 10, fontSize: 12 }}>
+          <div className={cx('row-between', sel.signal === 'ok' ? 'highlight-box' : sel.signal === 'risk' ? 'danger-box' : 'warn-box')} style={{ marginTop: 10}}>
             <span><b>{sel.cluster}:</b> {sel.adopters} adopters from {sel.trials} trials ({sel.rate}% trial-to-adoption). {sel.signal === 'ok' ? 'Performing in line with plan.' : 'Requires root-cause diagnosis.'}</span>
             <Btn small to="s7.2" icon={<Search size={12} />}>Diagnose</Btn>
           </div>

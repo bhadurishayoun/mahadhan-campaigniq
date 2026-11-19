@@ -5,10 +5,10 @@ export const STATUS = { ok: 'var(--ok)', warn: 'var(--warn)', risk: 'var(--risk)
 export const CROP = { Onion: 'var(--crop-onion)', Maize: 'var(--crop-maize)', Soybean: 'var(--crop-soybean)', Cotton: 'var(--crop-cotton)' } as const;
 export const PRODUCT = { Croptek: 'var(--product-croptek)', 'Water Soluble': 'var(--product-water-soluble)', Specialty: 'var(--product-specialty)' } as const;
 
-export const axisStyle = { fontSize: 11, fill: 'var(--ink-600)' } as const;
+export const axisStyle = { fontSize: 'var(--fs-caption)', fill: 'var(--ink-600)' } as const;
 export const gridStyle = { stroke: 'var(--line)', strokeDasharray: '3 3' } as const;
 export const tooltipStyle = {
-  contentStyle: { border: '1px solid var(--line)', borderRadius: 10, fontSize: 12, boxShadow: 'var(--sh-1)' },
+  contentStyle: { border: '1px solid var(--line)', borderRadius: 10, fontSize: 'var(--fs-caption)', boxShadow: 'var(--sh-1)' },
   labelStyle: { fontWeight: 600, color: 'var(--ink-900)' },
   cursor: { fill: 'var(--brand-50)' },
 } as const;

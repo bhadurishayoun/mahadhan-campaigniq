@@ -11,7 +11,13 @@
   --r-sm: 6px; --r-md: 10px; --r-pill: 999px;
   --sh-1: 0 1px 3px rgba(26,36,32,.08); --sh-2: 0 12px 32px rgba(26,36,32,.16);
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px;
-  --heading-color: var(--brand-900); --heading-size-page: 22px; --heading-size-section: 16px;
+  --fs-display: 24px; --lh-display: 32px;
+  --fs-title: 22px; --lh-title: 28px;
+  --fs-section: 16px; --lh-section: 24px;
+  --fs-body: 14px; --lh-body: 20px;
+  --fs-label: 13px; --lh-label: 18px;
+  --fs-caption: 12px; --lh-caption: 16px;
+  --heading-color: var(--brand-900); --heading-size-page: var(--fs-title); --heading-size-section: var(--fs-section);
   /* Compatibility aliases for existing styles during migration. */
   --ink-300: #B6C0BB; --ink-200: #D0D7D3;
   --g900: var(--brand-900); --g800: var(--brand-700); --g700: var(--brand-700); --g600: var(--brand-500); --g500: var(--segment-growing); --g300: var(--brand-100); --g200: var(--brand-100); --g100: var(--brand-100); --g50: var(--brand-50);
@@ -50,7 +56,7 @@
 .app .page-title-row h1,
 .app .bh-page .bh-title-row h1 {
   color: var(--heading-color) !important;
-  font-size: var(--heading-size-page) !important;
+  font-size: var(--fs-title);
   font-weight: 750 !important;
   line-height: 1.2 !important;
   letter-spacing: -.025em !important;
@@ -63,7 +69,7 @@
 .app .panel-title h3,
 .app .iq-card-head h3 {
   color: var(--heading-color) !important;
-  font-size: var(--heading-size-section) !important;
+  font-size: var(--fs-section);
   font-weight: 700 !important;
   line-height: 1.3 !important;
 }
@@ -117,5 +123,17 @@
     flex-direction: column;
   }
   .app .page-title-row h1,
-  .app .bh-page .bh-title-row h1 { font-size: 23px !important; }
+  .app .bh-page .bh-title-row h1 { font-size: var(--fs-title); }
 }
+
+/* Unified readable type scale. */
+body, .app { font-family: Inter, Arial, sans-serif; font-size: var(--fs-body); line-height: 1.43; font-variant-numeric: tabular-nums; }
+.app :is(p, li, td, input, select, textarea, button) { font-size: var(--fs-body); line-height: var(--lh-body); }
+.app :is(th, .side-link, .filterbar label, .bh-filterbar label, .bh-tabs button, .code-chip, .status-chip, .iq-chip) { font-size: var(--fs-label); line-height: var(--lh-label); }
+.app :is(.iq-kpi strong, .bh-metric strong, .pm-kpi strong, .tm-metric strong, .pm-kpi-value, .mh-summary-copy strong, .mh-evidence-stats b, .mh-plan-kpis b, .mh-finance-tiles b) { font-size: var(--fs-display); line-height: var(--lh-display); }
+.app :is(.iq-kpi-body small, .bh-metric span, .tm-metric span, .pm-kpi span) { font-size: var(--fs-label); line-height: var(--lh-label); }
+.app :is(.iq-kpi-note, .iq-kpi small, .bh-metric small, .tm-metric small, .pm-kpi small, .chart-legend, .page-subtitle, .page-caption, .breadcrumbs) { font-size: var(--fs-caption); line-height: var(--lh-caption); }
+.app :is(.mh-section > h2, .bh-card-head h2, .pm-box-head h3, .tm-panel-head h3, .iq-card-head h3, .panel-title h3) { font-size: var(--fs-section); line-height: var(--lh-section); }
+.app table { display:block; max-width:100%; overflow-x:auto; }
+@media (min-width:1200px) and (max-width:1535px) { .app :is(.bh-grid,.pm-two,.mh-brief-columns,.cw2-layout) { grid-template-columns: repeat(auto-fit,minmax(min(100%,320px),1fr)); } }
+.recharts-legend-wrapper, .recharts-tooltip-wrapper { font-size: var(--fs-caption); }

@@ -1,7 +1,7 @@
 /*
  * Responsive layer - loaded last (main.tsx) so it overrides shared and per-screen styles.
  *
- *   >= 1200 px : desktop/laptop. The mockup layout is kept; main.tsx scales it with --app-zoom.
+ *   >= 1200 px : desktop/laptop at native text size; grids reflow and tables scroll inside cards.
  *   768-1199   : tablet. Slide-in menu, wrapped filter bar, panels reflow to 2 columns.
  *   < 768      : phone. Slide-in menu, filters behind a "Filters" button, single column.
  *
@@ -23,7 +23,7 @@
   .nav-backdrop { display: block; position: fixed; inset: 0; z-index: 55; background: rgba(12, 28, 16, .38); }
   .nav-close { display: grid; place-items: center; position: absolute; top: 14px; right: 10px; width: 32px; height: 32px; border: 0; border-radius: var(--r-sm); background: var(--pale); color: var(--dark); }
   .menu-btn { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--card); color: var(--dark); flex-shrink: 0; }
-  .topbar-title { display: block; font-weight: 700; font-size: 13.5px; color: var(--n900); min-width: 0; flex: 1 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar-title { display: block; font-weight: 700; font-size: var(--fs-label); color: var(--n900); min-width: 0; flex: 1 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Top bar: title row, then filters on their own wrapped row */
   .topbar { flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 8px 14px; }
@@ -65,7 +65,7 @@
 /* ======================================================================== phone */
 @media (max-width: 767.98px) {
   .topbar { padding: 8px 10px; }
-  .filters-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--card); border-radius: var(--r-sm); padding: 7px 10px; font-weight: 600; font-size: 12px; color: var(--dark); }
+  .filters-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--card); border-radius: var(--r-sm); padding: 7px 10px; font-weight: 600; font-size: var(--fs-caption); color: var(--dark); }
   .filters-btn.active { background: var(--pale); border-color: var(--g200); }
   .filters { display: none; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .filters.open { display: grid; }
@@ -79,7 +79,7 @@
   .icon-btn[aria-label='Help'] { display: none; }
 
   .page { padding: 10px 10px 18px; gap: 10px; }
-  .page-title-row h1 { font-size: 18px; }
+  .page-title-row h1 { font-size: var(--fs-title); }
   .page-header { flex-direction: column; gap: 8px; }
   .panel { padding: 10px 11px; }
   .panel.dark-head > .panel-head { margin: -10px -11px 10px; }
@@ -88,7 +88,7 @@
   .kpi-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .kpi { padding: 9px 10px; gap: 8px; }
   .kpi-icon { width: 28px; height: 28px; }
-  .kpi-value { font-size: 18px; overflow-wrap: break-word; }
+  .kpi-value { font-size: var(--fs-display); overflow-wrap: break-word; }
   .kpi .spark { display: none; }
   .context-item { flex-basis: 100%; }
   .flow-next { margin-left: 0; flex-wrap: wrap; }
@@ -111,7 +111,7 @@
 /* ======================================================================== small phone (<= 480 px) */
 @media (max-width: 480px) {
   /* Screen title wraps onto a second line instead of being cut off with "..." */
-  .topbar-title { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.25; font-size: 13px; }
+  .topbar-title { white-space: normal; overflow: visible; text-overflow: clip; line-height: 1.25; font-size: var(--fs-label); }
   .page { padding: 8px 8px 16px; }
   .panel { padding: 10px; }
   .panel.dark-head > .panel-head { margin: -10px -10px 10px; }
@@ -119,7 +119,7 @@
   .s1-kpi-strip, .s4-res, .s5-detail, .s7-hero, .s7-learn, .s1-impact-cards { grid-template-columns: minmax(0, 1fr); }
   .s1-kpi-strip > div { border-right: 0; border-bottom: 1px solid var(--line); }
   .filters { grid-template-columns: minmax(0, 1fr); }
-  .kpi-value { font-size: 17px; }
+  .kpi-value { font-size: var(--fs-display); }
   .page-actions, .flow-next { width: 100%; }
   .btn { min-height: 36px; } /* comfortable tap target */
   .hbar-row { grid-template-columns: minmax(0, 1fr) 1.2fr 42px; gap: 6px; }

@@ -72,7 +72,7 @@ pre { overflow-x: auto; max-width: 100%; }
 /* Tooltip (TooltipLayer in ui.tsx) */
 .ui-tip {
   position: fixed; z-index: 200; transform: translate(-50%, -100%); max-width: min(280px, calc(100vw - 24px));
-  background: var(--n900); color: var(--card); font-size: 11.5px; font-weight: 500; line-height: 1.35; padding: 6px 10px; border-radius: var(--r-sm);
+  background: var(--n900); color: var(--card); font-size: var(--fs-caption); font-weight: 500; line-height: 1.35; padding: 6px 10px; border-radius: var(--r-sm);
   box-shadow: var(--sh-1); pointer-events: none; animation: ui-tip-in .12s ease-out;
 }
 .ui-tip::after { content: ''; position: absolute; left: 50%; bottom: -4px; width: 8px; height: 8px; background: var(--n900); transform: translateX(-50%) rotate(45deg); }

@@ -92,14 +92,14 @@ function Quadrant({ points, xRange, yRange, split, labels, xTicks, yTicks, xLabe
         <line x1={L} x2={R} y1={my} y2={my} stroke="var(--data-baseline)" strokeDasharray="4 3" />
         <line x1={L} x2={L} y1={T} y2={B} stroke="var(--ink-400)" />
         <line x1={L} x2={R} y1={B} y2={B} stroke="var(--ink-400)" />
-        {xTicks.map((t) => <text key={`x${t}`} x={sx(t)} y={B + 13} fontSize="9.5" textAnchor="middle" fill="var(--ink-600)">{fmtX(t)}</text>)}
-        {yTicks.map((t) => <text key={`y${t}`} x={L - 5} y={sy(t) + 3} fontSize="9.5" textAnchor="end" fill="var(--ink-600)">{fmtY(t)}</text>)}
-        <text x={(L + R) / 2} y={H - 3} fontSize="10.5" textAnchor="middle" fill="var(--ink-600)" fontWeight="600">{xLabel}</text>
-        <text x={11} y={(T + B) / 2} fontSize="10.5" textAnchor="middle" fill="var(--ink-600)" fontWeight="600" transform={`rotate(-90 11 ${(T + B) / 2})`}>{yLabel}</text>
-        <text x={L + 8} y={T + 15} fontSize="11.5" fontWeight="700" fill={COLORS.dark}>{labels[0]}</text>
-        <text x={R - 8} y={T + 15} fontSize="11.5" fontWeight="700" fill={COLORS.dark} textAnchor="end">{labels[1]}</text>
-        <text x={L + 8} y={B - 8} fontSize="11.5" fontWeight="700" fill={COLORS.dark}>{labels[2]}</text>
-        <text x={R - 8} y={B - 8} fontSize="11.5" fontWeight="700" fill={COLORS.dark} textAnchor="end">{labels[3]}</text>
+        {xTicks.map((t) => <text key={`x${t}`} x={sx(t)} y={B + 13} textAnchor="middle" fill="var(--ink-600)">{fmtX(t)}</text>)}
+        {yTicks.map((t) => <text key={`y${t}`} x={L - 5} y={sy(t) + 3} textAnchor="end" fill="var(--ink-600)">{fmtY(t)}</text>)}
+        <text x={(L + R) / 2} y={H - 3} textAnchor="middle" fill="var(--ink-600)" fontWeight="600">{xLabel}</text>
+        <text x={11} y={(T + B) / 2} textAnchor="middle" fill="var(--ink-600)" fontWeight="600" transform={`rotate(-90 11 ${(T + B) / 2})`}>{yLabel}</text>
+        <text x={L + 8} y={T + 15} fontWeight="700" fill={COLORS.dark}>{labels[0]}</text>
+        <text x={R - 8} y={T + 15} fontWeight="700" fill={COLORS.dark} textAnchor="end">{labels[1]}</text>
+        <text x={L + 8} y={B - 8} fontWeight="700" fill={COLORS.dark}>{labels[2]}</text>
+        <text x={R - 8} y={B - 8} fontWeight="700" fill={COLORS.dark} textAnchor="end">{labels[3]}</text>
         {points.map((p, index) => {
           // Keep each dot label inside the plot: flip it to the left of the dot near the right edge.
           const flip = sx(p.x) > R - p.label.length * 5.8 - 12;
@@ -113,7 +113,7 @@ function Quadrant({ points, xRange, yRange, split, labels, xTicks, yTicks, xLabe
               data-tip={`${p.label} · ${xLabel}: ${fmtX(p.x)} · ${yLabel}: ${fmtY(p.y)}`}
             >
               <circle cx={sx(p.x)} cy={sy(p.y)} r={selected === p.label || hover === p.label ? 6.5 : 5} fill={p.color ?? COLORS.green} stroke="var(--surface)" strokeWidth="1.5" />
-              <text x={flip ? sx(p.x) - 8 : sx(p.x) + 8} y={sy(p.y) - 5} textAnchor={flip ? 'end' : 'start'} fontSize="10.5" fontWeight="600" fill="var(--brand-900)">{p.label}</text>
+              <text x={flip ? sx(p.x) - 8 : sx(p.x) + 8} y={sy(p.y) - 5} textAnchor={flip ? 'end' : 'start'} fontWeight="600" fill="var(--brand-900)">{p.label}</text>
             </g>
           );
         })}

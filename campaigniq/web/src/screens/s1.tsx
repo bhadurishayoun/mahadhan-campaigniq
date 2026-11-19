@@ -206,7 +206,7 @@ function TrendChart({ months, series }: { months: string[]; series: { label: str
                 <circle key={i} className="s1-dot" cx={sx(i)} cy={sy(v)} r={3.5} fill="var(--surface)" stroke={s.color} strokeWidth={2} data-tip={`${s.label} · ${months[i]}: ${v}%`} />
               ))}
               <rect x={sx(s.values.length - 1) + 8} y={sy(last) - 9} width={34} height={18} rx={4} fill={s.color} />
-              <text x={sx(s.values.length - 1) + 25} y={sy(last) + 4} textAnchor="middle" style={{ fill: 'var(--surface)', fontWeight: 700, fontSize: 10 }}>{last}%</text>
+              <text x={sx(s.values.length - 1) + 25} y={sy(last) + 4} textAnchor="middle" style={{ fill: 'var(--surface)', fontWeight: 700}}>{last}%</text>
             </g>
           );
         })}
@@ -1044,7 +1044,7 @@ export function RiskAnalysis() {
             <div><strong>28%</strong><span>Current<br />Adoption</span></div>
             <ArrowRight size={20} />
             <div className="proj"><strong>32 – 35%</strong><span>Projected Adoption<br />(Recovery Scenario)</span></div>
-            <div><strong style={{ fontSize: 18 }}>+3,800 MT</strong><span>Potential Incremental<br />Volume</span></div>
+            <div><strong className="s1-hero-value">+3,800 MT</strong><span>Potential Incremental<br />Volume</span></div>
           </div>
           <div className="row" style={{ justifyContent: 'flex-end', marginTop: 10 }}>
             <Btn small variant="primary" to="s1.5">Plan Recovery →</Btn>
@@ -1130,7 +1130,7 @@ function ImpactComparison({ selected }: { selected: ScenarioKey }) {
                   <g key={i} opacity={i === 0 || i === selIdx ? 1 : 0.45} data-tip={`${g.label} · ${IMPACT_SERIES[i].label}: ${g.fmt(v)}`}>
                     <rect className="s1-grow" style={{ animationDelay: `${gi * 80 + i * 30}ms` }} x={x} y={T + plotH - h} width={bw} height={h} fill={IMPACT_SERIES[i].color} rx={2} />
                     {(!narrow || i === selIdx) && (
-                      <text x={narrow ? x0 + (bw * 4 + 9) / 2 : x + bw / 2} y={narrow ? T - 8 : T + plotH - h - 4} textAnchor="middle" className="val" style={{ fontSize: narrow ? 9.5 : 8 }}>{g.fmt(v)}</text>
+                      <text x={narrow ? x0 + (bw * 4 + 9) / 2 : x + bw / 2} y={narrow ? T - 8 : T + plotH - h - 4} textAnchor="middle" className="val">{g.fmt(v)}</text>
                     )}
                   </g>
                 );
@@ -1240,7 +1240,7 @@ export function RecoveryReplanning() {
                   <dt>ROI after recovery</dt><dd>{s.roi}</dd>
                 </dl>
                 {details === s.key && (
-                  <ul className="s1-insights small" style={{ fontSize: 11 }}>{s.details.map((d) => <li key={d}>{d}</li>)}</ul>
+                  <ul className="s1-insights small">{s.details.map((d) => <li key={d}>{d}</li>)}</ul>
                 )}
                 {simulated[s.key] && <span className="small" style={{ color: COLORS.green }}>✓ Simulated: Jalna adoption 28% → {(28 + s.uplift).toFixed(1)}%, ROI {s.roi}</span>}
                 <div className="btns" onClick={(e) => e.stopPropagation()}>
@@ -1310,8 +1310,8 @@ export function RecoveryReplanning() {
           <div className="cell"><CircleDollarSign size={22} color={COLORS.amber} /><div>Additional Budget Required<strong>{scen.cost}</strong></div></div>
           <div className="cell"><TrendingUp size={22} color={COLORS.green} /><div>Expected Jalna Adoption Improvement<strong>28% → {improved}%</strong></div></div>
           <div className="cell"><BarChart3 size={22} color={COLORS.green} /><div>Expected Campaign ROI<strong>3.1x → {scen.roi}</strong></div></div>
-          <div className="cell"><UserCheck size={22} color={COLORS.dark} /><div>Approval Owner<strong style={{ fontSize: 12 }}>National Campaign Head</strong></div></div>
-          <div className="cell"><Users size={22} color={COLORS.dark} /><div>Execution Owners<strong style={{ fontSize: 12 }}>Regional Sales Lead, Campaign Lead, Supply Lead</strong></div></div>
+          <div className="cell"><UserCheck size={22} color={COLORS.dark} /><div>Approval Owner<strong>National Campaign Head</strong></div></div>
+          <div className="cell"><Users size={22} color={COLORS.dark} /><div>Execution Owners<strong>Regional Sales Lead, Campaign Lead, Supply Lead</strong></div></div>
         </div>
         <div className="row-between" style={{ marginTop: 12 }}>
           <div className="row">

@@ -14,7 +14,7 @@ export function RankedBarChart({ items, height, format = (v:number)=>String(v), 
   const data=visible.map(x=>({...x,share:total?x.value/total*100:0,delta:x.previous===undefined?undefined:x.value-x.previous}));
   return <div className="iq-fill" style={{minHeight:chartHeight}}><ResponsiveContainer width="100%" height="100%" minHeight={chartHeight}><BarChart data={data} layout="vertical" barCategoryGap="35%" margin={{top:2,right:42,bottom:2,left:4}}>
     <CartesianGrid {...gridStyle} horizontal={false}/><XAxis type="number" tick={axisStyle} tickLine={false} axisLine={false} tickFormatter={format}/><YAxis type="category" dataKey="label" tick={axisStyle} tickLine={false} axisLine={false} width={118}/><Tooltip {...tooltipStyle} formatter={(v:number,_n:string,p:any)=>[`${format(v)} · ${p.payload.share.toFixed(0)}%${p.payload.delta===undefined?'':` · Δ ${format(p.payload.delta)}`}`,'Value']}/>
-    <Bar dataKey="value" name="Value" fill="var(--brand-700)" maxBarSize={16} radius={[0,4,4,0]} onClick={(entry:any)=>onSelect?.(entry.label)} cursor={onSelect?'pointer':'default'}><LabelList dataKey="share" position="right" formatter={(v:number)=>`${v.toFixed(0)}%`} style={{fontSize:11,fill:'var(--ink-600)'}}/></Bar>
+    <Bar dataKey="value" name="Value" fill="var(--brand-700)" maxBarSize={16} radius={[0,4,4,0]} onClick={(entry:any)=>onSelect?.(entry.label)} cursor={onSelect?'pointer':'default'}><LabelList dataKey="share" position="right" formatter={(v:number)=>`${v.toFixed(0)}%`} style={{fill:'var(--ink-600)'}}/></Bar>
   </BarChart></ResponsiveContainer></div>;
 }
 const color = (s: Series, i: number) => {
@@ -37,7 +37,7 @@ export function TrendLine({ data, x, series, height = 220, fmt }: { data: Row[];
         <XAxis dataKey={x} tick={axisStyle} tickLine={false} axisLine={false} />
         <YAxis tick={axisStyle} tickLine={false} axisLine={false} width={44} tickFormatter={fmt} />
         <Tooltip {...tooltipStyle} formatter={(v: number) => (fmt ? fmt(v) : v)} />
-        {series.length > 1 && <Legend iconType="plainline" wrapperStyle={{ fontSize: 11 }} />}
+        {series.length > 1 && <Legend iconType="plainline"  />}
         {series.map((s, i) => <Line key={s.key} type="monotone" dataKey={s.key} name={s.name ?? s.key} stroke={color(s, i)} strokeWidth={2} strokeDasharray={/forecast|simulated/i.test(`${s.key} ${s.name ?? ''}`) ? '5 4' : undefined} dot={{ r: 3 }} />)}
       </LineChart>
     </ResponsiveContainer></div>
@@ -56,7 +56,7 @@ export function RankBars({ data, label = 'name', series, stacked, height, fmt, h
         <XAxis type="number" tick={axisStyle} tickLine={false} axisLine={false} tickFormatter={fmt} />
         <YAxis type="category" dataKey={label} tick={axisStyle} tickLine={false} axisLine={false} width={104} />
         <Tooltip {...tooltipStyle} formatter={(v: number) => (fmt ? fmt(v) : v)} />
-        {series.length > 1 && <Legend iconType="square" wrapperStyle={{ fontSize: 11 }} />}
+        {series.length > 1 && <Legend iconType="square"  />}
         {series.map((s, i) => (
           <Bar key={s.key} dataKey={s.key} name={s.name ?? s.key} fill={color(s, i)} stackId={stacked ? 's' : undefined} radius={stacked ? 0 : [0, 6, 6, 0]} maxBarSize={series.length > 1 && !stacked ? 14 : 26}>
             {highlightFirst && series.length === 1 && data.map((_, di) => <Cell key={di} fill={di === 0 ? SERIES[0] : 'var(--data-baseline)'} />)}
@@ -78,8 +78,8 @@ export function ColumnBars({ data, x, series, stacked, height = 220, fmt, target
         <XAxis dataKey={x} tick={axisStyle} tickLine={false} axisLine={false} />
         <YAxis tick={axisStyle} tickLine={false} axisLine={false} width={44} tickFormatter={fmt} />
         <Tooltip {...tooltipStyle} formatter={(v: number) => (fmt ? fmt(v) : v)} />
-        {series.length > 1 && <Legend iconType="square" wrapperStyle={{ fontSize: 11 }} />}
-        {target !== undefined && <ReferenceLine y={target} stroke="var(--accent-600)" strokeDasharray="4 3" label={{ value: 'Target', fontSize: 10, fill: 'var(--crop-soybean)', position: 'right' }} />}
+        {series.length > 1 && <Legend iconType="square"  />}
+        {target !== undefined && <ReferenceLine y={target} stroke="var(--accent-600)" strokeDasharray="4 3" label={{ value: 'Target', fill: 'var(--crop-soybean)', position: 'right' }} />}
         {series.map((s, i) => <Bar key={s.key} dataKey={s.key} name={s.name ?? s.key} fill={color(s, i)} stackId={stacked ? 's' : undefined} radius={stacked ? 0 : [6, 6, 0, 0]} />)}
       </BarChart>
     </ResponsiveContainer></div>
@@ -116,8 +116,8 @@ export function ScatterPlot({ points, xLabel, yLabel, height = 240, xFmt, yFmt }
     <div className="iq-fill" style={{ minHeight: height }}><ResponsiveContainer width="100%" height="100%" minHeight={height}>
       <ScatterChart margin={{ top: 8, right: 16, bottom: 18, left: 0 }}>
         <CartesianGrid {...gridStyle} />
-        <XAxis type="number" dataKey="x" name={xLabel} tick={axisStyle} tickLine={false} tickFormatter={xFmt} label={{ value: xLabel, position: 'insideBottom', offset: -10, fontSize: 11, fill: 'var(--neutral)' }} />
-        <YAxis type="number" dataKey="y" name={yLabel} tick={axisStyle} tickLine={false} width={44} tickFormatter={yFmt} label={{ value: yLabel, angle: -90, position: 'insideLeft', fontSize: 11, fill: 'var(--neutral)' }} />
+        <XAxis type="number" dataKey="x" name={xLabel} tick={axisStyle} tickLine={false} tickFormatter={xFmt} label={{ value: xLabel, position: 'insideBottom', offset: -10, fill: 'var(--neutral)' }} />
+        <YAxis type="number" dataKey="y" name={yLabel} tick={axisStyle} tickLine={false} width={44} tickFormatter={yFmt} label={{ value: yLabel, angle: -90, position: 'insideLeft', fill: 'var(--neutral)' }} />
         <ZAxis type="number" dataKey="z" range={[60, 160]} />
         <Tooltip {...tooltipStyle} cursor={{ strokeDasharray: '3 3' }} formatter={(v: number) => v} labelFormatter={() => ''} content={({ payload }) => {
           const p = payload?.[0]?.payload as { name: string; x: number; y: number } | undefined;

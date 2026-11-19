@@ -224,13 +224,13 @@ export function DemandProjection() {
             />
           </Panel>
           <Panel title={<>ROI Methodology <span className="muted small">(Base Case)</span></>} icon={<CheckCircle2 size={15} />}>
-            <div className="row" style={{ fontSize: 12, gap: 14 }}>
+            <div className="row" style={{ gap: 14 }}>
               <strong>Net ROI =</strong>
               <span style={{ textAlign: 'center' }}>Incremental Contribution − Campaign Spend<hr style={{ margin: '3px 0' }} />Campaign Spend</span>
               <span>=</span>
               <span style={{ textAlign: 'center' }}>₹13.7 L − ₹8.0 L<hr style={{ margin: '3px 0' }} />₹8.0 L</span>
               <span>=</span>
-              <strong style={{ fontSize: 16, color: COLORS.dark }}>0.71×</strong>
+              <strong style={{ color: COLORS.dark }}>0.71×</strong>
             </div>
           </Panel>
         </div>
