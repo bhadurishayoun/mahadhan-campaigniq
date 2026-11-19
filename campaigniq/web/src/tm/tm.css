@@ -542,3 +542,37 @@
 .app .cw2-table .cw2-select-face { position: absolute; left: 11px; right: 30px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--ink-900);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
 .app .cw2-table .cw2-owner.pending .cw2-select-face { color: var(--ink-400); }
+
+/* TM.C1 cards 4–5: AI planning insight + campaign wizard (driven by the selected growth priority). */
+.tm-c1-reco { display: flex; gap: 8px; align-items: flex-start; margin: 0; font-size: 14px; line-height: 20px; color: var(--ink-900); }
+.tm-c1-reco svg { flex-shrink: 0; margin-top: 2px; color: var(--brand-500); }
+.tm-c1-evidence { display: grid; gap: 10px; list-style: none; margin: 0; padding: 0; }
+.tm-c1-evidence li { display: grid; grid-template-columns: minmax(0, 1fr) 120px auto; gap: 12px; align-items: center; font-size: 13px; color: var(--ink-600); }
+.tm-c1-evidence i { display: block; height: 8px; border-radius: 4px; background: var(--brand-100); overflow: hidden; }
+.tm-c1-evidence i b { display: block; height: 100%; background: var(--brand-700); }
+.tm-c1-evidence strong { font-size: 13px; color: var(--ink-900); text-align: right; white-space: nowrap; min-width: 96px; }
+.tm-c1-confirm { display: grid; gap: 6px; margin-top: auto; }
+.tm-c1-confirm small { font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-600); }
+.tm-c1-confirm div { display: flex; flex-wrap: wrap; gap: 6px; }
+.tm-c1-confirm span { padding: 3px 10px; border-radius: var(--r-pill); background: var(--warn-bg); color: var(--warn); font-size: 12px; font-weight: 600; }
+.tm-c1-progress { display: grid; gap: 4px; justify-items: end; }
+.tm-c1-progress small { font-size: 12px; color: var(--ink-600); white-space: nowrap; }
+.tm-c1-progress i { display: block; width: 120px; height: 6px; border-radius: 3px; background: var(--brand-100); overflow: hidden; }
+.tm-c1-progress i b { display: block; height: 100%; background: var(--brand-700); }
+.tm-c1-steps { display: grid; gap: 8px; list-style: none; margin: 0; padding: 0; flex: 1 1 auto; align-content: space-evenly; }
+.tm-c1-steps button { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; padding: 10px 12px; border: 1px solid var(--line);
+  border-radius: var(--r-md); background: var(--surface); text-align: left; cursor: pointer; }
+.tm-c1-steps button:hover:not(:disabled) { border-color: var(--brand-500); background: var(--brand-50); }
+.tm-c1-steps button:disabled { cursor: default; opacity: .7; }
+.tm-c1-steps em { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--brand-700); color: var(--surface); font-style: normal; font-size: 13px; font-weight: 700; }
+.tm-c1-steps span { display: grid; gap: 2px; min-width: 0; }
+.tm-c1-steps b { font-size: 14px; color: var(--ink-900); }
+.tm-c1-steps small { font-size: 12px; color: var(--ink-600); }
+.tm-c1-note { margin: 0; font-size: 12px; color: var(--ink-600); }
+/* TM.C1 only: AI insight beside the map (similar heights), wizard full width below - no empty band under the map. */
+.app .persona-page-tm[data-screen="TM.C1"] .tm-map-row { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); grid-template-areas: "map ai" "wiz wiz"; gap: 16px; align-items: stretch; }
+.app .persona-page-tm[data-screen="TM.C1"] .tm-map-row > .pm-stack { display: contents !important; }
+.app .persona-page-tm[data-screen="TM.C1"] .tm-map-row > .cq-card:first-child { grid-area: map; }
+.app .persona-page-tm[data-screen="TM.C1"] .tm-map-row > .pm-stack > .cq-card:first-child { grid-area: ai; }
+.app .persona-page-tm[data-screen="TM.C1"] .tm-map-row > .pm-stack > .cq-card:last-child { grid-area: wiz; }
+@media (max-width: 900px) { .app .persona-page-tm[data-screen="TM.C1"] .tm-map-row { grid-template-columns: minmax(0, 1fr); grid-template-areas: "map" "ai" "wiz"; } }

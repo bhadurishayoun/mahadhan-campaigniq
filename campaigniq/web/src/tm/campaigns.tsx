@@ -7,6 +7,7 @@ import {
   CalendarRange, CheckCircle2, Eye, FlaskConical, Lock, MapPin, MessageSquare, Plus, RotateCcw, Save, ShieldCheck, Trash2,
   Sprout, Store, Target, Users, Wallet, Smartphone, RefreshCw, Pencil,
   ChevronDown,
+  Sparkles,
 } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import { api } from '../api';
@@ -17,9 +18,11 @@ import { useDraftEdits } from '../ui/useDraftEdits';
 import {
   APPROVED, CAMPAIGN, CAMPAIGN_RETAILERS, PORTFOLIO, PORTFOLIO_MONTHS, PRIORITIES, SELECTED_RETAILERS,
   FIELD_OWNERS, OWNER_PENDING, isOwnerPending, ownerLabel,
+  TOTAL_RETAILERS, lastYearRoi, linkedRetailers, planLinkedUplift,
 } from './data';
 import { calcLineBudget } from './costModel';
-import { calculateDraftLine, useCampaignDraft, type CampaignDraftLine } from './campaignDraft';
+import { CAMPAIGN_DRAFT_KEY, calculateDraftLine, useCampaignDraft, type CampaignDraftLine } from './campaignDraft';
+import { Card, StatusPill } from '../ui/system';
 import { APPROVAL_STEPS, setCampaignStage, stageLabel, useCampaignState } from './state';
 import { AiPanel, Context, Footer, Note, Panel, Status, Steps, TmPage, WIZARD, crore, lakh } from './ui';
 import { ApprovalPipeline, Donut, IconTiles, MAP_COLORS, Ring, StageTimeline, TmMap, VILLAGE_PLACE } from './viz';
@@ -57,6 +60,30 @@ export function TmC1() {
   const [selected, setSelected] = useState('onion');
   const priority = PRIORITIES.find((p) => p.id === selected)!;
   const focusVillages: Record<string, string[]> = { onion: ['Dhanora', 'Wadi Gaon'], maize: ['Ambad HQ', 'Pimpalgaon'], retail: VILLAGE_CHOICES };
+  // Cards 4–5: computed from the selected priority (TM.C1).
+  const { go } = useNav();
+  const { lines: draftLines, total: draftTotal } = useCampaignDraft();
+  const upliftShare = planLinkedUplift ? Math.round((priority.upliftL / planLinkedUplift) * 100) : 0;
+  const retailers = linkedRetailers(priority);
+  const retailerShare = Math.round((retailers / TOTAL_RETAILERS) * 100);
+  const villageCount = ['no', 'one', 'two', 'three', 'four', 'five'][priority.villages.length] ?? String(priority.villages.length);
+  const c1Recommendation = priority.upliftL > 0
+    ? `Prioritise the ${priority.title.replace(' — ', ' ')}: it carries ${upliftShare}% of the plan-linked uplift and its ${villageCount} villages hold ${retailerShare}% of linked retailers.`
+    : `${priority.title} supports the existing plan rather than adding uplift; use it to strengthen advocacy across all ${TOTAL_RETAILERS} linked retailers.`;
+  const c1Evidence = [
+    { label: `Share of plan-linked uplift (₹${planLinkedUplift.toFixed(2)} L)`, value: priority.upliftL > 0 ? `₹${priority.upliftL.toFixed(2)} L · ${upliftShare}%` : 'Supports plan', ratio: upliftShare / 100 },
+    { label: 'Linked retailers in focus villages', value: `${retailers} of ${TOTAL_RETAILERS}`, ratio: retailers / TOTAL_RETAILERS },
+    { label: 'Last-year campaign ROI (FY 2024–25)', value: `${lastYearRoi.toFixed(2)}×`, ratio: lastYearRoi / 2.4 },
+  ];
+  const wizardOpen = selected === 'onion';
+  const draftSaved = (() => { try { return Boolean(localStorage.getItem(CAMPAIGN_DRAFT_KEY)); } catch { return false; } })();
+  const wizardSteps: { title: string; detail: string; to: ScreenId; status: 'Done' | 'Draft saved' | 'To do' }[] = [
+    { title: 'Objective & target villages', detail: `${priority.coverage} · ${priority.upliftL > 0 ? `₹${priority.upliftL.toFixed(2)} L plan-linked objective` : 'supports the approved plan'}`, to: 'cw.1', status: 'To do' },
+    { title: 'Activities & budget', detail: `${draftLines.length} activities · draft ${lakh(draftTotal, 2)}`, to: 'cw.2', status: draftSaved ? 'Draft saved' : 'To do' },
+    { title: 'Expected results', detail: 'Reach, trials and incremental contribution forecast', to: 'cw.3', status: 'To do' },
+    { title: 'Review & submit', detail: 'Send to the Zonal Manager for approval', to: 'cw.4', status: 'To do' },
+  ];
+  const wizardDone = wizardSteps.filter((s) => s.status !== 'To do').length;
   return (
     <TmPage crumbs={[{ label: 'My Plan', to: 'tm.1' }, { label: 'Approved Ambad Plan', to: 'tm.5' }, { label: 'My Campaigns' }]}
       code="TM.C1" title="Choose a Growth Priority" status="Plan approved · ready for campaign design"
@@ -120,12 +147,31 @@ export function TmC1() {
           }))}
           markerLegend={[{ label: 'Priority focus', color: MAP_COLORS.green }, { label: 'Other Ambad villages', color: MAP_COLORS.grey }]} />
         <div className="pm-stack">
-          <AiPanel title="AI Planning Insight"><p className="tm-ai-text">Prioritise the plan-linked Onion conversion; confirm reach, budget and expected incremental contribution in the Wizard.</p></AiPanel>
-          <Panel title="Campaign Wizard">
-            <div className="tm-mini-flow">
-              {['Objective', 'Activities', 'Forecast', 'Submit'].map((s, i) => <span key={s}><b>{i + 1}</b>{s}</span>)}
-            </div>
-          </Panel>
+          <Card title="AI planning insight" context={priority.title} subtitle="Why this priority, and what to confirm before drafting"
+            action={<StatusPill tone={priority.upliftL > 0 ? 'warn' : 'neutral'}>{priority.upliftL > 0 ? 'Moderate confidence' : 'Supporting priority'}</StatusPill>}>
+            <p className="tm-c1-reco"><Sparkles size={16} aria-hidden="true" /><b>{c1Recommendation}</b></p>
+            <ul className="tm-c1-evidence">
+              {c1Evidence.map((e) => (
+                <li key={e.label}><span>{e.label}</span><i aria-hidden="true"><b style={{ width: `${Math.min(1, e.ratio) * 100}%` }} /></i><strong>{e.value}</strong></li>
+              ))}
+            </ul>
+            <div className="tm-c1-confirm"><small>Confirm in the wizard</small><div>{['Reach', 'Budget', 'Expected contribution'].map((x) => <span key={x}>{x} · To confirm</span>)}</div></div>
+          </Card>
+          <Card title="Campaign wizard" context={priority.title} subtitle="Four steps to a submitted campaign; values carry over from the approved plan"
+            action={<div className="tm-c1-progress"><small>{wizardDone} of 4 steps · ~10 min</small><i aria-hidden="true"><b style={{ width: `${(wizardDone / 4) * 100}%` }} /></i></div>}>
+            <ol className="tm-c1-steps">
+              {wizardSteps.map((st, i) => (
+                <li key={st.to}>
+                  <button type="button" disabled={!wizardOpen} onClick={() => go(st.to)} title={wizardOpen ? `Open ${st.title}` : 'This showcase follows the Onion — Croptek conversion campaign'}>
+                    <em>{i + 1}</em>
+                    <span><b>{st.title}</b><small>{st.detail}</small></span>
+                    <StatusPill tone={st.status === 'Done' ? 'ok' : st.status === 'Draft saved' ? 'warn' : 'neutral'}>{st.status}</StatusPill>
+                  </button>
+                </li>
+              ))}
+            </ol>
+            {!wizardOpen && <p className="tm-c1-note">The wizard opens for the Onion — Croptek conversion priority in this showcase.</p>}
+          </Card>
         </div>
       </div>
       <Footer back={{ label: 'Back to My Plan (Approved)', to: 'tm.5' }}
