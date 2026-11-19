@@ -75,7 +75,6 @@
 .imap-legend-scale { flex-wrap: wrap; }
 .imap-legend-scale > span:first-child { font-weight: 700; }
 .imap-legend-step { display: inline-flex; align-items: center; gap: 3px; }
-.imap-attrib { margin: 0; font-size: 9.5px; color: var(--n500); }
 
 @media (max-width: 480px) {
   .imap-zoom-btns button { width: 36px; height: 34px; } /* comfortable tap targets */

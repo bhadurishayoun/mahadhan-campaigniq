@@ -572,9 +572,6 @@ export function IndiaDistrictMap({ label, markers, states, talukas, view = 'indi
         {placed.length > 0 && !markerLegend && <li><i className="mk" />Mentioned place (exact location)</li>}
         {markerLegend?.map((m) => <li key={m.label}><i className="mk" style={{ background: m.color, boxShadow: `0 0 0 1px ${m.color}` }} />{m.label}</li>)}
       </ul>
-      <p className="imap-attrib">
-        Boundaries: datta07/INDIAN-SHAPEFILES (2023 districts; India boundary as per Survey of India) · Places: GeoNames, © OpenStreetMap contributors
-      </p>
     </div>
   );
 }
