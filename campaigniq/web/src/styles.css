@@ -524,10 +524,7 @@ h1, h2, h3, h4, p { margin: 0; }
 }
 .login-hero {
   padding: 34px 30px;
-  background:
-    rgba(173, 213, 147, 0.35),
-    rgba(255, 216, 127, 0.3),
-    var(--brand-50);
+  background: var(--brand-50);
   border-right: 1px solid var(--line);
   display: flex;
   flex-direction: column;

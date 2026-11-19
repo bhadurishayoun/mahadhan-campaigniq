@@ -61,8 +61,7 @@
 .app .pm-box-head h3,
 .app .tm-panel-head h3,
 .app .panel-title h3,
-.app .iq-card-head h3,
-.app .mh-section > h2 {
+.app .iq-card-head h3 {
   color: var(--heading-color) !important;
   font-size: var(--heading-size-section) !important;
   font-weight: 700 !important;
@@ -78,12 +77,12 @@
   border-bottom: 1px solid var(--g200);
 }
 
-/* MH uses filled section bands; keep the band in the same green palette as all other personas. */
-.app .mh-section > h2 {
-  background: var(--brand-50) !important;
-  color: var(--brand-900) !important;
-  border-bottom: 1px solid var(--line);
-}
+/* Green chart and section bands require white titles for legibility. */
+.app .persona-page-mh .iq-card-head { background: var(--brand-700); }
+.app .persona-page-mh .iq-card-head h3,
+.app .persona-page-mh .iq-card-head h3 svg,
+.app .persona-page-mh .iq-card-head .iq-drill button { color: var(--surface) !important; }
+.app .persona-page-mh .mh-section > h2 { background: var(--brand-700) !important; color: var(--surface) !important; border-bottom-color: var(--brand-700); }
 
 /* A single semantic mapping for progress charts and workflow rails. */
 .app .tm-step-active {
