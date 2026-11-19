@@ -4,7 +4,8 @@ import { useNav, type ScreenId } from '../nav';
 import { cx, type Tone } from '../ui';
 import { bhMeta, type BhScreenId } from './nav';
 import { KpiCard } from '../ui/index';
-import { ClipboardCheck, IndianRupee, Megaphone, Target, Users, Wallet } from '../icons';
+import { CheckCircle2, ClipboardCheck, Clock, IndianRupee, ListChecks, Megaphone, Target, Users, Wallet } from '../icons';
+import { FileText, MessageSquare } from 'lucide-react';
 
 export function BhPage({ screen, children, subtitle, actions, className }: {
   screen: BhScreenId; children: ReactNode; subtitle?: string; actions?: ReactNode; className?: string;
@@ -53,7 +54,7 @@ export function BhCard({ title, children, className = '', action }: { title: str
   return <section className={`bh-card ${className}`}><div className="bh-card-head"><h2>{title}</h2>{action}</div>{children}</section>;
 }
 
-const metricIcon = (label: string) => (/invest|budget|spend|unspent/i.test(label) ? Wallet : /achiev|abp|business|sales|roi/i.test(label) ? IndianRupee : /adopt|farmer/i.test(label) ? Users : /campaign/i.test(label) ? Megaphone : /execut|plan/i.test(label) ? Target : ClipboardCheck);
+const metricIcon = (label: string) => (/clarification|response/i.test(label) ? MessageSquare : /draft/i.test(label) ? FileText : /closed|completed/i.test(label) ? CheckCircle2 : /awaiting decision/i.test(label) ? Clock : /action/i.test(label) ? ListChecks : /review/i.test(label) ? ClipboardCheck : /invest|budget|spend|unspent/i.test(label) ? Wallet : /achiev|abp|business|sales|roi/i.test(label) ? IndianRupee : /adopt|farmer/i.test(label) ? Users : /campaign/i.test(label) ? Megaphone : /execut|plan/i.test(label) ? Target : ClipboardCheck);
 
 export function BhMetric({ label, value, note, tone = 'green' }: { label: string; value: string; note?: string; tone?: Tone }) {
   return <KpiCard icon={metricIcon(label)} label={label} value={value} note={note} tone={tone === 'amber' ? 'amber' : tone === 'red' ? 'red' : tone === 'blue' ? 'blue' : 'green'} />;

@@ -38,7 +38,7 @@ export function KpiCard({ icon: Icon, label, value, note, change, changeLabel, s
   const data = useMemo(() => (spark ?? []).map((v, i) => ({ i, v })), [spark]);
   const body = (
     <>
-      <span className="iq-kpi-icon"><Icon size={ICON.lg} strokeWidth={ICON.stroke} /></span>
+      <span className="iq-kpi-icon"><Icon size={22} strokeWidth={ICON.stroke} /></span>
       <span className="iq-kpi-body">
         <small>{label}</small>
         <strong>{value}</strong>

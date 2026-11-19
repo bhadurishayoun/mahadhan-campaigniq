@@ -19,16 +19,16 @@
 .iq-btn-quiet { border-color: transparent; background: transparent; padding: 5px 8px; }
 
 .iq-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
-.iq-kpi { display: grid; grid-template-columns: 32px minmax(0, 1fr); grid-template-rows: 32px auto auto; align-items: center; column-gap: 10px; row-gap: 4px; padding: 16px 20px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); box-shadow: var(--sh-1); text-align: left; min-width: 0; min-height: 104px; color: var(--brand-700); }
+.iq-kpi { display: grid; grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: 36px auto auto; align-items: center; column-gap: 10px; row-gap: 4px; padding: 16px 20px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); box-shadow: var(--sh-1); text-align: left; min-width: 0; min-height: 112px; color: var(--brand-700); }
 .iq-kpi.clickable { cursor: pointer; }
 .iq-kpi.clickable:hover { border-color: var(--g500); }
 .iq-kpi-amber { color: var(--amber-500); }
 .iq-kpi-red { color: var(--risk); }
 .iq-kpi-blue { color: var(--info-500); }
-.iq-kpi-icon { display: grid; place-items: center; width: 32px; height: 32px; grid-row: 1; grid-column: 1; border-radius: var(--r-sm); background: var(--brand-50); color: var(--brand-700); }
+.iq-kpi-icon { display: grid; place-items: center; width: 36px; height: 36px; grid-row: 1; grid-column: 1; border-radius: var(--r-sm); background: var(--brand-50); color: var(--brand-700); }
 .iq-kpi-body { display: contents; color: var(--ink-900); }
-.iq-kpi-body small { grid-row: 1; grid-column: 2; color: var(--ink-600); font-size: 12px; font-weight: 500; }
-.iq-kpi-body strong { grid-row: 2; grid-column: 1 / -1; font-size: 24px; line-height: 1.2; font-weight: 700; font-variant-numeric: tabular-nums; }
+.iq-kpi-body small { grid-row: 1; grid-column: 2; color: var(--ink-600); font-size: 14px; font-weight: 500; }
+.iq-kpi-body strong { grid-row: 2; grid-column: 1 / -1; font-size: 28px; line-height: 1.2; font-weight: 700; font-variant-numeric: tabular-nums; }
 .iq-kpi-body em { grid-row: 3; grid-column: 1 / -1; font-style: normal; font-size: 12px; font-weight: 600; }
 .iq-kpi-body em.up { color: var(--g600); }
 .iq-kpi-body em.down { color: var(--risk); }
