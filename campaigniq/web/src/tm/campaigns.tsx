@@ -2,12 +2,13 @@
  * Field Sales Manager - My Campaigns journey:
  * TM.C1 select a business priority -> Campaign Wizard CW.1-CW.4 -> TM.C2 review & approval -> TM.C3 my campaign portfolio.
  */
-import { Fragment, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CalendarRange, CheckCircle2, Eye, FlaskConical, Lock, MapPin, MessageSquare, Plus, Save, ShieldCheck, Trash2,
   Sprout, Store, Target, Users, Wallet, Smartphone, RefreshCw, Pencil,
 } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
+import { api } from '../api';
 import { Btn, cx } from '../ui';
 import { ColumnBars } from '../ui/index';
 import {
@@ -203,12 +204,35 @@ export function Cw1() {
 /* ------------------------------------------------------------------ CW.2 */
 export function Cw2() {
   const { toast } = useNav();
-  const [lines, setLines] = useState<ActivityLine[]>(ACTIVITIES);
+  const [lines, setLines] = useState<(ActivityLine & { unitCostLakh: number })[]>(() => ACTIVITIES.map((line) => ({ ...line, unitCostLakh: line.units ? line.budget / line.units : 0 })));
+  const [backendBudgets, setBackendBudgets] = useState<{ signature: string; values: number[]; total: number } | null>(null);
   const activityInputs = useRef<(HTMLInputElement | null)[]>([]);
-  const total = lines.reduce((sum, l) => sum + (Number.isFinite(l.budget) ? l.budget : 0), 0);
+  const lineBudgets = lines.map((line) => Math.round(line.units * line.unitCostLakh * 100) / 100);
+  const signature = JSON.stringify(lines.map((line) => [line.units, line.unitCostLakh]));
+  const synced = backendBudgets?.signature === signature ? backendBudgets : null;
+  const displayedBudgets = synced?.values ?? lineBudgets;
+  const total = synced?.total ?? displayedBudgets.reduce((sum, value) => sum + value, 0);
   const units = lines.reduce((sum, l) => sum + l.units, 0);
-  const update = (index: number, patch: Partial<ActivityLine>) => setLines((all) => all.map((l, i) => (i === index ? { ...l, ...patch } : l)));
-  const addActivity = () => setLines((all) => [...all, { activity: 'New activity', units: 1, unitLabel: 'units', where: 'Select village / channel', timing: 'To schedule', owner: '', budget: 0 }]);
+  useEffect(() => {
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      api<{ line_budgets: number[]; total_budget: number }>('/campaigns/activity-budget/calculate', {
+        method: 'POST', body: JSON.stringify({ lines: lines.map((line) => ({ units: line.units, unit_cost_lakh: line.unitCostLakh })) }),
+      }).then((result) => { if (!cancelled) setBackendBudgets({ signature, values: result.line_budgets, total: result.total_budget }); })
+        .catch(() => { if (!cancelled) setBackendBudgets(null); });
+    }, 120);
+    return () => { cancelled = true; window.clearTimeout(timer); };
+  }, [signature]);
+  const update = (index: number, patch: Partial<ActivityLine & { unitCostLakh: number }>) => setLines((all) => all.map((l, i) => {
+    if (i !== index) return l;
+    const next = { ...l, ...patch };
+    if (Object.prototype.hasOwnProperty.call(patch, 'budget')) {
+      next.unitCostLakh = next.units > 0 ? Number(patch.budget) / next.units : 0;
+      next.budget = Math.round(next.units * next.unitCostLakh * 100) / 100;
+    } else next.budget = Math.round(next.units * next.unitCostLakh * 100) / 100;
+    return next;
+  }));
+  const addActivity = () => setLines((all) => [...all, { activity: 'New activity', units: 1, unitLabel: 'units', where: 'Select village / channel', timing: 'To schedule', owner: '', budget: 0, unitCostLakh: 0 }]);
   const removeActivity = (index: number) => setLines((all) => all.filter((_, i) => i !== index));
   return (
     <TmPage crumbs={[{ label: 'My Campaigns', to: 'tm.c1' }, { label: CAMPAIGN.name, to: 'cw.1' }, { label: 'Campaign Wizard' }, { label: 'Activity & Budget Mix' }]}
@@ -234,7 +258,7 @@ export function Cw2() {
                     <td><input className="cw2-field" list="cw2-places" value={line.where} onChange={(e) => update(index, { where: e.target.value })} aria-label={`Village or channel ${index + 1}`} /></td>
                     <td><input className="cw2-field" list="cw2-timings" value={line.timing} onChange={(e) => update(index, { timing: e.target.value })} aria-label={`Tentative timing ${index + 1}`} /></td>
                     <td><input className="cw2-field" list="cw2-owners" value={line.owner} onChange={(e) => update(index, { owner: e.target.value })} placeholder="Select owner" aria-label={`Assigned owner ${index + 1}`} /></td>
-                    <td className="r"><label className="cw2-money"><span>₹</span><input type="number" min={0} step={0.05} value={line.budget} onChange={(e) => update(index, { budget: Number(e.target.value) })} aria-label={`Draft budget ${index + 1}`} /><span>L</span></label></td>
+                    <td className="r"><label className="cw2-money"><span>₹</span><input type="number" min={0} step={0.05} value={displayedBudgets[index] ?? 0} onChange={(e) => update(index, { budget: Number(e.target.value) })} aria-label={`Draft budget ${index + 1}`} /><span>L</span></label></td>
                     <td><div className="cw2-row-actions"><button type="button" aria-label={`Focus ${line.activity} name`} title="Edit activity name" onClick={() => activityInputs.current[index]?.focus()}><Pencil size={13} /></button><button type="button" className="cw2-delete" aria-label={`Remove ${line.activity}`} title="Remove activity" onClick={() => removeActivity(index)}><Trash2 size={14} /></button></div></td>
                   </tr>
                 ))}</tbody>

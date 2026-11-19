@@ -57,6 +57,15 @@ class PlanRequest(BaseModel):
     anchor_date: date | None = None
 
 
+class ActivityBudgetLineRequest(BaseModel):
+    units: float = Field(ge=0, le=1_000_000)
+    unit_cost_lakh: float = Field(ge=0, le=1_000_000)
+
+
+class ActivityBudgetRequest(BaseModel):
+    lines: list[ActivityBudgetLineRequest] = Field(max_length=500)
+
+
 class SegmentOverrideRequest(BaseModel):
     segment: str
     reason: str = Field(min_length=5, max_length=500)
@@ -551,6 +560,13 @@ def calculate(request: PlanRequest) -> dict[str, Any]:
         )
     except (ValueError, KeyError) as exc:
         raise HTTPException(422, detail=str(exc)) from exc
+
+
+@app.post("/api/campaigns/activity-budget/calculate")
+def calculate_activity_budget(request: ActivityBudgetRequest) -> dict[str, Any]:
+    """Calculate editable campaign draft line budgets from planned units and unit costs (INR lakh)."""
+    line_budgets = [round(line.units * line.unit_cost_lakh, 2) for line in request.lines]
+    return {"line_budgets": line_budgets, "total_budget": round(sum(line_budgets), 2)}
 
 
 @app.post("/api/plans", status_code=201)
