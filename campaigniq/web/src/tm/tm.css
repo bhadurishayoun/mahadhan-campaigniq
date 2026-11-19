@@ -576,3 +576,37 @@
 .app .persona-page-tm[data-screen="TM.C1"] .tm-map-row > .pm-stack > .cq-card:first-child { grid-area: ai; }
 .app .persona-page-tm[data-screen="TM.C1"] .tm-map-row > .pm-stack > .cq-card:last-child { grid-area: wiz; }
 @media (max-width: 900px) { .app .persona-page-tm[data-screen="TM.C1"] .tm-map-row { grid-template-columns: minmax(0, 1fr); grid-template-areas: "map" "ai" "wiz"; } }
+
+/* TM.IM1 card 1: funnel + conversion vs completed-campaign benchmark. */
+.tm-im1-funnel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: center; flex: 1 1 auto; }
+.tm-im1-bench { display: grid; gap: 14px; align-content: center; }
+.tm-im1-bench-title { font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-600); }
+.tm-im1-bench-row { display: grid; gap: 4px; }
+.tm-im1-bench-row .lbl { font-size: 13px; font-weight: 600; color: var(--ink-900); }
+.tm-im1-bench-row .bar { position: relative; display: block; height: 12px; border-radius: 2px; background: var(--neutral-bg); }
+.tm-im1-bench-row .bar i { display: block; height: 100%; border-radius: 2px; background: var(--data-actual); }
+.tm-im1-bench-row .bar em { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 2px dashed var(--data-plan); }
+.tm-im1-bench-row .txt { font-size: 13px; color: var(--ink-600); }
+.tm-im1-bench-row .txt b { color: var(--ink-900); }
+.tm-im1-bench-row .delta { font-size: 12px; font-weight: 600; }
+.tm-im1-bench-row .delta.risk { color: var(--risk); }
+.tm-im1-bench-row .delta.ok { color: var(--ok); }
+.tm-im1-bench-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--ink-600); }
+.tm-im1-bench-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.tm-im1-bench-legend i.cur { width: 10px; height: 10px; background: var(--data-actual); }
+.tm-im1-bench-legend i.ref { width: 0; height: 12px; border-left: 2px dashed var(--data-plan); }
+@media (max-width: 900px) { .tm-im1-funnel { grid-template-columns: minmax(0, 1fr); } }
+/* TM.IM1 card 3: clusters -> villages, no horizontal scroll. */
+.app .tm-im1-villages-wrap { overflow-x: visible; }
+.app .tm-im1-villages { table-layout: auto; width: 100%; }
+.app .tm-im1-villages :is(th, td) { padding-left: 8px; padding-right: 8px; white-space: nowrap; }
+.app .tm-im1-villages th { white-space: normal; }
+.app .tm-im1-villages td:first-child { min-width: 140px; }
+.app .tm-im1-villages tr.tm-im1-cluster td { background: var(--brand-50); color: var(--brand-700); font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding-top: 6px; padding-bottom: 6px; }
+.app .tm-im1-villages tr.tm-im1-village td:first-child { padding-left: 24px; }
+.app .tm-im1-villages tr.tm-im1-subtotal td { font-weight: 700; }
+.tm-im1-rate { display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.tm-im1-rate i { display: block; width: 60px; height: 6px; border-radius: 3px; background: var(--brand-100); overflow: hidden; }
+.tm-im1-rate i b { display: block; height: 100%; background: var(--brand-700); }
+/* TM.IM1 only: the 6-village table needs the full width (no horizontal scroll); the map follows on its own row. */
+.app .persona-page-tm[data-screen="TM.IM1"] .tm-map-row { grid-template-columns: minmax(0, 1fr) !important; }

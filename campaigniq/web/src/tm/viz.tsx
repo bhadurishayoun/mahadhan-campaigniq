@@ -14,6 +14,10 @@ export const VILLAGE_PLACE: Record<string, string> = {
   'Ambad HQ': 'v-ambad',
   Pimpalgaon: 'v-pimpalgaon',
   'Other villages': 'v-shahagad',
+  Shahagad: 'v-shahagad',
+  Gondi: 'v-gondi',
+  Rohilagad: 'v-rohilagad',
+  Jamkhed: 'v-jamkhed',
 };
 
 export const MAP_COLORS = { green: 'var(--ok)', amber: 'var(--accent-600)', red: 'var(--risk)', grey: 'var(--ink-400)', blue: 'var(--info)' };

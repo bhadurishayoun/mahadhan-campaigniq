@@ -254,13 +254,37 @@ export function HeatGrid({ rows, cols, values, corner = '', fmt = plain, totals,
 }
 
 /* ---------------------------------------------------------------- FunnelSteps */
-export interface FunnelStep { label: string; value: number }
+export interface FunnelStep { label: string; value: number; /** short stage name for conversion lines, e.g. "reach" */ short?: string }
 /**
  * Conversion funnel: one full-width bar per step scaled to step 1 (brand tints, dark → light), value + % of the
  * previous step on the right, and the drop-off between steps as a risk-coloured line. Hover shows a tooltip.
  */
-export function FunnelSteps({ steps, fmt = (v: number) => v.toLocaleString('en-IN'), unit = 'farmers' }: { steps: FunnelStep[]; fmt?: Fmt; unit?: string }) {
+export function FunnelSteps({ steps, fmt = (v: number) => v.toLocaleString('en-IN'), unit = 'farmers', variant = 'bars' }: { steps: FunnelStep[]; fmt?: Fmt; unit?: string; variant?: 'bars' | 'funnel' }) {
   const first = steps[0]?.value || 1;
+  if (variant === 'funnel') {
+    // Stacked trapezoids: each stage narrows towards the next; widths step down evenly so small stages stay legible.
+    const widths = steps.map((_, i) => 100 - i * (52 / Math.max(1, steps.length - 1)));
+    const colors = ['var(--brand-900)', 'var(--brand-700)', 'var(--segment-growing)', 'var(--segment-emerging)'];
+    return (
+      <ol className="cq-funnel-shape">
+        {steps.map((s, i) => {
+          const prev = steps[i - 1];
+          const w = widths[i], next = widths[i + 1] ?? w * 0.78;
+          const inset = ((1 - next / w) / 2) * 100;
+          const pctPrev = prev ? Math.round((s.value / (prev.value || 1)) * 100) : 100;
+          return (
+            <li key={s.label}>
+              {prev && <p className="cq-funnel-conv">↓ {pctPrev}% {prev.short ?? prev.label.toLowerCase()} → {s.short ?? s.label.toLowerCase()} · {fmt(prev.value - s.value)} dropped</p>}
+              <div className="cq-funnel-stage" title={`${s.label}: ${fmt(s.value)} · ${Math.round((s.value / first) * 100)}% of ${steps[0].label.toLowerCase()}`}
+                style={{ width: `${w}%`, background: colors[i % colors.length], clipPath: `polygon(0 0, 100% 0, ${100 - inset}% 100%, ${inset}% 100%)` }}>
+                <b>{fmt(s.value)}</b><small>{s.label}</small>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    );
+  }
   return (
     <ol className="cq-funnel">
       {steps.map((s, i) => {

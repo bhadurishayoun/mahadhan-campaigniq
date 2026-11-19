@@ -1,12 +1,11 @@
 /** Field Sales Manager - Campaign Execution (TM.EX1-EX2), Impact & Learning (TM.IM1-IM2) and AI Copilot (TM.AI1). */
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { AlertTriangle, Bot, Camera, CheckCircle2, FileText, Upload, UserRound, CircleDollarSign, Users, ListChecks, AlertOctagon, TrendingUp, CalendarDays } from 'lucide-react';
 import { useNav } from '../nav';
 import { Btn, cx } from '../ui';
-import { FunnelBars } from '../ui/index';
-import { CAMPAIGN, EXECUTION_CAMPAIGNS, conversionFunnel, costPerAdopter, executionSummary, portfolioExecution, EXECUTION, FIELD_OWNERS, IMPACT_VILLAGES, conversion, type GanttUnit } from './data';
+import { CAMPAIGN, EXECUTION_CAMPAIGNS, IMPACT_VILLAGE_ROWS, clusterTotals, completedBenchmark, conversionFunnel, costPerAdopter, executionSummary, portfolioExecution, EXECUTION, FIELD_OWNERS, IMPACT_VILLAGES, conversion, type GanttUnit } from './data';
 import { AiPanel, Context, Footer, HBars, Metrics, Note, Panel, Status, TmPage, lakh } from './ui';
-import { MAP_COLORS, TmMap } from './viz';
+import { MAP_COLORS, TmMap, VILLAGE_PLACE } from './viz';
 import { LiveCopilot } from '../ui/LiveCopilot';
 import { useCampaignDraft } from './campaignDraft';
 import { Card, Grid, InsightStrip, KpiStrip, Metric, NextSteps } from '../ui/system';
@@ -263,6 +262,23 @@ export function TmIm1() {
   const sales = IMPACT_VILLAGES.reduce((s, v) => s + v.sales, 0);
   const planned = IMPACT_VILLAGES.reduce((s, v) => s + v.planned, 0);
   const completed = IMPACT_VILLAGES.reduce((s, v) => s + v.completed, 0);
+  const campaignShort = CAMPAIGN.name.replace(/ Conversion$/, '');
+  const product = /Croptek/.test(CAMPAIGN.name) ? 'Croptek' : 'the product';
+  const bench = completedBenchmark();
+  const reachRate = (trials / reached) * 100, adoptRate = conversion(adopters, trials);
+  const benchRows = [
+    { label: 'Reach → trial', value: reachRate, bench: bench.reachToTrial },
+    { label: 'Trial → adoption', value: adoptRate, bench: bench.trialToAdoption },
+  ].map((r) => ({ ...r, delta: Math.round(r.value) - Math.round(r.bench) }));
+  const benchScale = Math.max(60, ...benchRows.flatMap((r) => [r.value, r.bench])) * 1.1;
+  const weak = benchRows[0].delta <= benchRows[1].delta ? benchRows[0] : benchRows[1];
+  const funnelInsight = weak === benchRows[0]
+    ? `Trial uptake is the weak step: ${Math.round(reachRate)}% of reached farmers tried ${product}, ${Math.abs(weak.delta)} pts ${weak.delta < 0 ? 'below' : 'above'} last year's completed campaigns.`
+    : `Adoption is the weak step: ${Math.round(adoptRate)}% of trial farmers adopted ${product}, ${Math.abs(weak.delta)} pts ${weak.delta < 0 ? 'below' : 'above'} last year's completed campaigns.`;
+  const villageRates = IMPACT_VILLAGE_ROWS.map((v) => ({ ...v, rate: conversion(v.adopters, v.trials) }));
+  const bestVillage = [...villageRates].sort((a, b) => b.rate - a.rate)[0], worstVillage = [...villageRates].sort((a, b) => a.rate - b.rate)[0];
+  const villageInsight = `${bestVillage.village} converts best (${bestVillage.rate.toFixed(1)}% of trials); ${worstVillage.village} has the lowest trial-to-adoption rate at ${worstVillage.rate.toFixed(1)}%.`;
+  const clusters = clusterTotals();
   return (
     <TmPage crumbs={[{ label: 'Impact & Learning' }, { label: CAMPAIGN.name }, { label: 'Campaign Performance' }]}
       code="TM.IM1" title="Campaign Results" status="Interim checkpoint"
@@ -275,10 +291,23 @@ export function TmIm1() {
         { label: 'Recorded adopters', value: adopters, tone: 'green' },
       ]} />
       <div className="pm-two">
-        <Panel title="Farmer conversion funnel">
-          <FunnelBars stages={[{ label: 'Farmers reached', value: reached }, { label: 'Trials', value: trials }, { label: 'Adopters', value: adopters }]} />
-          <div className="tm-rates"><span>Reach → trial <b>{((trials / reached) * 100).toFixed(0)}%</b></span><span>Trial → adoption <b>{conversion(adopters, trials).toFixed(0)}%</b></span></div>
-        </Panel>
+        <Card title="Farmer conversion funnel" context={campaignShort} subtitle="Interim checkpoint: reached → trial → adopter" insight={funnelInsight}>
+          <div className="tm-im1-funnel">
+            <FunnelSteps variant="funnel" steps={[{ label: 'Farmers reached', value: reached, short: 'reach' }, { label: 'Trials', value: trials, short: 'trial' }, { label: 'Adopters', value: adopters, short: 'adoption' }]} />
+            <div className="tm-im1-bench">
+              <small className="tm-im1-bench-title">Conversion vs last year's completed campaigns</small>
+              {benchRows.map((r) => (
+                <div key={r.label} className="tm-im1-bench-row">
+                  <span className="lbl">{r.label}</span>
+                  <span className="bar" aria-hidden="true"><i style={{ width: `${(r.value / benchScale) * 100}%` }} /><em style={{ left: `${(r.bench / benchScale) * 100}%` }} /></span>
+                  <span className="txt"><b>{Math.round(r.value)}%</b> vs {Math.round(r.bench)}% benchmark</span>
+                  <span className={`delta ${r.delta < 0 ? 'risk' : 'ok'}`}>{r.delta < 0 ? '▼' : '▲'} {Math.abs(r.delta)} pts {r.delta < 0 ? 'below' : 'above'} completed campaigns</span>
+                </div>
+              ))}
+              <div className="tm-im1-bench-legend"><span><i className="cur" />This campaign</span><span><i className="ref" />Benchmark: {bench.label}</span></div>
+            </div>
+          </div>
+        </Card>
         <Panel title="Business impact">
           <div className="tm-recon">
             <div><span>Tracked campaign-linked sales</span><b>{lakh(sales, 1)}</b></div>
@@ -294,30 +323,40 @@ export function TmIm1() {
         </Panel>
       </div>
       <div className="tm-map-row tm-map-row-right">
-      <Panel title="Village-wise performance">
-        <div className="table-wrap">
-          <table className="dt pm-table tm-table">
-            <thead><tr><th>Village</th><th className="r">Reached</th><th className="r">Trials</th><th className="r">Adopters</th><th className="r">Trial → adoption</th><th className="r">Activities (completed / planned)</th><th className="r">Tracked product sales</th><th>Open items</th></tr></thead>
+      <Card title="Village-wise performance" context={campaignShort} insight={villageInsight}>
+        <div className="table-wrap tm-im1-villages-wrap">
+          <table className="dt pm-table tm-table tm-im1-villages">
+            <thead><tr><th>Village</th><th className="r">Reached</th><th className="r">Trials</th><th className="r">Adopters</th><th className="r">Trial → adoption</th><th className="r">Activities done</th><th className="r">Tracked sales</th></tr></thead>
             <tbody>
-              {IMPACT_VILLAGES.map((v) => (
-                <tr key={v.village}>
-                  <td><b>{v.village}</b></td><td className="r">{v.reached}</td><td className="r">{v.trials}</td><td className="r">{v.adopters}</td>
-                  <td className="r">{conversion(v.adopters, v.trials).toFixed(1)}%</td><td className="r">{v.completed} / {v.planned}</td><td className="r">{lakh(v.sales, 1)}</td>
-                  <td><Status>{v.village === 'Dhanora' ? 'Demo at risk (stock)' : 'Meeting at risk (field confirmation)'}</Status></td>
-                </tr>
+              {clusters.map((c) => (
+                <Fragment key={c.village}>
+                  <tr className="tm-im1-cluster"><td colSpan={7}>{c.village} cluster</td></tr>
+                  {villageRates.filter((v) => v.cluster === c.village).map((v) => (
+                    <tr key={v.village} className="tm-im1-village">
+                      <td>{v.village}</td><td className="r">{v.reached}</td><td className="r">{v.trials}</td><td className="r">{v.adopters}</td>
+                      <td className="r"><span className="tm-im1-rate"><i><b style={{ width: `${Math.min(100, v.rate)}%` }} /></i>{v.rate.toFixed(1)}%</span></td>
+                      <td className="r">{v.completed} / {v.planned}</td><td className="r">{lakh(v.sales, 2)}</td>
+                    </tr>
+                  ))}
+                  <tr className="tm-im1-subtotal"><td>Subtotal</td><td className="r">{c.reached}</td><td className="r">{c.trials}</td><td className="r">{c.adopters}</td>
+                    <td className="r">{conversion(c.adopters, c.trials).toFixed(1)}%</td><td className="r">{c.completed} / {c.planned}</td><td className="r">{lakh(c.sales, 2)}</td></tr>
+                </Fragment>
               ))}
             </tbody>
-            <tfoot><tr><td>Total</td><td className="r">{reached}</td><td className="r">{trials}</td><td className="r">{adopters}</td><td className="r">{conversion(adopters, trials).toFixed(1)}%</td><td className="r">{completed} / {planned}</td><td className="r">{lakh(sales, 1)}</td><td /></tr></tfoot>
+            <tfoot><tr><td>Total</td><td className="r">{reached}</td><td className="r">{trials}</td><td className="r">{adopters}</td><td className="r">{conversion(adopters, trials).toFixed(1)}%</td><td className="r">{completed} / {planned}</td><td className="r">{lakh(sales, 2)}</td></tr></tfoot>
           </table>
         </div>
-      </Panel>
+      </Card>
       <TmMap title="Trial-to-adoption by village" label="Campaign conversion by village" height={260}
-        markers={IMPACT_VILLAGES.map((v) => ({
+        markers={[...IMPACT_VILLAGES.map((v) => ({
           id: v.village === 'Dhanora' ? 'v-dhanora' : 'v-wadigaon',
-          label: `${v.village} · ${conversion(v.adopters, v.trials).toFixed(1)}%`,
+          label: `${v.village} cluster · ${conversion(v.adopters, v.trials).toFixed(1)}%`,
           color: conversion(v.adopters, v.trials) < 45 ? MAP_COLORS.amber : MAP_COLORS.green,
-          info: <><b>{v.village}</b><br />{v.reached} reached · {v.trials} trials · {v.adopters} adopters · {lakh(v.sales, 1)} tracked</>,
-        }))}
+          info: <><b>{v.village} cluster</b><br />{v.reached} reached · {v.trials} trials · {v.adopters} adopters · {lakh(v.sales, 2)} tracked</>,
+        })), ...IMPACT_VILLAGE_ROWS.filter((v) => v.village !== v.cluster && VILLAGE_PLACE[v.village]).map((v) => ({
+          id: VILLAGE_PLACE[v.village], label: `${v.village} · ${conversion(v.adopters, v.trials).toFixed(1)}%`, color: MAP_COLORS.grey,
+          info: <><b>{v.village}</b> ({v.cluster} cluster)<br />{v.reached} reached · {v.trials} trials · {v.adopters} adopters · {lakh(v.sales, 2)} tracked</>,
+        }))]}
         markerLegend={[{ label: 'Above campaign average (45%)', color: MAP_COLORS.green }, { label: 'Below average', color: MAP_COLORS.amber }]} />
       </div>
       <AiPanel title="AI Performance Insight">

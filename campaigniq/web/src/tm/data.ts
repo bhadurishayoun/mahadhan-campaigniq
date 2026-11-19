@@ -234,10 +234,27 @@ export function portfolioExecution() {
 export const PORTFOLIO_MONTHS = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'];
 
 /** TM.IM1 / IM2 interim checkpoint: 640 reached, 160 trials, 72 adopters, Rs 5.4 L tracked sales. */
-export const IMPACT_VILLAGES = [
-  { village: 'Dhanora', reached: 280, trials: 62, adopters: 24, planned: 6, completed: 4, sales: 2.0 },
-  { village: 'Wadi Gaon', reached: 360, trials: 98, adopters: 48, planned: 7, completed: 5, sales: 3.4 },
+/** TM.IM1 interim checkpoint by village, grouped into the two campaign clusters (₹ L sales).
+ *  Cluster sums = 280/62/24 · 4/6 · ₹2.00 L (Dhanora) and 360/98/48 · 5/7 · ₹3.40 L (Wadi Gaon); total 640/160/72 · 9/13 · ₹5.40 L. */
+export const IMPACT_VILLAGE_ROWS = [
+  { cluster: 'Dhanora', village: 'Dhanora', reached: 130, trials: 30, adopters: 12, completed: 2, planned: 3, sales: 0.95 },
+  { cluster: 'Dhanora', village: 'Shahagad', reached: 90, trials: 19, adopters: 7, completed: 1, planned: 2, sales: 0.62 },
+  { cluster: 'Dhanora', village: 'Gondi', reached: 60, trials: 13, adopters: 5, completed: 1, planned: 1, sales: 0.43 },
+  { cluster: 'Wadi Gaon', village: 'Wadi Gaon', reached: 170, trials: 48, adopters: 25, completed: 2, planned: 3, sales: 1.75 },
+  { cluster: 'Wadi Gaon', village: 'Rohilagad', reached: 110, trials: 30, adopters: 14, completed: 2, planned: 2, sales: 1.05 },
+  { cluster: 'Wadi Gaon', village: 'Jamkhed', reached: 80, trials: 20, adopters: 9, completed: 1, planned: 2, sales: 0.60 },
 ];
+/** One row per cluster (same shape as the earlier two-village rows, so other screens' totals are unchanged). */
+export function clusterTotals() {
+  const out: { village: string; reached: number; trials: number; adopters: number; planned: number; completed: number; sales: number }[] = [];
+  for (const r of IMPACT_VILLAGE_ROWS) {
+    let c = out.find((x) => x.village === r.cluster);
+    if (!c) { c = { village: r.cluster, reached: 0, trials: 0, adopters: 0, planned: 0, completed: 0, sales: 0 }; out.push(c); }
+    c.reached += r.reached; c.trials += r.trials; c.adopters += r.adopters; c.planned += r.planned; c.completed += r.completed; c.sales = Math.round((c.sales + r.sales) * 100) / 100;
+  }
+  return out;
+}
+export const IMPACT_VILLAGES = clusterTotals();
 export const conversion = (adopters: number, trials: number) => (trials ? (adopters / trials) * 100 : 0);
 
 
@@ -259,4 +276,12 @@ export function costPerAdopter() {
   const spent = rows.reduce((s, r) => s + r.spent, 0);
   const adopters = rows.reduce((s, r) => s + r.adopters, 0);
   return { rows, average: adopters ? (spent * 1e5) / adopters : 0 };
+}
+
+/** Conversion benchmark from completed execution campaigns: reach→trial = Σtrials/Σreached, trial→adoption = Σadopters/Σtrials. */
+export function completedBenchmark() {
+  const done = EXECUTION_CAMPAIGNS.filter((c) => c.stage === 'Completed');
+  const t = done.reduce((a, c) => ({ reached: a.reached + EXECUTION[c.id].reached, trials: a.trials + EXECUTION[c.id].trials, adopters: a.adopters + EXECUTION[c.id].adopters }), { reached: 0, trials: 0, adopters: 0 });
+  const seasons = [...new Set(done.map((c) => c.season))].join(', ');
+  return { reachToTrial: t.reached ? (t.trials / t.reached) * 100 : 0, trialToAdoption: t.trials ? (t.adopters / t.trials) * 100 : 0, label: `${done.map((c) => c.crop).join(' + ')} (${seasons})` };
 }
