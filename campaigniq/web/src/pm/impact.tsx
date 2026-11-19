@@ -1,3 +1,4 @@
+import { useSidebarField } from '../ui/filters';
 /**
  * Zonal Manager - Impact & Learning (PM.10, 10A, 10B, 10C, PM.11, 11A, 11B, 11C, 11D) and AI Copilot (PM.AI1).
  */
@@ -17,14 +18,16 @@ const BASE = SCENARIOS[1];
 /* ------------------------------------------------------------------ PM.10 */
 
 export function Pm10() {
+  // Page filters live in the sidebar (product comes from the ZM persona filters).
+  useSidebarField('pm10-crop', 'Crop', ['Onion', 'All Crops']);
+  useSidebarField('pm10-region', 'Region', ['West Region', 'Maharashtra']);
+  useSidebarField('pm10-campaign', 'Campaign', [C1.name, 'All Campaigns']);
+  useSidebarField('pm10-period', 'Reporting period', ['Jan–Feb 2027', 'FY 2026–27']);
   return (
     <PmPage
       crumbs={[{ label: 'Impact & Learning' }, { label: 'Campaign Performance' }, { label: 'Crop-wise Uplift' }]}
       code="PM.10"
       title="Campaign Performance & Crop-wise Business Uplift"
-      actions={<div className="row">
-        <Select options={['Onion', 'All Crops']} /><Select options={['Croptek', 'All Products']} /><Select options={['West Region', 'Maharashtra']} /><Select options={[C1.name, 'All Campaigns']} /><Select options={['Jan–Feb 2027', 'FY 2026–27']} />
-      </div>}
     >
       <Source>Later interim checkpoint after Marketing Head authorization, local TM approvals and execution progress. approval checks are not portrayed as approved without that transition.</Source>
       <Strip items={[

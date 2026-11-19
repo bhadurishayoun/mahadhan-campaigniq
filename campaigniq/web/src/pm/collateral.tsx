@@ -216,17 +216,16 @@ export function Pm7c() {
       code="PM.7C"
       title="Collateral Preview, Version Comparison & Change Tracking"
       status="Draft / Not Approved"
-      actions={<div className="row">
-        <Select options={['English', 'Marathi']} value={lang} key={lang} />
+    >
+      <Source><b>Preview / View Version History</b> for the Retailer Product Detailer. C1 {C1.name} · Maharashtra Onion.</Source>
+      <div className="pm-two">
+        <Box title={`${mode} comparison · v0.2 vs v0.3`} icon={<Eye size={15} />}
+          actions={<div className="pm-view-toggles" role="group" aria-label="Language and comparison view">
         <button type="button" className={cx('pm-chip', lang === 'English' && 'active')} onClick={() => setLang('English')}>EN</button>
         <button type="button" className={cx('pm-chip', lang === 'Marathi' && 'active')} onClick={() => setLang('Marathi')}>MR</button>
         <button type="button" className={cx('pm-chip', mode === 'Side-by-side' && 'active')} onClick={() => setMode('Side-by-side')}>Side-by-side</button>
         <button type="button" className={cx('pm-chip', mode === 'Overlay' && 'active')} onClick={() => setMode('Overlay')}>Overlay</button>
-      </div>}
-    >
-      <Source><b>Preview / View Version History</b> for the Retailer Product Detailer. C1 {C1.name} · Maharashtra Onion.</Source>
-      <div className="pm-two">
-        <Box title={`${mode} comparison · v0.2 vs v0.3`} icon={<Eye size={15} />}>
+          </div>}>
           <div className={mode === 'Side-by-side' ? 'pm-two-even' : undefined} style={mode === 'Overlay' ? { position: 'relative' } : undefined}>
             <div style={mode === 'Overlay' ? { opacity: .45 } : undefined}>
               <Creative kind="detailer" lang={lang} size="lg" label="Previous · v0.2" version="Draft" />
