@@ -1,3 +1,4 @@
+import { FIELD_OWNERS } from './data';
 import type { ActivityLine } from './data';
 
 // All pricing and multipliers live here so the budget model can be tuned in one place.
@@ -13,7 +14,6 @@ export const COST_CONFIG = {
   unitFactor: { units: 1, unit: 1, sessions: 1, session: 1, meetings: 1, meeting: 1, wave: 1, rounds: 1, round: 1, days: 1.2, day: 1.2 },
   reachFactor: { perExtraPlace: 0.5, digitalConsent: 0.6 },
   timingFactor: { peak: 1.15, after: 0.9, default: 1 },
-  ownerFactor: { 'r. jadhav': 1, 's. patil': 1.05, 'v. shinde': 1.1, 'p. kale': 1, pending: 1, default: 1 },
 } as const;
 
 type CostLine = Pick<ActivityLine, 'activity' | 'units' | 'unitLabel' | 'where' | 'timing' | 'owner'>;
@@ -52,7 +52,7 @@ export function calcLineBudget(line: CostLine): { budget: number; breakdown: str
   const after = !before && !peak && /after|follow-up|follow up/i.test(timingText);
   const timingFactor = peak ? COST_CONFIG.timingFactor.peak : after ? COST_CONFIG.timingFactor.after : COST_CONFIG.timingFactor.default;
   const owner = line.owner.trim().toLowerCase();
-  const ownerFactor = COST_CONFIG.ownerFactor[owner as keyof typeof COST_CONFIG.ownerFactor] ?? COST_CONFIG.ownerFactor.default;
+  const ownerFactor = FIELD_OWNERS.find((o) => o.name.toLowerCase() === owner)?.costFactor ?? 1;
   const rawBudget = Math.max(0, line.units) * activityCost * unitFactor * reach * timingFactor * ownerFactor;
   const budget = round2(rawBudget);
   const timingLabel = peak ? 'stage window' : after ? 'follow-up' : 'timing';

@@ -533,3 +533,11 @@
   background: var(--surface); color: var(--ink-900); font: inherit; font-size: 14px; white-space: nowrap; overflow: hidden; }
 .app .cw2-table .cw2-select select.cw2-field:hover, .app .cw2-table .cw2-select select.cw2-field:focus { border-color: var(--brand-500); outline: none; }
 .app .cw2-table td:has(> .cw2-select) { padding-left: 6px; padding-right: 6px; }
+
+/* CW.2 owner dropdown: the open list shows "Name · Role · Base"; the closed cell shows just the name. */
+.app .cw2-table .cw2-owner select.cw2-field { color: transparent; }
+.app .cw2-table .cw2-owner select.cw2-field option, .app .cw2-table .cw2-owner select.cw2-field optgroup { color: var(--ink-900); }
+.app .cw2-table .cw2-owner select.cw2-field option.muted { color: var(--ink-400); }
+.app .cw2-table .cw2-select-face { position: absolute; left: 11px; right: 30px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--ink-900);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+.app .cw2-table .cw2-owner.pending .cw2-select-face { color: var(--ink-400); }

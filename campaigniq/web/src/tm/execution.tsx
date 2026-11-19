@@ -4,7 +4,7 @@ import { AlertTriangle, Bot, Camera, CheckCircle2, Clock, FileText, ShieldAlert,
 import { useNav } from '../nav';
 import { Btn, cx } from '../ui';
 import { FunnelBars } from '../ui/index';
-import { CAMPAIGN, GANTT, IMPACT_VILLAGES, conversion, type GanttUnit } from './data';
+import { CAMPAIGN, FIELD_OWNERS, GANTT, IMPACT_VILLAGES, conversion, type GanttUnit } from './data';
 import { AiPanel, Context, Footer, HBars, Metrics, Note, Panel, Status, TmPage, lakh } from './ui';
 import { MAP_COLORS, TmMap } from './viz';
 import { LiveCopilot } from '../ui/LiveCopilot';
@@ -166,7 +166,7 @@ export function TmEx2() {
             </div>
             <div className="pm-form">
               <label className="pm-field"><span>Assigned owner</span>
-                <select value={owner} onChange={(e) => setOwner(e.target.value)}>{['R. Jadhav', 'S. Patil', 'P. Kale', 'V. Shinde'].map((o) => <option key={o}>{o}</option>)}</select>
+                <select value={owner} onChange={(e) => setOwner(e.target.value)}>{FIELD_OWNERS.map((o) => <option key={o.name} value={o.name}>{o.name}</option>)}</select>
               </label>
               <label className="pm-field"><span>Proposed new date {action !== 'Propose Reschedule' && <em className="tm-muted">(only for a reschedule)</em>}</span>
                 <input type="date" value={date} onChange={(e) => setDate(e.target.value)} disabled={action !== 'Propose Reschedule'} />

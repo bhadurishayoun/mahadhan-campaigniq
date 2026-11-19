@@ -177,3 +177,20 @@ export const IMPACT_VILLAGES = [
   { village: 'Wadi Gaon', reached: 360, trials: 98, adopters: 48, planned: 7, completed: 5, sales: 3.4 },
 ];
 export const conversion = (adopters: number, trials: number) => (trials ? (adopters / trials) * 100 : 0);
+
+/** The one field-owner master: every owner dropdown and the CW.2 cost model read from here
+ *  (mirrored in server/data/reference/masters.json → people). */
+export interface FieldOwner { name: string; role: string; base: string; costFactor: number; group: 'Field owners (MDO)' | 'Specialists' }
+export const FIELD_OWNERS: FieldOwner[] = [
+  { name: 'R. Jadhav', role: 'Field owner (MDO)', base: 'Dhanora', costFactor: 1.00, group: 'Field owners (MDO)' },
+  { name: 'S. Patil', role: 'Field owner (MDO)', base: 'Ambad HQ', costFactor: 1.05, group: 'Field owners (MDO)' },
+  { name: 'V. Shinde', role: 'Field owner (MDO)', base: 'Ghansawangi', costFactor: 1.10, group: 'Field owners (MDO)' },
+  { name: 'P. Kale', role: 'Field owner (MDO)', base: 'Wadi Gaon', costFactor: 1.00, group: 'Field owners (MDO)' },
+  { name: 'M. Deshmukh', role: 'Field owner (MDO)', base: 'Pimpalgaon', costFactor: 1.00, group: 'Field owners (MDO)' },
+  { name: 'P. Koli', role: 'Field owner (MDO)', base: 'Badnapur', costFactor: 1.05, group: 'Field owners (MDO)' },
+  { name: 'A. Pawar', role: 'Retailer activation lead', base: 'Ambad HQ', costFactor: 1.00, group: 'Specialists' },
+  { name: 'K. More', role: 'Digital advisory coordinator', base: 'Jalna', costFactor: 1.00, group: 'Specialists' },
+];
+export const OWNER_PENDING = 'Owner pending';
+export const ownerLabel = (o: FieldOwner) => `${o.name} · ${o.role} · ${o.base}`;
+export const isOwnerPending = (owner: string) => !owner || owner === OWNER_PENDING;

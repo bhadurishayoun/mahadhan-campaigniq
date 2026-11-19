@@ -1944,6 +1944,78 @@
       "name": "P. Kale",
       "role": "Marketing Head",
       "region": "East"
+    },
+    {
+      "id": "field-owner-1",
+      "name": "R. Jadhav",
+      "role": "Field owner (MDO)",
+      "region": "West",
+      "territory": "Dhanora",
+      "mu_id": null,
+      "cost_factor": 1
+    },
+    {
+      "id": "field-owner-2",
+      "name": "S. Patil",
+      "role": "Field owner (MDO)",
+      "region": "West",
+      "territory": "Ambad HQ",
+      "mu_id": null,
+      "cost_factor": 1.05
+    },
+    {
+      "id": "field-owner-3",
+      "name": "V. Shinde",
+      "role": "Field owner (MDO)",
+      "region": "West",
+      "territory": "Ghansawangi",
+      "mu_id": null,
+      "cost_factor": 1.1
+    },
+    {
+      "id": "field-owner-4",
+      "name": "P. Kale",
+      "role": "Field owner (MDO)",
+      "region": "West",
+      "territory": "Wadi Gaon",
+      "mu_id": null,
+      "cost_factor": 1
+    },
+    {
+      "id": "field-owner-5",
+      "name": "M. Deshmukh",
+      "role": "Field owner (MDO)",
+      "region": "West",
+      "territory": "Pimpalgaon",
+      "mu_id": null,
+      "cost_factor": 1
+    },
+    {
+      "id": "field-owner-6",
+      "name": "P. Koli",
+      "role": "Field owner (MDO)",
+      "region": "West",
+      "territory": "Badnapur",
+      "mu_id": null,
+      "cost_factor": 1.05
+    },
+    {
+      "id": "field-owner-7",
+      "name": "A. Pawar",
+      "role": "Retailer activation lead",
+      "region": "West",
+      "territory": "Ambad HQ",
+      "mu_id": null,
+      "cost_factor": 1
+    },
+    {
+      "id": "field-owner-8",
+      "name": "K. More",
+      "role": "Digital advisory coordinator",
+      "region": "West",
+      "territory": "Jalna",
+      "mu_id": null,
+      "cost_factor": 1
     }
   ]
 }

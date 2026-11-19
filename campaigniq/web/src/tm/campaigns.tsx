@@ -16,6 +16,7 @@ import { DonutMetric } from '../ui/viz';
 import { useDraftEdits } from '../ui/useDraftEdits';
 import {
   APPROVED, CAMPAIGN, CAMPAIGN_RETAILERS, PORTFOLIO, PORTFOLIO_MONTHS, PRIORITIES, SELECTED_RETAILERS,
+  FIELD_OWNERS, OWNER_PENDING, isOwnerPending, ownerLabel,
 } from './data';
 import { calcLineBudget } from './costModel';
 import { calculateDraftLine, useCampaignDraft, type CampaignDraftLine } from './campaignDraft';
@@ -29,7 +30,6 @@ const ACTIVITY_ICONS = [Users, Store, Users, Smartphone, RefreshCw];
 const PLACES = ['Dhanora / Wadi Gaon', 'Dhanora', 'Wadi Gaon', '3 linked retailers', 'Retailer channel', 'Village meetings', 'Consent-based digital', 'Field follow-up'];
 /** Timing choices map onto the crop-stage calendar phases (preparation · crop-stage window · follow-up). */
 const TIMINGS = ['To schedule', 'Preparation window', 'Pre-activation', 'Before bulb initiation (indicative)', 'Stage window', 'Relevant crop-stage window', 'After demonstrations', 'Follow-up support'];
-const OWNERS = ['Owner pending', 'R. Jadhav', 'S. Patil', 'V. Shinde', 'P. Kale', 'M. Deshmukh'];
 /** Options for a dropdown, always including the row's current value. */
 const choices = (list: string[], value: string) => (value && !list.includes(value) ? [value, ...list] : list);
 
@@ -273,7 +273,25 @@ export function Cw2() {
                     <td><div className="cw2-units"><input type="number" min={0} value={line.units} onChange={(e) => update(index, { units: Number(e.target.value) })} aria-label={`Planned units ${index + 1}`} /><input value={line.unitLabel} title={line.unitLabel} onChange={(e) => update(index, { unitLabel: e.target.value })} aria-label={`Unit type ${index + 1}`} /></div></td>
                     <td><input className="cw2-field" list="cw2-places" value={line.where} title={line.where} onChange={(e) => update(index, { where: e.target.value })} aria-label={`Village or channel ${index + 1}`} /></td>
                     <td><span className="cw2-select"><select className="cw2-field" value={line.timing} title={line.timing} onChange={(e) => update(index, { timing: e.target.value })} aria-label={`Tentative timing ${index + 1}`}>{choices(TIMINGS, line.timing).map((t) => <option key={t} value={t}>{t}</option>)}</select><ChevronDown size={14} aria-hidden="true" /></span></td>
-                    <td><span className="cw2-select"><select className="cw2-field" value={line.owner || 'Owner pending'} title={line.owner || 'Owner pending'} onChange={(e) => update(index, { owner: e.target.value })} aria-label={`Assigned owner ${index + 1}`}>{choices(OWNERS, line.owner || 'Owner pending').map((o) => <option key={o} value={o}>{o}</option>)}</select><ChevronDown size={14} aria-hidden="true" /></span></td>
+                    <td>{(() => {
+                      const owner = isOwnerPending(line.owner) ? '' : line.owner;
+                      const meta = FIELD_OWNERS.find((o) => o.name === owner);
+                      const id = `cw2-owner-${index}`;
+                      return (
+                        <span className={`cw2-select cw2-owner${owner ? '' : ' pending'}`}>
+                          <label className="sr-only" htmlFor={id}>Assigned owner for {line.activity}</label>
+                          <select id={id} className="cw2-field" value={owner} title={meta ? ownerLabel(meta) : owner || OWNER_PENDING} onChange={(e) => update(index, { owner: e.target.value || OWNER_PENDING })}>
+                            <option value="" className="muted">{OWNER_PENDING}</option>
+                            {owner && !meta && <option value={owner}>{owner}</option>}
+                            {(['Field owners (MDO)', 'Specialists'] as const).map((group) => (
+                              <optgroup key={group} label={group}>{FIELD_OWNERS.filter((o) => o.group === group).map((o) => <option key={o.name} value={o.name}>{ownerLabel(o)}</option>)}</optgroup>
+                            ))}
+                          </select>
+                          <span className="cw2-select-face" aria-hidden="true">{owner || OWNER_PENDING}</span>
+                          <ChevronDown size={14} aria-hidden="true" />
+                        </span>
+                      );
+                    })()}</td>
                     <td className={`r cw2-budget-cell ${flashingLine === index ? 'cw2-budget-flash' : ''}`} title={line.breakdown}><label className="cw2-money"><span>₹</span><input type="number" min={0} step={0.05} value={line.manualBudget ?? displayedBudgets[index] ?? 0} onChange={(e) => update(index, { manualBudget: Number(e.target.value) })} aria-label={`Draft budget ${index + 1}`} /><span>L</span></label>{line.manualBudget !== undefined && <span className="cw2-manual-budget"><span>🔒 Manual</span><button type="button" title="Reset calculated budget" aria-label={`Reset budget for ${line.activity}`} onClick={() => update(index, { manualBudget: undefined })}><RotateCcw size={12} /></button></span>}</td>
                     <td><div className="cw2-row-actions"><button type="button" aria-label={`Focus ${line.activity} name`} title="Edit activity name" onClick={() => activityInputs.current[index]?.focus()}><Pencil size={13} /></button><button type="button" className="cw2-delete" aria-label={`Remove ${line.activity}`} title="Remove activity" onClick={() => removeActivity(index)}><Trash2 size={14} /></button></div></td>
                   </tr>
@@ -290,7 +308,7 @@ export function Cw2() {
             ))}</div>
           </Panel>
           <Panel title="Campaign Readiness (Key Checks)" className="cw2-readiness-panel">
-            <div className="cw2-readiness-grid">{lines.some((line) => !line.owner || line.owner === 'Owner pending') ? <Status>{`Owner assignment pending (${lines.filter((line) => !line.owner || line.owner === 'Owner pending').length})`}</Status> : <Status>All owners assigned</Status>}<Status>Agronomy content approval pending</Status><Status>Stock readiness not yet verified</Status><Status>Digital consent verification required</Status></div>
+            <div className="cw2-readiness-grid">{lines.some((line) => isOwnerPending(line.owner)) ? <Status>{`Owner assignment pending (${lines.filter((line) => isOwnerPending(line.owner)).length})`}</Status> : <Status>All owners assigned</Status>}<Status>Agronomy content approval pending</Status><Status>Stock readiness not yet verified</Status><Status>Digital consent verification required</Status></div>
           </Panel>
         </div>
         <aside className="cw2-side">

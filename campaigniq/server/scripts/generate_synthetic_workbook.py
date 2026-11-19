@@ -1485,6 +1485,19 @@ people = [{"id": str(person_row["id"]), "name": person_row["name"], "role": pers
 for name, role, region in [("Sayak Patil", "Business Head", None), ("R. Jadhav", "Marketing Head", "West"), ("S. Patil", "Marketing Head", "South"), ("V. Shinde", "Marketing Head", "North"), ("P. Kale", "Marketing Head", "East")]:
     if not any(person_row["name"] == name and person_row["role"] == role for person_row in people):
         people.append({"id": f"screen-{len(people)+1}", "name": name, "role": role, "region": region})
+# Shared field-owner master (mirrors web/src/tm/data.ts FIELD_OWNERS): name, role, base, cost factor.
+FIELD_OWNERS = [
+    ("R. Jadhav", "Field owner (MDO)", "Dhanora", 1.00),
+    ("S. Patil", "Field owner (MDO)", "Ambad HQ", 1.05),
+    ("V. Shinde", "Field owner (MDO)", "Ghansawangi", 1.10),
+    ("P. Kale", "Field owner (MDO)", "Wadi Gaon", 1.00),
+    ("M. Deshmukh", "Field owner (MDO)", "Pimpalgaon", 1.00),
+    ("P. Koli", "Field owner (MDO)", "Badnapur", 1.05),
+    ("A. Pawar", "Retailer activation lead", "Ambad HQ", 1.00),
+    ("K. More", "Digital advisory coordinator", "Jalna", 1.00),
+]
+people = [p for p in people if not str(p["id"]).startswith("field-owner-")]
+people += [{"id": f"field-owner-{i + 1}", "name": n, "role": r, "region": "West", "territory": b, "mu_id": None, "cost_factor": c} for i, (n, r, b, c) in enumerate(FIELD_OWNERS)]
 reference_masters["people"] = people
 for path, payload in (("geography.json", geography), ("products.json", product_master), ("masters.json", reference_masters)):
     (REFERENCE_DIR / path).write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

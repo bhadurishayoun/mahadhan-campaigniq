@@ -1,3 +1,4 @@
+import { FIELD_OWNERS } from '../tm/data';
 import { useSidebarField } from '../ui/filters';
 import { useState, type ReactNode } from 'react';
 import {
@@ -105,7 +106,8 @@ const ALERT_ROWS: AlertRow[] = [
   { n: 4, alert: 'Crop-window slippage (Bulb Enlargement)', impact: 'Compressed execution window; +7 days risk', priority: 'Medium' },
 ];
 
-const OWNERS = ['S. Patil (Field Owner)', 'R. Jadhav (Field Owner)', 'M. Deshmukh (Field Owner)', 'P. Koli (Field Owner)', 'V. Shinde (Field Owner)'];
+/** Field owners come from the shared master (tm/data.ts). */
+const OWNERS = FIELD_OWNERS.map((o) => o.name);
 const CLUSTERS = ['Wadi Gaon', 'Dhanora', 'Ambad HQ', 'Pimpalgaon', 'Other Villages'];
 const fmtDate = (d: string) => new Date(`${d}T00:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
@@ -814,7 +816,7 @@ export function ActivityWorkspace() {
                 </label>
                 <label className="field">Owner
                   <select value={replan.owner} onChange={(e) => setReplan({ ...replan, owner: e.target.value })}>
-                    {['R. Jadhav', 'S. Patil', 'M. Deshmukh', 'P. Koli', 'V. Shinde', 'N. Koli'].map((o) => <option key={o}>{o}</option>)}
+                    {OWNERS.map((o) => <option key={o}>{o}</option>)}
                   </select>
                 </label>
                 <Btn variant="gold" icon={<Shuffle size={14} />} onClick={reschedule}>Open Replanning</Btn>
