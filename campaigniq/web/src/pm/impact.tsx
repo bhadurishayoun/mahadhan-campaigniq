@@ -8,7 +8,7 @@ import { Btn, COLORS } from '../ui';
 import { Act, Actions, AiBox, Bars, Box, Checklist, Chips, Creative, Cta, Drawer, Facts, Field, Input, Meter, Muted, P, PmPage, Select, Source, Sources, Status, Strip, Table, Workflow } from './kit';
 import {
   ACTIVITIES, ACTIVITY_TOTAL, AMBAD, C1, C2, COLLATERALS, CROP_PLAN, DHANORA, EVIDENCE, IMPACT, INVESTMENT, LOCAL_PLAN, MARGIN,
-  ONION_APPROVED_LATER, PM_ROLE, PORTFOLIO, PORTFOLIO_TOTAL, SCENARIOS, THEME, VILLAGES, VILLAGE_GAP,
+  ONION_APPROVED_LATER, PM_ROLE, PORTFOLIO, PORTFOLIO_LABEL, PORTFOLIO_TOTAL, SCENARIOS, THEME, VILLAGES, VILLAGE_GAP,
 } from './data';
 import { LiveCopilot } from '../ui/LiveCopilot';
 
@@ -28,7 +28,7 @@ export function Pm10() {
     >
       <Source>Later interim checkpoint after Marketing Head authorization, local TM approvals and execution progress. approval checks are not portrayed as approved without that transition.</Source>
       <Strip items={[
-        { label: 'Product Portfolio ABP', value: '₹6.00 Cr' },
+        { label: 'Product Portfolio ABP', value: PORTFOLIO_LABEL.abp },
         { label: 'Campaign rollout progress', value: <>{IMPACT.activities} activities <Muted>(Ambad, source-linked)</Muted></> },
         { label: 'Verified commercial uplift', value: <Status>Attribution Pending</Status>, sub: 'Regional forecasts are never substituted for actual performance', tone: 'amber' },
       ]} />

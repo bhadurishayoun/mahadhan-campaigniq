@@ -343,7 +343,7 @@ def cr(value_rs: float) -> str:
 
 def lakh(value_rs: float) -> str:
     """Indian display convention: lakh below one crore, crore above."""
-    return f"₹{value_rs / 1e5:.0f} L" if value_rs < 1e7 else f"₹{value_rs / 1e7:.1f} Cr"
+    return f"₹{value_rs / 1e5:.2f} L" if value_rs < 1e7 else f"₹{value_rs / 1e7:.2f} Cr"
 
 
 def short_date(value: date) -> str:
@@ -814,14 +814,14 @@ def readiness_label(score: float) -> str:
 PIN = dict(season=CUR_FILTER, state="maharashtra", district="jalna", crop="onion")
 PINNED_ROWS = {
     "atlas.taluka_ranking": [
-        dict(rank=1, taluka="Ambad", score=94, potential="₹52 L", gap="28 pp", retailers=74, readiness="High"),
-        dict(rank=2, taluka="Partur", score=91, potential="₹46 L", gap="25 pp", retailers=61, readiness="High"),
-        dict(rank=3, taluka="Badnapur", score=89, potential="₹39 L", gap="21 pp", retailers=58, readiness="High"),
-        dict(rank=4, taluka="Jalna", score=86, potential="₹34 L", gap="18 pp", retailers=82, readiness="Medium"),
-        dict(rank=5, taluka="Mantha", score=83, potential="₹29 L", gap="19 pp", retailers=47, readiness="Medium"),
-        dict(rank=6, taluka="Bhokardan", score=79, potential="₹27 L", gap="17 pp", retailers=44, readiness="Medium"),
-        dict(rank=7, taluka="Ghansawangi", score=74, potential="₹22 L", gap="16 pp", retailers=36, readiness="Medium"),
-        dict(rank=8, taluka="Jafrabad", score=68, potential="₹17 L", gap="14 pp", retailers=29, readiness="Low"),
+        dict(rank=1, taluka="Ambad", score=94, potential="₹52.00 L", gap="28 pp", retailers=74, readiness="High"),
+        dict(rank=2, taluka="Partur", score=91, potential="₹46.00 L", gap="25 pp", retailers=61, readiness="High"),
+        dict(rank=3, taluka="Badnapur", score=89, potential="₹39.00 L", gap="21 pp", retailers=58, readiness="High"),
+        dict(rank=4, taluka="Jalna", score=86, potential="₹34.00 L", gap="18 pp", retailers=82, readiness="Medium"),
+        dict(rank=5, taluka="Mantha", score=83, potential="₹29.00 L", gap="19 pp", retailers=47, readiness="Medium"),
+        dict(rank=6, taluka="Bhokardan", score=79, potential="₹27.00 L", gap="17 pp", retailers=44, readiness="Medium"),
+        dict(rank=7, taluka="Ghansawangi", score=74, potential="₹22.00 L", gap="16 pp", retailers=36, readiness="Medium"),
+        dict(rank=8, taluka="Jafrabad", score=68, potential="₹17.00 L", gap="14 pp", retailers=29, readiness="Low"),
     ],
     "nutrition.triggers": [
         dict(n=1, trigger="Upcoming Bulb-Initiation Window", geo="Ambad/Jalna", audience="Eligible conventional NPK farmers", intervention="Stage-specific farmer education plus retailer activation", reach="≈ 12.4K farmers", urgency="High", status="Draft recommendation — agronomy approval required", campaign=0),
@@ -889,11 +889,11 @@ ORCH_PIN = [
     dict(owner="V. Shinde", role="Field Owner", cluster="Other Villages", task="Farmer meetings (4)", load="5 / 10", status="On Track"),
 ]
 TOP_MARKET_PIN = [
-    dict(rank=1, geo="Jalna", crop="Onion", score=92, potential="₹2.4 Cr", gap="24 pp", readiness="High"),
-    dict(rank=2, geo="Dhule", crop="Onion", score=88, potential="₹1.8 Cr", gap="18 pp", readiness="High"),
-    dict(rank=3, geo="Nashik", crop="Onion", score=78, potential="₹1.6 Cr", gap="16 pp", readiness="Medium"),
-    dict(rank=4, geo="Sangli", crop="Onion", score=76, potential="₹1.1 Cr", gap="15 pp", readiness="Medium"),
-    dict(rank=5, geo="Anantapur", crop="Onion", score=74, potential="₹1.0 Cr", gap="17 pp", readiness="Medium"),
+    dict(rank=1, geo="Jalna", crop="Onion", score=92, potential="₹2.40 Cr", gap="24 pp", readiness="High"),
+    dict(rank=2, geo="Dhule", crop="Onion", score=88, potential="₹1.80 Cr", gap="18 pp", readiness="High"),
+    dict(rank=3, geo="Nashik", crop="Onion", score=78, potential="₹1.60 Cr", gap="16 pp", readiness="Medium"),
+    dict(rank=4, geo="Sangli", crop="Onion", score=76, potential="₹1.10 Cr", gap="15 pp", readiness="Medium"),
+    dict(rank=5, geo="Anantapur", crop="Onion", score=74, potential="₹1.00 Cr", gap="17 pp", readiness="Medium"),
 ]
 CAMPAIGN_PIN = [
     dict(name="Croptek Onion Adoption", objective="Competitive conversion", crop="Onion", geography="Dhule & Jalna, MH", region="Maharashtra", budget="₹0.80 Cr", stage="Execute", progress=72, trial="27%*", risk="Medium", roi="2.1x", next="Resolve stock gap", campaign_type="adoption", product="croptek"),
@@ -1463,6 +1463,14 @@ product_master = {
         for key, (name, family, packs) in families.items()
     ],
 }
+# Zonal Manager portfolio placeholder lines (Specialty Nutrition) until real SKUs are named; screens read them from
+# web/src/pm/data.ts PORTFOLIO. Flagged placeholder so general product filters skip them.
+PLACEHOLDER_PRODUCTS = ["Product A", "Product B", "Product C"]
+product_master["products"] += [
+    {"id": name.lower().replace(" ", "-"), "name": name, "family": "Speciality nutrition", "category": "Specialty Nutrition",
+     "pack_sizes_kg": [25], "crops": ["maize", "onion", "soybean"], "active": True, "placeholder": True}
+    for name in PLACEHOLDER_PRODUCTS
+]
 reference_masters = json.loads((REFERENCE_DIR / "masters.json").read_text(encoding="utf-8"))
 reference_masters["crops"] = [{"id": name.lower(), "name": name} for name in SCREEN_CROPS]
 reference_masters["seasons"] = [{"id": item[7], "name": item[1], "current": item[0] == CURRENT_SEASON} for item in SEASONS]

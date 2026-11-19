@@ -6,14 +6,49 @@
 export const PM_ROLE = 'Crop Nutrition Zonal Manager';
 
 /* PM.1 - product portfolio ABP (₹ Cr) */
+export const growthPct = (ly: number, abp: number) => `${(((abp - ly) / ly) * 100).toFixed(1)}%`;
+export const cr = (value: number) => `₹${value.toFixed(2)} Cr`;
+const r2 = (v: number) => Math.round(v * 100) / 100;
+
+/** Product portfolio (₹ Cr). Products A–C are placeholder Specialty Nutrition lines (products.json: placeholder: true). */
 export const PORTFOLIO = [
   { product: 'Croptek', ly: 2.4, abp: 3.2 },
   { product: 'Water Soluble', ly: 1.5, abp: 1.8 },
   { product: 'Specialty Nutrition', ly: 0.9, abp: 1.0 },
+  { product: 'Product A', ly: 0.7, abp: 0.84 },
+  { product: 'Product B', ly: 0.5, abp: 0.58 },
+  { product: 'Product C', ly: 0.3, abp: 0.33 },
 ];
-export const PORTFOLIO_TOTAL = { ly: 4.8, abp: 6.0 };
-export const growthPct = (ly: number, abp: number) => `${(((abp - ly) / ly) * 100).toFixed(1)}%`;
-export const cr = (value: number) => `₹${value.toFixed(2)} Cr`;
+/** Portfolio totals are always computed from PORTFOLIO - never hard-code them on a screen. */
+export const PORTFOLIO_TOTAL = (() => {
+  const ly = r2(PORTFOLIO.reduce((s, p) => s + p.ly, 0));
+  const abp = r2(PORTFOLIO.reduce((s, p) => s + p.abp, 0));
+  const gap = r2(abp - ly);
+  return { ly, abp, gap, growth: (gap / ly) * 100, products: PORTFOLIO.length };
+})();
+/** Pre-formatted portfolio figures for KPI tiles and copy. */
+export const PORTFOLIO_LABEL = { ly: cr(PORTFOLIO_TOTAL.ly), abp: cr(PORTFOLIO_TOTAL.abp), gap: cr(PORTFOLIO_TOTAL.gap), growth: `+${PORTFOLIO_TOTAL.growth.toFixed(1)}%` };
+/** Share of portfolio growth per product (whole %, largest-remainder rounding so the column sums to exactly 100). */
+export const PORTFOLIO_SHARE: Record<string, number> = (() => {
+  const raw = PORTFOLIO.map((p) => ({ product: p.product, v: ((p.abp - p.ly) / PORTFOLIO_TOTAL.gap) * 100 }));
+  const out = Object.fromEntries(raw.map((x) => [x.product, Math.floor(x.v)]));
+  let left = 100 - Object.values(out).reduce((a, b) => a + b, 0);
+  for (const x of [...raw].sort((a, b) => (b.v % 1) - (a.v % 1))) { if (left <= 0) break; out[x.product] += 1; left -= 1; }
+  return out;
+})();
+/** ABP by crop (₹ Cr) for the crop × product grid. The first three are the plan split; Products A–C follow the
+ *  Specialty Nutrition crop mix (their category) until crop-level plans exist. */
+export const PORTFOLIO_CROPS = ['Onion', 'Maize', 'Soybean'];
+export const PORTFOLIO_CROP_ABP: Record<string, number[]> = (() => {
+  const base: Record<string, number[]> = { Croptek: [1.4, 1.0, 0.8], 'Water Soluble': [0.7, 0.6, 0.5], 'Specialty Nutrition': [0.3, 0.4, 0.3] };
+  const mix = base['Specialty Nutrition'].map((v) => v / 1.0);
+  for (const p of PORTFOLIO) if (!base[p.product]) {
+    const parts = mix.map((m) => r2(p.abp * m));
+    parts[parts.length - 1] = r2(p.abp - parts.slice(0, -1).reduce((a, b) => a + b, 0));
+    base[p.product] = parts;
+  }
+  return base;
+})();
 
 /* Ambad / Jalna territory submission (all-product figures) */
 export const AMBAD = {

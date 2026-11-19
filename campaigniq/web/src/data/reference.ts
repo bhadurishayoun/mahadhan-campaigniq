@@ -26,7 +26,8 @@ export interface ReferenceData {
 
 export const BUNDLED_REFERENCE: ReferenceData = {
   states: geography.states,
-  products: productMaster.products,
+  // Placeholder portfolio lines (Products A–C) belong to the ZM portfolio only.
+  products: productMaster.products.filter((p) => !(p as { placeholder?: boolean }).placeholder),
   crops: masters.crops,
   seasons: masters.seasons,
   campaign_types: masters.campaign_types,

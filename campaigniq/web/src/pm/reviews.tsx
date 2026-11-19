@@ -8,32 +8,40 @@ import { Btn, COLORS } from '../ui';
 import {
   Act, Actions, AiBox, Bars, Box, Checklist, Cta, Drawer, Facts, Field, Input, Muted, P, PmPage, Select, Source, Sources, Status, Strip, Table, Workflow,
 } from './kit';
-import { AMBAD, CROP_PLAN, CROP_TOTAL, DHANORA, ONION_APPROVED_LATER, PORTFOLIO, PORTFOLIO_TOTAL, cr, growthPct } from './data';
+import { AMBAD, CROP_PLAN, CROP_TOTAL, DHANORA, ONION_APPROVED_LATER, PORTFOLIO, PORTFOLIO_LABEL, PORTFOLIO_SHARE, PORTFOLIO_TOTAL, cr, growthPct } from './data';
+import { Card, useSideFilters } from '../ui/index';
 
 /* ------------------------------------------------------------------ PM.1 */
 
 export function Pm1() {
+  const side = useSideFilters();
+  const byAbp = [...PORTFOLIO].sort((a, b) => b.abp - a.abp);
+  const byGap = [...PORTFOLIO].sort((a, b) => (b.abp - b.ly) - (a.abp - a.ly));
+  const placeholders = PORTFOLIO.filter((p) => /^Product [A-Z]$/.test(p.product));
+  const phShare = placeholders.reduce((s, p) => s + PORTFOLIO_SHARE[p.product], 0);
+  const portfolioInsight = `${byGap[0].product} delivers ${PORTFOLIO_SHARE[byGap[0].product]}% of the required portfolio growth${placeholders.length ? `; Products ${placeholders[0].product.slice(-1)}–${placeholders[placeholders.length - 1].product.slice(-1)} add ${phShare}%` : ''}.`;
   return (
     <PmPage crumbs={[{ label: 'My Performance' }]} code="PM.1" title="My Performance & ABP" subtitle="Crop Nutrition Portfolio · FY 2025–26 planning context">
       <Strip items={[
-        { label: 'FY 2024–25 portfolio sales', value: '₹4.80 Cr', sub: 'Previous year, all three product categories' },
-        { label: 'FY 2025–26 Product Portfolio ABP', value: '₹6.00 Cr', sub: 'Annual business plan assigned to this portfolio', tone: 'green' },
-        { label: 'Required growth', value: '+25%', sub: '₹1.20 Cr absolute growth across the portfolio' },
+        { label: 'FY 2024–25 portfolio sales', value: PORTFOLIO_LABEL.ly, sub: `Previous year, all ${PORTFOLIO_TOTAL.products} products` },
+        { label: 'FY 2025–26 Product Portfolio ABP', value: PORTFOLIO_LABEL.abp, sub: 'Annual business plan assigned to this portfolio', tone: 'green' },
+        { label: 'Required growth', value: PORTFOLIO_LABEL.growth, sub: `${PORTFOLIO_LABEL.gap} absolute growth across the portfolio` },
       ]} />
 
       <div className="pm-two">
-        <Box title="Product-wise Achievement vs ABP" icon={<Table2 size={15} />}>
+        <Card title="Product-wise achievement vs ABP" context={side.context('')} insight={portfolioInsight}>
           <Table
+            className="pm-portfolio-table"
             head={['Product', 'FY 2024–25 Sales', 'FY 2025–26 ABP', 'Growth Required', 'Absolute Growth', 'Share of Portfolio Growth']}
             align={['l', 'r', 'r', 'r', 'r', 'r']}
-            rows={PORTFOLIO.map((row) => [
+            rows={byAbp.map((row) => [
               <b>{row.product}</b>, cr(row.ly), cr(row.abp), <b>+{growthPct(row.ly, row.abp)}</b>, cr(row.abp - row.ly),
-              `${Math.round(((row.abp - row.ly) / (PORTFOLIO_TOTAL.abp - PORTFOLIO_TOTAL.ly)) * 100)}%`,
+              <span className="pm-sharebar"><i><b style={{ width: `${PORTFOLIO_SHARE[row.product]}%` }} /></i><em>{PORTFOLIO_SHARE[row.product]}%</em></span>,
             ])}
-            total={['Total portfolio', cr(PORTFOLIO_TOTAL.ly), cr(PORTFOLIO_TOTAL.abp), '+25.0%', cr(1.2), '100%']}
-            highlight={0}
+            total={['Total portfolio', PORTFOLIO_LABEL.ly, PORTFOLIO_LABEL.abp, PORTFOLIO_LABEL.growth, PORTFOLIO_LABEL.gap, '100%']}
+            highlight={Math.max(0, byAbp.findIndex((row) => row.product === (side.values.product === 'All Products' ? byAbp[0].product : side.values.product)))}
           />
-        </Box>
+        </Card>
         <div className="pm-stack">
           <Box title="Portfolio contribution & growth">
             <Bars
@@ -54,7 +62,7 @@ export function Pm1() {
       </div>
 
       <AiBox title="AI Portfolio Insight" items={[
-        { title: 'Croptek carries the largest absolute growth requirement (₹0.80 Cr of ₹1.20 Cr).', text: 'Prioritise Croptek when reconciling incoming territory plans against the portfolio ABP. This highlights where the growth sits; it does not confirm the cause of last year\'s performance.', tone: 'green' },
+        { title: `${byGap[0].product} carries the largest absolute growth requirement (${cr(byGap[0].abp - byGap[0].ly)} of ${PORTFOLIO_LABEL.gap}).`, text: 'Prioritise Croptek when reconciling incoming territory plans against the portfolio ABP. This highlights where the growth sits; it does not confirm the cause of last year\'s performance.', tone: 'green' },
       ]} />
 
     </PmPage>
@@ -83,9 +91,9 @@ export function Pm2() {
       <Source>Opened by clicking <b>Review Consolidated Territory Plans</b>. Field Sales Managers prepare the plans; this screen only reviews and consolidates them.</Source>
 
       <Strip items={[
-        { label: 'Previous-year portfolio sales', value: '₹4.80 Cr' },
-        { label: 'Portfolio ABP FY 2025–26', value: '₹6.00 Cr', tone: 'green' },
-        { label: 'Required growth', value: '+25%' },
+        { label: 'Previous-year portfolio sales', value: PORTFOLIO_LABEL.ly },
+        { label: 'Portfolio ABP FY 2025–26', value: PORTFOLIO_LABEL.abp, tone: 'green' },
+        { label: 'Required growth', value: PORTFOLIO_LABEL.growth },
         { label: 'Incoming portfolio contribution', value: <Status>Pending</Status>, sub: 'Until SKU-level mappings and submissions are validated', tone: 'amber' },
       ]} />
 
@@ -105,14 +113,14 @@ export function Pm2() {
             highlight={selected}
             onRow={setSelected}
           />
-          <p className="pm-callout">All-product territory figures (₹4.20 Cr ABP, ₹3.80 Cr submitted) are <b>not</b> summed into the ₹6.00 Cr product portfolio target. The product-specific roll-up needs validated SKU-to-portfolio mapping first.</p>
+          <p className="pm-callout">All-product territory figures (₹4.20 Cr ABP, ₹3.80 Cr submitted) are <b>not</b> summed into the {PORTFOLIO_LABEL.abp} product portfolio target. The product-specific roll-up needs validated SKU-to-portfolio mapping first.</p>
           <Sources items={[{ label: 'Outlet Planning', note: 'Field Sales Manager outlet-wise plan (source, read-only)' }, { label: 'Crop / Product Coverage Planning', note: 'Village-wise crop coverage plan (source, read-only)' }]} />
         </Box>
 
         <div className="pm-stack">
           <Box title="Portfolio target reconciliation" tone="soft">
             <Facts rows={[
-              ['Portfolio ABP', <b>₹6.00 Cr</b>],
+              ['Portfolio ABP', <b>{PORTFOLIO_LABEL.abp}</b>],
               ['Validated PM contribution', <P />],
               ['Unreviewed submissions', <P />],
               ['Remaining ABP gap', <Status>Not Yet Determinable</Status>],
@@ -148,7 +156,7 @@ export function Pm2a() {
     >
       <Source>Opened by clicking <b>Pending SKU Mapping</b> on the Ambad, Jalna submission.</Source>
       <Strip items={[
-        { label: 'PM Portfolio ABP', value: '₹6.00 Cr', tone: 'green' },
+        { label: 'PM Portfolio ABP', value: PORTFOLIO_LABEL.abp, tone: 'green' },
         { label: 'Validated contribution', value: <P />, tone: 'amber' },
         { label: 'Unmapped contribution', value: <P />, tone: 'amber' },
         { label: 'Remaining gap', value: <Status>Not Determinable</Status> },
@@ -168,7 +176,7 @@ export function Pm2a() {
             highlight={selected}
             onRow={(index) => index < 3 && setSelected(index)}
           />
-          <p className="pm-callout">Ambad's all-product ABP is {AMBAD.abp}; the originally submitted plan is {AMBAD.submitted} with a {AMBAD.gap} gap. Its contribution to the ₹6.00 Cr portfolio ABP stays <b>Pending</b> until a valid SKU mapping exists. Nothing here is invented to fill the gap.</p>
+          <p className="pm-callout">Ambad's all-product ABP is {AMBAD.abp}; the originally submitted plan is {AMBAD.submitted} with a {AMBAD.gap} gap. Its contribution to the {PORTFOLIO_LABEL.abp} portfolio ABP stays <b>Pending</b> until a valid SKU mapping exists. Nothing here is invented to fill the gap.</p>
         </Box>
 
         <Box title={`Ambad · ${SKU_ROWS[selected]} SKU-mapping validation`} tone="soft">

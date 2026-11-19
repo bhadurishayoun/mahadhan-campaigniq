@@ -3,7 +3,7 @@ export const SERIES = ['var(--data-actual)', 'var(--data-plan)', 'var(--data-bas
 export const SEGMENT = { Emerging: 'var(--segment-emerging)', Growing: 'var(--segment-growing)', Maturing: 'var(--segment-maturing)', Matured: 'var(--segment-matured)' } as const;
 export const STATUS = { ok: 'var(--ok)', warn: 'var(--warn)', risk: 'var(--risk)', info: 'var(--info)', muted: 'var(--neutral)' } as const;
 export const CROP = { Onion: 'var(--crop-onion)', Maize: 'var(--crop-maize)', Soybean: 'var(--crop-soybean)', Cotton: 'var(--crop-cotton)' } as const;
-export const PRODUCT = { Croptek: 'var(--product-croptek)', 'Water Soluble': 'var(--product-water-soluble)', Specialty: 'var(--product-specialty)' } as const;
+export const PRODUCT = { Croptek: 'var(--product-croptek)', 'Water Soluble': 'var(--product-water-soluble)', Specialty: 'var(--product-specialty)', 'Product A': 'color-mix(in srgb, var(--product-specialty) 75%, var(--surface))', 'Product B': 'color-mix(in srgb, var(--product-specialty) 55%, var(--surface))', 'Product C': 'color-mix(in srgb, var(--product-specialty) 38%, var(--surface))' } as const;
 
 export const axisStyle = { fontSize: 'var(--fs-caption)', fill: 'var(--ink-600)' } as const;
 export const gridStyle = { stroke: 'var(--line)', strokeDasharray: '3 3' } as const;

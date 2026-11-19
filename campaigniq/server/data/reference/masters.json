@@ -1952,7 +1952,7 @@
       "region": "West",
       "territory": "Dhanora",
       "mu_id": null,
-      "cost_factor": 1
+      "cost_factor": 1.0
     },
     {
       "id": "field-owner-2",
@@ -1979,7 +1979,7 @@
       "region": "West",
       "territory": "Wadi Gaon",
       "mu_id": null,
-      "cost_factor": 1
+      "cost_factor": 1.0
     },
     {
       "id": "field-owner-5",
@@ -1988,7 +1988,7 @@
       "region": "West",
       "territory": "Pimpalgaon",
       "mu_id": null,
-      "cost_factor": 1
+      "cost_factor": 1.0
     },
     {
       "id": "field-owner-6",
@@ -2006,7 +2006,7 @@
       "region": "West",
       "territory": "Ambad HQ",
       "mu_id": null,
-      "cost_factor": 1
+      "cost_factor": 1.0
     },
     {
       "id": "field-owner-8",
@@ -2015,7 +2015,7 @@
       "region": "West",
       "territory": "Jalna",
       "mu_id": null,
-      "cost_factor": 1
+      "cost_factor": 1.0
     }
   ]
 }

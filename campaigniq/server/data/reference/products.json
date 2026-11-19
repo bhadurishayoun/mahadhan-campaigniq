@@ -96,6 +96,54 @@
         "sugarcane"
       ],
       "active": true
+    },
+    {
+      "id": "product-a",
+      "name": "Product A",
+      "family": "Speciality nutrition",
+      "category": "Specialty Nutrition",
+      "pack_sizes_kg": [
+        25
+      ],
+      "crops": [
+        "maize",
+        "onion",
+        "soybean"
+      ],
+      "active": true,
+      "placeholder": true
+    },
+    {
+      "id": "product-b",
+      "name": "Product B",
+      "family": "Speciality nutrition",
+      "category": "Specialty Nutrition",
+      "pack_sizes_kg": [
+        25
+      ],
+      "crops": [
+        "maize",
+        "onion",
+        "soybean"
+      ],
+      "active": true,
+      "placeholder": true
+    },
+    {
+      "id": "product-c",
+      "name": "Product C",
+      "family": "Speciality nutrition",
+      "category": "Specialty Nutrition",
+      "pack_sizes_kg": [
+        25
+      ],
+      "crops": [
+        "maize",
+        "onion",
+        "soybean"
+      ],
+      "active": true,
+      "placeholder": true
     }
   ]
 }

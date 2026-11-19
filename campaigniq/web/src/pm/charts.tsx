@@ -3,22 +3,22 @@ import { BarChart3, Bell, ClipboardCheck, Grid3x3, IndianRupee, Package, Sparkle
 import { useNav } from '../nav';
 import { QuestionChips, Bullets, ChartCard, ColumnBars, HeatGrid, KpiCard, KpiGrid, MapCard, RankBars, Waterfall } from '../ui/index';
 import type { PulseItem } from '../ui/index';
-import { PORTFOLIO, PORTFOLIO_TOTAL } from './data';
+import { PORTFOLIO, PORTFOLIO_CROPS, PORTFOLIO_CROP_ABP, PORTFOLIO_LABEL } from './data';
 
 const jalna = { district: 'Jalna', state: 'Maharashtra' };
-const crL = (v: number) => `₹${v}`;
+const crL = (v: number) => `₹${v.toFixed(2)}`;
 
 const Pm1 = () => (
   <div className="iq-stack">
     <KpiGrid cols={4}>
-      <KpiCard icon={IndianRupee} label="Last-year sales" value={`₹${PORTFOLIO_TOTAL.ly} Cr`} />
-      <KpiCard icon={Target} label="ABP target" value={`₹${PORTFOLIO_TOTAL.abp} Cr`} />
+      <KpiCard icon={IndianRupee} label="Last-year sales" value={PORTFOLIO_LABEL.ly} />
+      <KpiCard icon={Target} label="ABP target" value={PORTFOLIO_LABEL.abp} />
       <KpiCard icon={Package} label="Products in portfolio" value={String(PORTFOLIO.length)} />
       <KpiCard icon={ClipboardCheck} label="Territory submissions" value="1 of 4" tone="amber" />
     </KpiGrid>
     <div className="iq-grid-2">
-      <ChartCard icon={BarChart3} title="Which products carry the ABP?" hint="Last year vs ABP, ₹ Cr"><ColumnBars x="p" height={210} fmt={crL} series={[{ key: 'ly', name: 'Last year' }, { key: 'abp', name: 'ABP' }]} data={PORTFOLIO.map((r) => ({ p: r.product, ly: r.ly, abp: r.abp }))} /></ChartCard>
-      <ChartCard icon={Grid3x3} title="Which crop and product pairs are strongest?" hint="ABP by crop, ₹ Cr"><HeatGrid corner="Crop" rows={['Onion', 'Maize', 'Soybean']} cols={['Croptek', 'Water Soluble', 'Specialty']} fmt={(v) => v.toFixed(1)} values={[[1.4, 0.7, 0.3], [1.0, 0.6, 0.4], [0.8, 0.5, 0.3]]} /></ChartCard>
+      <ChartCard icon={BarChart3} title="Which products carry the ABP?" hint="Last year vs ABP, ₹ Cr"><ColumnBars x="p" height={210} fmt={crL} series={[{ key: 'ly', name: 'Last year' }, { key: 'abp', name: 'ABP' }]} data={[...PORTFOLIO].sort((a, b) => b.abp - a.abp).map((r) => ({ p: r.product.replace('Specialty Nutrition', 'Specialty').replace('Water Soluble', 'Water Sol.'), ly: r.ly, abp: r.abp }))} /></ChartCard>
+      <ChartCard icon={Grid3x3} title="Which crop and product pairs are strongest?" hint="ABP by crop, ₹ Cr"><HeatGrid corner="Crop" rows={PORTFOLIO_CROPS} cols={[...PORTFOLIO].sort((a, b) => b.abp - a.abp).map((p) => p.product.replace('Specialty Nutrition', 'Specialty').replace('Water Soluble', 'Water Sol.'))} fmt={(v) => v.toFixed(2)} values={PORTFOLIO_CROPS.map((_, ci) => [...PORTFOLIO].sort((a, b) => b.abp - a.abp).map((p) => PORTFOLIO_CROP_ABP[p.product][ci]))} /></ChartCard>
     </div>
   </div>
 );

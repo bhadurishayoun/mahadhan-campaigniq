@@ -441,3 +441,13 @@
 }
 
 .pm-theme-fit-meter{display:block;height:5px;margin-top:5px;border-radius:99px;background:var(--brand-100);overflow:hidden}.pm-theme-fit-meter b{display:block;height:100%;border-radius:inherit;background:var(--brand-700)}.iq-kpi-note .pm-theme-fit-meter{width:100%}.iq-kpi-note>span{font-size: var(--fs-caption);color:var(--ink-600)}
+
+/* PM.1 portfolio table: product names on one line; share column carries an inline bar. */
+.app .pm-portfolio-table :is(th, td):first-child { min-width: 180px; white-space: nowrap; }
+.pm-sharebar { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; width: 100%; }
+.pm-sharebar i { display: block; flex: 0 1 90px; height: 6px; border-radius: 3px; background: var(--brand-100); overflow: hidden; }
+.pm-sharebar i b { display: block; height: 100%; background: var(--brand-700); }
+.pm-sharebar em { font-style: normal; min-width: 34px; text-align: right; }
+/* PM.1: the product table needs every column visible - it takes the full row; contribution + indicators sit below side by side. */
+.app .cq-page .pm-two:has(.pm-portfolio-table) { grid-template-columns: minmax(0, 1fr) !important; }
+.app .cq-page .pm-two:has(.pm-portfolio-table) > .pm-stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); align-items: stretch; gap: 16px; }

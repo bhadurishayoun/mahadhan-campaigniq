@@ -3,6 +3,7 @@
  *  then screen-local fields registered with useSidebarField(). No other <select> filters anywhere. */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ChevronDown, SlidersHorizontal } from 'lucide-react';
+import { PORTFOLIO } from '../pm/data';
 
 export type Workspace = 'bh' | 'mh' | 'pm' | 'tm' | 'legacy';
 export type Opt = string | { value: string; label: string };
@@ -24,6 +25,7 @@ export const FILTER_FIELDS: Record<Workspace, FilterField[]> = {
   pm: [
     { key: 'zone', label: 'Zone', options: ['West Zone'] },
     { key: 'portfolio', label: 'Portfolio', options: ['Crop Nutrition'] },
+    { key: 'product', label: 'Product', options: ['All Products', ...PORTFOLIO.map((p) => p.product)] },
     { key: 'fy', label: 'Financial year', options: ['FY 2025–26'] },
   ],
   tm: [
