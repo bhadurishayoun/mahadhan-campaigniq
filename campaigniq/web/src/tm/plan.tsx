@@ -1,87 +1,103 @@
 /** Field Sales Manager - My Plan: TM.1 Performance & ABP -> TM.2 Network -> TM.3 Outlet plan -> TM.4 Crop plan -> TM.5 Review. */
 import { Fragment, useMemo, useState } from 'react';
-import { AlertTriangle, ChevronDown, ChevronRight, Download, RefreshCw, Save, Upload } from 'lucide-react';
+import { AlertTriangle, Award, CheckCircle2, ChevronDown, ChevronRight, Coins, Download, History, RefreshCw, Save, Target, TrendingUp, Upload } from 'lucide-react';
+import { Card, Grid, KpiStrip, Metric, NextSteps, Page, StatusPill, useSideFilters, type TabDef } from '../ui/index';
+import { RankedBars } from '../ui/viz';
+import { IndiaDistrictMap } from '../map/IndiaDistrictMap';
 import { useNav } from '../nav';
 import { Btn, cx } from '../ui';
 import {
   ABP_LAKH, ACHIEVEMENT, CROP_PLAN, DEALER_PLAN, ELIGIBLE_ACRES_DHANORA, ONION_VILLAGES, OUTLETS, PLANNED_REALISATION,
   PREVIOUS_REALISATION, TERRITORIES, TOTAL_ABP, TOTAL_LY, VILLAGES,
 } from './data';
-import { AiPanel, Context, Footer, HBars, Metrics, Note, Panel, PlanTabs, Status, TmPage, crore, lakh, pct } from './ui';
-import { Donut, MAP_COLORS, Ring, TmMap, VILLAGE_PLACE } from './viz';
+import { AiPanel, Context, Footer, Note, Panel, PlanTabs, Status, TmPage, crore, lakh, pct } from './ui';
+import { Donut, JALNA_VIEW, MAP_COLORS, Ring, TmMap, VILLAGE_PLACE } from './viz';
 
 const growth = (ly: number, target: number) => ((target - ly) / ly) * 100;
 
 /* ------------------------------------------------------------------ TM.1 */
+export const TM_PLAN_TABS: TabDef[] = [
+  { label: 'My performance', to: 'tm.1' },
+  { label: 'Territory network', to: 'tm.2' },
+  { label: 'Outlet planning', to: 'tm.3' },
+  { label: 'Crop & product plan', to: 'tm.4' },
+  { label: 'Review & approval', to: 'tm.5' },
+];
+const ACHIEVEMENT_ICONS = [Award, Coins, CheckCircle2];
+
 export function Tm1() {
   const { go } = useNav();
+  const side = useSideFilters();
+  const territory = side.values.territory;
+  const rows = TERRITORIES.filter((t) => territory === 'All Territories' || t.name === territory);
+  const all = rows.length === TERRITORIES.length;
+  const ly = all ? TOTAL_LY : rows.reduce((s, t) => s + t.ly, 0);
+  const abp = all ? TOTAL_ABP : rows.reduce((s, t) => s + t.abp, 0);
+  const ctx = side.context('Jalna Cluster');
+  const ranked = [...rows].sort((a, b) => (b.abp - b.ly) - (a.abp - a.ly));
+  const lead = ranked[0];
   return (
-    <TmPage crumbs={[{ label: 'My Plan' }, { label: 'My Performance' }]} code="TM.1" title="My Performance & ABP"
-      subtitle="Jalna Cluster · FY 2025–26 · Review last year and plan this year's growth, territory by territory.">
-      <PlanTabs active="tm.1" />
-      <Metrics items={[
-        { label: 'Last Year Liquidation', value: crore(TOTAL_LY, 1), sub: 'FY 2024–25 liquidation' },
-        { label: 'Current-year ABP target', value: crore(TOTAL_ABP, 1), sub: 'Assigned annual business plan' },
-        { label: 'Required growth', value: pct(growth(TOTAL_LY, TOTAL_ABP), 0), sub: '+₹2.0 Cr over last year', tone: 'amber' },
-      ]} />
-      <Panel title="Territory planning table" actions={<span className="tm-muted">₹ Cr ·</span>}>
-        <div className="table-wrap">
-          <table className="dt pm-table tm-table">
-            <thead><tr><th>Territory</th><th className="r">Last Year Liquidation</th><th className="r">Current-year ABP target</th><th className="r">Required growth</th><th className="r">Absolute uplift</th><th>Plan status</th><th /></tr></thead>
+    <Page title="My Performance & ABP" subtitle="Review last year and plan this year's growth, territory by territory." tabs={TM_PLAN_TABS} active="tm.1">
+      <KpiStrip>
+        <Metric icon={History} label="Last year liquidation" value={crore(ly, 1)} note="FY 2024–25 liquidation" />
+        <Metric icon={Target} label="ABP target" value={crore(abp, 1)} note="Assigned annual business plan" />
+        <Metric icon={TrendingUp} label="Required growth" value={pct(growth(ly, abp), 0)} note={`+${crore(abp - ly, 1)} over last year`} />
+        {ACHIEVEMENT.map((a, i) => (
+          <Metric key={a.label} icon={ACHIEVEMENT_ICONS[i]} label={a.label.replace(/\s*\(.*\)$/, '')} value={a.value} note={`${a.note.replace(/,$/, '')}${/\((FY[^)]*)\)/.test(a.label) ? ` · ${a.label.match(/\((FY[^)]*)\)/)![1]}` : ''}`} />
+        ))}
+      </KpiStrip>
+
+      <Card n={1} title="Territory planning" context={ctx} subtitle="Last year's liquidation against this year's ABP target, in ₹ crore.">
+        <div className="cq-table-scroll">
+          <table className="cq-table">
+            <thead><tr><th>Territory</th><th className="r">Last year liquidation</th><th className="r">ABP target</th><th className="r">Required growth</th><th className="r">Absolute uplift</th><th>Plan status</th><th /></tr></thead>
             <tbody>
-              {TERRITORIES.map((t) => (
-                <tr key={t.name} className={cx(t.name === 'Ambad' && 'row-highlight')}>
+              {rows.map((t) => (
+                <tr key={t.name} className={cx(t.name === 'Ambad' && 'hl')}>
                   <td><b>{t.name}</b></td>
                   <td className="r">{crore(t.ly, 1)}</td>
                   <td className="r">{crore(t.abp, 1)}</td>
                   <td className="r">{pct(growth(t.ly, t.abp))}</td>
                   <td className="r">+{crore(t.abp - t.ly, 1)}</td>
-                  <td><Status>{t.name === 'Ambad' ? 'Planning not started' : 'Not started'}</Status></td>
+                  <td><StatusPill tone="neutral">{t.name === 'Ambad' ? 'Planning not started' : 'Not started'}</StatusPill></td>
                   <td className="r">
-                    {t.name === 'Ambad'
-                      ? <Btn small variant="primary" to="tm.2">Plan Territory</Btn>
-                      : <Btn small onClick={() => go('tm.2')}>Plan</Btn>}
+                    <button type="button" className={cx('cq-btn cq-btn-sm', t.name === 'Ambad' && 'cq-btn-primary')} onClick={() => go('tm.2')}>{t.name === 'Ambad' ? 'Plan territory' : 'Plan'}</button>
                   </td>
                 </tr>
               ))}
             </tbody>
-            <tfoot><tr><td>Total</td><td className="r">{crore(TOTAL_LY, 1)}</td><td className="r">{crore(TOTAL_ABP, 1)}</td><td className="r">{pct(growth(TOTAL_LY, TOTAL_ABP))}</td><td className="r">+{crore(TOTAL_ABP - TOTAL_LY, 1)}</td><td /><td /></tr></tfoot>
+            <tfoot><tr><td>Total</td><td className="r">{crore(ly, 1)}</td><td className="r">{crore(abp, 1)}</td><td className="r">{pct(growth(ly, abp))}</td><td className="r">+{crore(abp - ly, 1)}</td><td /><td /></tr></tfoot>
           </table>
         </div>
-      </Panel>
-      <div className="tm-map-row">
-        <TmMap title="Jalna Cluster — where must growth come from?" label="Jalna cluster territories shaded by required growth"
-          talukas={{
-            Ambad: { tone: 4, info: <><b>Ambad</b><br />₹3.2 Cr → ₹4.2 Cr · +31.3% (+₹1.0 Cr)</>, onSelect: () => go('tm.2') },
-            Ghansawangi: { tone: 3, info: <><b>Ghansawangi</b><br />₹2.8 Cr → ₹3.4 Cr · +21.4%</> },
-            Badnapur: { tone: 2, info: <><b>Badnapur</b><br />₹2.0 Cr → ₹2.4 Cr · +20.0%</> },
-          }}
-          markers={[
-            { id: 't-ambad', label: 'Ambad', color: MAP_COLORS.green, info: 'Largest uplift: +₹1.0 Cr', action: { label: 'Plan Territory', run: () => go('tm.2') } },
-            { id: 't-ghansawangi', label: 'Ghansawangi', color: MAP_COLORS.grey, info: '+₹0.6 Cr required' },
-            { id: 't-badnapur', label: 'Badnapur', color: MAP_COLORS.grey, info: '+₹0.4 Cr required' },
-          ]}
-          selected="t-ambad"
-          scale={{ title: 'Required growth', items: [{ label: '+20%', tone: 2 }, { label: '+21%', tone: 3 }, { label: '+31%', tone: 4 }] }} height={300} />
-        <div className="pm-stack">
-          <Panel title="Last-year achievement" className="tm-achievement">
-            <div className="tm-achieve-row">
-              {ACHIEVEMENT.map((a) => (
-                <div key={a.label}><span>{a.label}</span><b>{a.value}</b><small>{a.note}</small></div>
-              ))}
-            </div>
-          </Panel>
-          <Panel title="Growth required by territory">
-            <HBars unit=" Cr" digits={1} max={1.2} rows={TERRITORIES.map((t) => ({ label: t.name, value: t.abp - t.ly, tone: t.name === 'Ambad' ? 'green' : 'grey' }))} />
-          </Panel>
-          <AiPanel title="AI Planning Insight">
-            <p className="tm-ai-text">Ambad needs the <b>largest absolute uplift (+₹1.0 Cr, +31.3%)</b>, well above the cluster's +25%. Start planning with Ambad's network and outlet potential.</p>
-          </AiPanel>
-        </div>
-      </div>
-      <Footer
-        primary={{ label: 'Plan Territory: Ambad', to: 'tm.2' }} />
-    </TmPage>
+      </Card>
+
+      <Grid>
+        <Card n={2} title="Where must growth come from" context={ctx} subtitle="Talukas shaded by the growth this year's ABP requires; select Ambad to plan it."
+          insight={`${TERRITORIES.map((t) => `${t.name} needs ${pct(growth(t.ly, t.abp))}`).join(', ')}; Ambad is shaded darkest.`}>
+          <IndiaDistrictMap label="Jalna cluster territories shaded by required growth" view={JALNA_VIEW} height={300}
+            talukas={{
+              Ambad: { tone: 4, info: <><b>Ambad</b><br />₹3.2 Cr → ₹4.2 Cr · +31.3% (+₹1.0 Cr)</>, onSelect: () => go('tm.2') },
+              Ghansawangi: { tone: 3, info: <><b>Ghansawangi</b><br />₹2.8 Cr → ₹3.4 Cr · +21.4%</> },
+              Badnapur: { tone: 2, info: <><b>Badnapur</b><br />₹2.0 Cr → ₹2.4 Cr · +20.0%</> },
+            }}
+            markers={[
+              { id: 't-ambad', label: 'Ambad', color: MAP_COLORS.green, info: 'Largest uplift: +₹1.0 Cr', action: { label: 'Plan Territory', run: () => go('tm.2') } },
+              { id: 't-ghansawangi', label: 'Ghansawangi', color: MAP_COLORS.grey, info: '+₹0.6 Cr required' },
+              { id: 't-badnapur', label: 'Badnapur', color: MAP_COLORS.grey, info: '+₹0.4 Cr required' },
+            ]}
+            selected={`t-${(territory === 'All Territories' ? 'Ambad' : territory).toLowerCase()}`}
+            scale={{ title: 'Required growth', items: [{ label: '+20%', tone: 2 }, { label: '+21%', tone: 3 }, { label: '+31%', tone: 4 }] }} />
+        </Card>
+        <Card n={3} title="Growth required by territory" context={ctx} subtitle="Absolute uplift over last year, with each territory's share of the cluster uplift."
+          insight={lead && lead.name === 'Ambad'
+            ? <>Ambad needs the largest absolute uplift (+₹1.0 Cr, +31.3%), well above the cluster's +25%.</>
+            : lead && <>{lead.name} needs +{crore(lead.abp - lead.ly, 1)} ({pct(growth(lead.ly, lead.abp))}) this year.</>}>
+          <RankedBars fmt={(v) => `+${crore(v, 1)}`} items={ranked.map((t) => ({ label: t.name, value: t.abp - t.ly, muted: t.name !== 'Ambad' }))} />
+        </Card>
+      </Grid>
+
+      <NextSteps primary={{ label: 'Plan territory: Ambad', to: 'tm.2' }} />
+    </Page>
   );
 }
 

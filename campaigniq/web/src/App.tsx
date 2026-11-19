@@ -11,6 +11,7 @@ import { TM_TABS, TmScreen, isTmScreen, tmMeta, type TmTabId } from './tm';
 import { MH_TABS, MhScreen, isMhScreen, mhMeta, type MhTabId } from './mh';
 import { BH_TABS, BhScreen, isBhScreen, bhMeta, type BhTabId } from './bh';
 import { filterOptions, normalizeFilters, scopeOf, useReference } from './data/reference';
+import { SideFilterProvider, SidebarFilters } from './ui/filters';
 import { DataSources } from './screens/admin';
 import * as P from './screens/prototype';
 import { TooltipLayer } from './ui';
@@ -330,6 +331,7 @@ export default function App() {
 
   return (
     <NavContext.Provider value={{ screen, go, goBack, filters, setFilters, marketingScope, marketingRegion, setMarketingScope, setMarketingRegion, scope, reference, toast }}>
+      <SideFilterProvider workspace={bh ? 'bh' : mh ? 'mh' : pm ? 'pm' : tm ? 'tm' : 'legacy'}>
       <div className={`app${collapsed ? ' app-collapsed' : ''}${mh ? ' app-mh' : ''}`}>
         <aside className={navOpen ? 'sidebar open' : 'sidebar'} aria-label="Main navigation">
           <button type="button" className="brand" onClick={() => go(personaMeta.home)}>
@@ -337,6 +339,7 @@ export default function App() {
             <span>Mahadhan<br />CampaignIQ</span>
             {mh && <b className="mh-brand-version">V2</b>}
           </button>
+          <SidebarFilters />
           <button type="button" className="nav-close" aria-label="Close menu" onClick={() => setNavOpen(false)}><X size={18} /></button>
           <button type="button" className="side-collapse" aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} onClick={() => setCollapsed((c) => !c)}>{collapsed ? <ChevronsRight size={16} /> : <ChevronsLeft size={16} />}</button>
           {pmSidebar || tmSidebar || mhSidebar || bhSidebar || (
@@ -532,6 +535,7 @@ export default function App() {
         {message && <div className="toast" role="status" key={message}>{message}</div>}
         <TooltipLayer />
       </div>
+      </SideFilterProvider>
     </NavContext.Provider>
   );
 }

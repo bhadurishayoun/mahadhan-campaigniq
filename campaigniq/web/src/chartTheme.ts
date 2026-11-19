@@ -25,3 +25,19 @@ export function fmtINR(rupees: number, digits = 1): string {
 export const fmtLakh = (lakh: number, digits = 1) => fmtINR(lakh * 1e5, digits);
 export const fmtPct = (v: number, digits = 0) => `${v.toFixed(digits)}%`;
 export const fmtNum = (v: number) => v.toLocaleString('en-IN');
+
+/** The one chart config for every RankedBars / GroupedColumns / TrendLine / DonutMetric / HeatGrid (see CLAUDE.md §3). */
+export const chartTheme = {
+  planned: 'var(--data-plan)',
+  actual: 'var(--data-actual)',
+  series: SERIES,
+  barSize: 14,
+  radius: 0,
+  axis: { tick: { fontSize: 12, fill: 'var(--axis-ink)' }, axisLine: { stroke: 'var(--line)' }, tickLine: false },
+  grid: { stroke: 'var(--line)', strokeDasharray: '3 3', vertical: false },
+  tooltip: tooltipStyle,
+  legend: { verticalAlign: 'top' as const, align: 'right' as const, iconType: 'square' as const, iconSize: 10, wrapperStyle: { fontSize: 12, color: 'var(--axis-ink)', paddingBottom: 8 } },
+  margin: { top: 4, right: 12, bottom: 0, left: 0 },
+  heat: (share: number) => `color-mix(in srgb, var(--brand-700) ${Math.round(12 + Math.max(0, Math.min(1, share)) * 78)}%, var(--brand-50))`,
+  heatInk: (share: number) => (share > 0.5 ? 'var(--surface)' : 'var(--ink-900)'),
+} as const;

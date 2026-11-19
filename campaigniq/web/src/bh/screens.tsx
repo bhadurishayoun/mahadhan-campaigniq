@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { IndiaDistrictMap } from '../map/IndiaDistrictMap';
 import { useNav, type ScreenId } from '../nav';
-import { BarChart3, MapPin, Target } from '../icons';
+import { BarChart3, MapPin, Megaphone, Target, Users, Wallet } from '../icons';
+import { ActionCard, ActionGrid, Card, Grid, KpiStrip, Metric, NextSteps, Page, StatusPill, useSideFilters, type TabDef } from '../ui/index';
+import { HeatGrid, RankedBars } from '../ui/viz';
+import { fmtINR } from '../chartTheme';
 import { ChartCard, ColumnBars, MapCard, ScatterPlot, Bullets, EmptyState } from '../ui/index';
 import { BhAction, BhBars, BhCard, BhMetric, BhPage, BhWorkflow } from './ui';
 import type { BhScreenId } from './nav';
@@ -93,9 +96,16 @@ type CampaignPerfSource = {
   adopters: number; planned_pct: number; observed_pct: number; roi: number;
 };
 
+const BH_PORTFOLIO_TABS: TabDef[] = [
+  { label: 'Campaign performance', to: 'bh.2' },
+  { label: 'Performance by region', to: 'bh.3' },
+  { label: 'Campaign effectiveness', to: 'bh.4' },
+];
+const shortTheme = (name: string) => name.replace(' & Adoption', '').replace(' Enablement', '').replace('Crop Nutrition ', '');
+
 function BhPortfolio() {
-  const [view,setView]=useState('Theme-wise');
-  const [region,setRegion]=useState('All Regions'),[crop,setCrop]=useState('All Crops'),[product,setProduct]=useState('All Products'),[theme,setTheme]=useState('All Themes'),[period,setPeriod]=useState('YTD');
+  const side = useSideFilters();
+  const { region, crop, product, theme, period, view } = side.values;
   const base: CampaignPerfSource[]=[];
   const dataset = useDataset<CampaignPerfSource>('portfolio.campaigns', base, {});
   const campaigns=(dataset.source?dataset.rows:base).map(c=>({
@@ -104,22 +114,54 @@ function BhPortfolio() {
     planned:c.planned_pct, observed:c.observed_pct, roi:String(c.roi),
   }));
   const filtered=campaigns.filter(c=>(region==='All Regions'||c.region===region)&&(crop==='All Crops'||c.crop===crop)&&(product==='All Products'||c.product===product)&&(theme==='All Themes'||c.theme===theme)&&(period==='YTD'||(c.period ? c.period===period : period==='QTD'?c.quarter>=3:c.quarter===4)));
-  const options=(key:'region'|'crop'|'product'|'theme',fallback:string[])=>Array.from(new Set([...fallback,...campaigns.map(c=>c[key]).filter(Boolean)])).sort();
-  const regionOptions=options('region',['West','South','North','East']),cropOptions=options('crop',['Onion','Maize']),productOptions=options('product',['Croptek','Smartek','Solutek','Bensulf','Mahadhan 24:24:0']),themeOptions=options('theme',themes.map(t=>t.name));
   const investment=filtered.reduce((s,c)=>s+c.investment,0),adopters=filtered.reduce((s,c)=>s+c.adopters,0),execution=filtered.length?Math.round(filtered.reduce((s,c)=>s+c.observed,0)/filtered.length):0;
   const groups:Record<string,typeof filtered>={};filtered.forEach(c=>{const key=view==='Theme-wise'?c.theme:view==='Crop-wise'?c.crop:view==='Product-wise'?c.product:c.region;(groups[key]??=[]).push(c)});
-  const groupedRows=Object.entries(groups).map(([name,items])=>[name,items.length,`₹${items.reduce((s,c)=>s+c.investment,0)} L`,items.reduce((s,c)=>s+c.adopters,0).toLocaleString(),'Pending attribution',items.every(c=>c.roi==='Pending attribution')?'Pending attribution':items.map(c=>c.roi).join(', ')] as (string|number)[]);
-  const regionRows=['West','South','North','East'].map(r=>{const items=filtered.filter(c=>c.region===r);return [r,...themes.map(t=>items.filter(c=>c.theme===t.name).length),items.length] as (string|number)[]});
-  const colTotals=themes.map((_,i)=>regionRows.reduce((sum,row)=>sum+Number(row[i+1]),0));
-  const adopterBars=Object.entries(groups).map(([label,items])=>({label,value:items.reduce((s,c)=>s+c.adopters,0),note:items.reduce((s,c)=>s+c.adopters,0).toLocaleString()}));
-  return <BhPage screen="bh.2" subtitle="Compare campaign performance across themes, crops, products and geographies. Financial outcomes remain provisional until attribution is validated.">
-    <div className="bh-filterbar"><label>Region<select value={region} onChange={e=>setRegion(e.target.value)}><option>All Regions</option>{regionOptions.map(v=><option key={v} value={v}>{v.endsWith(' Region')?v:`${v} Region`}</option>)}</select></label><label>Crop<select value={crop} onChange={e=>setCrop(e.target.value)}><option>All Crops</option>{cropOptions.map(v=><option key={v}>{v}</option>)}</select></label><label>Product<select value={product} onChange={e=>setProduct(e.target.value)}><option>All Products</option>{productOptions.map(v=><option key={v}>{v}</option>)}</select></label><label>Theme<select value={theme} onChange={e=>setTheme(e.target.value)}><option>All Themes</option>{themeOptions.map(v=><option key={v}>{v}</option>)}</select></label><label>Period<select value={period} onChange={e=>setPeriod(e.target.value)}><option>YTD</option><option>QTD</option><option>Monthly</option></select></label></div>
-    <div className="bh-tabs" role="tablist">{['Theme-wise','Crop-wise','Product-wise','Geography-wise'].map(t=><button role="tab" aria-selected={view===t} className={view===t?'active':''} key={t} onClick={()=>setView(t)}>{t}</button>)}</div>
-    <div className="bh-metrics four"><BhMetric label="Active campaigns" value={String(filtered.length)} note={`Across ${new Set(filtered.map(c=>c.region)).size} regions`}/><BhMetric label="Actual marketing investment" value={`₹${(investment/100).toFixed(2)} Cr`} note={`${investment} L selected`}/><BhMetric label="Recorded adopters" value={adopters.toLocaleString()}/><BhMetric label="Average regional execution" value={`${execution}%`} note="Observed progress" tone="amber"/></div>
-    {filtered.length?<><BhCard title={`Campaign performance (${view.toLowerCase()})`}><Table headers={[view==='Theme-wise'?'Theme':view==='Geography-wise'?'Region':'Segment','Active campaigns','Marketing investment','Recorded adopters','Incremental sales','Net ROI']} rows={groupedRows}/></BhCard>
-    <div className="bh-grid two"><BhCard title="Region by theme: active campaign count"><div className="bh-heatmap-wrap"><table className="bh-heatmap"><thead><tr><th>Region</th>{themes.map(t=><th key={t.name}>{t.name.replace(' & Adoption','').replace(' Enablement','').replace('Crop Nutrition ','')}</th>)}<th>Total</th></tr></thead><tbody>{regionRows.map(row=><tr key={String(row[0])}><th>{String(row[0]).replace(' Region','')}</th>{themes.map((t,ti)=>{const n=Number(row[ti+1]);const top=Math.max(1,...colTotals);const group=filtered.filter(c=>c.region===row[0]&&c.theme===t.name);return <td key={t.name}><button title={`${row[0]} - ${t.name}: ${n} campaigns - ${group.reduce((s,c)=>s+c.investment,0)} L investment - ${group.reduce((s,c)=>s+c.adopters,0)} adopters`} style={{background:`color-mix(in srgb, var(--brand-700) ${Math.round(n/top*75)}%, var(--brand-50))`,color:n/top>.55?'white':'var(--ink-900)'}} onClick={()=>{setRegion(String(row[0]));setTheme(t.name)}}>{n}</button></td>})}<td><b>{row.at(-1)}</b></td></tr>)}<tr><th>Total</th>{colTotals.map((n,i)=><td key={i}><b>{n}</b></td>)}<td><b>{filtered.length}</b></td></tr></tbody></table></div></BhCard><BhCard title={`Recorded adopters by ${view.replace('-wise','').toLowerCase()}`}><BhBars items={adopterBars}/></BhCard></div></>:<EmptyState title="No campaigns for this filter"/>}
-    <div className="bh-actions"><LinkRow label="Explore regional performance" to="bh.3"/><LinkRow label="Campaign effectiveness" to="bh.4"/><LinkRow label="Marketing spend & ROI" to="bh.5"/></div>
-  </BhPage>;
+  const groupRows=Object.entries(groups).map(([name,items])=>({name,count:items.length,investment:items.reduce((s,c)=>s+c.investment,0),adopters:items.reduce((s,c)=>s+c.adopters,0),roi:items.every(c=>c.roi==='Pending attribution')?'Pending attribution':(()=>{const v=items.map(c=>Number(c.roi)).filter(Number.isFinite);return v.length?(Math.min(...v)===Math.max(...v)?`${Math.min(...v)}×`:`${Math.min(...v)}×–${Math.max(...v)}×`):'Pending attribution'})()}));
+  const regionNames=['West','South','North','East'];
+  const heat=regionNames.map(r=>themes.map(t=>filtered.filter(c=>c.region===r&&c.theme===t.name).length));
+  const adopterBars=groupRows.map(g=>({label:g.name,value:g.adopters})).sort((a,b)=>b.value-a.value);
+  const dim=view.replace('-wise','').toLowerCase();
+  const ctx=side.context('All regions');
+  const regionTotals=heat.map(r=>r.reduce((a,b)=>a+b,0)),themeTotals=themes.map((_,i)=>heat.reduce((s,r)=>s+r[i],0));
+  const topRegion=regionNames[regionTotals.indexOf(Math.max(...regionTotals))],topTheme=themes[themeTotals.indexOf(Math.max(...themeTotals))]?.name;
+  const topAdopt=adopterBars[0];
+  return <Page title="Campaign Performance" subtitle="Compare campaign performance across themes, crops, products and geographies; financial outcomes stay provisional until attribution is validated." tabs={BH_PORTFOLIO_TABS} active="bh.2">
+    <KpiStrip>
+      <Metric icon={Megaphone} label="Active campaigns" value={filtered.length.toLocaleString('en-IN')} note={`Across ${new Set(filtered.map(c=>c.region)).size} regions`}/>
+      <Metric icon={Wallet} label="Marketing investment" value={fmtINR(investment*1e5,2)} note="Actual marketing spend"/>
+      <Metric icon={Users} label="Recorded adopters" value={adopters.toLocaleString('en-IN')} note="Farmers recorded as adopters"/>
+      <Metric icon={Target} label="Average execution" value={`${execution}%`} note="Observed progress across campaigns"/>
+    </KpiStrip>
+    {filtered.length ? <>
+      <Card n={1} title="Campaign performance" context={`By ${dim} · ${ctx}`} subtitle="Incremental sales and net ROI stay pending until attribution is validated.">
+        <div className="cq-table-scroll"><table className="cq-table">
+          <thead><tr><th>{view==='Geography-wise'?'Region':dim}</th><th className="r">Active campaigns</th><th className="r">Marketing investment</th><th className="r">Recorded adopters</th><th>Incremental sales</th><th>Net ROI</th></tr></thead>
+          <tbody>{groupRows.map(g=><tr key={g.name}><td><b>{g.name}</b></td><td className="r">{g.count}</td><td className="r">{fmtINR(g.investment*1e5)}</td><td className="r">{g.adopters.toLocaleString('en-IN')}</td><td><StatusPill tone="warn">Pending attribution</StatusPill></td><td>{g.roi==='Pending attribution'?<StatusPill tone="warn">Pending attribution</StatusPill>:<>{g.roi}<small>Range across {g.count} campaigns</small></>}</td></tr>)}</tbody>
+          <tfoot><tr><td>Total</td><td className="r">{filtered.length.toLocaleString('en-IN')}</td><td className="r">{fmtINR(investment*1e5)}</td><td className="r">{adopters.toLocaleString('en-IN')}</td><td /><td /></tr></tfoot>
+        </table></div>
+      </Card>
+      <Grid>
+        <Card n={2} title="Region × theme" context={ctx} subtitle="Active campaign count; select a cell to filter by that region and theme."
+          insight={`${topRegion} region runs the most campaigns (${Math.max(...regionTotals)}); ${topTheme} is the most-used theme (${Math.max(...themeTotals)}).`}>
+          <HeatGrid corner="Region" rows={regionNames} cols={themes.map(t=>shortTheme(t.name))} values={heat} totals
+            title={(r,_c,v)=>`${r} · ${v} campaigns`}
+            onCell={(r,c)=>{side.set('region',r);side.set('theme',themes.find(t=>shortTheme(t.name)===c)?.name??'All Themes');}}/>
+        </Card>
+        <Card n={3} title="Recorded adopters" context={`By ${dim}`} subtitle="Farmers recorded as adopters in this selection; share of total at the bar end."
+          insight={topAdopt?`${topAdopt.label} accounts for ${Math.round(topAdopt.value/Math.max(1,adopters)*100)}% of recorded adopters (${topAdopt.value.toLocaleString('en-IN')} of ${adopters.toLocaleString('en-IN')}).`:'No adopters recorded for this selection.'}>
+          <RankedBars items={adopterBars}/>
+        </Card>
+      </Grid>
+    </> : <Card><EmptyState title="No campaigns for this filter" hint="Widen the filters in the sidebar."/></Card>}
+    <Card n={filtered.length?4:1} title="Next best actions">
+      <ActionGrid>
+        <ActionCard icon={MapPin} title="Explore regional performance" detail="Campaign and territory signals for one region, with a path to local evidence." cta="regional view" to="bh.3"/>
+        <ActionCard icon={BarChart3} title="Check campaign effectiveness" detail="Planned versus observed execution and adoption by campaign." cta="effectiveness" to="bh.4"/>
+        <ActionCard icon={Wallet} title="Review marketing spend & ROI" detail="Where the investment went and what is still pending attribution." cta="spend & ROI" to="bh.5"/>
+      </ActionGrid>
+    </Card>
+    <NextSteps actions={[{label:'Business overview',to:'bh.1'},{label:'Campaign effectiveness',to:'bh.4'}]} primary={{label:'Performance by region',to:'bh.3'}}/>
+  </Page>;
 }
 
 function BhRegional() {

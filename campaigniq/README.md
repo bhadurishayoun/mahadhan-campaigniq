@@ -43,6 +43,7 @@ All data is **illustrative**: the backend is filled from a synthetic data workbo
 
 | Commit | Change |
 |---|---|
+| (this) | **Consistency system, phase A**: new shared components in `web/src/ui/system.tsx` (Page, PageHeader + filter chips, NumberedTabs, numbered SectionTitle/Card, InsightStrip, Metric/KpiStrip, ActionCard, NextSteps, StatusPill, `cq-table`), charts in `ui/viz.tsx` (RankedBars, GroupedColumns, TrendLine, DonutMetric, HeatGrid) driven by `chartTheme`, and persona filters in the sidebar (`ui/filters.tsx`). BH.2 and TM.1 rebuilt on them. Rules live in `campaigniq/CLAUDE.md`. |
 | `a127d87` | Screen, tab, breadcrumb and panel titles rewritten in plain business language across all personas (e.g. "National Business & Marketing Command Centre" → "Business & Marketing Overview"); docs use the new names; naming convention added below |
 | `93585cc` | README / DEPLOYMENT rewritten as a handover guide (this section) |
 | `a825e30` | Website connected to the Render backend by default |
@@ -84,6 +85,7 @@ Full history: `git log --oneline`.
 
 ### Suggested next steps (in priority order)
 
+0. **Finish the consistency rollout** tracked in `campaigniq/CLAUDE.md` (phases B to E: page frame + sidebar filters on every route, migrate each persona, consistency checks, release screenshots). BH.2 and TM.1 are the reference pages.
 1. **Recalibrate the synthetic data**: in `generate_synthetic_workbook.py` derive marketing-unit crop area from each district's real village count, and lower the treated share so a taluka-sized territory sells ≈ ₹3–4 Cr/year; regenerate, run `python -m campaign_api.workbook`, run the tests.
 2. **Rework the Marketing Head and Business Head workspaces** against `ui-mockups/V2-persona-mockup-specs.md`, the same way TM was done (hero element per screen, sub-tabs, footer with "Recommended next", no decorative charts). BH had only a brief in the mockup chat, no image prompts.
 3. **Connect persona screens to backend data**: replace the constants in `web/src/*/data.ts` with `useDataset()` / API calls, keeping the current values as the demo fallback.

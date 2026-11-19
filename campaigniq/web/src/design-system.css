@@ -30,6 +30,7 @@
   --yellow: var(--accent-600); --amber: var(--accent-600); --red: var(--risk); --blue: var(--info);
   --ink: var(--ink-900); --muted: var(--ink-600); --card: var(--surface); --bg: var(--canvas);
   --series-planned: var(--data-plan); --series-observed: var(--data-actual);
+  --axis-ink: #5C6963;
 }
 
 /* One clear page-title treatment across BH, MH, ZM and FSM workspaces. */
