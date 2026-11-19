@@ -31,8 +31,7 @@ export function TmEx1() {
   return (
     <TmPage crumbs={[{ label: 'Campaign Execution' }, { label: 'Approved Campaigns' }, { label: CAMPAIGN.name }, { label: 'Activity Tracker' }]}
       code="TM.EX1" title="Activity Tracker" status="In progress"
-      banner={<Note>Future scenario: the campaign has cleared its approvals and mandatory launch checks after CW.4.</Note>}
-      actions={<span className="tm-sync"><Clock size={12} /> Last synced 18 Nov 2026, 09:40 · field app (not a live ERP feed)</span>}>
+      actions={<span className="tm-sync"><Clock size={12} /> Last synced 18 Nov 2026, 09:40 · field app</span>}>
       <CampaignStrip />
       <Metrics items={[
         { label: 'Planned activities', value: total },
@@ -199,7 +198,7 @@ export function TmIm1() {
   return (
     <TmPage crumbs={[{ label: 'Impact & Learning' }, { label: CAMPAIGN.name }, { label: 'Campaign Performance' }]}
       code="TM.IM1" title="Campaign Results" status="Interim checkpoint"
-      banner={<Note>Later checkpoint, after more field activity and data updates — not the same moment as the Activity Tracker view.</Note>}>
+      >
       <CampaignStrip />
       <Metrics items={[
         { label: 'Base-case forecast campaign sales', value: '₹12.0 L', sub: 'Planning forecast (CW.3)' },
@@ -208,7 +207,7 @@ export function TmIm1() {
         { label: 'Recorded adopters', value: adopters, tone: 'green' },
       ]} />
       <div className="pm-two">
-        <Panel title="Farmer conversion funnel" actions={<span className="tm-muted"> · evidence-dependent</span>}>
+        <Panel title="Farmer conversion funnel">
           <FunnelBars stages={[{ label: 'Farmers reached', value: reached }, { label: 'Trials', value: trials }, { label: 'Adopters', value: adopters }]} />
           <div className="tm-rates"><span>Reach → trial <b>{((trials / reached) * 100).toFixed(0)}%</b></span><span>Trial → adoption <b>{conversion(adopters, trials).toFixed(0)}%</b></span></div>
         </Panel>
@@ -243,7 +242,6 @@ export function TmIm1() {
             <tfoot><tr><td>Total</td><td className="r">{reached}</td><td className="r">{trials}</td><td className="r">{adopters}</td><td className="r">{conversion(adopters, trials).toFixed(1)}%</td><td className="r">{completed} / {planned}</td><td className="r">{lakh(sales, 1)}</td><td /></tr></tfoot>
           </table>
         </div>
-        <Note>Village figures show association, not proven causal attribution.</Note>
       </Panel>
       <TmMap title="Trial-to-adoption by village" label="Campaign conversion by village" height={260}
         markers={IMPACT_VILLAGES.map((v) => ({
