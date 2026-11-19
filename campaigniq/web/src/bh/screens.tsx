@@ -1,3 +1,6 @@
+import { AlertTriangle, CheckCircle2, Clock } from 'lucide-react';
+import { FINANCIAL_CHECKS, INVESTMENT_DETAIL, INVESTMENT_REGIONS, financeTone, lakhOrCrore, nationalBudget, westCommitments } from './data';
+import { StackedBar } from '../ui/viz';
 import { StepsPortal } from '../ui/system';
 import { useState } from 'react';
 import { IndiaDistrictMap } from '../map/IndiaDistrictMap';
@@ -201,15 +204,65 @@ function BhEffectiveness(){
   </BhPage>;
 }
 
+/** BH.5 regional table: rows from INVESTMENT_REGIONS plus the computed national total. */
+function investmentRows() {
+  const perAdopter = (actual: number, adopters: number) => `₹${Math.round((actual * 1e5) / Math.max(1, adopters)).toLocaleString('en-IN')}`;
+  const nb = nationalBudget();
+  return [
+    ...INVESTMENT_REGIONS.map((r) => [r.region, lakhOrCrore(r.approved), lakhOrCrore(r.actual), lakhOrCrore(r.approved - r.actual), `${((r.actual / r.approved) * 100).toFixed(1)}%`, r.adopters, perAdopter(r.actual, r.adopters), r.roiStatus]),
+    ['National', lakhOrCrore(nb.approved), lakhOrCrore(nb.actual), lakhOrCrore(nb.unspent), `${nb.utilisation.toFixed(1)}%`, nb.adopters, perAdopter(nb.actual, nb.adopters), 'Pending attribution'],
+  ] as (string | number)[][];
+}
+
+/** BH.5 "Financial status": what is confirmed before ROI and reallocation decisions, as visuals. */
+function FinancialStatusCard() {
+  const { go } = useNav();
+  const nb = nationalBudget(), west = westCommitments();
+  const confirmed = FINANCIAL_CHECKS.filter((c) => financeTone(c.status) === 'ok').length;
+  const insight = `${lakhOrCrore(nb.unspent)} is unspent nationally, but in West ${lakhOrCrore(west.committed)} of ${lakhOrCrore(west.unspent)} is already committed; only ${lakhOrCrore(west.free)} is free. Confirm commitments before reallocating.`;
+  return (
+    <Card title="Financial status" context="National" subtitle="What is confirmed before ROI and reallocation decisions" className="bh-finstatus" insight={insight}>
+      <div className="bh-fin-ready">
+        <small>Financial close readiness</small>
+        <div className="bh-fin-seg">{FINANCIAL_CHECKS.map((c) => <i key={c.item} className={financeTone(c.status)} title={`${c.item}: ${c.status}`} />)}</div>
+        <span>{confirmed} of {FINANCIAL_CHECKS.length} confirmed</span>
+      </div>
+      <div className="bh-fin-block">
+        <small>Budget composition · national</small>
+        <StackedBar segments={[
+          { label: 'Spent', value: nb.actual, color: 'var(--data-actual)', display: lakhOrCrore(nb.actual) },
+          { label: 'Unspent', value: nb.unspent, color: 'var(--warn-bg)', striped: true, display: lakhOrCrore(nb.unspent) },
+        ]} />
+        <p className="bh-fin-cap"><i className="bh-fin-stripe" aria-hidden="true" />Striped = commitments not yet verified</p>
+      </div>
+      <div className="bh-fin-block">
+        <small>West · only region with verified commitments</small>
+        <StackedBar segments={[
+          { label: 'Spent', value: west.actual, color: 'var(--data-actual)', display: lakhOrCrore(west.actual) },
+          { label: 'Committed', value: west.committed, color: 'var(--data-plan)', display: lakhOrCrore(west.committed) },
+          { label: 'Free', value: west.free, color: 'var(--ok-bg)', display: lakhOrCrore(west.free) },
+        ]} />
+        <p className="bh-fin-cap">West · {lakhOrCrore(west.unspent)} unspent, of which {lakhOrCrore(west.committed)} is already committed. <button type="button" onClick={() => go('bh.5a')}>View investment detail →</button></p>
+      </div>
+      <ul className="bh-fin-checks">
+        {FINANCIAL_CHECKS.map((c) => {
+          const tone = financeTone(c.status);
+          const Icon = tone === 'ok' ? CheckCircle2 : c.status.startsWith('Pending') ? Clock : AlertTriangle;
+          return <li key={c.item}><Icon size={15} className={tone} aria-hidden="true" /><span>{c.item}</span><StatusPill tone={tone}>{c.status}</StatusPill></li>;
+        })}
+      </ul>
+    </Card>
+  );
+}
+
 function BhInvestment(){return <BhPage screen="bh.5" subtitle="National portfolio · financial efficiency is descriptive until incremental sales and contribution are validated.">
-  <div className="bh-metrics four"><BhMetric label="Approved marketing budget" value="₹2.50 Cr"/><BhMetric label="Actual marketing investment" value="₹1.90 Cr"/><BhMetric label="Unspent budget" value="₹60.00 L" tone="amber"/><BhMetric label="Budget utilization" value="76%"/></div>
-  <BhCard title="Regional marketing investment & efficiency"><Table headers={['Region','Approved budget','Actual investment','Unspent','Utilization','Recorded adopters','Investment / recorded adopter','Actual net ROI']} rows={[["West","₹90.00 L","₹72.00 L","₹18.00 L","80.0%",760,"₹9,474","Pending attribution"],["South","₹70.00 L","₹54.00 L","₹16.00 L","77.1%",490,"₹11,020","Pending attribution"],["North","₹55.00 L","₹39.00 L","₹16.00 L","70.9%",370,"₹10,541","Pending attribution"],["East","₹35.00 L","₹25.00 L","₹10.00 L","71.4%",240,"₹10,417","Pending attribution"],["National","₹2.50 Cr","₹1.90 Cr","₹60.00 L","76.0%",1860,"₹10,215","Pending attribution"]]}/></BhCard>
-  <div className="bh-grid three"><BhCard title="Approved vs actual investment · ₹ L"><BhBars items={[{label:'West',value:72,note:'90 / 72'},{label:'South',value:54,note:'70 / 54'},{label:'North',value:39,note:'55 / 39'},{label:'East',value:25,note:'35 / 25'}]} max={100}/></BhCard><BhCard title="Investment per recorded adopter"><BhBars items={[{label:'West',value:9474,note:'₹9,474'},{label:'East',value:10417,note:'₹10,417'},{label:'North',value:10541,note:'₹10,541'},{label:'South',value:11020,note:'₹11,020',tone:'amber'}]}/><p className="bh-note">Descriptive efficiency only; not incremental acquisition cost.</p></BhCard><BhCard title="Financial status"><ul className="bh-checks"><li>Actual net ROI · Pending attribution</li><li>Incremental sales · Pending</li><li>Outstanding commitments · Verify</li><li>Budget phasing · Validation required</li></ul></BhCard></div>
-  <p className="bh-note">Unspent budget is not automatically available for reallocation. Validate phasing and commitments first.</p>
+  <div className="bh-metrics four"><BhMetric label="Approved marketing budget" value={lakhOrCrore(nationalBudget().approved)}/><BhMetric label="Actual marketing investment" value={lakhOrCrore(nationalBudget().actual)}/><BhMetric label="Unspent budget" value={lakhOrCrore(nationalBudget().unspent)} tone="amber"/><BhMetric label="Budget utilization" value={`${Math.round(nationalBudget().utilisation)}%`}/></div>
+  <BhCard title="Regional marketing investment & efficiency"><Table headers={['Region','Approved budget','Actual investment','Unspent','Utilization','Recorded adopters','Investment / recorded adopter','Actual net ROI']} rows={investmentRows()}/></BhCard>
+  <div className="bh-grid three"><BhCard title="Approved vs actual investment · ₹ L"><BhBars items={[{label:'West',value:72,note:'90 / 72'},{label:'South',value:54,note:'70 / 54'},{label:'North',value:39,note:'55 / 39'},{label:'East',value:25,note:'35 / 25'}]} max={100}/></BhCard><BhCard title="Investment per recorded adopter"><BhBars items={[{label:'West',value:9474,note:'₹9,474'},{label:'East',value:10417,note:'₹10,417'},{label:'North',value:10541,note:'₹10,541'},{label:'South',value:11020,note:'₹11,020',tone:'amber'}]}/><p className="bh-note">Descriptive efficiency only; not incremental acquisition cost.</p></BhCard><FinancialStatusCard/></div>
   <StepsPortal><LinkRow label="View investment detail" to="bh.5a"/><LinkRow label="Review ROI evidence" to="bh.5b"/><LinkRow label="Simulate reallocation" to="bh.5c"/><LinkRow label="Explore market opportunity" to="bh.6"/></StepsPortal>
 </BhPage>}
 
-function BhInvestmentDetail(){return <BhPage screen="bh.5a" subtitle="Approved and actual spend by region and campaign, with commitment status alongside the remaining budget."><BhCard title="Marketing investment detail"><Table headers={['Region','Campaign','Approved budget','Actual spend','Committed','Unspent','Finance status']} rows={[["West","Retailer-Led Croptek Conversion","₹12.00 L","₹9.00 L","₹2.00 L","₹1.00 L","Verify"],["West","Product Adoption Drive","₹28.00 L","₹23.00 L","₹3.00 L","₹2.00 L","On track"],["West","Retailer Enablement","₹28.00 L","₹22.00 L","₹4.00 L","₹2.00 L","On track"],["West","Trial & Follow-up","₹22.00 L","₹18.00 L","₹3.00 L","₹1.00 L","Verify"]]}/></BhCard><div className="bh-grid two"><BhCard title="Approved budget by campaign"><BhBars items={[["Retailer conversion",12],["Product adoption",28],["Retailer enablement",28],["Trial & follow-up",22]].map(([label,v])=>({label:String(label),value:Number(v),note:`₹${v} L`}))}/></BhCard><BhCard title="Review notes"><p className="bh-copy">The West Region approved envelope is ₹90.00 L. Actual spend is ₹72.00 L. Remaining allocation must be checked against commitments and phasing before a transfer is proposed.</p></BhCard></div><StepsPortal><LinkRow label="Back to investment overview" to="bh.5"/><LinkRow label="Simulate reallocation" to="bh.5c"/></StepsPortal></BhPage>}
+function BhInvestmentDetail(){return <BhPage screen="bh.5a" subtitle="Approved and actual spend by region and campaign, with commitment status alongside the remaining budget."><BhCard title="Marketing investment detail"><Table headers={['Region','Campaign','Approved budget','Actual spend','Committed','Unspent','Finance status']} rows={INVESTMENT_DETAIL.map((d)=>[d.region,d.campaign,lakhOrCrore(d.approved),lakhOrCrore(d.actual),lakhOrCrore(d.committed),lakhOrCrore(d.unspent),d.status])}/></BhCard><div className="bh-grid two"><BhCard title="Approved budget by campaign"><BhBars items={[["Retailer conversion",12],["Product adoption",28],["Retailer enablement",28],["Trial & follow-up",22]].map(([label,v])=>({label:String(label),value:Number(v),note:`₹${v} L`}))}/></BhCard><BhCard title="Review notes"><p className="bh-copy">The West Region approved envelope is ₹90.00 L. Actual spend is ₹72.00 L. Remaining allocation must be checked against commitments and phasing before a transfer is proposed.</p></BhCard></div><StepsPortal><LinkRow label="Back to investment overview" to="bh.5"/><LinkRow label="Simulate reallocation" to="bh.5c"/></StepsPortal></BhPage>}
 
 function BhRoiEvidence(){return <BhPage screen="bh.5b" subtitle="Trace the data and assumptions behind campaign ROI before treating an outcome as incremental."><BhCard title="ROI evidence register"><Table headers={['Measure','Current value','Evidence / calculation basis','Status']} rows={[["Marketing investment","₹1.90 Cr","Finance actuals by campaign and period","Recorded; reconcile commitments"],["Recorded adopters","1,860","Campaign-linked records","Recorded; cohort checks pending"],["Incremental sales","—","Comparable baseline and purchase match required","Pending"],["Contribution margin","—","Finance-approved margin by product","Pending"],["Net ROI","—","Incremental contribution less investment","Not determinable"]]}/></BhCard><div className="bh-grid two"><BhCard title="Evidence confidence gates"><ul className="bh-checks"><li>Eligible cohort defined and deduplicated</li><li>Campaign exposure and dates linked to source records</li><li>Baseline period and comparison group approved</li><li>Sales and margin reconciled with Finance</li></ul></BhCard><BhCard title="Interpretation"><p className="bh-copy">Recorded adopters and campaign-linked sales are activity indicators. They do not establish campaign causality or incremental financial return on their own.</p><p className="bh-note">Current ROI status: Pending attribution.</p></BhCard></div><StepsPortal><LinkRow label="Back to investment overview" to="bh.5"/><LinkRow label="Campaign effectiveness" to="bh.4"/></StepsPortal></BhPage>}
 

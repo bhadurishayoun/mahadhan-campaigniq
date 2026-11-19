@@ -352,3 +352,13 @@
 .cq-chart-select .cq-col-bar { cursor: pointer; }
 .cq-col-bar path { transition: fill-opacity 150ms ease; }
 .cq-col-tip { padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); box-shadow: var(--sh-1); font-size: 12px; color: var(--ink-900); }
+
+/* ---------- StackedBar */
+.cq-sbar { display: grid; gap: 6px; }
+.cq-sbar-track { display: flex; width: 100%; overflow: hidden; border-radius: 3px; background: var(--neutral-bg); }
+.cq-sbar-track i { display: block; min-width: 3px; flex-basis: 0; }
+.cq-sbar-track i.striped { background-image: repeating-linear-gradient(135deg, color-mix(in srgb, var(--warn) 30%, transparent) 0 4px, transparent 4px 9px) !important; }
+.cq-sbar-labels { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.cq-sbar-labels span { flex-basis: 0; min-width: max-content; display: grid; gap: 0; }
+.cq-sbar-labels b { font-size: 12px; line-height: 16px; font-weight: 600; color: var(--ink-900); white-space: nowrap; }
+.cq-sbar-labels small { font-size: 12px; line-height: 16px; color: var(--ink-600); }

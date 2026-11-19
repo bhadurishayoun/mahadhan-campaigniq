@@ -334,3 +334,25 @@ export function FunnelSteps({ steps, fmt = (v: number) => v.toLocaleString('en-I
     </ol>
   );
 }
+
+/* ---------------------------------------------------------------- StackedBar */
+export interface StackSegment { label: string; value: number; color: string; /** diagonal stripes, e.g. "not yet verified" */ striped?: boolean; display?: string }
+/** 100% stacked horizontal bar with a label under each segment (value + share) and a hover tooltip. */
+export function StackedBar({ segments, height = 18, label }: { segments: StackSegment[]; height?: number; label?: string }) {
+  const total = segments.reduce((s, x) => s + x.value, 0) || 1;
+  const pct = (v: number) => Math.round((v / total) * 100);
+  return (
+    <div className="cq-sbar" role="img" aria-label={label ?? segments.map((s) => `${s.label} ${s.display ?? s.value} (${pct(s.value)}%)`).join(', ')}>
+      <div className="cq-sbar-track" style={{ height }}>
+        {segments.map((s) => (
+          <i key={s.label} className={s.striped ? 'striped' : undefined} title={`${s.label}: ${s.display ?? s.value} · ${pct(s.value)}%`} style={{ flexGrow: s.value, background: s.color }} />
+        ))}
+      </div>
+      <div className="cq-sbar-labels">
+        {segments.map((s) => (
+          <span key={s.label} style={{ flexGrow: s.value }}><b>{s.label} {s.display ?? s.value}</b><small>{pct(s.value)}%</small></span>
+        ))}
+      </div>
+    </div>
+  );
+}
