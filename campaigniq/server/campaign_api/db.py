@@ -504,7 +504,7 @@ def _seed_market(db: sqlite3.Connection) -> None:
                     -12 if index == 0 else -5 + index,
                     2400,
                     6 + index % 5,
-                    "Illustrative market data",
+                    "Market data",
                     "2026-10-01",
                 ),
             )

@@ -1,5 +1,5 @@
 /**
- * Dataset placeholders - how real data replaces the illustrative screen data.
+ * Dataset hooks: prefer uploaded live data, then bundled snapshots, then screen defaults.
  *
  *   const campaigns = useDataset('portfolio.campaigns', CAMPAIGNS);
  *   <Panel title="..." data={campaigns}> ... campaigns.rows ...

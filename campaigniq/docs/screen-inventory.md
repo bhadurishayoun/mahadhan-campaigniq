@@ -2,7 +2,7 @@
 
 The web app reproduces the photographed mockups in `ui-mockups/Sayak's Mockups/`. Every screen is reachable from the sidebar, the screen list under the active module, the header search box and the in-page navigation-flow footers. URLs use the hash form `http://localhost:5173/#/s4.3`.
 
-All figures on these screens are the mockups' illustrative demo values (Croptek Onion Conversion — Ambad, Jalna, Late Rabi 2026-27). They are held in the screen components. Panels with a **DEMO / LIVE** badge switch to uploaded data automatically (see the README, section 5.3, and [screen-api-map.md](./screen-api-map.md)). The **ADM Data Sources & Integrations** screen (`#/admin.1`, at the bottom of the sidebar) is an addition that is not in the mockups.
+All figures on these screens are the mockups' synthetic demo values (Croptek Onion Conversion — Ambad, Jalna, Late Rabi 2026-27). They are held in the screen components. Panels with a **DEMO / LIVE** badge switch to uploaded data automatically (see the README, section 5.3, and [screen-api-map.md](./screen-api-map.md)). The **ADM Data Sources & Integrations** screen (`#/admin.1`, at the bottom of the sidebar) is an addition that is not in the mockups.
 
 | Module | Screen | Route | Mockup photo |
 |---|---|---|---|

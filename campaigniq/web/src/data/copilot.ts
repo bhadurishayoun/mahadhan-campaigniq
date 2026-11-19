@@ -5,9 +5,9 @@
  *    the question in the tool's data and call the configured LLM (default: a free keyless endpoint).
  * 2. No backend (e.g. the GitHub Pages site) or backend error: the browser calls the same free, keyless
  *    OpenAI-compatible endpoint directly, with the same prompts and the facts shown on the current screen.
- * 3. If both fail, callers fall back to their built-in illustrative answers.
+ * 3. If both fail, callers fall back to their built-in demo answers.
  *
- * Questions and the (illustrative) screen context are sent to that third-party LLM service.
+ * Questions and the demo screen context are sent to that third-party LLM service.
  */
 import { API_ENABLED, api } from '../api';
 import type { Scope } from './reference';

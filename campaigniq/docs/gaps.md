@@ -1,6 +1,6 @@
 # Mockup and data gaps
 
-The web app now reproduces all screens in `ui-mockups/Sayak's Mockups/` (see [screen-inventory.md](./screen-inventory.md)). Their figures, AI insights and recommendations are the mockups' illustrative content, held in the screen components.
+The web app now reproduces all screens in `ui-mockups/Sayak's Mockups/` (see [screen-inventory.md](./screen-inventory.md)). Their figures, AI insights and recommendations are the mockups' synthetic content, held in the screen components.
 
 Extension points are in place so this content can be replaced without redesigning the screens (see the README, section 5):
 
@@ -19,7 +19,7 @@ Extension points are in place so this content can be replaced without redesignin
 
 - **Authentication and geography scope:** Users, role permissions, and row-level access by MU/territory are not implemented. Approval endpoints check the supplied `X-User-Role` header, which is not an authentication mechanism and must not be used as production authorization.
 - **Geographic maps:** Market tables and opportunity bars work, but state/district/MU map layers need approved boundary GeoJSON and a validated MU centroid dataset. The competition and conversion indexes shown in the mockup need an approved source and definition.
-- **Crop calendar accuracy:** Seeded crop stages and product doses are illustrative. Replace them with approved crop-specific stage dates, dose schedules, anchor dates, lead times and holidays before generating operational calendars or stock commitments.
+- **Crop calendar accuracy:** Seeded crop stages and product doses are synthetic. Replace them with approved crop-specific stage dates, dose schedules, anchor dates, lead times and holidays before generating operational calendars or stock commitments.
 - **Weather replanting:** The risk endpoint uses the seeded rainfall deviation and date threshold. A production weather feed and authorized source/as-of metadata are needed.
 - **Field evidence:** Event reporting stores GPS coordinates and a photo hash, but does not upload photo files, verify the photo content, validate a 10 km MU-centroid distance, or support robust offline synchronization/idempotency.
 - **Forecast accuracy:** The KPI remains `null` until a forecast snapshot can be compared with confirmed actual sales for the same scope and time period.
@@ -27,6 +27,6 @@ Extension points are in place so this content can be replaced without redesignin
 - **Sayak screen logic:** Agronomic rules (stage windows, product fit, programme validation), trigger/recommendation scoring, opportunity and readiness scores, competitor ratings and the recovery/replanning impact estimates are shown as designed values. Their formulas and sources need confirmation before they are computed.
 - **Maps:** Heatmaps are stylised illustrations, not geographic boundaries.
 
-## Illustrative seed inputs
+## synthetic seed inputs
 
-The demo seed labels market data as illustrative. Croptek prices, pack sizes, doses, market areas, AMP, treated shares, competition notes, soil deficiencies, rainfall deviation, dealers, sample callback outcomes, event reports and demo yield are placeholders. Import approved values before business decisions.
+The demo seed labels market data as synthetic. Croptek prices, pack sizes, doses, market areas, AMP, treated shares, competition notes, soil deficiencies, rainfall deviation, dealers, sample callback outcomes, event reports and demo yield are placeholders. Import approved values before business decisions.

@@ -6,7 +6,7 @@ the avatar menu at the top-right. Every screen has its own hash route (for examp
 directly or found with the top-bar search.
 
 Source of truth for the layouts: `ui-mockups/V2-persona-mockup-specs.md` (the approved mockup prompts, one per screen).
-All figures are illustrative; the spec is deliberately strict about never showing pending checks as done, never summing
+All figures are synthetic; the spec is deliberately strict about never showing pending checks as done, never summing
 all-product territory figures into the product-portfolio ABP, and never treating campaign-linked sales as incremental.
 
 ## Code layout
@@ -18,7 +18,7 @@ web/src/pm/
 ├── kit.tsx        shared building blocks: PmPage, Drawer, Modal, Status (tone inferred from wording), Workflow,
 │                  Table, Facts, Strip, Box, AiBox, Sources, Checklist, Actions, Cta (locked = disabled + reason),
 │                  Field / Input / Select / Radios / Chips, Bars, Meter, Creative (CSS-drawn collateral previews)
-├── data.ts        the illustrative numbers shared by all screens (portfolio ABP, Ambad plan, scenarios, activities …)
+├── data.ts        the synthetic numbers shared by all screens (portfolio ABP, Ambad plan, scenarios, activities …)
 ├── pm.css         persona styling (overlay stage, drawer, modal, creatives, chat …)
 ├── reviews.tsx    PM.1, PM.2, PM.2A, PM.2B, PM.3, PM.3B, PM.3C, PM.3D
 ├── themes.tsx     PM.4, PM.4A, PM.4B, PM.4C

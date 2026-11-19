@@ -450,7 +450,6 @@ export function StageNutrition() {
 
       <StepsPortal>
         <Btn variant="outline" small to="s3.1" icon={<ArrowLeft size={13} />}>Back to Crop Nutrition Calendar</Btn>
-        <span className="s3-footer-mid">RECOMMENDED NEXT: Nutrition Programme Builder</span>
         <Btn variant="primary" to="s3.3" icon={<ArrowRight size={14} />}>Configure Nutrition Programme</Btn>
       </StepsPortal>
     </div>

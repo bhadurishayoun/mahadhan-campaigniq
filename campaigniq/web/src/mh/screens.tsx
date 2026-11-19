@@ -75,7 +75,7 @@ function Workspace(spec: Spec) {
         </aside>
       </div>
       {spec.code === 'MH.9' ? <StepsPortal><button onClick={()=>go('mh.8a')}>View Regional Programme</button><button onClick={()=>go('mh.9b')}><Activity/>Investigate Drivers</button><button onClick={()=>go('mh.9c')}>View Territory Impact</button><button className="primary" onClick={()=>go('mh.ai1')}>Ask Strategic Marketing Copilot</button></StepsPortal> : spec.code === 'MH.9A' ? <StepsPortal><button onClick={()=>go('mh.9')}><ArrowLeft/>Back to Portfolio</button><button onClick={()=>go('mh.9b')}>Investigate Performance Drivers</button><button onClick={()=>go('mh.9c')}>View Territory Impact</button><button onClick={()=>go('mh.8a')}>View Approved Playbook</button></StepsPortal> : spec.code === 'MH.9B' ? <StepsPortal><button onClick={()=>go('mh.9a')}>← &nbsp;Back to Regional Programme</button><button onClick={()=>go('mh.9c')}>View Territory Impact</button><button onClick={()=>go('mh.8a')}>View Source Evidence</button><button className="primary" onClick={()=>go('mh.9d')}><TrendingUp/>Request Campaign Optimization Review</button></StepsPortal> : null}
-      {spec.code !== 'MH.1' && <div className="mh-next-footer"><button type="button" onClick={() => goBack([...spec.crumbs].reverse().find((crumb) => crumb.to)?.to ?? 'mh.1')}><ArrowLeft size={14}/>Back</button></div>}
+      {spec.code !== 'MH.1' && <StepsPortal><button type="button" onClick={() => goBack([...spec.crumbs].reverse().find((crumb) => crumb.to)?.to ?? 'mh.1')}><ArrowLeft size={14}/>Back</button></StepsPortal>}
     </MhPage>
   );
 }
@@ -251,6 +251,6 @@ export function MhAi1() {
         <section><h2><Layers3/>Source &amp; Evidence</h2><ul><li><Link2/>Portfolio Performance</li><li><Link2/>Territory Diagnostics</li><li><Link2/>Approved Campaign Playbook</li></ul></section>
       </aside>
     </div>
-    <div className="mh-ai-footer"><button onClick={()=>go('mh.9')}><ArrowLeft/>Back to Portfolio</button><button onClick={()=>go('mh.9b')}><Activity/>Investigate Drivers</button><button onClick={()=>go('mh.9d')}><TrendingUp/>Request Campaign Optimization Review</button></div>
+    <StepsPortal><button onClick={()=>go('mh.9')}><ArrowLeft/>Back to Portfolio</button><button onClick={()=>go('mh.9b')}><Activity/>Investigate Drivers</button><button onClick={()=>go('mh.9d')}><TrendingUp/>Request Campaign Optimization Review</button></StepsPortal>
   </MhPage>;
 }

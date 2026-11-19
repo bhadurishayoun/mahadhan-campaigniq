@@ -1,11 +1,11 @@
-"""Dataset placeholders: the bridge between illustrative screen data and real data feeds.
+"""Dataset placeholders: the bridge between synthetic screen data and real data feeds.
 
 Every chart/table on the web screens that can take real data is declared in
 ``server/data/datasets/catalog.json`` (name, screen, description, expected source system and
 columns). The web app imports the same file and calls ``useDataset(name, DEMO_ROWS)``.
 
 Until a dataset is uploaded, ``GET /api/datasets/{name}`` returns 404 and the screen shows its
-illustrative demo rows. After ``POST /api/datasets/{name}`` (CSV or JSON upload, or a future ETL
+synthetic demo rows. After ``POST /api/datasets/{name}`` (CSV or JSON upload, or a future ETL
 job writing to the same table) the screen switches to the uploaded rows automatically.
 
 Rows may carry scope columns (``season``, ``state``, ``district``, ``taluka``, ``crop``,
@@ -162,7 +162,7 @@ def get_dataset(
     with database.connect() as db:
         row = db.execute("SELECT rows_json, source, uploaded_at FROM dataset_upload WHERE name = ?", (name,)).fetchone()
     if row is None:
-        raise HTTPException(status_code=404, detail=f"Dataset '{name}' has not been uploaded; the screen uses illustrative demo data.")
+        raise HTTPException(status_code=404, detail=f"Dataset '{name}' has not been uploaded.")
     scope = {"season": season, "state": state, "district": district, "taluka": taluka, "crop": crop, "product": product, "campaign_type": campaign_type, "region": region, "theme": theme, "period": period}
     rows = filter_rows(json.loads(row["rows_json"]), scope)
     return {"name": name, "rows": rows, "source": row["source"], "uploaded_at": row["uploaded_at"]}
@@ -193,7 +193,7 @@ async def upload_dataset(
 
 @router.delete("/{name}")
 def delete_dataset(name: str) -> dict[str, Any]:
-    """Remove uploaded rows so the screen falls back to illustrative demo data."""
+    """Remove uploaded rows so the screen falls back to synthetic demo data."""
     with database.connect() as db:
         deleted = db.execute("DELETE FROM dataset_upload WHERE name = ?", (name,)).rowcount
     return {"name": name, "deleted": bool(deleted)}

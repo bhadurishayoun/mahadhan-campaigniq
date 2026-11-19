@@ -10,7 +10,7 @@ export function toneOf(text: string): Tone {
   if (/not verified|unresolved|disabled|returned|rejected|not established|missing|not sent|exception/.test(t)) return 'red';
   if (/approved|validated|verified|complete|endorsed|reconciled|aligned|active|selected|sent|resolved|published/.test(t)) return 'green';
   if (/pending|to confirm|to verify|awaiting|required|conditional|review|unvalidated|provisional|not yet|not available|not determinable|not submitted|not approved|indicative|incomplete|data pending/.test(t)) return 'amber';
-  if (/draft|placeholder|illustrative|read-only|forecast|assumed|n\/a/.test(t)) return 'grey';
+  if (/draft|placeholder|read-only|forecast|assumed|n\/a/.test(t)) return 'grey';
   return 'grey';
 }
 
@@ -42,7 +42,7 @@ export function MhPage({  code, title, status, subtitle, actions, children, clas
       while ((textNode = walker.nextNode())) {
         if (textNode.parentElement?.closest('.cq-chips')) continue;
         const original = textNode.textContent ?? '';
-        const cleaned = original.replace(/illustrative/gi, '').replace(/\(\s*\)/g, '').replace(/\s{2,}/g, ' ').replace(/\s+([,.;:])/g, '$1');
+        const cleaned = original.replace(/\(\s*\)/g, '').replace(/\s{2,}/g, ' ').replace(/\s+([,.;:])/g, '$1');
         if (cleaned !== original) textNode.textContent = cleaned;
       }
     };

@@ -1,6 +1,6 @@
 # Screen-to-API map
 
-The CampaignIQ screens render the mockups' illustrative data (see [screen-inventory.md](./screen-inventory.md)).
+The CampaignIQ screens render the mockups' synthetic data (see [screen-inventory.md](./screen-inventory.md)).
 
 ## Extension-point endpoints used by the screens today
 

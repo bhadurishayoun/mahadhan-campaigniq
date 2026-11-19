@@ -6,7 +6,7 @@ import { AlertTriangle, ClipboardCheck, FileText, History, MessageSquare, Refres
 import { useNav } from '../nav';
 import { Btn, COLORS } from '../ui';
 import {
-  Act, Actions, AiBox, Bars, Box, Checklist, Cta, Drawer, Facts, Field, Input, Muted, Next, P, PmPage, Select, Source, Sources, Status, Strip, Table, Workflow,
+  Act, Actions, AiBox, Bars, Box, Checklist, Cta, Drawer, Facts, Field, Input, Muted, P, PmPage, Select, Source, Sources, Status, Strip, Table, Workflow,
 } from './kit';
 import { AMBAD, CROP_PLAN, CROP_TOTAL, DHANORA, ONION_APPROVED_LATER, PORTFOLIO, PORTFOLIO_TOTAL, cr, growthPct } from './data';
 
@@ -57,7 +57,6 @@ export function Pm1() {
         { title: 'Croptek carries the largest absolute growth requirement (₹0.80 Cr of ₹1.20 Cr).', text: 'Prioritise Croptek when reconciling incoming territory plans against the portfolio ABP. This highlights where the growth sits; it does not confirm the cause of last year\'s performance.', tone: 'green' },
       ]} />
 
-      <Next label="Review Consolidated Territory Plans" to="pm.2" sub="Field Sales Managers submit business & crop plans; the Zonal Manager reviews and consolidates them against the portfolio ABP" />
     </PmPage>
   );
 }

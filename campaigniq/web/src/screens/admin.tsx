@@ -9,7 +9,7 @@ import { Btn, Grid, Kpi, KpiRow, Note, PageHeader, Panel, Pill } from '../ui';
 
 /**
  * ADM - Data Sources & Integrations.
- * Shows which screen datasets are still illustrative, lets an admin upload CSV/JSON to replace them,
+ * Shows screen dataset status and lets an admin upload CSV/JSON,
  * lists the reference masters (states, districts, products) and the AI Copilot provider status.
  */
 export function DataSources() {

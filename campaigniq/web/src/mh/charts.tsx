@@ -6,7 +6,6 @@ import { Activity, ArrowLeft, ArrowRight, Boxes, CheckCircle2, CircleHelp, Clock
 import { QuestionChips, ChartCard, HeatGrid, RankBars } from '../ui/index';
 import { MARKET_PULSE, marketPulseForFilters } from './filtering';
 
-/* Illustrative figures only; they reuse the numbers shown on the BH / MH screens. */
 const REGIONS = ['West', 'South', 'North', 'East'];
 
 function MhDataTable({ title, hint, headers, rows }: { title: string; hint: string; headers: string[]; rows: string[][] }) {
@@ -78,7 +77,6 @@ function Mh2Charts() {
 function MhEvidenceRequestTracking() {
   const { go } = useNav();
   return <div className="mh-evidence-tracker-layout">
-    <div className="mh-evidence-illustrative-note"><Info/>This is a hypothetical future workflow after evidence requests are created, not real requests sent or data received.</div>
     <div className="mh-evidence-request-grid">
       <div className="mh-evidence-request-main">
         <section className="mh-section mh-report-card"><h2><FileText/>Evidence Request Tracker</h2><div className="mh-report-table-wrap"><table className="mh-report-table"><thead><tr><th>#</th><th>Evidence Request</th><th>Owner</th><th>Due Date</th><th>Latest Status</th><th>Action</th></tr></thead><tbody>
@@ -96,7 +94,7 @@ function MhEvidenceRequestTracking() {
         <section className="mh-section"><h2><Layers3/>Available Actions</h2><div className="mh-request-action-grid"><button onClick={()=>go('mh.4a-i4')}>View Submission</button><button onClick={()=>go('mh.4a-i4')}>Request Correction</button><button onClick={()=>go('mh.4a-i4')}>See Source Record</button><button onClick={()=>go('mh.4a-i4')}>Track Owner</button></div></section>
       </aside>
     </div>
-    <div className="mh-evidence-bottom-actions"><button onClick={()=>go('mh.4a')}>← &nbsp;Back to Investigation</button><span><Info/>On accepted validated evidence, the investigation will be re-run in a controlled manner and recommendations refreshed.</span><button className="primary" onClick={()=>go('mh.4a-i4')}>Updated Investigation Results →</button></div>
+    <StepsPortal><button onClick={()=>go('mh.4a')}>← &nbsp;Back to Investigation</button><span><Info/>On accepted validated evidence, the investigation will be re-run in a controlled manner and recommendations refreshed.</span><button className="primary" onClick={()=>go('mh.4a-i4')}>Updated Investigation Results →</button></StepsPortal>
   </div>;
 }
 
@@ -240,7 +238,7 @@ function Mh4aDiagnosis() {
     <section className="mh-section mh-diagnosis-evidence"><h2><Layers3/>Market &amp; Historical Performance Evidence — Maharashtra / Onion / Croptek</h2><div className="mh-diagnosis-market"><div><Activity/><b>Addressable Market</b><strong>₹7–10 Cr</strong></div><div><Target/><b>Product Penetration</b><strong>14–18%</strong><small>(Indicative)</small></div><div className="mh-quarterly-evidence"><BarChart3/><b>Quarterly Secondary Sales </b><div>{[['Q1','₹40.00 L'],['Q2','₹43.00 L'],['Q3','₹45.00 L'],['Q4','₹48.00 L']].map(([q,v],i)=><span key={q}><small>{q}</small><b>{v}</b>{i<3&&<ArrowRight/>}</span>)}</div></div></div><div className="mh-evidence-factor-grid">{evidence.map(({icon:Icon,title,detail,status,tone})=><article key={title}><Icon/><div><b>{title}</b><p>{detail}</p><span className={`mh-factor-status ${tone}`}>{tone==='green'?<CheckCircle2/>:<Clock3/>}{status}</span></div></article>)}</div></section>
     <section className="mh-diagnostic-insight"><div><Sparkles/><b>AI Diagnostic Insight</b></div><strong>Positive sales momentum + low indicative penetration suggests growth headroom, but exact reason for under-adoption is <mark>UNCONFIRMED.</mark></strong></section>
     <section className="mh-section mh-barrier-assessment"><h2><Activity/>Potential Growth Barrier – Hypothesis Assessment <small>(Subject to Validation)</small></h2><div>{barriers.map(({icon:Icon,title,question,status,tone},i)=><article key={title}><Icon/><section><b>{title}</b><p>{question}</p><span className={`mh-factor-status ${tone}`}>Evidence Status: &nbsp;{tone==='green'?<CheckCircle2/>:<Clock3/>}{status}</span></section>{i<barriers.length-1&&<ArrowRight className="mh-barrier-arrow"/>}</article>)}</div></section>
-    <div className="mh-diagnosis-footer"><span><Info/>Findings are indicative, based on available historical and plan data. Growth barrier hypotheses and recommended intervention require further validation.</span><button><FileText/>View Source Analysis</button><button className="primary"><Users/>Request Further Analysis</button></div>
+    <StepsPortal><span><Info/>Findings are indicative, based on available historical and plan data. Growth barrier hypotheses and recommended intervention require further validation.</span><button><FileText/>View Source Analysis</button><button className="primary"><Users/>Request Further Analysis</button></StepsPortal>
   </div>;
 }
 

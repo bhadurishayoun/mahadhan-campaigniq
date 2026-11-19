@@ -8,7 +8,6 @@ import { useSideFilters, type Workspace } from './filters';
 import './system.css';
 
 const cn = (...a: (string | false | null | undefined)[]) => a.filter(Boolean).join(' ');
-export const AS_OF = '19 Nov 2026';
 export const COMPARATOR: Record<Workspace, string> = { bh: 'vs LY', mh: 'vs LY', pm: 'vs ABP', tm: 'vs plan', legacy: 'vs LY' };
 
 /* ---------------------------------------------------------------- Page frame */
@@ -16,7 +15,6 @@ export function FilterChips({ chips }: { chips: string[] }) {
   return (
     <div className="cq-chips">
       {chips.map((c) => <span key={c} className="cq-chip">{c}</span>)}
-      <span className="cq-chip cq-chip-demo">Illustrative data</span>
     </div>
   );
 }
@@ -45,7 +43,7 @@ export function NumberedTabs({ tabs, active }: { tabs: TabDef[]; active: ScreenI
   );
 }
 
-/** Page content: PageHeader → NumberedTabs → sections. The App frame adds padding, the NextSteps bar and the footer line. */
+/** Page content: PageHeader → NumberedTabs → sections. */
 export function Page({ title, subtitle, chips, tabs, active, children, className }: {
   title: string; subtitle?: ReactNode; chips?: string[]; tabs?: TabDef[]; active?: ScreenId; children: ReactNode; className?: string;
 }) {
@@ -175,18 +173,14 @@ export function NextSteps({ actions = [], primary }: { actions?: StepAction[]; p
   );
 }
 /** Rendered once by the App at the end of every route. */
-export function NextStepsBar({ onSlot, onBack, asOf = AS_OF }: { onSlot: (el: HTMLDivElement | null) => void; onBack: () => void; asOf?: string }) {
+export function NextStepsBar({ onSlot, onBack }: { onSlot: (el: HTMLDivElement | null) => void; onBack: () => void }) {
   return (
-    <>
-      <nav className="cq-next" aria-label="Next steps">
-        <span>Next steps</span>
+      <nav className="cq-next" aria-label="Page navigation">
         <div className="cq-next-btns">
           <div className="cq-next-slot" ref={onSlot} />
           <button type="button" className="cq-btn cq-back-default" onClick={onBack}><ArrowLeft size={14} aria-hidden="true" />Back</button>
         </div>
       </nav>
-      <p className="cq-footer">Illustrative data for demonstration · Source: CampaignIQ synthetic dataset · as of {asOf}</p>
-    </>
   );
 }
 

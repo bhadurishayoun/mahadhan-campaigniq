@@ -16,13 +16,13 @@ fonts or npm libs; never change calculations, data or routes; `login.css` untouc
    screen's existing insight text. No floating insight boxes.
 5. **Card**: white, 1px line, radius 10, sh-1, padding 18px 20px, gap 14. No coloured header bars or persona card classes.
    Layout grids `cq-grid2` (minmax 420px) / `cq-grid3` (minmax 320px), gap 16.
-6. **Page frame**: top bar → `Page` (PageHeader: title 22/700 brand-900, one-line subtitle, filter chips right +
-   "Illustrative data" chip) → `NumberedTabs` for sub-screens → body padding 20px 28px, gap 16.
+6. **Page frame**: top bar → `Page` (PageHeader: title 22/700 brand-900, one-line subtitle, filter chips right; no
+   synthetic-data badge) → `NumberedTabs` for sub-screens → body padding 20px 28px, gap 16.
 7. **Filters**: only in the sidebar box under the logo (`SidebarFilters`, fields per persona in `filters.tsx`), shared
    state via `useSideFilters()`; chips and section-title context read from it. No selects in top bars or page bodies.
 8. **ActionCard** ("Next best actions"): icon tile + 14/600 title + 13px detail + green "Open … →"; grid minmax 220px.
-9. **NextSteps**: the App renders ONE bar + footer line on every route; pages/footers add buttons via <NextSteps> or
-   <StepsPortal> (max 4 shown; a default Back shows only when nothing is added). Never render footers in page bodies.
+9. **Page ending**: keep the Back control and functional action buttons; remove "Next steps" labels, guided next-copy,
+   synthetic/source/date footers, and duplicate footer content from every route.
 10. **Tables** (`cq-table`): 12px UPPERCASE header on grey band, 14px cells, numbers right, one value per cell (secondary
     as 12px caption), bold totals row, status as `StatusPill` (ok/warn/neutral/risk).
 11. **Numbers**: ₹ crore/lakh and × multiples always 2 decimals; nothing ever shows >2 decimals; one value per cell.

@@ -385,7 +385,6 @@ export function TmAi1() {
                     <div><h5 className="tm-verified">Verified operational issue</h5><p>The Dhanora field demonstration is at risk: <b>stock confirmation pending</b>. The Wadi Gaon meeting is also pending field confirmation.</p></div>
                     <div><h5 className="tm-hypo">Unverified hypotheses</h5><p>Follow-up quality and retailer influence may contribute but need validation. No proven causal attribution.</p></div>
                   </div>
-                  <p><b>Suggested next steps:</b> confirm stock with the channel manager, validate Dhanora follow-up records, then decide whether to reschedule, reassign or escalate.</p>
                   <small className="tm-muted">Pinned analysis · ask follow-up questions to the live copilot below.</small>
                 </div>
               </div>

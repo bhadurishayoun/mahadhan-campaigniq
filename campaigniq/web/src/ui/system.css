@@ -8,7 +8,6 @@
 .cq-page-header p { margin-top: 2px; font-size: 13px; line-height: 18px; color: var(--ink-600); }
 .cq-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
 .cq-chip { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border: 1px solid var(--line); border-radius: var(--r-pill); background: var(--surface); color: var(--ink-600); font-size: 12px; font-weight: 600; white-space: nowrap; }
-.cq-chip-demo { background: var(--accent-100); border-color: var(--accent-100); color: var(--warn); }
 
 .cq-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
 .cq-tab { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 6px; border: 1px solid var(--line); border-radius: var(--r-pill); background: var(--surface); color: var(--ink-600); font-size: 13px; font-weight: 600; cursor: pointer; }
@@ -80,7 +79,6 @@
 .cq-next-slot :is(.cq-btn-primary, .btn-primary, .primary, .iq-btn-primary, .pm-btn-primary, .btn-gold, .btn-dark, [data-primary]):hover { background: var(--brand-900); color: var(--surface); }
 .cq-next-slot :is(div, span, p) { display: contents; }
 .cq-next-slot small, .cq-next-slot .tm-footer-meta { display: none; }
-.cq-footer { font-size: 12px; line-height: 16px; color: var(--ink-400); text-align: center; }
 
 /* ---------- Tables */
 .cq-table-scroll { overflow-x: auto; max-width: 100%; }
@@ -213,3 +211,25 @@
 /* Any wrapper that directly holds a table scrolls horizontally inside its card instead of being clipped. */
 .app .cq-card :has(> table:not(.cq-heat)) { max-width: 100%; overflow-x: auto; }
 .app .cq-card > table:not(.cq-heat) { display: block; overflow-x: auto; }
+
+/* ---------- No canvas gaps (user rule, 2026-11-19): cards in a row are always the same height,
+   and a stacked column's last card grows to the bottom of the row. */
+.app .cq-page :is(.grid, .cq-grid2, .cq-grid3, .pm-two, .pm-two-even, .bh-grid, .tm-viz-row, .tm-map-row, .tm-split, .tm-copilot,
+  .tm-explorer, .pm-chat, .cw2-layout, .ai1-grid, .ai1-split, .s6-layout, [class*="-grid"], [class*="-layout"], [class*="-columns"],
+  [class*="-split"]) { align-items: stretch !important; }
+.app .cq-page :is(.pm-stack, .stack, [class*="-rail"], [class*="-side"], .tm-copilot-right, .mh-workspace-main, .mh-optimization-background) {
+  display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.app .cq-page :is(.pm-stack, .stack, [class*="-rail"], [class*="-side"], .tm-copilot-right, .mh-workspace-main, .mh-optimization-background)
+  > :is(.cq-card, .mh-section, section):last-child { flex: 1 1 auto; }
+/* A stretched card keeps its insight strip / actions pinned to the bottom edge. */
+.cq-card > :is(.cq-insight, .cq-section-foot):last-child { margin-top: auto; }
+.app .cq-page [class*="stack"]:not(.cq-tab) { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.app .cq-page :is([class*="stack"], [class*="-rail"], [class*="-side"], .tm-copilot-right, .mh-workspace-main, .mh-optimization-background)
+  > :nth-last-child(1 of .cq-card, .mh-section, section, [class*="stack"]) { flex: 1 1 auto; }
+.app .cq-page :is(.grid, .cq-grid2, .cq-grid3, .pm-two, .pm-two-even, .bh-grid, [class*="-grid"], [class*="-layout"], [class*="-split"], [class*="-columns"])
+  > :is(.cq-card, .mh-section) { align-self: stretch !important; }
+/* Every card in a stacked column shares the spare height (hidden siblings can't block it). */
+.app .cq-page :is([class*="stack"], [class*="-rail"], [class*="-side"], .tm-copilot-right, .mh-workspace-main, .mh-optimization-background)
+  > :is(.cq-card, .mh-section, section, [class*="stack"]) { flex: 1 1 auto; }
+.app .cq-page .mh-workspace-main > div:only-child { display: flex; flex-direction: column; gap: 16px; flex: 1 1 auto; min-width: 0; }
+.app .cq-page .mh-workspace-main > div:only-child > :is(.mh-section, section) { flex: 1 1 auto; }

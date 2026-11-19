@@ -4,9 +4,9 @@ Select a provider with the ``COPILOT_PROVIDER`` environment variable:
 
 * ``free`` (default) - keyless, free OpenAI-compatible endpoints (LLM7, then Pollinations; both serve the
   open-weight ``gpt-oss-20b``). No API key or account is needed; they are rate-limited and best-effort, and
-  questions plus the (illustrative) grounding context are sent to those third-party services.
+  questions plus the (synthetic) grounding context are sent to those third-party services.
   ``COPILOT_FREE_URL`` / ``COPILOT_FREE_MODEL`` pin a single endpoint and model instead.
-* ``demo`` - no LLM; the web app shows its built-in illustrative answers.
+* ``demo`` - no LLM; the web app shows its built-in synthetic answers.
 * ``openai`` - OpenAI or any OpenAI-compatible Chat Completions server (vLLM, Ollama, LM Studio,
   a corporate gateway, ...). Uses ``COPILOT_BASE_URL``, ``COPILOT_API_KEY``, ``COPILOT_MODEL``.
 * ``azure_openai`` - Azure OpenAI. Uses ``COPILOT_AZURE_ENDPOINT``, ``COPILOT_AZURE_DEPLOYMENT``,
@@ -48,7 +48,7 @@ class LLMProvider(ABC):
 
 
 class DemoProvider(LLMProvider):
-    """No LLM configured: the frontend falls back to its illustrative canned answers."""
+    """No LLM configured: the frontend falls back to its synthetic canned answers."""
 
     name = "demo"
 

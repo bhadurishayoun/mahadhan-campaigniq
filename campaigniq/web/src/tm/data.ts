@@ -1,5 +1,5 @@
 /**
- * Illustrative figures for the Field Sales Manager journey (Ambad, Jalna Cluster, FY 2025-26).
+ * Field Sales Manager planning figures for Ambad, Jalna Cluster, FY 2025-26.
  * Every number comes from the approved V2 mockup specs and is kept in one place so all 15 screens reconcile:
  *   territories 8.0 -> 10.0 Cr | dealers 320 L -> 380 L of ABP 420 L | onion villages 165 L
  *   approved plan v3: Onion 190 L + Maize 125 L + Other 105 L = 420 L | campaign 13 activities, Rs 3.00 L
@@ -20,7 +20,7 @@ export const ACHIEVEMENT = [
   { label: 'Historical target attainment', value: '94%', note: '3-year average vs ABP' },
 ];
 
-/** Ambad network: 8 dealers, 74 active retailers (illustrative). */
+/** Ambad network: 8 dealers, 74 active retailers. */
 export const VILLAGES = [
   { name: 'Dhanora', dealers: 1, retailers: 12 },
   { name: 'Wadi Gaon', dealers: 1, retailers: 14 },

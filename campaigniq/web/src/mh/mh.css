@@ -375,8 +375,6 @@
 .mh-source-links { list-style: none; margin: 0; padding: 5px 9px 7px; }
 .mh-source-links li { padding: 5px 3px; border-bottom: 1px solid var(--neutral-bg); color: var(--ink-600); font-size: var(--fs-body); }
 .mh-evidence-tracker-layout { display: flex; flex-direction: column; gap: 7px; }
-.mh-evidence-illustrative-note { display: flex; align-items: center; gap: 6px; padding: 6px 9px; border: 1px solid var(--accent-100); border-radius: var(--r-sm); background: var(--accent-100); color: var(--ink-600); font-size: var(--fs-caption); }
-.mh-evidence-illustrative-note svg { width: 14px; height: 14px; color: var(--accent-600); }
 .mh-evidence-request-grid { display: grid; grid-template-columns: minmax(0,1.7fr) minmax(260px,.82fr); gap: 8px; align-items: start; }
 .mh-evidence-request-main, .mh-evidence-request-rail { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
 .mh-evidence-request-layout .mh-report-table th { font-size: var(--fs-label); }

@@ -1,7 +1,7 @@
 """Request/response contract for the AI Co-pilot.
 
 ``CopilotAnswer`` mirrors the ``Answer`` type in ``web/src/screens/ai.tsx`` so an LLM answer renders
-in exactly the same layout as the built-in illustrative answers.
+in exactly the same layout as the built-in synthetic answers.
 """
 
 from __future__ import annotations

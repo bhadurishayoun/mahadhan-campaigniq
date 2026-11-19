@@ -7,7 +7,7 @@ The tool has two layers:
 * **Version 2 persona workspaces** (the main experience): Business Head, Marketing Head, Zonal Manager and Field Sales Manager, built from the approved mockup specs in `ui-mockups/V2-persona-mockup-specs.md`.
 * **Version 1 module screens** (S1–S7, AI.1) from the 28 mockups in `ui-mockups/Sayak's Mockups/`, plus the Prototype Showcase (P.1–P.3) that drives the live planning engine.
 
-All data is **illustrative**: the backend is filled from a synthetic data workbook and the persona screens use mockup figures. Nothing is Mahadhan's actual data. The code has placeholders so that more states, districts and products can be added by editing JSON, real data can replace the synthetic rows sheet by sheet, and a paid or self-hosted LLM can replace the free one by changing settings.
+All data is **synthetic**: the backend is filled from a synthetic data workbook and the persona screens use mockup figures. Nothing is Mahadhan's actual data. The code has placeholders so that more states, districts and products can be added by editing JSON, real data can replace the synthetic rows sheet by sheet, and a paid or self-hosted LLM can replace the free one by changing settings.
 
 **New to the project? Read [0. Project status & next steps](#0-project-status--next-steps-start-here) first.** The rest of this README explains how to run the tool, how it is built and how to extend it.
 
@@ -96,7 +96,7 @@ Full history: `git log --oneline`.
 ### Working conventions
 
 * Every persona lives in `web/src/<persona>/`: `nav.ts` (screen registry), screen files, `data.ts` (figures), CSS. Register new screens in `nav.ts` and the persona's `index.tsx`.
-* Keep figures consistent across screens (totals must reconcile); keep everything labelled illustrative.
+* Keep figures consistent across screens (totals must reconcile); keep everything labelled synthetic.
 * **Screen and panel titles must read like a person named them:** short, plain business words that say what the
   user does or sees (e.g. "Plan Reviews", "Outlet Targets", "Approval Status"). Avoid buzzwords such as Command Centre,
   Intelligence, Studio, Workspace, Control Tower, Engine, Hub, Unified, Deep-dive, and stacked "Strategic … &
@@ -157,7 +157,7 @@ The dark **Backend Activity** console on P.2/P.3 lists every API call (method, p
 
 Screens are labelled as:
 - **Live · backend connected:** P.1–P.3, ADM, AI.1 and the persona AI copilots.
-- **Interactive UI · API ready:** S1–S7. These show the approved designs with illustrative data, and their backing endpoints exist.
+- **Interactive UI · API ready:** S1–S7. These show the approved designs with synthetic data, and their backing endpoints exist.
 - **Proposed:** roadmap items.
 
 **Reset the demo data:** stop `npm run dev`, delete `server/data/campaigniq-python.db`, and start again. The database is re-created and re-seeded, which removes the plans and callbacks created during a demo.
@@ -303,7 +303,7 @@ These are the steps in the order the tool was built. To rebuild it from scratch,
 
 1. Chose **SQLite** (one file, zero setup). `CAMPAIGNIQ_DB` points to another file.
 2. Defined tables for masters (season, crop, product, geography/market units), the activity library, plans and plan lines, calendar events, field reports, farmers and consent, callbacks, sales and audit flags.
-3. Wrote an idempotent seed with illustrative data (Onion/Croptek, Nashik and Jalna market units, dealers, callbacks).
+3. Wrote an idempotent seed with synthetic data (Onion/Croptek, Nashik and Jalna market units, dealers, callbacks).
 4. `connect()` is a context manager that commits on success, so every endpoint uses `with connect() as db:`.
 
 ### Step 3 - Backend: planning engine (`server/campaign_api/engine.py`)
@@ -482,7 +482,7 @@ figures (district crop areas, mandi prices and MSP, typical doses, Mahadhan pack
 2. Click **Template** next to the dataset to download a CSV with the right columns plus the optional scope columns.
 3. Fill it from the source system (ERP, CRM, field app, ...). One file can cover many states, districts and products: fill the scope columns `season, state, district, taluka, crop, product, campaign_type` with master **ids** (or names; matching ignores case and spaces). Leave a scope column empty for rows that apply everywhere.
 4. Click **Upload** and choose the file (CSV or JSON). The badge on the screen turns **LIVE**, and the panel shows the rows that match the current filters.
-5. **Use demo** removes the upload and returns the screen to its illustrative values.
+5. **Use demo** removes the upload and returns the screen to its synthetic values.
 
 **From a script or ETL job:**
 
@@ -536,7 +536,7 @@ endpoints: LLM7 first, Pollinations as the fallback. Both serve open-weight mode
   prompts (`web/src/data/copilot.ts`).
 * Limits: the free services are best-effort and rate-limited (Pollinations: about one reply per 45 seconds per IP).
   The client honours short `Retry-After` waits and falls back between endpoints; if both are busy, the chat says
-  so. Questions and on-screen (illustrative) figures are sent to these third-party services, so do not use them
+  so. Questions and on-screen (synthetic) figures are sent to these third-party services, so do not use them
   with confidential data. For production, switch to a paid or self-hosted model as below.
 
 To use your own model instead:
@@ -652,7 +652,7 @@ Run only the Python tests: `cd server; python -m unittest discover -s tests_pyth
 | Upload error "Missing required columns" | Start from the **Template** CSV; column names must match exactly. |
 | Upload error "Unknown dataset" | Add the dataset to `server/data/datasets/catalog.json` first. |
 | Uploaded data not shown on a screen | The rows' scope columns don't match the filter bar (for example `district=nashik` while the filter is Jalna). Change the filters or leave scope columns empty. |
-| Copilot still shows "Illustrative AI output" / `/api/copilot/status` says `demo` | `server/.env` sets `COPILOT_PROVIDER=demo` (an old copy of `.env.example`). Set it to `free` and restart the API. |
+| Copilot still shows "synthetic AI output" / `/api/copilot/status` says `demo` | `server/.env` sets `COPILOT_PROVIDER=demo` (an old copy of `.env.example`). Set it to `free` and restart the API. |
 | Copilot says "the free service limits how often it replies" (HTTP 402/429) | The free endpoints are rate-limited (Pollinations ≈ 1 reply per 45 s per IP). Wait a minute; the client already waits out short limits and switches endpoints. For heavy use configure a paid model (section 5.5). |
 | Toast "Copilot LLM unavailable (...)" on AI.1 | Both the backend and the browser LLM calls failed, or the model returned invalid JSON. The built-in answer is shown instead. |
 | API changes don't take effect locally (Windows) | `uvicorn --reload` left an old worker on port 8000. Stop all `uvicorn` Python processes (Task Manager or `Get-CimInstance Win32_Process -Filter "Name='python.exe'"`), then `npm run dev` again. |

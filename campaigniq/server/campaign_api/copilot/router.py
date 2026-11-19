@@ -2,7 +2,7 @@
 
 * ``GET  /api/copilot/status`` - which provider is active (the web app shows "Demo answers" or "LLM").
 * ``POST /api/copilot/ask``    - grounded question answering. In demo mode it returns ``mode="demo"``
-  with no answer and the web app shows its built-in illustrative answer instead.
+  with no answer and the web app shows its built-in synthetic answer instead.
 """
 
 from __future__ import annotations
@@ -70,7 +70,7 @@ def copilot_status() -> dict[str, Any]:
 def ask(request: AskRequest) -> AskResponse:
     provider = _provider()
     if not provider.configured:
-        return AskResponse(mode="demo", provider=provider.name, message="No LLM configured; showing illustrative answers.")
+        return AskResponse(mode="demo", provider=provider.name, message="No LLM configured; showing synthetic answers.")
     context = build_context(request.question, request.scope.model_dump(), request.screen)
     messages = [
         {"role": "system", "content": _system_prompt()},

@@ -5,7 +5,6 @@ import { QuestionChips, Bullets, ChartCard, ColumnBars, HeatGrid, KpiCard, KpiGr
 import type { PulseItem } from '../ui/index';
 import { PORTFOLIO, PORTFOLIO_TOTAL } from './data';
 
-/* Illustrative figures only; product numbers come from pm/data.ts so every screen stays consistent. */
 const jalna = { district: 'Jalna', state: 'Maharashtra' };
 const crL = (v: number) => `₹${v}`;
 

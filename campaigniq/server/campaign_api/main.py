@@ -1451,7 +1451,7 @@ def weekly_report(week: str | None = None, mu_id: int | None = None, crop_id: in
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "performance": performance(mu_id=mu_id, crop_id=crop_id),
         "risks": risks(),
-        "label": "Illustrative operational review; confirm imported sales data before external circulation.",
+        "label": "Operational review; confirm imported sales data before external circulation.",
     }
 
 
@@ -1462,7 +1462,7 @@ def monthly_report(month: str | None = None, mu_id: int | None = None, crop_id: 
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "performance": performance(mu_id=mu_id, crop_id=crop_id),
         "risks": risks(),
-        "label": "Illustrative operational review; confirm imported sales data before external circulation.",
+        "label": "Operational review; confirm imported sales data before external circulation.",
     }
 
 

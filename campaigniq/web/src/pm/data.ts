@@ -1,5 +1,5 @@
 /**
- * Illustrative figures shared by the Zonal Manager screens. Everything here is concept data - no real
+ * Figures shared by the Zonal Manager screens. Values are local planning inputs.
  * Mahadhan results. Keeping the numbers in one place keeps every screen internally consistent.
  */
 
@@ -121,7 +121,7 @@ export const ACTIVITIES = [
 ];
 export const ACTIVITY_TOTAL = { units: 13, done: 9, budget: '₹3.00 L', completion: '69.2%' };
 
-/* Interim campaign results (local Ambad, illustrative) */
+/* Interim campaign results (local Ambad) */
 export const IMPACT = { reached: 640, trials: 160, adopters: 72, rate: '45.0%', linkedSales: '₹5.40 L', activities: '9 / 13' };
 export const VILLAGES = [
   { village: 'Dhanora', reached: 280, trials: 62, adopters: 24, rate: 38.7 },
