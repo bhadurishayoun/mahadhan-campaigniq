@@ -233,3 +233,49 @@
   > :is(.cq-card, .mh-section, section, [class*="stack"]) { flex: 1 1 auto; }
 .app .cq-page .mh-workspace-main > div:only-child { display: flex; flex-direction: column; gap: 16px; flex: 1 1 auto; min-width: 0; }
 .app .cq-page .mh-workspace-main > div:only-child > :is(.mh-section, section) { flex: 1 1 auto; }
+
+/* ---------- DonutMetric (static + interactive). Legend row: dot · name · value · share; optional detail line. */
+.cq-donut { position: relative; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.cq-donut ul { flex: 1 1 260px; min-width: 0; display: grid; gap: 10px; list-style: none; align-content: center; }
+.cq-donut li { display: block; font-size: 13px; }
+.cq-legend-row { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto 40px; gap: 8px; align-items: center; }
+.cq-legend-row i { width: 10px; height: 10px; border-radius: 2px; }
+.cq-legend-row b { font-size: 13px; font-weight: 700; color: var(--ink-900); white-space: nowrap; }
+.cq-legend-row small { font-size: 12px; color: var(--ink-400); text-align: right; }
+.cq-legend-detail { margin: 6px 0 0 18px; }
+.cq-donut-ring > span em { font-style: normal; font-size: 12px; line-height: 15px; color: var(--ink-600); max-width: 120px; }
+.cq-donut-live .cq-donut-ring b { font-size: 20px; }
+.cq-donut-live .cq-donut-ring small { max-width: 120px; font-weight: 600; color: var(--ink-900); }
+.cq-donut-live .cq-seg { cursor: pointer; transition: stroke-width 150ms ease, opacity 150ms ease; outline: none; }
+.cq-donut-live .cq-seg.faded { opacity: .35; }
+.cq-donut-selected { fill: none; stroke: var(--ink-900); stroke-width: 2; pointer-events: none; }
+.cq-donut-sweep { animation: cq-sweep 400ms ease-out both; }
+@keyframes cq-sweep { from { stroke-dashoffset: var(--c); } to { stroke-dashoffset: 0; } }
+.cq-legend-live { padding: 8px 10px; border: 1px solid transparent; border-radius: var(--r-sm); cursor: pointer; transition: opacity 150ms ease, background 150ms ease; outline: none; }
+.cq-legend-live:hover, .cq-legend-live:focus-visible { background: var(--brand-50); }
+.cq-legend-live.faded { opacity: .35; }
+.cq-legend-live.sel { border-color: var(--ink-900); }
+.cq-donut-tip { position: absolute; z-index: 5; min-width: 180px; max-width: 260px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
+  box-shadow: var(--sh-1); font-size: 12px; line-height: 16px; color: var(--ink-600); pointer-events: none; display: grid; gap: 2px; }
+.cq-donut-tip b { font-size: 13px; color: var(--ink-900); }
+.cq-donut-tip-detail .cq-gapbar { display: none; }
+@media (prefers-reduced-motion: reduce) { .cq-donut-sweep { animation: none; } .cq-donut-live .cq-seg, .cq-legend-live { transition: none; } }
+@media (max-width: 720px) { .cq-donut { flex-direction: column; align-items: stretch; } .cq-donut-ring { align-self: center; } }
+/* Fill a stretched card: the donut block takes the spare height and centres itself (no empty band). */
+.cq-card > .cq-donut { flex: 1 1 auto; }
+
+/* Growth-gap legend detail: chip + LY→ABP bar on one scale + caption. */
+.cq-gapline { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; align-items: center; }
+.cq-gapchip { font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: var(--r-pill); white-space: nowrap; }
+.cq-gapchip.warn { background: var(--warn-bg); color: var(--warn); }
+.cq-gapchip.neutral { background: var(--neutral-bg); color: var(--neutral); }
+.cq-gapbar { display: flex; height: 8px; background: var(--neutral-bg); border-radius: 2px; overflow: hidden; }
+.cq-gapbar i { display: block; height: 100%; }
+.cq-gapbar i.ly { background: var(--ink-300); }
+.cq-gapbar i.gap { background: var(--brand-700); }
+.cq-gapline small { grid-column: 2; font-size: 12px; color: var(--ink-600); }
+/* Interactive donut fills its card height: ring centred, legend rows spread evenly over the full height. */
+.cq-card > .cq-donut-live { align-items: stretch; }
+.cq-card > .cq-donut-live .cq-donut-ring { align-self: center; }
+.cq-card > .cq-donut-live > ul { align-content: space-evenly; }
+.cq-gapbar { background: none; }

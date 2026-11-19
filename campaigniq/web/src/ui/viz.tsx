@@ -1,5 +1,5 @@
 /** The only chart set (CLAUDE.md §3). All styling comes from chartTheme; no inline colours here. */
-import type { ReactNode } from 'react';
+import { useId, useRef, useState, type ReactNode } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { chartTheme } from '../chartTheme';
 import { InsightStrip } from './system';
@@ -95,31 +95,92 @@ export function TrendLine({ data, x, series, fmt = plain, height = 240 }: { data
 }
 
 /* ---------------------------------------------------------------- DonutMetric */
-export function DonutMetric({ items, value, label, fmt = plain, insight }: { items: { label: string; value: number; color?: string }[]; value: ReactNode; label: string; fmt?: Fmt; insight?: boolean | ReactNode }) {
+export interface DonutItem { label: string; value: number; color?: string }
+export interface DonutCenter { value: ReactNode; label: ReactNode; sub?: ReactNode }
+/**
+ * Part-of-a-whole ring with a legend. Static by default; `interactive` adds hover/focus emphasis, a tooltip,
+ * click-to-select (`onSelect`, `selected`), a per-item centre (`center`) and an extra legend line (`detail`).
+ * Interactive rings colour parts by size with brand tints (largest = brand-700) unless items carry a colour.
+ */
+export function DonutMetric({ items, value, label, fmt = plain, insight, interactive, onSelect, selected, center, detail, ariaLabel }: {
+  items: DonutItem[]; value: ReactNode; label: string; fmt?: Fmt; insight?: boolean | ReactNode;
+  interactive?: boolean; onSelect?: (item: DonutItem) => void; selected?: string;
+  center?: (item: DonutItem | null) => DonutCenter; detail?: (item: DonutItem) => ReactNode; ariaLabel?: (item: DonutItem, share: number) => string;
+}) {
+  const uid = useId().replace(/:/g, '');
+  const [hover, setHover] = useState<string | null>(null);
+  const [tip, setTip] = useState<{ x: number; y: number } | null>(null);
+  const wrap = useRef<HTMLDivElement>(null);
   const total = items.reduce((s, i) => s + i.value, 0) || 1;
-  const r = 52, c = 2 * Math.PI * r;
+  const ordered = interactive ? [...items].sort((a, b) => b.value - a.value) : items;
+  const colorOf = (it: DonutItem) => it.color ?? (interactive ? chartTheme.tint(ordered.indexOf(it), ordered.length) : chartTheme.series[items.indexOf(it) % chartTheme.series.length]);
+  const big = ordered.reduce<DonutItem | undefined>((m, i) => (!m || i.value > m.value ? i : m), undefined);
+  const size = interactive ? 180 : 140;
+  const stroke = interactive ? 22 : 18;
+  const r = (size - (interactive ? 30 : stroke)) / 2;
+  const c = 2 * Math.PI * r;
+  const gap = interactive && ordered.length > 1 ? 2 : 0;
+  const active = ordered.find((i) => i.label === hover) ?? null;
+  const mid = center ? center(active) : active ? { value: fmt(active.value), label: `${active.label} · ${pctOf(active.value, total)}%` } : { value, label };
+  const share = (it: DonutItem) => pctOf(it.value, total);
+  const enter = (it: DonutItem) => setHover(it.label);
+  const leave = () => { setHover(null); setTip(null); };
+  const move = (e: { clientX: number; clientY: number }) => {
+    const b = wrap.current?.getBoundingClientRect();
+    if (b) setTip({ x: e.clientX - b.left + 14, y: e.clientY - b.top + 14 });
+  };
+  const pick = (it: DonutItem) => onSelect?.(it);
+  const key = (it: DonutItem) => (e: { key: string; preventDefault: () => void }) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(it); } };
+  const label$ = (it: DonutItem) => ariaLabel?.(it, share(it)) ?? `${it.label}: ${fmt(it.value)}, ${share(it)}% of the total`;
   let offset = 0;
-  const big = [...items].sort((a, b) => b.value - a.value)[0];
+  const arcs = ordered.map((it) => {
+    const len = Math.max(0, (it.value / total) * c - gap);
+    const arc = { it, len, offset };
+    offset += (it.value / total) * c;
+    return arc;
+  });
   return (
     <>
-    <div className="cq-donut">
-      <div className="cq-donut-ring">
-        <svg viewBox="0 0 140 140" role="img" aria-label={label}>
-          <circle cx="70" cy="70" r={r} className="cq-donut-track" />
-          {items.map((it, i) => {
-            const len = (it.value / total) * c;
-            const el = <circle key={it.label} cx="70" cy="70" r={r} stroke={it.color ?? chartTheme.series[i % chartTheme.series.length]} strokeDasharray={`${len} ${c - len}`} strokeDashoffset={-offset} />;
-            offset += len;
-            return el;
+    <div ref={wrap} className={`cq-donut${interactive ? ' cq-donut-live' : ''}`} onMouseLeave={leave}>
+      <div className="cq-donut-ring" style={{ width: size, height: size }}>
+        <svg viewBox={`0 0 ${size} ${size}`} role={interactive ? 'group' : 'img'} aria-label={label}>
+          {interactive && <defs><mask id={`m${uid}`}><circle className="cq-donut-sweep" cx={size / 2} cy={size / 2} r={r} stroke="#fff" strokeWidth={40} fill="none" strokeDasharray={c} style={{ ['--c' as string]: c }} /></mask></defs>}
+          <circle cx={size / 2} cy={size / 2} r={r} className="cq-donut-track" style={{ strokeWidth: stroke }} />
+          <g mask={interactive ? `url(#m${uid})` : undefined}>
+            {arcs.map(({ it, len, offset: o }) => (
+              <circle key={it.label} cx={size / 2} cy={size / 2} r={r} stroke={colorOf(it)}
+                strokeDasharray={`${len} ${c - len}`} strokeDashoffset={-o}
+                className={interactive ? `cq-seg${hover && hover !== it.label ? ' faded' : ''}${hover === it.label ? ' on' : ''}` : undefined}
+                style={{ strokeWidth: interactive && hover === it.label ? 28 : stroke }}
+                {...(interactive ? {
+                  tabIndex: 0, role: 'button', 'aria-label': label$(it), 'aria-pressed': selected === it.label,
+                  onMouseEnter: () => enter(it), onMouseMove: move, onFocus: () => enter(it), onBlur: leave, onClick: () => pick(it), onKeyDown: key(it),
+                } : {})} />
+            ))}
+          </g>
+          {interactive && selected && arcs.filter((a) => a.it.label === selected).map(({ it, len, offset: o }) => {
+            const ro = r + 17, co = 2 * Math.PI * ro, l2 = (len / c) * co;
+            return <circle key="sel" cx={size / 2} cy={size / 2} r={ro} className="cq-donut-selected" strokeDasharray={`${l2} ${co - l2}`} strokeDashoffset={-(o / c) * co} aria-hidden="true" data-for={it.label} />;
           })}
         </svg>
-        <span><b>{value}</b><small>{label}</small></span>
+        <span aria-live="polite"><b>{mid.value}</b><small>{mid.label}</small>{mid.sub && <em>{mid.sub}</em>}</span>
       </div>
       <ul>
-        {items.map((it, i) => (
-          <li key={it.label}><i style={{ background: it.color ?? chartTheme.series[i % chartTheme.series.length] }} /><span>{it.label}</span><b>{fmt(it.value)}</b><small>{Math.round((it.value / total) * 100)}%</small></li>
+        {ordered.map((it) => (
+          <li key={it.label} className={interactive ? `cq-legend-live${hover && hover !== it.label ? ' faded' : ''}${selected === it.label ? ' sel' : ''}` : undefined}
+            {...(interactive ? { tabIndex: 0, role: 'button', 'aria-label': label$(it), 'aria-pressed': selected === it.label, onMouseEnter: () => enter(it), onMouseMove: move, onFocus: () => enter(it), onBlur: leave, onClick: () => pick(it), onKeyDown: key(it) } : {})}>
+            <div className="cq-legend-row"><i style={{ background: colorOf(it) }} /><span>{it.label}</span><b>{fmt(it.value)}</b><small>{share(it)}%</small></div>
+            {detail && <div className="cq-legend-detail">{detail(it)}</div>}
+          </li>
         ))}
       </ul>
+      {interactive && active && tip && (
+        <div className="cq-donut-tip" style={{ left: tip.x, top: tip.y }} role="tooltip">
+          <b>{active.label}</b>
+          <span>{fmt(active.value)} · {share(active)}% of total</span>
+          {detail && <div className="cq-donut-tip-detail">{detail(active)}</div>}
+        </div>
+      )}
     </div>
     {insight && big && <InsightStrip>{insight === true ? `${big.label} is the largest share at ${pctOf(big.value, total)}% (${fmt(big.value)}).` : insight}</InsightStrip>}
     </>

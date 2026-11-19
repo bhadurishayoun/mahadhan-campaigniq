@@ -398,7 +398,8 @@ export function Donut({ segments, center, sub }: {
   showPct?: boolean;
   legend?: boolean;
 }) {
-  return <DonutMetric items={segments.map((s) => ({ label: s.label, value: s.value }))} value={center ?? ''} label={typeof sub === 'string' ? sub : ''} insight />;
+  return <DonutMetric interactive items={segments.map((s) => ({ label: s.label, value: s.value }))} value={center ?? ''} label={typeof sub === 'string' ? sub : ''} insight
+    center={(it) => (it ? { value: it.value.toLocaleString('en-IN', { maximumFractionDigits: 2 }), label: it.label, sub: typeof sub === 'string' ? sub : undefined } : { value: center ?? '', label: typeof sub === 'string' ? sub : '' })} />;
 }
 
 const FUNNEL_COLORS = ['var(--brand-700)', 'var(--ok)', 'var(--crop-soybean)', 'var(--segment-growing)', 'var(--accent-600)', 'var(--accent-600)', 'var(--data-baseline)'];

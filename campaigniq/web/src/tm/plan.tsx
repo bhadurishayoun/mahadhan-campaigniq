@@ -2,7 +2,8 @@
 import { Fragment, useMemo, useState } from 'react';
 import { AlertTriangle, Award, CheckCircle2, ChevronDown, ChevronRight, Coins, Download, History, RefreshCw, Save, Target, TrendingUp, Upload } from 'lucide-react';
 import { Card, Grid, KpiStrip, Metric, NextSteps, Page, StatusPill, useSideFilters, type TabDef } from '../ui/index';
-import { RankedBars } from '../ui/viz';
+import { DonutMetric } from '../ui/viz';
+import { chartTheme } from '../chartTheme';
 import { IndiaDistrictMap } from '../map/IndiaDistrictMap';
 import { useNav } from '../nav';
 import { Btn, cx } from '../ui';
@@ -34,8 +35,42 @@ export function Tm1() {
   const ly = all ? TOTAL_LY : rows.reduce((s, t) => s + t.ly, 0);
   const abp = all ? TOTAL_ABP : rows.reduce((s, t) => s + t.abp, 0);
   const ctx = side.context('Jalna Cluster');
-  const ranked = [...rows].sort((a, b) => (b.abp - b.ly) - (a.abp - a.ly));
-  const lead = ranked[0];
+  // Section 3: the cluster growth gap (ABP − LY) split by territory; a single-territory filter shows base + gap.
+  const single = rows.length === 1 ? rows[0] : null;
+  const clusterGrowth = growth(TOTAL_LY, TOTAL_ABP);
+  const gapTotal = TOTAL_ABP - TOTAL_LY;
+  const maxAbp = Math.max(...TERRITORIES.map((t) => t.abp));
+  const terr = (name: string) => TERRITORIES.find((t) => t.name === name)!;
+  const vsCluster = (g: number) => `${Math.abs(Math.round(g - clusterGrowth))} pts ${g >= clusterGrowth ? 'above' : 'below'} the cluster's ${pct(clusterGrowth, 0)}`;
+  const gapItems = single
+    ? [{ label: 'Last-year base', value: single.ly, color: chartTheme.base }, { label: 'Growth gap', value: single.abp - single.ly, color: 'var(--brand-700)' }]
+    : TERRITORIES.map((t) => ({ label: t.name, value: t.abp - t.ly }));
+  const gapFmt = (v: number) => (single && v === single.ly ? crore(v) : `+${crore(v)}`);
+  const gapCenter = (it: { label: string; value: number } | null) => {
+    if (single) {
+      const s = Math.round((it ? it.value : single.abp) / single.abp * 100);
+      return it ? { value: gapFmt(it.value), label: `${it.label} · ${s}%`, sub: it.label === 'Growth gap' ? `${pct(growth(single.ly, single.abp))} growth needed` : 'FY 2024–25 liquidation' }
+        : { value: crore(single.abp), label: 'ABP target', sub: `${crore(single.ly)} base + ${crore(single.abp - single.ly)} gap` };
+    }
+    if (!it) return { value: `+${crore(gapTotal)}`, label: 'growth gap to ABP', sub: `${pct(clusterGrowth, 0)} over last year` };
+    const t = terr(it.label);
+    return { value: `+${crore(it.value)}`, label: `${it.label} · ${Math.round(it.value / gapTotal * 100)}% of gap`, sub: `${pct(growth(t.ly, t.abp))} growth needed` };
+  };
+  const gapDetail = (it: { label: string }) => {
+    const t = terr(it.label);
+    const g = growth(t.ly, t.abp);
+    return (
+      <div className="cq-gapline">
+        <span className={`cq-gapchip ${g > clusterGrowth ? 'warn' : 'neutral'}`} title={`vs cluster ${pct(clusterGrowth, 0)}`}>{pct(g)}</span>
+        <span className="cq-gapbar" aria-hidden="true"><i className="ly" style={{ width: `${(t.ly / maxAbp) * 100}%` }} /><i className="gap" style={{ width: `${((t.abp - t.ly) / maxAbp) * 100}%` }} /></span>
+        <small>{crore(t.ly)} → {crore(t.abp)}</small>
+      </div>
+    );
+  };
+  const lead = [...TERRITORIES].sort((a, b) => (b.abp - b.ly) - (a.abp - a.ly))[0];
+  const gapInsight = single
+    ? `${single.name} needs +${crore(single.abp - single.ly)} on a ${crore(single.ly)} base: ${pct(growth(single.ly, single.abp))} growth, ${vsCluster(growth(single.ly, single.abp))}.`
+    : `${lead.name} carries ${Math.round((lead.abp - lead.ly) / gapTotal * 100)}% of the cluster gap and needs ${pct(growth(lead.ly, lead.abp))} growth: ${vsCluster(growth(lead.ly, lead.abp))}.`;
   return (
     <Page title="My Performance & ABP" subtitle="Review last year and plan this year's growth, territory by territory." tabs={TM_PLAN_TABS} active="tm.1">
       <KpiStrip>
@@ -88,11 +123,14 @@ export function Tm1() {
             selected={`t-${(territory === 'All Territories' ? 'Ambad' : territory).toLowerCase()}`}
             scale={{ title: 'Required growth', items: [{ label: '+20%', tone: 2 }, { label: '+21%', tone: 3 }, { label: '+31%', tone: 4 }] }} />
         </Card>
-        <Card n={3} title="Growth required by territory" context={ctx} subtitle="Absolute uplift over last year, with each territory's share of the cluster uplift."
-          insight={lead && lead.name === 'Ambad'
-            ? <>Ambad needs the largest absolute uplift (+₹1.00 Cr, +31.3%), well above the cluster's +25%.</>
-            : lead && <>{lead.name} needs +{crore(lead.abp - lead.ly, 1)} ({pct(growth(lead.ly, lead.abp))}) this year.</>}>
-          <RankedBars fmt={(v) => `+${crore(v, 1)}`} items={ranked.map((t) => ({ label: t.name, value: t.abp - t.ly, muted: t.name !== 'Ambad' }))} />
+        <Card n={3} title="Growth required by territory" context={ctx}
+          subtitle={single ? `${single.name}'s ABP target: last-year base plus the growth gap.` : 'Where the cluster growth gap to ABP sits, and where each territory starts from.'}
+          insight={gapInsight}>
+          <DonutMetric interactive items={gapItems} value={`+${crore(gapTotal)}`} label="Growth gap to ABP" fmt={gapFmt}
+            center={gapCenter} detail={single ? undefined : gapDetail}
+            selected={single ? 'Growth gap' : undefined}
+            onSelect={(it) => side.set('territory', single || it.label === territory ? 'All Territories' : it.label)}
+            ariaLabel={(it, s) => (single ? `${it.label} ${gapFmt(it.value)}, ${s}% of the ${crore(single.abp)} ABP target` : `${it.label}: ${gapFmt(it.value)} growth gap, ${s}% of the cluster gap; select to filter by ${it.label}`)} />
         </Card>
       </Grid>
 

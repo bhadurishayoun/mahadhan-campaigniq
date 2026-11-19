@@ -515,3 +515,21 @@
   .tm-stage-track, .tm-swim { grid-template-columns: minmax(0, 1fr); }
   .tm-donut { justify-content: center; }
 }
+
+/* CW.2 planner: timing and owner are dropdowns with a chevron, wide enough to read the full choice. */
+.cw2-table .cw2-select { position: relative; display: block; min-width: 200px; }
+.cw2-table .cw2-select select.cw2-field { width: 100%; padding-right: 28px; appearance: none; cursor: pointer; text-overflow: ellipsis; }
+.cw2-table .cw2-select svg { position: absolute; right: 9px; top: 50%; transform: translateY(-50%); color: var(--ink-400); pointer-events: none; }
+.cw2-table td:nth-child(5) .cw2-select { min-width: 170px; }
+/* Planner gets the full width so every column (incl. timing/owner dropdowns) is visible without sideways scroll;
+   budget mix + AI recommendation sit side by side below it, equal height. */
+.app .cw2-layout { grid-template-columns: minmax(0, 1fr) !important; }
+.app .cw2-layout .cw2-side { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); align-items: stretch; gap: 16px; }
+.app .cw2-readiness-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.app .cw2-readiness-grid > * { white-space: normal; }
+.app .cw2-table .cw2-select { min-width: 180px; }
+.app .cw2-table td:nth-child(5) .cw2-select { min-width: 150px; }
+.app .cw2-table .cw2-select select.cw2-field { display: block; box-sizing: border-box; height: 36px; padding: 0 28px 0 10px; border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--surface); color: var(--ink-900); font: inherit; font-size: 14px; white-space: nowrap; overflow: hidden; }
+.app .cw2-table .cw2-select select.cw2-field:hover, .app .cw2-table .cw2-select select.cw2-field:focus { border-color: var(--brand-500); outline: none; }
+.app .cw2-table td:has(> .cw2-select) { padding-left: 6px; padding-right: 6px; }

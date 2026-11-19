@@ -41,4 +41,8 @@ export const chartTheme = {
   margin: { top: 4, right: 12, bottom: 0, left: 0 },
   heat: (share: number) => `color-mix(in srgb, var(--brand-700) ${Math.round(12 + Math.max(0, Math.min(1, share)) * 78)}%, var(--brand-50))`,
   heatInk: (share: number) => (share > 0.5 ? 'var(--surface)' : 'var(--ink-900)'),
+  /** Brand tints for ranked parts of a whole: rank 0 (largest) = brand-700, fading towards brand-100. */
+  tint: (rank: number, count: number) => (rank === 0 ? 'var(--brand-700)' : `color-mix(in srgb, var(--brand-700) ${Math.round(100 - (rank / Math.max(1, count - 1)) * 62)}%, var(--brand-100))`),
+  /** Neutral colour for a 'base' part (e.g. last-year base under a growth gap). */
+  base: 'var(--data-baseline)',
 } as const;

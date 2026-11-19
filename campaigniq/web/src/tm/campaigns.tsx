@@ -6,12 +6,13 @@ import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CalendarRange, CheckCircle2, Eye, FlaskConical, Lock, MapPin, MessageSquare, Plus, RotateCcw, Save, ShieldCheck, Trash2,
   Sprout, Store, Target, Users, Wallet, Smartphone, RefreshCw, Pencil,
+  ChevronDown,
 } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import { api } from '../api';
 import { Btn, cx } from '../ui';
 import { ColumnBars } from '../ui/index';
-import { RankedBarChart } from '../ui/charts';
+import { DonutMetric } from '../ui/viz';
 import { useDraftEdits } from '../ui/useDraftEdits';
 import {
   APPROVED, CAMPAIGN, CAMPAIGN_RETAILERS, PORTFOLIO, PORTFOLIO_MONTHS, PRIORITIES, SELECTED_RETAILERS,
@@ -26,8 +27,11 @@ const VILLAGE_CHOICES = ['Dhanora', 'Wadi Gaon', 'Ambad HQ', 'Pimpalgaon', 'Othe
 const MIX_COLORS = ['var(--ok)', 'var(--info)', 'var(--accent-600)', 'var(--ink-400)', 'var(--risk)'];
 const ACTIVITY_ICONS = [Users, Store, Users, Smartphone, RefreshCw];
 const PLACES = ['Dhanora / Wadi Gaon', 'Dhanora', 'Wadi Gaon', '3 linked retailers', 'Retailer channel', 'Village meetings', 'Consent-based digital', 'Field follow-up'];
-const TIMINGS = ['Indicative crop-stage window', 'Pre-activation', 'Relevant crop-stage window', 'Follow-up support', 'Post-activity'];
-const OWNERS = ['Select owner', 'R. Jadhav', 'S. Patil', 'V. Shinde', 'P. Kale'];
+/** Timing choices map onto the crop-stage calendar phases (preparation · crop-stage window · follow-up). */
+const TIMINGS = ['To schedule', 'Preparation window', 'Pre-activation', 'Before bulb initiation (indicative)', 'Stage window', 'Relevant crop-stage window', 'After demonstrations', 'Follow-up support'];
+const OWNERS = ['Owner pending', 'R. Jadhav', 'S. Patil', 'V. Shinde', 'P. Kale', 'M. Deshmukh'];
+/** Options for a dropdown, always including the row's current value. */
+const choices = (list: string[], value: string) => (value && !list.includes(value) ? [value, ...list] : list);
 
 /** The four-step campaign journey shown on TM.C1, TM.C2 and TM.C3. */
 const JOURNEY: { label: string; to: ScreenId }[] = [
@@ -244,7 +248,7 @@ export function Cw2() {
     }
     setLines(nextLines);
   };
-  const addActivity = () => setLines([...lines, calculateDraftLine({ activity: 'New activity', units: 1, unitLabel: 'units', where: 'Select village / channel', timing: 'To schedule', owner: '', budget: 0 })]);
+  const addActivity = () => setLines([...lines, calculateDraftLine({ activity: 'New activity', units: 1, unitLabel: 'units', where: 'Select village / channel', timing: 'To schedule', owner: 'Owner pending', budget: 0 })]);
   const removeActivity = (index: number) => setLines((all) => all.filter((_, i) => i !== index));
   return (
     <TmPage crumbs={[{ label: 'My Campaigns', to: 'tm.c1' }, { label: CAMPAIGN.name, to: 'cw.1' }, { label: 'Campaign Wizard' }, { label: 'Activity & Budget Mix' }]}
@@ -268,8 +272,8 @@ export function Cw2() {
                     <td><div className="cw2-activity-cell"><span className="cw2-activity-icon" style={{ color: MIX_COLORS[index % MIX_COLORS.length] }}>{(() => { const Icon = ACTIVITY_ICONS[index % ACTIVITY_ICONS.length]; return <Icon size={16} />; })()}</span><input ref={(element) => { activityInputs.current[index] = element; }} value={line.activity} title={line.activity} onChange={(e) => update(index, { activity: e.target.value })} aria-label={`Activity ${index + 1}`} /></div></td>
                     <td><div className="cw2-units"><input type="number" min={0} value={line.units} onChange={(e) => update(index, { units: Number(e.target.value) })} aria-label={`Planned units ${index + 1}`} /><input value={line.unitLabel} title={line.unitLabel} onChange={(e) => update(index, { unitLabel: e.target.value })} aria-label={`Unit type ${index + 1}`} /></div></td>
                     <td><input className="cw2-field" list="cw2-places" value={line.where} title={line.where} onChange={(e) => update(index, { where: e.target.value })} aria-label={`Village or channel ${index + 1}`} /></td>
-                    <td><input className="cw2-field" list="cw2-timings" value={line.timing} title={line.timing} onChange={(e) => update(index, { timing: e.target.value })} aria-label={`Tentative timing ${index + 1}`} /></td>
-                    <td><input className="cw2-field" list="cw2-owners" value={line.owner} title={line.owner} onChange={(e) => update(index, { owner: e.target.value })} placeholder="Select owner" aria-label={`Assigned owner ${index + 1}`} /></td>
+                    <td><span className="cw2-select"><select className="cw2-field" value={line.timing} title={line.timing} onChange={(e) => update(index, { timing: e.target.value })} aria-label={`Tentative timing ${index + 1}`}>{choices(TIMINGS, line.timing).map((t) => <option key={t} value={t}>{t}</option>)}</select><ChevronDown size={14} aria-hidden="true" /></span></td>
+                    <td><span className="cw2-select"><select className="cw2-field" value={line.owner || 'Owner pending'} title={line.owner || 'Owner pending'} onChange={(e) => update(index, { owner: e.target.value })} aria-label={`Assigned owner ${index + 1}`}>{choices(OWNERS, line.owner || 'Owner pending').map((o) => <option key={o} value={o}>{o}</option>)}</select><ChevronDown size={14} aria-hidden="true" /></span></td>
                     <td className={`r cw2-budget-cell ${flashingLine === index ? 'cw2-budget-flash' : ''}`} title={line.breakdown}><label className="cw2-money"><span>₹</span><input type="number" min={0} step={0.05} value={line.manualBudget ?? displayedBudgets[index] ?? 0} onChange={(e) => update(index, { manualBudget: Number(e.target.value) })} aria-label={`Draft budget ${index + 1}`} /><span>L</span></label>{line.manualBudget !== undefined && <span className="cw2-manual-budget"><span>🔒 Manual</span><button type="button" title="Reset calculated budget" aria-label={`Reset budget for ${line.activity}`} onClick={() => update(index, { manualBudget: undefined })}><RotateCcw size={12} /></button></span>}</td>
                     <td><div className="cw2-row-actions"><button type="button" aria-label={`Focus ${line.activity} name`} title="Edit activity name" onClick={() => activityInputs.current[index]?.focus()}><Pencil size={13} /></button><button type="button" className="cw2-delete" aria-label={`Remove ${line.activity}`} title="Remove activity" onClick={() => removeActivity(index)}><Trash2 size={14} /></button></div></td>
                   </tr>
@@ -277,8 +281,6 @@ export function Cw2() {
                 <tfoot><tr><td>Total Draft Campaign Budget</td><td>{units} units</td><td colSpan={3} /><td className="r">{lakh(total, 2)}</td><td /></tr></tfoot>
               </table>
               <datalist id="cw2-places">{PLACES.map((item) => <option key={item} value={item} />)}</datalist>
-              <datalist id="cw2-timings">{TIMINGS.map((item) => <option key={item} value={item} />)}</datalist>
-              <datalist id="cw2-owners">{OWNERS.map((item) => <option key={item} value={item} />)}</datalist>
             </div>
           </Panel>
           <Panel title="Crop-Stage-Linked Campaign Calendar">
@@ -288,14 +290,13 @@ export function Cw2() {
             ))}</div>
           </Panel>
           <Panel title="Campaign Readiness (Key Checks)" className="cw2-readiness-panel">
-            <div className="cw2-readiness-grid"><Status>Owner assignment pending (2)</Status><Status>Agronomy content approval pending</Status><Status>Stock readiness not yet verified</Status><Status>Digital consent verification required</Status></div>
+            <div className="cw2-readiness-grid">{lines.some((line) => !line.owner || line.owner === 'Owner pending') ? <Status>{`Owner assignment pending (${lines.filter((line) => !line.owner || line.owner === 'Owner pending').length})`}</Status> : <Status>All owners assigned</Status>}<Status>Agronomy content approval pending</Status><Status>Stock readiness not yet verified</Status><Status>Digital consent verification required</Status></div>
           </Panel>
         </div>
         <aside className="cw2-side">
           <Panel title="Budget Mix (Draft & Editable)" className="cw2-budget-panel">
-            <RankedBarChart items={lines.map(line=>({label:line.activity,value:total>0?Math.round(line.budget/total*100):0}))} format={v=>`${v}%`} />
-            <div className="cw2-budget-total"><b>Total</b><b>{total > 0 ? Math.round(lines.reduce((sum, line) => sum + (total ? line.budget / total * 100 : 0), 0)) : 0}%</b></div>
-            <div className="cw2-budget-sum">Total draft budget <strong>{lakh(total, 2)}</strong></div>
+            <DonutMetric interactive items={lines.map((line) => ({ label: line.activity, value: line.budget }))} value={lakh(total, 2)} label="Total draft budget" fmt={(v) => lakh(v, 2)} insight
+              center={(it) => (it ? { value: lakh(it.value, 2), label: `${it.label} · ${total > 0 ? Math.round((it.value / total) * 100) : 0}%`, sub: 'of the draft budget' } : { value: lakh(total, 2), label: 'Total draft budget', sub: `${lines.length} activities` })} />
           </Panel>
           <AiPanel title="AI Activity Mix Recommendation">
             <ul className="tm-ai-list"><li>Prioritize demonstrations and retailer engagement in Dhanora and Wadi Gaon.</li><li>Confirm programme timing before booking demonstrations.</li><li>Verify stock and communication consent before activation.</li></ul>

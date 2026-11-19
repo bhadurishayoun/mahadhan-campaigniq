@@ -5,6 +5,7 @@ import { useNav, type ScreenId } from '../nav';
 import { BarChart3, MapPin, Megaphone, Target, Users, Wallet } from '../icons';
 import { ActionCard, ActionGrid, Card, Grid, KpiStrip, Metric, NextSteps, Page, StatusPill, useSideFilters, type TabDef } from '../ui/index';
 import { HeatGrid, RankedBars } from '../ui/viz';
+import { DonutMetric } from '../ui/viz';
 import { fmtINR } from '../chartTheme';
 import { ChartCard, ColumnBars, MapCard, ScatterPlot, Bullets, EmptyState } from '../ui/index';
 import { BhAction, BhBars, BhCard, BhMetric, BhPage, BhWorkflow } from './ui';
@@ -147,9 +148,14 @@ function BhPortfolio() {
             title={(r,_c,v)=>`${r} · ${v} campaigns`}
             onCell={(r,c)=>{side.set('region',r);side.set('theme',themes.find(t=>shortTheme(t.name)===c)?.name??'All Themes');}}/>
         </Card>
-        <Card n={3} title="Recorded adopters" context={`By ${dim}`} subtitle="Farmers recorded as adopters in this selection; share of total at the bar end."
+        <Card n={3} title="Recorded adopters" context={`By ${dim}`} subtitle="Farmers recorded as adopters in this selection; select a slice to filter by it."
           insight={topAdopt?`${topAdopt.label} accounts for ${Math.round(topAdopt.value/Math.max(1,adopters)*100)}% of recorded adopters (${topAdopt.value.toLocaleString('en-IN')} of ${adopters.toLocaleString('en-IN')}).`:'No adopters recorded for this selection.'}>
-          <RankedBars items={adopterBars}/>
+          {adopterBars.length <= 6
+            ? <DonutMetric interactive items={adopterBars} value={adopters.toLocaleString('en-IN')} label="recorded adopters" fmt={(v) => v.toLocaleString('en-IN')}
+                selected={view === 'Theme-wise' && theme !== 'All Themes' ? theme : undefined}
+                onSelect={(it) => { const key = view === 'Theme-wise' ? 'theme' : view === 'Crop-wise' ? 'crop' : view === 'Product-wise' ? 'product' : 'region'; const all = key === 'theme' ? 'All Themes' : key === 'crop' ? 'All Crops' : key === 'product' ? 'All Products' : 'All Regions'; side.set(key, side.values[key] === it.label ? all : it.label); }}
+                center={(it) => (it ? { value: it.value.toLocaleString('en-IN'), label: `${it.label} · ${Math.round((it.value / Math.max(1, adopters)) * 100)}%`, sub: 'of recorded adopters' } : { value: adopters.toLocaleString('en-IN'), label: 'recorded adopters', sub: `across ${adopterBars.length} ${dim === 'geography' ? 'regions' : dim + 's'}` })} />
+            : <RankedBars items={adopterBars}/>}
         </Card>
       </Grid>
     </> : <Card><EmptyState title="No campaigns for this filter" hint="Widen the filters in the sidebar."/></Card>}
