@@ -71,13 +71,13 @@ function ScatterChart({ points, onPick }: { points: ScatterPoint[]; onPick: (p: 
     <svg className="s1-chart" viewBox={`0 0 ${W} ${H}`}>
       {yTicks.map((t) => (
         <g key={t}>
-          <line x1={L} x2={W - R} y1={sy(t)} y2={sy(t)} stroke="#edf1ea" />
+          <line x1={L} x2={W - R} y1={sy(t)} y2={sy(t)} stroke="var(--neutral-bg)" />
           <text x={L - 5} y={sy(t) + 3} textAnchor="end">{t.toFixed(1)}</text>
         </g>
       ))}
       {xTicks.map((t) => <text key={t} x={sx(t)} y={H - B + 12} textAnchor="middle">{t.toFixed(1)}</text>)}
-      <line x1={L} x2={W - R} y1={H - B} y2={H - B} stroke="#9aa59a" />
-      <line x1={L} x2={L} y1={T} y2={H - B} stroke="#9aa59a" />
+      <line x1={L} x2={W - R} y1={H - B} y2={H - B} stroke="var(--ink-400)" />
+      <line x1={L} x2={L} y1={T} y2={H - B} stroke="var(--ink-400)" />
       <text x={(W + L) / 2} y={H - 4} textAnchor="middle" className="lbl">Campaign Spend (₹ Cr)</text>
       <text x={10} y={(H - B) / 2} textAnchor="middle" className="lbl" transform={`rotate(-90 10 ${(H - B) / 2})`}>Campaign ROI (x)</text>
       {points.map((p, index) => (
@@ -134,7 +134,7 @@ function ComboChart({ data, aMax, lineMax, aLabel, bLabel, lineLabel, yLabel, yT
         {hover !== null && <rect x={L + band * hover} y={T} width={band} height={plotH} className="s1-band-hover" />}
         {yTicks.map((t) => (
           <g key={t}>
-            <line x1={L} x2={W - R} y1={sy(t)} y2={sy(t)} stroke="#edf1ea" />
+            <line x1={L} x2={W - R} y1={sy(t)} y2={sy(t)} stroke="var(--neutral-bg)" />
             <text x={L - 6} y={sy(t) + 3} textAnchor="end">{t.toFixed(1)}</text>
           </g>
         ))}
@@ -152,7 +152,7 @@ function ComboChart({ data, aMax, lineMax, aLabel, bLabel, lineLabel, yLabel, yT
             >
               <rect x={L + band * i} y={T} width={band} height={plotH + B} fill="transparent" />
               <rect className="s1-grow" style={{ animationDelay: `${i * 60}ms` }} x={ax} y={sy(d.a)} width={bw} height={T + plotH - sy(d.a)} fill={aColor} rx={2} />
-              <text x={ax + bw / 2} y={hasB ? sy(d.a) - 4 : sy(d.a) + 14} textAnchor="middle" className="val" style={hasB ? undefined : { fill: '#fff' }}>{d.aText ?? d.a}</text>
+              <text x={ax + bw / 2} y={hasB ? sy(d.a) - 4 : sy(d.a) + 14} textAnchor="middle" className="val" style={hasB ? undefined : { fill: 'var(--surface)' }}>{d.aText ?? d.a}</text>
               {d.b !== undefined && (
                 <>
                   <rect className="s1-grow" style={{ animationDelay: `${i * 60 + 30}ms` }} x={x + 2} y={sy(d.b)} width={bw} height={T + plotH - sy(d.b)} fill={COLORS.yellow} rx={2} />
@@ -163,11 +163,11 @@ function ComboChart({ data, aMax, lineMax, aLabel, bLabel, lineLabel, yLabel, yT
             </g>
           );
         })}
-        <line x1={L} x2={W - R} y1={T + plotH} y2={T + plotH} stroke="#9aa59a" />
+        <line x1={L} x2={W - R} y1={T + plotH} y2={T + plotH} stroke="var(--ink-400)" />
         <polyline className="s1-draw" pathLength={1} points={linePts} fill="none" stroke={COLORS.mid} strokeWidth={2} pointerEvents="none" />
         {data.map((d, i) => (
           <g key={d.label} pointerEvents="none">
-            <circle cx={cx0(i)} cy={ly(d.line)} r={hover === i ? 5 : 3.5} fill="#fff" stroke={COLORS.green} strokeWidth={2} />
+            <circle cx={cx0(i)} cy={ly(d.line)} r={hover === i ? 5 : 3.5} fill="var(--surface)" stroke={COLORS.green} strokeWidth={2} />
             <text x={cx0(i)} y={ly(d.line) - 7} textAnchor="middle" className="val">{d.line}%</text>
           </g>
         ))}
@@ -192,7 +192,7 @@ function TrendChart({ months, series }: { months: string[]; series: { label: str
       <svg className="s1-chart" viewBox={`0 0 ${W} ${H}`}>
         {[0, 10, 20, 30, 40, 50].map((t) => (
           <g key={t}>
-            <line x1={L} x2={W - R} y1={sy(t)} y2={sy(t)} stroke="#edf1ea" />
+            <line x1={L} x2={W - R} y1={sy(t)} y2={sy(t)} stroke="var(--neutral-bg)" />
             <text x={L - 6} y={sy(t) + 3} textAnchor="end">{t}%</text>
           </g>
         ))}
@@ -203,10 +203,10 @@ function TrendChart({ months, series }: { months: string[]; series: { label: str
             <g key={s.label}>
               <polyline className="s1-draw" pathLength={1} fill="none" stroke={s.color} strokeWidth={2.2} points={s.values.map((v, i) => `${sx(i)},${sy(v)}`).join(' ')} />
               {s.values.map((v, i) => (
-                <circle key={i} className="s1-dot" cx={sx(i)} cy={sy(v)} r={3.5} fill="#fff" stroke={s.color} strokeWidth={2} data-tip={`${s.label} · ${months[i]}: ${v}%`} />
+                <circle key={i} className="s1-dot" cx={sx(i)} cy={sy(v)} r={3.5} fill="var(--surface)" stroke={s.color} strokeWidth={2} data-tip={`${s.label} · ${months[i]}: ${v}%`} />
               ))}
               <rect x={sx(s.values.length - 1) + 8} y={sy(last) - 9} width={34} height={18} rx={4} fill={s.color} />
-              <text x={sx(s.values.length - 1) + 25} y={sy(last) + 4} textAnchor="middle" style={{ fill: '#fff', fontWeight: 700, fontSize: 10 }}>{last}%</text>
+              <text x={sx(s.values.length - 1) + 25} y={sy(last) + 4} textAnchor="middle" style={{ fill: 'var(--surface)', fontWeight: 700, fontSize: 10 }}>{last}%</text>
             </g>
           );
         })}
@@ -308,11 +308,11 @@ export function CommandCentre() {
   };
 
   const scatter: ScatterPoint[] = [
-    { label: 'Grape Solutek', lines: ['Grape', 'Solutek'], x: 0.36, y: 2.85, r: 7, color: '#8a6bc4' },
-    { label: 'Sugarcane Programme', lines: ['Sugarcane', 'Programme'], x: 0.98, y: 3.15, r: 11, color: '#5fae4c' },
+    { label: 'Grape Solutek', lines: ['Grape', 'Solutek'], x: 0.36, y: 2.85, r: 7, color: 'var(--product-specialty)' },
+    { label: 'Sugarcane Programme', lines: ['Sugarcane', 'Programme'], x: 0.98, y: 3.15, r: 11, color: 'var(--segment-growing)' },
     { label: 'Onion Conversion', lines: ['Onion', 'Conversion'], x: 0.8, y: 2.35, r: 8, color: COLORS.green },
     { label: 'Retailer Activation', lines: ['Retailer', 'Activation'], x: 0.55, y: 1.9, r: 6, color: COLORS.amber },
-    { label: 'Cotton Micronutrient', lines: ['Cotton', 'Micronutrient'], x: 0.16, y: 1.2, r: 6, color: '#5fb6e0' },
+    { label: 'Cotton Micronutrient', lines: ['Cotton', 'Micronutrient'], x: 0.16, y: 1.2, r: 6, color: 'var(--data-baseline)' },
   ];
   const pickedInfo: Record<string, string> = {
     'Grape Solutek': 'Low spend, high ROI (2.9x) — candidate for scale-up in Nashik.',
@@ -501,10 +501,10 @@ export function PortfolioDashboard() {
         <Panel title="Campaign Portfolio by Objective" actions={<button type="button" className="s1-link small" onClick={() => setShowAll(true)}>28 active ↗</button>}>
           <Donut center="28" sub="active campaigns" size={150} thickness={22} showPct={false}
             segments={[
-              { label: 'Adoption & conversion', value: 10, color: '#1f6b2e', note: '10' },
-              { label: 'Crop nutrition awareness', value: 7, color: '#2f8a3b', note: '7' },
-              { label: 'Repeat & cross-sell', value: 5, color: '#5fae4c', note: '5' },
-              { label: 'Retailer activation', value: 4, color: '#9fd27f', note: '4' },
+              { label: 'Adoption & conversion', value: 10, color: 'var(--brand-700)', note: '10' },
+              { label: 'Crop nutrition awareness', value: 7, color: 'var(--ok)', note: '7' },
+              { label: 'Repeat & cross-sell', value: 5, color: 'var(--segment-growing)', note: '5' },
+              { label: 'Retailer activation', value: 4, color: 'var(--data-baseline)', note: '4' },
               { label: 'Market development', value: 2, color: COLORS.yellow, note: '2' },
             ]} />
         </Panel>
@@ -1031,7 +1031,7 @@ export function RiskAnalysis() {
         </Panel>
         <Panel title="Activity Coverage (Jalna)">
           <VBars height={190} max={110}
-            series={[{ label: 'Plan', color: '#d3d8cf' }, { label: 'Actual', color: COLORS.green }]}
+            series={[{ label: 'Plan', color: 'var(--line)' }, { label: 'Actual', color: COLORS.green }]}
             valueFormat={(v) => `${v}%`}
             data={[
               { label: 'Farmer Meetings', values: [85, 76] },
@@ -1092,10 +1092,10 @@ const IMPACT_GROUPS = [
   { label: 'ROI', max: 4.4, values: [3.1, 3.3, 3.4, 3.6], fmt: (v: number) => `${v}x` },
 ];
 const IMPACT_SERIES = [
-  { label: 'Current Plan', color: '#c9cfc6' },
-  { label: 'Scenario A', color: '#9fd27f' },
-  { label: 'Scenario B', color: '#5fae4c' },
-  { label: 'Scenario C', color: '#1f6b2e' },
+  { label: 'Current Plan', color: 'var(--data-baseline)' },
+  { label: 'Scenario A', color: 'var(--data-baseline)' },
+  { label: 'Scenario B', color: 'var(--segment-growing)' },
+  { label: 'Scenario C', color: 'var(--brand-700)' },
 ];
 
 function ImpactComparison({ selected }: { selected: ScenarioKey }) {
@@ -1118,7 +1118,7 @@ function ImpactComparison({ selected }: { selected: ScenarioKey }) {
   return (
     <div ref={ref}>
       <svg className="s1-chart" viewBox={`0 0 ${W} ${H}`}>
-        <line x1={L} x2={W} y1={T + plotH} y2={T + plotH} stroke="#9aa59a" />
+        <line x1={L} x2={W} y1={T + plotH} y2={T + plotH} stroke="var(--ink-400)" />
         {IMPACT_GROUPS.map((g, gi) => {
           const x0 = L + gi * gw + (gw - bw * 4 - 9) / 2;
           return (

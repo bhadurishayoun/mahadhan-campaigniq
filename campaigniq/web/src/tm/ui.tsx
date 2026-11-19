@@ -1,7 +1,8 @@
 import { useEffect, useRef, type ReactNode } from 'react';
-import { ArrowLeft, ArrowRight, Check, ChevronRight, Home, Sparkles } from 'lucide-react';
+import { Activity, ArrowLeft, ArrowRight, Check, ChevronRight, Home, Sparkles } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
-import { Btn, cx, Pill, type Tone } from '../ui';
+import { Btn, cx, type Tone } from '../ui';
+import { KpiCard, KpiGrid, StatusChip } from '../ui/kit';
 
 export function toneOf(text: string): Tone {
   const t = text.toLowerCase();
@@ -12,8 +13,10 @@ export function toneOf(text: string): Tone {
   return 'grey';
 }
 
-export function Status({ children, tone, solid }: { children: string; tone?: Tone; solid?: boolean }) {
-  return <Pill tone={tone ?? toneOf(children)} solid={solid}>{children}</Pill>;
+export function Status({ children, tone }: { children: string; tone?: Tone; solid?: boolean }) {
+  const resolved = tone ?? toneOf(children);
+  const kind = resolved === 'green' ? 'ok' : resolved === 'amber' ? 'warn' : resolved === 'red' ? 'risk' : 'pending';
+  return <StatusChip kind={kind}>{children}</StatusChip>;
 }
 
 export const lakh = (value: number, digits = 0) => `₹${value.toFixed(digits)} L`;
@@ -148,15 +151,7 @@ export function Context({ items, tone }: { items: { label: string; value: ReactN
 /** Big headline metric cards (TM.1, TM.EX1, TM.IM1). */
 export function Metrics({ items }: { items: { label: string; value: ReactNode; sub?: ReactNode; tone?: 'amber' | 'green' | 'red' }[] }) {
   return (
-    <div className="tm-metrics">
-      {items.map((item) => (
-        <article key={item.label} className={cx('tm-metric', item.tone && `tm-metric-${item.tone}`)}>
-          <span>{item.label}</span>
-          <strong>{item.value}</strong>
-          {item.sub && <small>{item.sub}</small>}
-        </article>
-      ))}
-    </div>
+    <KpiGrid cols={items.length}>{items.map((item) => <KpiCard key={item.label} icon={Activity} label={item.label} value={item.value} note={item.sub} tone={item.tone === 'amber' ? 'amber' : item.tone === 'red' ? 'red' : 'green'} />)}</KpiGrid>
   );
 }
 

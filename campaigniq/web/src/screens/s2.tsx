@@ -84,18 +84,18 @@ function Quadrant({ points, xRange, yRange, split, labels, xTicks, yTicks, xLabe
   return (
     <div className="s2-quad" ref={ref}>
       <svg viewBox={`0 0 ${W} ${H}`} onMouseLeave={() => setHover(null)}>
-        <rect x={L} y={T} width={mx - L} height={my - T} fill="#f3f9ee" />
-        <rect x={mx} y={T} width={R - mx} height={my - T} fill="#e4f2d8" />
-        <rect x={L} y={my} width={mx - L} height={B - my} fill="#fbfaf1" />
-        <rect x={mx} y={my} width={R - mx} height={B - my} fill="#f4f7f1" />
-        <line x1={mx} x2={mx} y1={T} y2={B} stroke="#9fb59a" strokeDasharray="4 3" />
-        <line x1={L} x2={R} y1={my} y2={my} stroke="#9fb59a" strokeDasharray="4 3" />
-        <line x1={L} x2={L} y1={T} y2={B} stroke="#7f8f80" />
-        <line x1={L} x2={R} y1={B} y2={B} stroke="#7f8f80" />
-        {xTicks.map((t) => <text key={`x${t}`} x={sx(t)} y={B + 13} fontSize="9.5" textAnchor="middle" fill="#5b665d">{fmtX(t)}</text>)}
-        {yTicks.map((t) => <text key={`y${t}`} x={L - 5} y={sy(t) + 3} fontSize="9.5" textAnchor="end" fill="#5b665d">{fmtY(t)}</text>)}
-        <text x={(L + R) / 2} y={H - 3} fontSize="10.5" textAnchor="middle" fill="#34463a" fontWeight="600">{xLabel}</text>
-        <text x={11} y={(T + B) / 2} fontSize="10.5" textAnchor="middle" fill="#34463a" fontWeight="600" transform={`rotate(-90 11 ${(T + B) / 2})`}>{yLabel}</text>
+        <rect x={L} y={T} width={mx - L} height={my - T} fill="var(--brand-50)" />
+        <rect x={mx} y={T} width={R - mx} height={my - T} fill="var(--brand-100)" />
+        <rect x={L} y={my} width={mx - L} height={B - my} fill="var(--canvas)" />
+        <rect x={mx} y={my} width={R - mx} height={B - my} fill="var(--brand-50)" />
+        <line x1={mx} x2={mx} y1={T} y2={B} stroke="var(--data-baseline)" strokeDasharray="4 3" />
+        <line x1={L} x2={R} y1={my} y2={my} stroke="var(--data-baseline)" strokeDasharray="4 3" />
+        <line x1={L} x2={L} y1={T} y2={B} stroke="var(--ink-400)" />
+        <line x1={L} x2={R} y1={B} y2={B} stroke="var(--ink-400)" />
+        {xTicks.map((t) => <text key={`x${t}`} x={sx(t)} y={B + 13} fontSize="9.5" textAnchor="middle" fill="var(--ink-600)">{fmtX(t)}</text>)}
+        {yTicks.map((t) => <text key={`y${t}`} x={L - 5} y={sy(t) + 3} fontSize="9.5" textAnchor="end" fill="var(--ink-600)">{fmtY(t)}</text>)}
+        <text x={(L + R) / 2} y={H - 3} fontSize="10.5" textAnchor="middle" fill="var(--ink-600)" fontWeight="600">{xLabel}</text>
+        <text x={11} y={(T + B) / 2} fontSize="10.5" textAnchor="middle" fill="var(--ink-600)" fontWeight="600" transform={`rotate(-90 11 ${(T + B) / 2})`}>{yLabel}</text>
         <text x={L + 8} y={T + 15} fontSize="11.5" fontWeight="700" fill={COLORS.dark}>{labels[0]}</text>
         <text x={R - 8} y={T + 15} fontSize="11.5" fontWeight="700" fill={COLORS.dark} textAnchor="end">{labels[1]}</text>
         <text x={L + 8} y={B - 8} fontSize="11.5" fontWeight="700" fill={COLORS.dark}>{labels[2]}</text>
@@ -112,8 +112,8 @@ function Quadrant({ points, xRange, yRange, split, labels, xTicks, yTicks, xLabe
               onMouseEnter={() => setHover(p.label)}
               data-tip={`${p.label} · ${xLabel}: ${fmtX(p.x)} · ${yLabel}: ${fmtY(p.y)}`}
             >
-              <circle cx={sx(p.x)} cy={sy(p.y)} r={selected === p.label || hover === p.label ? 6.5 : 5} fill={p.color ?? COLORS.green} stroke="#fff" strokeWidth="1.5" />
-              <text x={flip ? sx(p.x) - 8 : sx(p.x) + 8} y={sy(p.y) - 5} textAnchor={flip ? 'end' : 'start'} fontSize="10.5" fontWeight="600" fill="#1f3d25">{p.label}</text>
+              <circle cx={sx(p.x)} cy={sy(p.y)} r={selected === p.label || hover === p.label ? 6.5 : 5} fill={p.color ?? COLORS.green} stroke="var(--surface)" strokeWidth="1.5" />
+              <text x={flip ? sx(p.x) - 8 : sx(p.x) + 8} y={sy(p.y) - 5} textAnchor={flip ? 'end' : 'start'} fontSize="10.5" fontWeight="600" fill="var(--brand-900)">{p.label}</text>
             </g>
           );
         })}
@@ -318,7 +318,7 @@ export function OpportunityAtlas() {
               { key: 'rank', label: '#', render: (row) => <span className="rank">{row.rank}</span> },
               { key: 'geo', label: 'Geography', render: (row) => <strong>{row.geo}</strong> },
               { key: 'crop', label: 'Crop' },
-              { key: 'score', label: 'Opportunity Score', align: 'center', render: (row) => <span className="num-badge" style={row.score < 80 ? { background: 'transparent', color: '#1f3d25' } : undefined}>{row.score}</span> },
+              { key: 'score', label: 'Opportunity Score', align: 'center', render: (row) => <span className="num-badge" style={row.score < 80 ? { background: 'transparent', color: 'var(--brand-900)' } : undefined}>{row.score}</span> },
               { key: 'potential', label: 'Market Potential (₹ Cr)', align: 'right' },
               { key: 'gap', label: 'Penetration Gap (pp)', align: 'right' },
               { key: 'readiness', label: 'Campaign Readiness', render: (row) => <Pill tone={row.readiness === 'High' ? 'green' : 'amber'}>{row.readiness}</Pill> },
@@ -429,7 +429,7 @@ const VILLAGE_ID: Record<string, string> = {
   Pimpalgaon: 'v-pimpalgaon', Kingaon: 'v-kingaon', Sukapuri: 'v-sukapuri', Gondi: 'v-gondi',
 };
 type Band = 'High' | 'Medium' | 'Low';
-const hotspotColor = (band: Band) => (band === 'High' ? '#1f6b2e' : band === 'Medium' ? '#7cb342' : '#d9a21b');
+const hotspotColor = (band: Band) => (band === 'High' ? 'var(--brand-700)' : band === 'Medium' ? 'var(--segment-growing)' : 'var(--accent-600)');
 /** S2.3 village hotspot bands (High >= 80, Medium 60-79, Low < 60). */
 const HOTSPOTS: { label: string; band: Band }[] = [
   { label: 'Golegaon', band: 'High' }, { label: 'Dhanora', band: 'High' }, { label: 'Ambad (HQ)', band: 'High' },
@@ -645,7 +645,7 @@ export function DistrictIntelligence() {
               { label: 'Trial users: 21%', value: 21, color: COLORS.mid, note: '(~6,804 farmers)' },
               { label: 'Partial nutrition programme users: 18%', value: 18, color: COLORS.light, note: '(~5,832 farmers)' },
               { label: 'Repeat Croptek adopters: 11%', value: 11, color: COLORS.yellow, note: '(~3,564 farmers)' },
-              { label: 'Influencer / progressive farmers: 12%', value: 12, color: '#f3dc83', note: '(~3,888 farmers)' },
+              { label: 'Influencer / progressive farmers: 12%', value: 12, color: 'var(--data-baseline)', note: '(~3,888 farmers)' },
             ]}
           />
           <div style={{ marginTop: 10 }}>
@@ -1229,12 +1229,12 @@ export function CampaignRecommendations() {
                 highlight={(row) => row.n === segment}
                 onRowClick={(row) => setSegment(row.n)}
                 columns={[
-                  { key: 'n', label: '#', render: (row) => <span className="rank" style={row.n === 1 ? { background: COLORS.green, color: '#fff' } : undefined}>{row.n}</span> },
+                  { key: 'n', label: '#', render: (row) => <span className="rank" style={row.n === 1 ? { background: COLORS.green, color: 'var(--surface)' } : undefined}>{row.n}</span> },
                   { key: 'segment', label: 'Farmer Segment', render: (row) => <strong>{row.segment}</strong> },
                   { key: 'opp', label: 'Market Opportunity', align: 'center', render: (row) => <span>{row.opp}<br /><span className="small muted">{row.share}</span></span> },
                   { key: 'feas', label: 'Conversion Feasibility', render: (row) => <Meter label={row.feas} pct={row.feasPct} color={levelColor(row.feas)} /> },
                   { key: 'chan', label: 'Channel Readiness', render: (row) => <Meter label={row.chan} pct={row.chanPct} color={levelColor(row.chan)} /> },
-                  { key: 'score', label: 'Priority Score', align: 'center', render: (row) => <span className="num-badge" style={row.n === 1 ? undefined : { background: '#eef0ec', color: '#1f3d25' }}>{row.score}</span> },
+                  { key: 'score', label: 'Priority Score', align: 'center', render: (row) => <span className="num-badge" style={row.n === 1 ? undefined : { background: 'var(--neutral-bg)', color: 'var(--brand-900)' }}>{row.score}</span> },
                   { key: 'campaign', label: 'Recommended Campaign' },
                 ]}
               />
@@ -1242,7 +1242,7 @@ export function CampaignRecommendations() {
 
             <Panel title="Recommended Campaign Strategies">
               {STRATEGIES.map((s) => (
-                <div key={s.id} className="s2-strategy" style={s.id === segment ? { background: '#f6fbf1' } : undefined}>
+                <div key={s.id} className="s2-strategy" style={s.id === segment ? { background: 'var(--brand-50)' } : undefined}>
                   <span className="s2-strategy-icon">{s.icon}</span>
                   <div>
                     <h4>{s.id}. {s.title}</h4>

@@ -16,7 +16,7 @@ export const VILLAGE_PLACE: Record<string, string> = {
   'Other villages': 'v-shahagad',
 };
 
-export const MAP_COLORS = { green: '#2f8a3b', amber: '#d7a62f', red: '#c8553d', grey: '#9aa79c', blue: '#3972b8' };
+export const MAP_COLORS = { green: 'var(--ok)', amber: 'var(--accent-600)', red: 'var(--risk)', grey: 'var(--ink-400)', blue: 'var(--info)' };
 
 /** Map of the Jalna cluster (Ambad and neighbouring talukas), framed on the district. */
 export function TmMap({ title, label, markers, talukas, selected, scale, markerLegend, height = 300, className }: {
@@ -47,7 +47,7 @@ export function Donut({ segments, center, sub, size = 150 }: { segments: { label
     <div className="tm-donut">
       <div className="tm-donut-svg" style={{ width: size, height: size }}>
         <svg viewBox="0 0 140 140" role="img" aria-label={segments.map((s) => `${s.label} ${Math.round((s.value / total) * 100)}%`).join(', ')}>
-          <circle cx="70" cy="70" r={r} fill="none" stroke="#edf1eb" strokeWidth="18" />
+          <circle cx="70" cy="70" r={r} fill="none" stroke="var(--neutral-bg)" strokeWidth="18" />
           {segments.map((s) => {
             const len = (Math.max(s.value, 0) / total) * c;
             const el = <circle key={s.label} cx="70" cy="70" r={r} fill="none" stroke={s.color} strokeWidth="18" strokeDasharray={`${len} ${c - len}`} strokeDashoffset={-offset} transform="rotate(-90 70 70)"><title>{s.label}</title></circle>;
@@ -74,7 +74,7 @@ export function Ring({ value, label, sub, tone = 'green', size = 104 }: { value:
     <div className="tm-ring">
       <div className="tm-ring-svg" style={{ width: size, height: size }}>
         <svg viewBox="0 0 100 100" role="img" aria-label={`${pct.toFixed(0)}%`}>
-          <circle cx="50" cy="50" r={r} fill="none" stroke="#edf1eb" strokeWidth="10" />
+          <circle cx="50" cy="50" r={r} fill="none" stroke="var(--neutral-bg)" strokeWidth="10" />
           {pct > 0 && <circle cx="50" cy="50" r={r} fill="none" stroke={color} strokeWidth="10" strokeLinecap="round" strokeDasharray={`${(pct / 100) * c} ${c}`} transform="rotate(-90 50 50)" />}
         </svg>
         <b>{label}</b>

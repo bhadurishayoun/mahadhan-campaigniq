@@ -233,9 +233,9 @@ const FACTORS: { icon: ReactNode; title: string; text: string; chip: 'Verified' 
 ];
 
 const INSIGHTS: { key: string; label: string; icon: ReactNode; bg: string; color: string; points: string[] }[] = [
-  { key: 'worked', label: 'What Worked', icon: <ThumbsUp size={18} />, bg: '#e2f2d9', color: '#22672f', points: ['Retailer-led activation and demos drove higher conversion (~65% in Wadi Gaon & Ambad HQ)', 'Timely field follow-ups improved adoption by ~8–10 pp'] },
-  { key: 'under', label: 'What Underperformed', icon: <AlertTriangle size={18} />, bg: '#fdf0cf', color: '#8a5b00', points: ['Dhanora conversion (32%) below cluster average (60%)', 'Engagement lower due to demo delay and pending stock receipt'] },
-  { key: 'change', label: 'What to Change', icon: <Target size={18} />, bg: '#e1edf9', color: '#275f9a', points: ['Ensure stock confirmation before demo scheduling', 'Intensify retailer & field follow-ups in Dhanora', 'Focus on advocacy (local champion farmers) to improve adoption'] },
+  { key: 'worked', label: 'What Worked', icon: <ThumbsUp size={18} />, bg: 'var(--brand-100)', color: 'var(--brand-700)', points: ['Retailer-led activation and demos drove higher conversion (~65% in Wadi Gaon & Ambad HQ)', 'Timely field follow-ups improved adoption by ~8–10 pp'] },
+  { key: 'under', label: 'What Underperformed', icon: <AlertTriangle size={18} />, bg: 'var(--accent-100)', color: 'var(--accent-600)', points: ['Dhanora conversion (32%) below cluster average (60%)', 'Engagement lower due to demo delay and pending stock receipt'] },
+  { key: 'change', label: 'What to Change', icon: <Target size={18} />, bg: 'var(--info-bg)', color: 'var(--info)', points: ['Ensure stock confirmation before demo scheduling', 'Intensify retailer & field follow-ups in Dhanora', 'Focus on advocacy (local champion farmers) to improve adoption'] },
 ];
 
 const LEARNINGS = [
@@ -387,7 +387,7 @@ export function DiagnosticsStudio() {
             />
             <div className="small">
               <b className="row" style={{ marginBottom: 4 }}><Settings2 size={13} />Methodology</b>
-              <ul style={{ margin: 0, paddingLeft: 16, display: 'grid', gap: 3, color: '#3d4b40' }}>
+              <ul style={{ margin: 0, paddingLeft: 16, display: 'grid', gap: 3, color: 'var(--ink-600)' }}>
                 <li>Compared with pre-campaign baseline (similar clusters)</li>
                 <li>Adoption-linked incremental demand</li>
                 <li>Contribution based on product margin</li>

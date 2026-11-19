@@ -53,11 +53,10 @@ function Mh2Charts() {
     <div className="iq-stack">
       <ChartCard icon={BarChart3} title="Product Sales Trend - Croptek (Onion), Maharashtra" hint="Secondary sales">
         <div className="mh-trend-layout"><svg className="mh-sales-trend" viewBox="0 0 650 185" role="img" aria-label="Quarterly secondary sales rise from 40 lakh to 48 lakh">
-          <defs><linearGradient id="mhSalesFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8fd77e" stopOpacity=".55"/><stop offset="1" stopColor="#dff2d9" stopOpacity=".15"/></linearGradient></defs>
-          {[30,60,90,120,150].map(y=><line key={y} x1="54" x2="628" y1={y} y2={y} stroke="#e6ece5" strokeWidth="1"/>)}
-          <path d="M72 121 L242 96 L412 80 L582 56 L582 150 L72 150 Z" fill="url(#mhSalesFill)"/>
-          <path d="M72 121 L242 96 L412 80 L582 56" fill="none" stroke="#238444" strokeWidth="3"/>
-          {[[72,121,'INR 40L','Q1'],[242,96,'INR 43L','Q2'],[412,80,'INR 45L','Q3'],[582,56,'INR 48L','Q4']].map(([x,y,v,q])=><g key={q as string}><circle cx={x as number} cy={y as number} r="5" fill="#fff" stroke="#248244" strokeWidth="3"/><text x={x as number} y={(y as number)-14} textAnchor="middle" className="mh-trend-value">{v}</text><text x={x as number} y="174" textAnchor="middle" className="mh-trend-axis">{q}</text></g>)}
+          {[30,60,90,120,150].map(y=><line key={y} x1="54" x2="628" y1={y} y2={y} stroke="var(--line)" strokeWidth="1"/>)}
+          <path d="M72 121 L242 96 L412 80 L582 56 L582 150 L72 150 Z" fill="var(--brand-50)"/>
+          <path d="M72 121 L242 96 L412 80 L582 56" fill="none" stroke="var(--brand-500)" strokeWidth="3"/>
+          {[[72,121,'INR 40L','Q1'],[242,96,'INR 43L','Q2'],[412,80,'INR 45L','Q3'],[582,56,'INR 48L','Q4']].map(([x,y,v,q])=><g key={q as string}><circle cx={x as number} cy={y as number} r="5" fill="var(--surface)" stroke="var(--brand-500)" strokeWidth="3"/><text x={x as number} y={(y as number)-14} textAnchor="middle" className="mh-trend-value">{v}</text><text x={x as number} y="174" textAnchor="middle" className="mh-trend-axis">{q}</text></g>)}
           {[0,10,20,30,40,50,60].map((v,i)=><text key={v} x="42" y={154-i*20} textAnchor="end" className="mh-trend-axis">INR {v}L</text>)}
         </svg><div className="mh-quarter-total"><small>Four-quarter total</small><strong>INR 1.76 Cr</strong><span>Secondary sales</span></div></div>
       </ChartCard>

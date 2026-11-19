@@ -1,14 +1,16 @@
 /** Shared chart styling: one place for series colours, segment colours, axis/grid/tooltip styles and number formats. */
-export const SERIES = ['#2f8a3b', '#3972b8', '#d7a62f', '#7a58c4', '#c9865a', '#5fae4c'] as const;
-export const SEGMENT = { Emerging: '#e8c13a', Growing: '#5fae4c', Maturing: '#3972b8', Matured: '#1f5f2c' } as const;
-export const STATUS = { ok: '#2f8a3b', warn: '#d7a62f', risk: '#d9534f', info: '#3972b8', muted: '#b8c3b8' } as const;
+export const SERIES = ['var(--data-actual)', 'var(--data-plan)', 'var(--data-baseline)', 'var(--data-forecast)', 'var(--crop-onion)', 'var(--crop-maize)'] as const;
+export const SEGMENT = { Emerging: 'var(--segment-emerging)', Growing: 'var(--segment-growing)', Maturing: 'var(--segment-maturing)', Matured: 'var(--segment-matured)' } as const;
+export const STATUS = { ok: 'var(--ok)', warn: 'var(--warn)', risk: 'var(--risk)', info: 'var(--info)', muted: 'var(--neutral)' } as const;
+export const CROP = { Onion: 'var(--crop-onion)', Maize: 'var(--crop-maize)', Soybean: 'var(--crop-soybean)', Cotton: 'var(--crop-cotton)' } as const;
+export const PRODUCT = { Croptek: 'var(--product-croptek)', 'Water Soluble': 'var(--product-water-soluble)', Specialty: 'var(--product-specialty)' } as const;
 
-export const axisStyle = { fontSize: 11, fill: '#66736a' } as const;
-export const gridStyle = { stroke: '#e1e8dc', strokeDasharray: '3 3' } as const;
+export const axisStyle = { fontSize: 11, fill: 'var(--ink-600)' } as const;
+export const gridStyle = { stroke: 'var(--line)', strokeDasharray: '3 3' } as const;
 export const tooltipStyle = {
-  contentStyle: { border: '1px solid #e1e8dc', borderRadius: 8, fontSize: 12, boxShadow: '0 4px 14px rgba(23,39,27,.12)' },
-  labelStyle: { fontWeight: 600, color: '#1d2a1f' },
-  cursor: { fill: 'rgba(47,138,59,.06)' },
+  contentStyle: { border: '1px solid var(--line)', borderRadius: 10, fontSize: 12, boxShadow: 'var(--sh-1)' },
+  labelStyle: { fontWeight: 600, color: 'var(--ink-900)' },
+  cursor: { fill: 'var(--brand-50)' },
 } as const;
 
 /** Rupees -> "₹4.2 L" / "₹1.9 Cr" (en-IN). Input is in rupees. */

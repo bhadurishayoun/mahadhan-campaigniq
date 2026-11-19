@@ -58,8 +58,8 @@ function PlantArt({ stage, size = 92 }: { stage: number; size?: number }) {
   if (stage === 0) {
     return (
       <svg width={size} height={size} viewBox="0 0 90 100" aria-hidden>
-        <rect x="8" y="80" width="74" height="13" rx="2" fill="#6b4529" />
-        <rect x="8" y="78" width="74" height="5" rx="2" fill="#8a5a36" />
+        <rect x="8" y="80" width="74" height="13" rx="2" fill="var(--ink-600)" />
+        <rect x="8" y="78" width="74" height="5" rx="2" fill="var(--crop-onion)" />
         {[16, 30, 45, 60, 74].map((x) => (
           <g key={x} stroke={COLORS.mid} strokeWidth="2.2" strokeLinecap="round" fill="none">
             <path d={`M${x},79 Q${x - 1},68 ${x - 6},60`} />
@@ -74,7 +74,7 @@ function PlantArt({ stage, size = 92 }: { stage: number; size?: number }) {
   const leaves = 3 + stage * 2;
   const height = 34 + stage * 9;
   const baseY = 90 - bulbR * 1.4;
-  const leafColor = stage === 5 ? '#93b444' : COLORS.green;
+  const leafColor = stage === 5 ? 'var(--segment-growing)' : COLORS.green;
   const paths: ReactNode[] = [];
   for (let index = 0; index < leaves; index += 1) {
     const angle = ((-38 + (76 * index) / Math.max(leaves - 1, 1)) * Math.PI) / 180;
@@ -89,12 +89,12 @@ function PlantArt({ stage, size = 92 }: { stage: number; size?: number }) {
   }
   return (
     <svg width={size} height={size} viewBox="0 0 90 100" aria-hidden>
-      <ellipse cx="45" cy="93" rx="34" ry="6" fill="#7a5232" />
+      <ellipse cx="45" cy="93" rx="34" ry="6" fill="var(--crop-onion)" />
       {paths}
       {bulbR > 0 && (
         <g>
-          <ellipse cx="45" cy={92 - bulbR * 0.75} rx={bulbR} ry={bulbR * 0.85} fill="#b0587f" />
-          <ellipse cx={45 - bulbR * 0.35} cy={92 - bulbR} rx={bulbR * 0.3} ry={bulbR * 0.45} fill="#e3b3cb" opacity=".8" />
+          <ellipse cx="45" cy={92 - bulbR * 0.75} rx={bulbR} ry={bulbR * 0.85} fill="var(--product-specialty)" />
+          <ellipse cx={45 - bulbR * 0.35} cy={92 - bulbR} rx={bulbR * 0.3} ry={bulbR * 0.45} fill="var(--line)" opacity=".8" />
         </g>
       )}
     </svg>
@@ -105,10 +105,10 @@ function OnionArt({ size = 64 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden>
       <path d="M32,24 L24,4 M32,24 L32,2 M32,24 L40,5" stroke={COLORS.green} strokeWidth="3" strokeLinecap="round" />
-      <path d="M32,22 C14,28 12,50 24,58 C28,61 36,61 40,58 C52,50 50,28 32,22 Z" fill="#a8426f" />
-      <path d="M32,24 C24,32 24,50 30,59" stroke="#d68cae" strokeWidth="1.6" fill="none" />
-      <path d="M32,24 C40,32 40,50 34,59" stroke="#d68cae" strokeWidth="1.6" fill="none" />
-      <ellipse cx="25" cy="38" rx="3" ry="6" fill="#f0c3d7" opacity=".7" />
+      <path d="M32,22 C14,28 12,50 24,58 C28,61 36,61 40,58 C52,50 50,28 32,22 Z" fill="var(--crop-onion)" />
+      <path d="M32,24 C24,32 24,50 30,59" stroke="var(--data-baseline)" strokeWidth="1.6" fill="none" />
+      <path d="M32,24 C40,32 40,50 34,59" stroke="var(--data-baseline)" strokeWidth="1.6" fill="none" />
+      <ellipse cx="25" cy="38" rx="3" ry="6" fill="var(--line)" opacity=".7" />
     </svg>
   );
 }
@@ -140,11 +140,11 @@ function FlowStrip({ items, source }: { items: { label: string; to?: ScreenId; c
 
 const STAGES = [
   { name: 'Nursery / Transplanting', window: 'Jan 5 – Jan 20', bg: COLORS.pale, fg: COLORS.dark, status: 'Completed' },
-  { name: 'Vegetative Growth', window: 'Jan 21 – Feb 20', bg: COLORS.green, fg: '#fff', status: 'Current stage' },
-  { name: 'Bulb Initiation', window: 'Feb 21 – Mar 4', bg: '#cde8b4', fg: COLORS.dark, status: 'Next nutrition window — High urgency' },
-  { name: 'Bulb Development', window: 'Mar 5 – Mar 25', bg: '#c3df79', fg: COLORS.dark, status: 'Upcoming nutrition window — Medium urgency' },
-  { name: 'Bulb Enlargement', window: 'Mar 26 – Apr 12', bg: '#d4da55', fg: COLORS.dark, status: 'Upcoming' },
-  { name: 'Maturity / Harvest', window: 'Apr 13 – Apr 25', bg: '#e6d13c', fg: COLORS.dark, status: 'Upcoming' },
+  { name: 'Vegetative Growth', window: 'Jan 21 – Feb 20', bg: COLORS.green, fg: 'var(--surface)', status: 'Current stage' },
+  { name: 'Bulb Initiation', window: 'Feb 21 – Mar 4', bg: 'var(--data-baseline)', fg: COLORS.dark, status: 'Next nutrition window — High urgency' },
+  { name: 'Bulb Development', window: 'Mar 5 – Mar 25', bg: 'var(--data-baseline)', fg: COLORS.dark, status: 'Upcoming nutrition window — Medium urgency' },
+  { name: 'Bulb Enlargement', window: 'Mar 26 – Apr 12', bg: 'var(--data-baseline)', fg: COLORS.dark, status: 'Upcoming' },
+  { name: 'Maturity / Harvest', window: 'Apr 13 – Apr 25', bg: 'var(--accent-600)', fg: COLORS.dark, status: 'Upcoming' },
 ];
 const CURRENT_STAGE = 1;
 
@@ -238,7 +238,7 @@ export function NutritionCalendar() {
           <div className="s3-stack-legend">
             <span><i style={{ background: COLORS.green }} />Vegetative Growth</span>
             <span><i style={{ background: COLORS.light }} />Bulb Initiation</span>
-            <span><i style={{ background: '#f4ecb0' }} />Others</span>
+            <span><i style={{ background: 'var(--accent-100)' }} />Others</span>
           </div>
           <div className="s3-stackbars">
             {DISTRIBUTION.map((row) => (
@@ -249,9 +249,9 @@ export function NutritionCalendar() {
               >
                 <span>{row.cluster}</span>
                 <div className="s3-stack-track">
-                  <div style={{ width: `${row.veg}%`, background: COLORS.green, color: '#fff' }}>{row.veg}%</div>
+                  <div style={{ width: `${row.veg}%`, background: COLORS.green, color: 'var(--surface)' }}>{row.veg}%</div>
                   <div style={{ width: `${row.bulb}%`, background: COLORS.light, color: COLORS.dark }}>{row.bulb}%</div>
-                  <div style={{ width: `${row.other}%`, background: '#f4ecb0', color: '#6b5310' }}>{row.other}%</div>
+                  <div style={{ width: `${row.other}%`, background: 'var(--accent-100)', color: 'var(--crop-soybean)' }}>{row.other}%</div>
                 </div>
               </div>
             ))}

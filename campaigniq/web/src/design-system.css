@@ -1,10 +1,29 @@
-/* Shared visual rules for all personas. Keep these semantic colors and title scales in one place. */
+/* Shared tokens and visual rules for every role and screen. */
 :root {
-  --series-planned: var(--amber-500);
-  --series-observed: var(--g600);
-  --heading-color: var(--g900);
-  --heading-size-page: 26px;
-  --heading-size-section: 16px;
+  --brand-900: #123D24; --brand-700: #1F6B3A; --brand-500: #2E8B4E; --brand-100: #E3F1E7; --brand-50: #F3F9F5;
+  --accent-600: #B7791F; --accent-100: #FBF0DC;
+  --ink-900: #1A2420; --ink-600: #4B5A53; --ink-400: #8A968F; --line: #E3E8E5; --surface: #FFFFFF; --canvas: #F6F8F7;
+  --ok: #2E7D32; --ok-bg: #E6F4EA; --warn: #B7791F; --warn-bg: #FBF0DC; --risk: #C0392B; --risk-bg: #FBE9E7; --info: #2B6CB0; --info-bg: #E8F0FA; --neutral: #6B7780; --neutral-bg: #EEF1F0;
+  --data-actual: #1F6B3A; --data-plan: #0F4C5C; --data-baseline: #A9C9B3; --data-forecast: #B7791F; --data-gap: #C0392B;
+  --segment-emerging: #A9C9B3; --segment-growing: #5FA872; --segment-maturing: #2E8B4E; --segment-matured: #123D24;
+  --product-croptek: #1F6B3A; --product-water-soluble: #2B6CB0; --product-specialty: #7C5AA6;
+  --crop-onion: #A65B3A; --crop-maize: #B7791F; --crop-soybean: #5F7F43; --crop-cotton: #718096;
+  --r-sm: 6px; --r-md: 10px; --r-pill: 999px;
+  --sh-1: 0 1px 3px rgba(26,36,32,.08); --sh-2: 0 12px 32px rgba(26,36,32,.16);
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px;
+  --heading-color: var(--brand-900); --heading-size-page: 22px; --heading-size-section: 16px;
+  /* Compatibility aliases for existing styles during migration. */
+  --ink-300: #B6C0BB; --ink-200: #D0D7D3;
+  --g900: var(--brand-900); --g800: var(--brand-700); --g700: var(--brand-700); --g600: var(--brand-500); --g500: var(--segment-growing); --g300: var(--brand-100); --g200: var(--brand-100); --g100: var(--brand-100); --g50: var(--brand-50);
+  --n900: var(--ink-900); --n800: var(--ink-600); --n700: var(--ink-600); --n600: var(--ink-600); --n500: var(--ink-400); --n400: var(--ink-300); --n300: var(--line); --n200: var(--line); --n100: var(--neutral-bg); --n50: var(--canvas); --n25: var(--surface);
+  --amber-800: var(--warn); --amber-600: var(--accent-600); --amber-500: var(--accent-600); --amber-300: var(--accent-100); --amber-100: var(--accent-100); --amber-50: var(--accent-100);
+  --info-700: var(--info); --info-500: var(--info); --info-200: var(--info-bg); --info-50: var(--info-bg);
+  --risk-700: var(--risk); --risk-500: var(--risk); --risk-200: var(--risk-bg); --risk-50: var(--risk-bg);
+  --seg-emerging: var(--segment-emerging); --seg-growing: var(--segment-growing); --seg-maturing: var(--segment-maturing); --seg-matured: var(--segment-matured);
+  --dark: var(--brand-700); --green: var(--brand-500); --mid: var(--segment-growing); --light: var(--brand-100); --pale: var(--brand-100); --paler: var(--brand-50);
+  --yellow: var(--accent-600); --amber: var(--accent-600); --red: var(--risk); --blue: var(--info);
+  --ink: var(--ink-900); --muted: var(--ink-600); --card: var(--surface); --bg: var(--canvas);
+  --series-planned: var(--data-plan); --series-observed: var(--data-actual);
 }
 
 /* One clear page-title treatment across BH, MH, ZM and FSM workspaces. */
@@ -15,9 +34,18 @@
   padding: 14px 18px;
   align-items: center;
   border: 1px solid var(--n200);
-  border-radius: var(--radius-md);
+  border-radius: var(--r-sm);
   background: var(--card);
 }
+
+/* Shared shell rhythm for all role pages; navigation remains owned by each role. */
+.app .persona-page,
+.app .bh-page { gap: 16px !important; }
+.app .topbar { min-height: 56px; align-items: center; padding: 8px 24px; gap: 12px; background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: none; }
+.app .code-chip { background: var(--brand-50) !important; color: var(--brand-700) !important; border: 1px solid var(--line); border-radius: var(--r-pill); }
+.app .persona-page .page-header,
+.app .page-header,
+.app .bh-page .bh-page-head { min-height: 72px; padding: 14px 20px; align-items: center; }
 
 .app .page-title-row h1,
 .app .bh-page .bh-title-row h1 {
@@ -52,20 +80,20 @@
 
 /* MH uses filled section bands; keep the band in the same green palette as all other personas. */
 .app .mh-section > h2 {
-  background: var(--g800) !important;
-  color: #fff !important;
-  border-bottom: 1px solid var(--g900);
+  background: var(--brand-50) !important;
+  color: var(--brand-900) !important;
+  border-bottom: 1px solid var(--line);
 }
 
 /* A single semantic mapping for progress charts and workflow rails. */
 .app .tm-step-active {
   background: var(--g50);
-  box-shadow: inset 0 -3px 0 var(--g700);
+  box-shadow: var(--sh-1);
 }
 .app .pm-journey-step.active { background: var(--g50); border-color: var(--g700); }
 .app .pm-journey-num,
 .app .tm-step-active .tm-step-num,
-.app .bh-workflow li.active i { background: var(--g700); border-color: var(--g700); color: #fff; }
+.app .bh-workflow li.active i { background: var(--g700); border-color: var(--g700); color: var(--surface); }
 .app .tm-step-active > div,
 .app .bh-workflow li.active { color: var(--g800); }
 

@@ -13,10 +13,10 @@ import './map.css';
 
 export type MapTone = 0 | 1 | 2 | 3 | 4;
 /** Sequential fills for areas that carry a value (state opportunity, taluka score). */
-export const MAP_TONES = ['#eef4e4', '#d4e9c1', '#a9d58c', '#6db556', '#2f8a3b'];
-const NEUTRAL = '#eceee9';
-const HIGHLIGHT = '#f5cf63';
-const HIGHLIGHT_LINE = '#b8860b';
+export const MAP_TONES = ['var(--ok-bg)', 'var(--line)', 'var(--data-baseline)', 'var(--segment-growing)', 'var(--ok)'];
+const NEUTRAL = 'var(--neutral-bg)';
+const HIGHLIGHT = 'var(--data-baseline)';
+const HIGHLIGHT_LINE = 'var(--accent-600)';
 
 export interface MapMarker {
   /** id from src/map/places.json */
@@ -520,7 +520,7 @@ export function IndiaDistrictMap({ label, markers, states, talukas, view = 'indi
                 <g key={m.id} className={m.id === selected ? 'imap-marker sel' : 'imap-marker'} data-k={`m:${m.id}`} transform={`translate(${x},${y})`}>
                   <circle r={m.id === selected ? 10 : 9} className="imap-marker-hit" />
                   {m.id === selected && <circle r={9} className="imap-marker-halo" />}
-                  <circle r={m.id === selected ? 6 : 5} fill={m.color ?? '#1f5f2c'} className="imap-marker-dot" />
+                  <circle r={m.id === selected ? 6 : 5} fill={m.color ?? 'var(--brand-700)'} className="imap-marker-dot" />
                 </g>
               ))}
               {overlay.markerLabels.map((l) => (
@@ -556,7 +556,7 @@ export function IndiaDistrictMap({ label, markers, states, talukas, view = 'indi
               onClick={() => { m.onSelect?.(); zoomToPlace(m); }}
               title={`${m.name}: ${m.place.taluka ? `${m.place.taluka} taluka, ` : ''}${m.place.district} district, ${m.place.state} - click to zoom`}
             >
-              <i style={{ background: m.color ?? '#1f5f2c' }} />{m.name}
+              <i style={{ background: m.color ?? 'var(--brand-700)' }} />{m.name}
             </button>
           ))}
         </div>

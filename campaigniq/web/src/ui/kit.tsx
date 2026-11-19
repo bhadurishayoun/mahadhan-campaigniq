@@ -33,7 +33,7 @@ export function ActionButton({ label, onClick, icon: Icon = ArrowRight, kind = '
 
 /* ---------------------------------------------------------------- KpiCard */
 export function KpiCard({ icon: Icon, label, value, note, change, changeLabel, spark, tone = 'green', onClick }: {
-  icon: LucideIcon; label: string; value: ReactNode; note?: string; change?: number; changeLabel?: string; spark?: number[]; tone?: 'green' | 'amber' | 'red' | 'blue'; onClick?: () => void;
+  icon: LucideIcon; label: string; value: ReactNode; note?: ReactNode; change?: number; changeLabel?: string; spark?: number[]; tone?: 'green' | 'amber' | 'red' | 'blue'; onClick?: () => void;
 }) {
   const data = useMemo(() => (spark ?? []).map((v, i) => ({ i, v })), [spark]);
   const body = (

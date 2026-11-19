@@ -1,7 +1,8 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { ChevronRight, Home } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
-import { cx, Pill, type Tone } from '../ui';
+import { cx, type Tone } from '../ui';
+import { StatusChip } from '../ui/kit';
 
 export function toneOf(text: string): Tone {
   const t = text.toLowerCase();
@@ -12,8 +13,10 @@ export function toneOf(text: string): Tone {
   return 'grey';
 }
 
-export function Status({ children, tone, solid }: { children: string; tone?: Tone; solid?: boolean }) {
-  return <Pill tone={tone ?? toneOf(children)} solid={solid}>{children}</Pill>;
+export function Status({ children, tone }: { children: string; tone?: Tone; solid?: boolean }) {
+  const resolved = tone ?? toneOf(children);
+  const kind = resolved === 'green' ? 'ok' : resolved === 'amber' ? 'warn' : resolved === 'red' ? 'risk' : 'pending';
+  return <StatusChip kind={kind}>{children}</StatusChip>;
 }
 
 export function MhPage({ crumbs, code, title, status, subtitle, actions, children, className }: {

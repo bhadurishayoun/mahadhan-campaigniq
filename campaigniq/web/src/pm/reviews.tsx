@@ -99,7 +99,7 @@ export function Pm2() {
               <><b>{row.territory}</b><br /><Muted>{row.tm}</Muted></>,
               row.abp, row.plan,
               index === 0 ? <button type="button" className="pm-chip" onClick={(event) => { event.stopPropagation(); go('pm.2a'); }}>{row.contribution}</button> : <Muted>{row.contribution}</Muted>,
-              index === 0 ? <span style={{ color: '#a42e2a', fontWeight: 600 }}>{row.gap}</span> : <Muted>—</Muted>,
+              index === 0 ? <span style={{ color: 'var(--risk)', fontWeight: 600 }}>{row.gap}</span> : <Muted>—</Muted>,
               <Status>{row.status}</Status>,
               index === 0 ? <Btn small to="pm.3">View</Btn> : <Muted>—</Muted>,
             ])}
@@ -285,7 +285,7 @@ export function Pm3() {
                 ['Target', `${DHANORA.tgtRev} · ${DHANORA.tgtVol}`],
                 ['Effective coverage ', <>{DHANORA.prevAcres} → {DHANORA.reqAcres} <Status>Unvalidated</Status></>],
                 ['Application rate assumption', <>{DHANORA.rate} <Status>Unvalidated</Status></>],
-                ['Product realization', <>{DHANORA.realPrev} → {DHANORA.realNew} <span style={{ color: '#a42e2a' }}>(−20%)</span></>],
+                ['Product realization', <>{DHANORA.realPrev} → {DHANORA.realNew} <span style={{ color: 'var(--risk)' }}>(−20%)</span></>],
                 ['Volume growth', '+50%'],
               ]} />
               <Muted>Estimated crop coverage is not verified.</Muted>
@@ -486,7 +486,7 @@ export function Pm3d() {
 function Chipsy({ onPick }: { onPick: (value: string) => void }) {
   return (
     <div className="row" style={{ fontSize: 11.5 }}>
-      <AlertTriangle size={13} color="#b07800" />
+      <AlertTriangle size={13} color="var(--accent-600)" />
       <span className="muted">Choosing “Request Field Sales Manager Revision” routes the question back through TM revision.</span>
       <button type="button" className="pm-chip" onClick={() => onPick('Request Field Sales Manager Revision')}>Switch to TM revision</button>
     </div>

@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { ArrowLeft, ArrowRight, ChevronRight, Home, Lock, Sparkles, X } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
-import { Btn, Pill, cx, type Tone } from '../ui';
+import { Btn, cx, type Tone } from '../ui';
 import { PulseStrip, type PulseItem } from '../ui/index';
 import { PM_CHARTS, PM_DRAWER_CHARTS, PM_PULSE as PM_PULSE_BY_CODE } from './charts';
 import { StatusChip } from '../ui/index';
@@ -16,8 +16,10 @@ export function toneOf(text: string): Tone {
   return 'grey';
 }
 
-export function Status({ children, tone, solid }: { children: string; tone?: Tone; solid?: boolean }) {
-  return <Pill tone={tone ?? toneOf(children)} solid={solid}>{children}</Pill>;
+export function Status({ children, tone }: { children: string; tone?: Tone; solid?: boolean }) {
+  const resolved = tone ?? toneOf(children);
+  const kind = resolved === 'green' ? 'ok' : resolved === 'amber' ? 'warn' : resolved === 'red' ? 'risk' : 'pending';
+  return <StatusChip kind={kind}>{children}</StatusChip>;
 }
 
 
@@ -374,7 +376,7 @@ export function Bars({ data, series, height = 120, format = (value: number) => S
               {item.values.map((value, index) => (
                 <div key={index} className="pm-bar-col" title={`${series[index]?.name ?? series[index]?.label ?? `Series ${index + 1}`}: ${format(value)}`}>
                   <span>{format(value)}</span>
-                  <i style={{ height: `${(value / max) * 100}%`, background: series[index]?.color ?? '#7aa56a' }} />
+                  <i style={{ height: `${(value / max) * 100}%`, background: series[index]?.color ?? 'var(--segment-growing)' }} />
                 </div>
               ))}
             </div>

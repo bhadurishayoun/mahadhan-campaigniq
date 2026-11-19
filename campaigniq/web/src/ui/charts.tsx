@@ -7,8 +7,11 @@ export interface Series { key: string; name?: string; color?: string }
 const color = (s: Series, i: number) => {
   if (s.color) return s.color;
   const label = `${s.key} ${s.name ?? ''}`.toLowerCase();
-  if (/planned|\bplan\b|target/.test(label)) return '#d7a62f';
-  if (/observed|\bactual\b|achieved/.test(label)) return '#2f8a3b';
+  if (/forecast|simulated/.test(label)) return 'var(--data-forecast)';
+  if (/baseline|last year|previous year/.test(label)) return 'var(--data-baseline)';
+  if (/gap|variance/.test(label)) return 'var(--data-gap)';
+  if (/planned|\bplan\b|target|abp/.test(label)) return 'var(--data-plan)';
+  if (/observed|\bactual\b|achieved/.test(label)) return 'var(--data-actual)';
   return SERIES[i % SERIES.length];
 };
 
@@ -22,7 +25,7 @@ export function TrendLine({ data, x, series, height = 220, fmt }: { data: Row[];
         <YAxis tick={axisStyle} tickLine={false} axisLine={false} width={44} tickFormatter={fmt} />
         <Tooltip {...tooltipStyle} formatter={(v: number) => (fmt ? fmt(v) : v)} />
         {series.length > 1 && <Legend iconType="plainline" wrapperStyle={{ fontSize: 11 }} />}
-        {series.map((s, i) => <Line key={s.key} type="monotone" dataKey={s.key} name={s.name ?? s.key} stroke={color(s, i)} strokeWidth={2} strokeDasharray={i === 1 && series.length === 2 ? '5 4' : undefined} dot={{ r: 3 }} />)}
+        {series.map((s, i) => <Line key={s.key} type="monotone" dataKey={s.key} name={s.name ?? s.key} stroke={color(s, i)} strokeWidth={2} strokeDasharray={/forecast|simulated/i.test(`${s.key} ${s.name ?? ''}`) ? '5 4' : undefined} dot={{ r: 3 }} />)}
       </LineChart>
     </ResponsiveContainer></div>
   );
@@ -42,8 +45,8 @@ export function RankBars({ data, label = 'name', series, stacked, height, fmt, h
         <Tooltip {...tooltipStyle} formatter={(v: number) => (fmt ? fmt(v) : v)} />
         {series.length > 1 && <Legend iconType="square" wrapperStyle={{ fontSize: 11 }} />}
         {series.map((s, i) => (
-          <Bar key={s.key} dataKey={s.key} name={s.name ?? s.key} fill={color(s, i)} stackId={stacked ? 's' : undefined} radius={stacked ? 0 : [0, 4, 4, 0]} maxBarSize={series.length > 1 && !stacked ? 14 : 26}>
-            {highlightFirst && series.length === 1 && data.map((_, di) => <Cell key={di} fill={di === 0 ? SERIES[0] : '#9fd27f'} />)}
+          <Bar key={s.key} dataKey={s.key} name={s.name ?? s.key} fill={color(s, i)} stackId={stacked ? 's' : undefined} radius={stacked ? 0 : [0, 6, 6, 0]} maxBarSize={series.length > 1 && !stacked ? 14 : 26}>
+            {highlightFirst && series.length === 1 && data.map((_, di) => <Cell key={di} fill={di === 0 ? SERIES[0] : 'var(--data-baseline)'} />)}
           </Bar>
         ))}
       </BarChart>
@@ -63,8 +66,8 @@ export function ColumnBars({ data, x, series, stacked, height = 220, fmt, target
         <YAxis tick={axisStyle} tickLine={false} axisLine={false} width={44} tickFormatter={fmt} />
         <Tooltip {...tooltipStyle} formatter={(v: number) => (fmt ? fmt(v) : v)} />
         {series.length > 1 && <Legend iconType="square" wrapperStyle={{ fontSize: 11 }} />}
-        {target !== undefined && <ReferenceLine y={target} stroke="#d7a62f" strokeDasharray="4 3" label={{ value: 'Target', fontSize: 10, fill: '#6b5310', position: 'right' }} />}
-        {series.map((s, i) => <Bar key={s.key} dataKey={s.key} name={s.name ?? s.key} fill={color(s, i)} stackId={stacked ? 's' : undefined} radius={stacked ? 0 : [4, 4, 0, 0]} />)}
+        {target !== undefined && <ReferenceLine y={target} stroke="var(--accent-600)" strokeDasharray="4 3" label={{ value: 'Target', fontSize: 10, fill: 'var(--crop-soybean)', position: 'right' }} />}
+        {series.map((s, i) => <Bar key={s.key} dataKey={s.key} name={s.name ?? s.key} fill={color(s, i)} stackId={stacked ? 's' : undefined} radius={stacked ? 0 : [6, 6, 0, 0]} />)}
       </BarChart>
     </ResponsiveContainer></div>
   );
@@ -100,8 +103,8 @@ export function ScatterPlot({ points, xLabel, yLabel, height = 240, xFmt, yFmt }
     <div className="iq-fill" style={{ minHeight: height }}><ResponsiveContainer width="100%" height="100%" minHeight={height}>
       <ScatterChart margin={{ top: 8, right: 16, bottom: 18, left: 0 }}>
         <CartesianGrid {...gridStyle} />
-        <XAxis type="number" dataKey="x" name={xLabel} tick={axisStyle} tickLine={false} tickFormatter={xFmt} label={{ value: xLabel, position: 'insideBottom', offset: -10, fontSize: 11, fill: '#66736a' }} />
-        <YAxis type="number" dataKey="y" name={yLabel} tick={axisStyle} tickLine={false} width={44} tickFormatter={yFmt} label={{ value: yLabel, angle: -90, position: 'insideLeft', fontSize: 11, fill: '#66736a' }} />
+        <XAxis type="number" dataKey="x" name={xLabel} tick={axisStyle} tickLine={false} tickFormatter={xFmt} label={{ value: xLabel, position: 'insideBottom', offset: -10, fontSize: 11, fill: 'var(--neutral)' }} />
+        <YAxis type="number" dataKey="y" name={yLabel} tick={axisStyle} tickLine={false} width={44} tickFormatter={yFmt} label={{ value: yLabel, angle: -90, position: 'insideLeft', fontSize: 11, fill: 'var(--neutral)' }} />
         <ZAxis type="number" dataKey="z" range={[60, 160]} />
         <Tooltip {...tooltipStyle} cursor={{ strokeDasharray: '3 3' }} formatter={(v: number) => v} labelFormatter={() => ''} content={({ payload }) => {
           const p = payload?.[0]?.payload as { name: string; x: number; y: number } | undefined;
@@ -143,7 +146,7 @@ export function HeatGrid({ rows, cols, values, fmt = (v) => `${v}`, corner = '' 
         <FragmentRow key={r} label={r}>
           {values[ri].map((v, ci) => {
             const t = hi === lo ? 0.5 : (v - lo) / (hi - lo);
-            return <span key={ci} className="cell" style={{ background: `rgba(47,138,59,${0.1 + t * 0.75})`, color: t > 0.55 ? '#fff' : '#1d2a1f' }} title={`${r} · ${cols[ci]}: ${fmt(v)}`}>{fmt(v)}</span>;
+            return <span key={ci} className="cell" style={{ background: `rgba(47,138,59,${0.1 + t * 0.75})`, color: t > 0.55 ? 'var(--surface)' : 'var(--ink-900)' }} title={`${r} · ${cols[ci]}: ${fmt(v)}`}>{fmt(v)}</span>;
           })}
         </FragmentRow>
       ))}
@@ -172,8 +175,8 @@ export function Waterfall({ steps, height = 220, fmt }: { steps: { label: string
         <Tooltip {...tooltipStyle} formatter={(v: number) => (fmt ? fmt(v) : v)} />
         <Bar dataKey="base" stackId="w" fill="transparent" />
         <Bar dataKey="total" stackId="w" fill={SERIES[0]} />
-        <Bar dataKey="up" stackId="w" fill="#5fae4c" />
-        <Bar dataKey="down" stackId="w" fill="#d9534f" />
+        <Bar dataKey="up" stackId="w" fill="var(--segment-growing)" />
+        <Bar dataKey="down" stackId="w" fill="var(--risk)" />
       </BarChart>
     </ResponsiveContainer></div>
   );

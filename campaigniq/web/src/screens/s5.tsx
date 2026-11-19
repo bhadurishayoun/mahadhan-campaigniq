@@ -333,7 +333,7 @@ function Waterfall() {
     { label: ['Required', 'Demand', '(Projected)'], from: 0, to: 209, text: '209', color: COLORS.dark },
     { label: ['ERP Stock', '(Available,', 'Confirmed)'], from: 71, to: 209, text: '−138', color: COLORS.mid },
     { label: ['In Transit', '(Pending', 'Arrival)'], from: 43, to: 71, text: '+28', color: COLORS.light },
-    { label: ['Time', 'Adjustment', '(Lead-time)'], from: 43, to: 43, text: '0', color: '#c9cfc6' },
+    { label: ['Time', 'Adjustment', '(Lead-time)'], from: 43, to: 43, text: '0', color: 'var(--data-baseline)' },
     { label: ['Total', 'Usable', 'Supply'], from: 0, to: 166, text: '166', color: COLORS.green },
     { label: ['Remaining', 'Gap', '(Shortfall)'], from: 166, to: 209, text: '−43', color: COLORS.yellow },
   ];
@@ -343,7 +343,7 @@ function Waterfall() {
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Demand vs supply waterfall">
       {[0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250].map((t) => (
         <g key={t}>
-          <line x1={left} x2={W} y1={y(t)} y2={y(t)} stroke="#eef2ea" />
+          <line x1={left} x2={W} y1={y(t)} y2={y(t)} stroke="var(--neutral-bg)" />
           <text x={left - 4} y={y(t) + 3} textAnchor="end" className="s5-wf-axis">{t}</text>
         </g>
       ))}
@@ -356,8 +356,8 @@ function Waterfall() {
             <rect x={left + i * slot} y={top} width={slot} height={bottom - top} fill="transparent" />
             {h > 0
               ? <rect className="s1-grow" style={{ animationDelay: `${i * 90}ms` }} x={x} y={y(b.to)} width={w} height={h} fill={b.color} rx={2} />
-              : <line x1={x} x2={x + w} y1={y(b.to)} y2={y(b.to)} stroke="#8a978c" strokeDasharray="4 3" strokeWidth={1.5} />}
-            {i < bars.length - 1 && <line x1={x + w} x2={x + slot} y1={y(i === 0 ? 209 : i === 4 ? 166 : b.from)} y2={y(i === 0 ? 209 : i === 4 ? 166 : b.from)} stroke="#b5bfb2" strokeDasharray="2 2" />}
+              : <line x1={x} x2={x + w} y1={y(b.to)} y2={y(b.to)} stroke="var(--ink-400)" strokeDasharray="4 3" strokeWidth={1.5} />}
+            {i < bars.length - 1 && <line x1={x + w} x2={x + slot} y1={y(i === 0 ? 209 : i === 4 ? 166 : b.from)} y2={y(i === 0 ? 209 : i === 4 ? 166 : b.from)} stroke="var(--data-baseline)" strokeDasharray="2 2" />}
             <text x={x + w / 2} y={h > 24 && i !== 0 && i !== 4 ? y(b.to) + h / 2 + 4 : y(b.to) - 5} textAnchor="middle" className="s5-wf-val">{b.text}</text>
             {b.label.map((l, k) => <text key={k} x={x + w / 2} y={bottom + 11 + k * 10} textAnchor="middle" className="s5-wf-label">{l}</text>)}
           </g>
@@ -456,7 +456,7 @@ export function StockReadiness() {
               <div className="s5-legend">
                 <span><i style={{ background: COLORS.dark }} />Confirmed Supply</span>
                 <span><i style={{ background: COLORS.light }} />Pending Arrival</span>
-                <span><i style={{ background: '#c9cfc6' }} />Adjustment</span>
+                <span><i style={{ background: 'var(--data-baseline)' }} />Adjustment</span>
                 <span><i style={{ background: COLORS.yellow }} />Gap / Shortfall</span>
               </div>
             </div>
@@ -529,7 +529,7 @@ export function StockReadiness() {
           <div className="s5-legend" style={{ marginTop: 0, marginBottom: 8 }}>
             <span><i style={{ background: COLORS.green }} />On-time</span>
             <span><i style={{ background: COLORS.yellow }} />Late</span>
-            <span><i style={{ background: '#e6f2dc' }} />Within Window</span>
+            <span><i style={{ background: 'var(--brand-100)' }} />Within Window</span>
           </div>
           <div className="s5-timeline">
             <div className="s5-tl-head">
@@ -910,7 +910,7 @@ export function SupplyRiskPlanner() {
   const [confirmed, setConfirmed] = useState(false);
   const chosen = SCENARIOS.find((s) => s.id === scenario)!;
 
-  const statusPill = (s: string) => <span style={{ color: s === 'At Risk' || s === 'Critical' ? COLORS.red : s === 'Watch' ? '#b07d00' : COLORS.green, fontWeight: 600 }}>{s}</span>;
+  const statusPill = (s: string) => <span style={{ color: s === 'At Risk' || s === 'Critical' ? COLORS.red : s === 'Watch' ? 'var(--accent-600)' : COLORS.green, fontWeight: 600 }}>{s}</span>;
 
   return (
     <div className="stack">

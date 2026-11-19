@@ -35,12 +35,12 @@ interface ActivityDef {
 }
 
 const ACTIVITIES: ActivityDef[] = [
-  { key: 'demo', name: 'Farmer Demonstrations', short: 'Farmer demonstrations', sub: '(On-farm plots)', icon: <Sprout size={16} />, base: 12, unit: 20000, reachPer: 50, ppPer: 0.75, color: '#1f6b2e', owner: 'Field Marketing', qty: (c) => `${c} demo plots`, qtySub: '(~50 farmers / plot)' },
-  { key: 'retail', name: 'Retailer Activation', short: 'Retailer activation', sub: '(Training + PoS + Incentive)', icon: <Store size={16} />, base: 74, unit: 2700, reachPer: 1832 / 74, ppPer: 8 / 74, color: '#3f9d45', owner: 'Channel Marketing', qty: (c) => `${c} retailers`, qtySub: '(12 retailer clusters)' },
-  { key: 'meet', name: 'Farmer Meetings', short: 'Farmer meetings', sub: '(Village level)', icon: <Users size={16} />, base: 32, unit: 5000, reachPer: 37.5, ppPer: 6 / 32, color: '#7cc35f', owner: 'Field Marketing', qty: (c) => `${c} meetings`, qtySub: '(~40 farmers each)' },
-  { key: 'digital', name: 'Digital Advisory', short: 'Digital advisory', sub: '(WhatsApp/SMS/IVR)', icon: <Smartphone size={16} />, base: 1, unit: 80000, reachPer: 3000, ppPer: 3, color: '#c9b52f', owner: 'Digital Marketing', qty: (c) => `${c * 4} WhatsApp bursts`, qtySub: '(~3,000 farmers)' },
-  { key: 'follow', name: 'Field Follow-ups', short: 'Field follow-ups', sub: '(Advisory + trial conversion)', icon: <UserCheck size={16} />, base: 8, unit: 10000, reachPer: 125, ppPer: 2.5 / 8, color: '#e8c13a', owner: 'Field Marketing', qty: (c) => `~${(c * 150).toLocaleString('en-IN')} follow-up visits`, qtySub: '(~2-3 per trial farmer)' },
-  { key: 'cont', name: 'Contingency', short: 'Contingency', sub: '(Flex for high-potential villages)', icon: <Coins size={16} />, base: 1, unit: 40000, reachPer: 0, ppPer: 0.5, color: '#c9cfc6', owner: 'Regional Marketing', qty: () => 'Operational buffer', qtySub: '(multi-activity)' },
+  { key: 'demo', name: 'Farmer Demonstrations', short: 'Farmer demonstrations', sub: '(On-farm plots)', icon: <Sprout size={16} />, base: 12, unit: 20000, reachPer: 50, ppPer: 0.75, color: 'var(--brand-700)', owner: 'Field Marketing', qty: (c) => `${c} demo plots`, qtySub: '(~50 farmers / plot)' },
+  { key: 'retail', name: 'Retailer Activation', short: 'Retailer activation', sub: '(Training + PoS + Incentive)', icon: <Store size={16} />, base: 74, unit: 2700, reachPer: 1832 / 74, ppPer: 8 / 74, color: 'var(--brand-500)', owner: 'Channel Marketing', qty: (c) => `${c} retailers`, qtySub: '(12 retailer clusters)' },
+  { key: 'meet', name: 'Farmer Meetings', short: 'Farmer meetings', sub: '(Village level)', icon: <Users size={16} />, base: 32, unit: 5000, reachPer: 37.5, ppPer: 6 / 32, color: 'var(--segment-growing)', owner: 'Field Marketing', qty: (c) => `${c} meetings`, qtySub: '(~40 farmers each)' },
+  { key: 'digital', name: 'Digital Advisory', short: 'Digital advisory', sub: '(WhatsApp/SMS/IVR)', icon: <Smartphone size={16} />, base: 1, unit: 80000, reachPer: 3000, ppPer: 3, color: 'var(--accent-600)', owner: 'Digital Marketing', qty: (c) => `${c * 4} WhatsApp bursts`, qtySub: '(~3,000 farmers)' },
+  { key: 'follow', name: 'Field Follow-ups', short: 'Field follow-ups', sub: '(Advisory + trial conversion)', icon: <UserCheck size={16} />, base: 8, unit: 10000, reachPer: 125, ppPer: 2.5 / 8, color: 'var(--accent-600)', owner: 'Field Marketing', qty: (c) => `~${(c * 150).toLocaleString('en-IN')} follow-up visits`, qtySub: '(~2-3 per trial farmer)' },
+  { key: 'cont', name: 'Contingency', short: 'Contingency', sub: '(Flex for high-potential villages)', icon: <Coins size={16} />, base: 1, unit: 40000, reachPer: 0, ppPer: 0.5, color: 'var(--data-baseline)', owner: 'Regional Marketing', qty: () => 'Operational buffer', qtySub: '(multi-activity)' },
 ];
 
 const BASE_LAKH: Record<ActivityKey, number> = Object.fromEntries(ACTIVITIES.map((a) => [a.key, (a.base * a.unit) / 1e5])) as Record<ActivityKey, number>;
@@ -415,7 +415,7 @@ export function CreationWizard() {
                 <span><strong>Secondary Cohorts</strong><small>Non-users and Trial Users (nurture and convert)</small></span>
                 <strong>1,061</strong><strong>460 Acres</strong>
               </label>
-              <div className="s4-cohort" style={{ borderBottom: 0, background: '#f1f8ea', borderRadius: 6, padding: '8px 4px' }}>
+              <div className="s4-cohort" style={{ borderBottom: 0, background: 'var(--neutral-bg)', borderRadius: 6, padding: '8px 4px' }}>
                 <span /><strong>Selected target audience</strong><strong>{inr(farmers)}</strong><strong>{inr(acres)} Acres</strong>
               </div>
             </Panel>
@@ -469,11 +469,11 @@ export function CreationWizard() {
 
 const GANTT_MONTHS = ['Nov (Pre-plant)', 'Dec (Vegetative)', 'Jan (Leaf growth)', 'Feb (Bulb development)', 'Mar (Maturity)'];
 const GANTT_ROWS: { label: string; icon: ReactNode; bars: { left: number; width: number; text: string; color: string }[] }[] = [
-  { label: 'Retailer Activation', icon: <Store size={13} />, bars: [{ left: 8, width: 30, text: 'Training & stocking', color: '#3f9d45' }] },
-  { label: 'Farmer Demonstrations', icon: <Sprout size={13} />, bars: [{ left: 30, width: 16, text: 'Plot setup', color: '#1f6b2e' }, { left: 48, width: 50, text: 'Demonstration & field days', color: '#7cc35f' }] },
-  { label: 'Farmer Meetings', icon: <Users size={13} />, bars: [{ left: 24, width: 52, text: 'Village meetings (cluster-wise)', color: '#4c9f43' }] },
-  { label: 'Digital Advisory', icon: <Smartphone size={13} />, bars: [{ left: 18, width: 80, text: 'Stage-wise nutrition & application advisories (continuous) →', color: '#76b84f' }] },
-  { label: 'Field Follow-ups', icon: <UserCheck size={13} />, bars: [{ left: 40, width: 58, text: 'Trial monitoring & conversion follow-ups', color: '#5fae4c' }] },
+  { label: 'Retailer Activation', icon: <Store size={13} />, bars: [{ left: 8, width: 30, text: 'Training & stocking', color: 'var(--brand-500)' }] },
+  { label: 'Farmer Demonstrations', icon: <Sprout size={13} />, bars: [{ left: 30, width: 16, text: 'Plot setup', color: 'var(--brand-700)' }, { left: 48, width: 50, text: 'Demonstration & field days', color: 'var(--segment-growing)' }] },
+  { label: 'Farmer Meetings', icon: <Users size={13} />, bars: [{ left: 24, width: 52, text: 'Village meetings (cluster-wise)', color: 'var(--crop-soybean)' }] },
+  { label: 'Digital Advisory', icon: <Smartphone size={13} />, bars: [{ left: 18, width: 80, text: 'Stage-wise nutrition & application advisories (continuous) →', color: 'var(--segment-growing)' }] },
+  { label: 'Field Follow-ups', icon: <UserCheck size={13} />, bars: [{ left: 40, width: 58, text: 'Trial monitoring & conversion follow-ups', color: 'var(--segment-growing)' }] },
 ];
 
 function Gantt({ months, rows }: { months: string[]; rows: typeof GANTT_ROWS }) {
@@ -829,11 +829,11 @@ const STATUS_TONE: Record<ApprovalStatus, Tone> = {
 
 const EXEC_MONTHS = ['Pre-plant (Dec \'26)', 'Vegetative (Jan \'27)', 'Bulb Development (Feb \'27)', 'Maturity (Mar \'27)'];
 const EXEC_ROWS: typeof GANTT_ROWS = [
-  { label: 'Retailer activation', icon: <Store size={13} />, bars: [{ left: 2, width: 40, text: '', color: '#3f9d45' }] },
-  { label: 'Demonstration plots', icon: <Sprout size={13} />, bars: [{ left: 10, width: 60, text: '', color: '#4c9f43' }] },
-  { label: 'Farmer meetings', icon: <Users size={13} />, bars: [{ left: 22, width: 52, text: '', color: '#5fae4c' }] },
-  { label: 'Digital advisory', icon: <Smartphone size={13} />, bars: [{ left: 12, width: 86, text: '', color: '#76b84f' }] },
-  { label: 'Field follow-ups', icon: <UserCheck size={13} />, bars: [{ left: 48, width: 50, text: '', color: '#2f8a3b' }] },
+  { label: 'Retailer activation', icon: <Store size={13} />, bars: [{ left: 2, width: 40, text: '', color: 'var(--brand-500)' }] },
+  { label: 'Demonstration plots', icon: <Sprout size={13} />, bars: [{ left: 10, width: 60, text: '', color: 'var(--crop-soybean)' }] },
+  { label: 'Farmer meetings', icon: <Users size={13} />, bars: [{ left: 22, width: 52, text: '', color: 'var(--segment-growing)' }] },
+  { label: 'Digital advisory', icon: <Smartphone size={13} />, bars: [{ left: 12, width: 86, text: '', color: 'var(--segment-growing)' }] },
+  { label: 'Field follow-ups', icon: <UserCheck size={13} />, bars: [{ left: 48, width: 50, text: '', color: 'var(--ok)' }] },
 ];
 
 type RouteRow = { [key: string]: unknown; role: string; sub?: string; status: string; tone: Tone; comment: string; due: string; can: boolean };

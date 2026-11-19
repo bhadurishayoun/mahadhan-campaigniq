@@ -384,7 +384,7 @@ export function Tm5() {
           <Donut center="90.5%" sub="allocated" segments={[{ label: 'Allocated to dealers', value: 380, color: MAP_COLORS.green }, { label: 'Unallocated gap', value: 40, color: MAP_COLORS.amber }]} />
         </Panel>
         <Panel title="Crop mix of the proposed plan">
-          <Donut center="₹3.80 Cr" sub="crop view" segments={CROP_PLAN.map((c, i) => ({ label: c.crop, value: c.value, color: ['#2f8a3b', '#d7a62f', '#7fa3cc'][i] }))} />
+          <Donut center="₹3.80 Cr" sub="crop view" segments={CROP_PLAN.map((c, i) => ({ label: c.crop, value: c.value, color: ['var(--ok)', 'var(--accent-600)', 'var(--data-baseline)'][i] }))} />
         </Panel>
         <Panel title="Readiness to submit">
           <div className="tm-ring-row">

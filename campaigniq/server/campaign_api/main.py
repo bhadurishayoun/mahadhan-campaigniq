@@ -58,8 +58,15 @@ class PlanRequest(BaseModel):
 
 
 class ActivityBudgetLineRequest(BaseModel):
+    activity: str = Field(max_length=200)
     units: float = Field(ge=0, le=1_000_000)
-    unit_cost_lakh: float = Field(ge=0, le=1_000_000)
+    unit_label: str = Field(max_length=80)
+    where: str = Field(max_length=300)
+    timing: str = Field(max_length=200)
+    owner: str = Field(max_length=160)
+    budget_lakh: float = Field(ge=0, le=1_000_000)
+    manual_budget: bool = False
+    breakdown: str = Field(max_length=500)
 
 
 class ActivityBudgetRequest(BaseModel):
@@ -564,8 +571,8 @@ def calculate(request: PlanRequest) -> dict[str, Any]:
 
 @app.post("/api/campaigns/activity-budget/calculate")
 def calculate_activity_budget(request: ActivityBudgetRequest) -> dict[str, Any]:
-    """Calculate editable campaign draft line budgets from planned units and unit costs (INR lakh)."""
-    line_budgets = [round(line.units * line.unit_cost_lakh, 2) for line in request.lines]
+    """Validate and total client-calculated campaign draft budgets (INR lakh)."""
+    line_budgets = [round(line.budget_lakh, 2) for line in request.lines]
     return {"line_budgets": line_budgets, "total_budget": round(sum(line_budgets), 2)}
 
 

@@ -27,7 +27,7 @@ const Pm1 = () => (
 const Pm2 = () => (
   <div className="iq-grid-2">
     <ChartCard icon={ClipboardCheck} title="How far along are territory submissions?" hint="Territories by status"><ColumnBars x="s" height={190} series={[{ key: 'n', name: 'Territories' }]} data={[{ s: 'Not started', n: 1 }, { s: 'Submitted', n: 1 }, { s: 'Returned', n: 1 }, { s: 'Endorsed', n: 1 }]} /></ChartCard>
-    <MapCard title="Which territories are pending?" label="Submission status map" height={230} view={jalna} markers={[{ id: 'v-ambad', info: 'Ambad · submitted, under review' }, { id: 'v-dhanora', color: '#d7a62f', info: 'Awaiting TM' }]} />
+    <MapCard title="Which territories are pending?" label="Submission status map" height={230} view={jalna} markers={[{ id: 'v-ambad', info: 'Ambad · submitted, under review' }, { id: 'v-dhanora', color: 'var(--accent-600)', info: 'Awaiting TM' }]} />
   </div>
 );
 

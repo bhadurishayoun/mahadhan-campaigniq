@@ -761,7 +761,7 @@ export function LiveOperations() {
             { key: 'mu_name', label: 'Market unit' },
             { key: 'status', label: 'Status', render: (row: MdoEvent) => <Pill tone="blue">{row.status}</Pill> },
           ]} />
-          <p className="note">Field reports (attendance, cost, GPS, photo hash, farmer contacts) post to <code>POST /api/events/&#123;id&#125;/report</code>; the proposed offline field app uses the same API.</p>
+          <p className="note">Field reports (attendance, cost, GPS, photo hash, farmer contacts) post to <code>POST /api/events/&var(--ink-900);id&var(--data-plan);/report</code>; the proposed offline field app uses the same API.</p>
         </Panel>
       </Grid>
 

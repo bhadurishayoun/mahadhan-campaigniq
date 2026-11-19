@@ -4,22 +4,25 @@
  */
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  CalendarRange, CheckCircle2, Eye, FlaskConical, Lock, MapPin, MessageSquare, Plus, Save, ShieldCheck, Trash2,
+  CalendarRange, CheckCircle2, Eye, FlaskConical, Lock, MapPin, MessageSquare, Plus, RotateCcw, Save, ShieldCheck, Trash2,
   Sprout, Store, Target, Users, Wallet, Smartphone, RefreshCw, Pencil,
 } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import { api } from '../api';
 import { Btn, cx } from '../ui';
 import { ColumnBars } from '../ui/index';
+import { useDraftEdits } from '../ui/useDraftEdits';
 import {
-  ACTIVITIES, APPROVED, CAMPAIGN, CAMPAIGN_RETAILERS, PORTFOLIO, PORTFOLIO_MONTHS, PRIORITIES, SELECTED_RETAILERS, type ActivityLine,
+  APPROVED, CAMPAIGN, CAMPAIGN_RETAILERS, PORTFOLIO, PORTFOLIO_MONTHS, PRIORITIES, SELECTED_RETAILERS,
 } from './data';
+import { calcLineBudget } from './costModel';
+import { calculateDraftLine, useCampaignDraft, type CampaignDraftLine } from './campaignDraft';
 import { APPROVAL_STEPS, setCampaignStage, stageLabel, useCampaignState } from './state';
 import { AiPanel, Context, Footer, Note, Panel, Status, Steps, TmPage, WIZARD, crore, lakh } from './ui';
 import { ApprovalPipeline, Donut, IconTiles, MAP_COLORS, Ring, StageTimeline, TmMap, VILLAGE_PLACE } from './viz';
 
 const VILLAGE_CHOICES = ['Dhanora', 'Wadi Gaon', 'Ambad HQ', 'Pimpalgaon', 'Other villages'];
-const MIX_COLORS = ['#2f8a3b', '#3972b8', '#d7a62f', '#8fb08a', '#c8553d'];
+const MIX_COLORS = ['var(--ok)', 'var(--info)', 'var(--accent-600)', 'var(--ink-400)', 'var(--risk)'];
 const ACTIVITY_ICONS = [Users, Store, Users, Smartphone, RefreshCw];
 const PLACES = ['Dhanora / Wadi Gaon', 'Dhanora', 'Wadi Gaon', '3 linked retailers', 'Retailer channel', 'Village meetings', 'Consent-based digital', 'Field follow-up'];
 const TIMINGS = ['Indicative crop-stage window', 'Pre-activation', 'Relevant crop-stage window', 'Follow-up support', 'Post-activity'];
@@ -204,35 +207,43 @@ export function Cw1() {
 /* ------------------------------------------------------------------ CW.2 */
 export function Cw2() {
   const { toast } = useNav();
-  const [lines, setLines] = useState<(ActivityLine & { unitCostLakh: number })[]>(() => ACTIVITIES.map((line) => ({ ...line, unitCostLakh: line.units ? line.budget / line.units : 0 })));
+  const { lines: savedLines, total: savedTotal, setLines: saveLines } = useCampaignDraft();
+  const { draft: lines, setDraft: setLines, hasChanges, discard } = useDraftEdits(savedLines);
+  const total = Math.round(lines.reduce((sum, line) => sum + line.budget, 0) * 100) / 100;
+  const changedCount = lines.filter((line, index) => JSON.stringify(line) !== JSON.stringify(savedLines[index])).length + Math.abs(lines.length - savedLines.length);
   const [backendBudgets, setBackendBudgets] = useState<{ signature: string; values: number[]; total: number } | null>(null);
+  const [flashingLine, setFlashingLine] = useState<number | null>(null);
   const activityInputs = useRef<(HTMLInputElement | null)[]>([]);
-  const lineBudgets = lines.map((line) => Math.round(line.units * line.unitCostLakh * 100) / 100);
-  const signature = JSON.stringify(lines.map((line) => [line.units, line.unitCostLakh]));
+  const flashTimeout = useRef<number | null>(null);
+  const signature = JSON.stringify(lines.map((line) => [line.activity, line.units, line.unitLabel, line.where, line.timing, line.owner, line.manualBudget ?? null, line.budget, line.breakdown]));
   const synced = backendBudgets?.signature === signature ? backendBudgets : null;
-  const displayedBudgets = synced?.values ?? lineBudgets;
-  const total = synced?.total ?? displayedBudgets.reduce((sum, value) => sum + value, 0);
+  const displayedBudgets = synced?.values ?? lines.map((line) => line.budget);
   const units = lines.reduce((sum, l) => sum + l.units, 0);
   useEffect(() => {
     let cancelled = false;
     const timer = window.setTimeout(() => {
       api<{ line_budgets: number[]; total_budget: number }>('/campaigns/activity-budget/calculate', {
-        method: 'POST', body: JSON.stringify({ lines: lines.map((line) => ({ units: line.units, unit_cost_lakh: line.unitCostLakh })) }),
+        method: 'POST', body: JSON.stringify({ lines: lines.map((line) => ({ activity: line.activity, units: line.units, unit_label: line.unitLabel, where: line.where, timing: line.timing, owner: line.owner, budget_lakh: line.budget, manual_budget: line.manualBudget !== undefined, breakdown: line.breakdown })) }),
       }).then((result) => { if (!cancelled) setBackendBudgets({ signature, values: result.line_budgets, total: result.total_budget }); })
         .catch(() => { if (!cancelled) setBackendBudgets(null); });
     }, 120);
     return () => { cancelled = true; window.clearTimeout(timer); };
   }, [signature]);
-  const update = (index: number, patch: Partial<ActivityLine & { unitCostLakh: number }>) => setLines((all) => all.map((l, i) => {
-    if (i !== index) return l;
-    const next = { ...l, ...patch };
-    if (Object.prototype.hasOwnProperty.call(patch, 'budget')) {
-      next.unitCostLakh = next.units > 0 ? Number(patch.budget) / next.units : 0;
-      next.budget = Math.round(next.units * next.unitCostLakh * 100) / 100;
-    } else next.budget = Math.round(next.units * next.unitCostLakh * 100) / 100;
-    return next;
-  }));
-  const addActivity = () => setLines((all) => [...all, { activity: 'New activity', units: 1, unitLabel: 'units', where: 'Select village / channel', timing: 'To schedule', owner: '', budget: 0, unitCostLakh: 0 }]);
+  const update = (index: number, patch: Partial<CampaignDraftLine>) => {
+    const nextLines = lines.map((line, i) => {
+      if (i !== index) return line;
+      const next = { ...line, ...patch };
+      const calculated = calcLineBudget(next);
+      return { ...next, budget: next.manualBudget ?? calculated.budget, breakdown: calculated.breakdown };
+    });
+    if (nextLines[index]?.budget !== lines[index]?.budget) {
+      setFlashingLine(index);
+      if (flashTimeout.current !== null) window.clearTimeout(flashTimeout.current);
+      flashTimeout.current = window.setTimeout(() => setFlashingLine(null), 300);
+    }
+    setLines(nextLines);
+  };
+  const addActivity = () => setLines([...lines, calculateDraftLine({ activity: 'New activity', units: 1, unitLabel: 'units', where: 'Select village / channel', timing: 'To schedule', owner: '', budget: 0 })]);
   const removeActivity = (index: number) => setLines((all) => all.filter((_, i) => i !== index));
   return (
     <TmPage crumbs={[{ label: 'My Campaigns', to: 'tm.c1' }, { label: CAMPAIGN.name, to: 'cw.1' }, { label: 'Campaign Wizard' }, { label: 'Activity & Budget Mix' }]}
@@ -253,12 +264,12 @@ export function Cw2() {
                 <thead><tr><th>Activity <em>*</em></th><th>Planned units <em>*</em></th><th>Village / channel <em>*</em></th><th>Tentative timing <em>*</em></th><th>Assigned owner <em>*</em></th><th className="r">Draft budget <em>*</em></th><th>Edit</th></tr></thead>
                 <tbody>{lines.map((line, index) => (
                   <tr key={index}>
-                    <td><div className="cw2-activity-cell"><span className="cw2-activity-icon" style={{ color: MIX_COLORS[index % MIX_COLORS.length] }}>{(() => { const Icon = ACTIVITY_ICONS[index % ACTIVITY_ICONS.length]; return <Icon size={16} />; })()}</span><input ref={(element) => { activityInputs.current[index] = element; }} value={line.activity} onChange={(e) => update(index, { activity: e.target.value })} aria-label={`Activity ${index + 1}`} /></div></td>
-                    <td><div className="cw2-units"><input type="number" min={0} value={line.units} onChange={(e) => update(index, { units: Number(e.target.value) })} aria-label={`Planned units ${index + 1}`} /><input value={line.unitLabel} onChange={(e) => update(index, { unitLabel: e.target.value })} aria-label={`Unit type ${index + 1}`} /></div></td>
-                    <td><input className="cw2-field" list="cw2-places" value={line.where} onChange={(e) => update(index, { where: e.target.value })} aria-label={`Village or channel ${index + 1}`} /></td>
-                    <td><input className="cw2-field" list="cw2-timings" value={line.timing} onChange={(e) => update(index, { timing: e.target.value })} aria-label={`Tentative timing ${index + 1}`} /></td>
-                    <td><input className="cw2-field" list="cw2-owners" value={line.owner} onChange={(e) => update(index, { owner: e.target.value })} placeholder="Select owner" aria-label={`Assigned owner ${index + 1}`} /></td>
-                    <td className="r"><label className="cw2-money"><span>₹</span><input type="number" min={0} step={0.05} value={displayedBudgets[index] ?? 0} onChange={(e) => update(index, { budget: Number(e.target.value) })} aria-label={`Draft budget ${index + 1}`} /><span>L</span></label></td>
+                    <td><div className="cw2-activity-cell"><span className="cw2-activity-icon" style={{ color: MIX_COLORS[index % MIX_COLORS.length] }}>{(() => { const Icon = ACTIVITY_ICONS[index % ACTIVITY_ICONS.length]; return <Icon size={16} />; })()}</span><input ref={(element) => { activityInputs.current[index] = element; }} value={line.activity} title={line.activity} onChange={(e) => update(index, { activity: e.target.value })} aria-label={`Activity ${index + 1}`} /></div></td>
+                    <td><div className="cw2-units"><input type="number" min={0} value={line.units} onChange={(e) => update(index, { units: Number(e.target.value) })} aria-label={`Planned units ${index + 1}`} /><input value={line.unitLabel} title={line.unitLabel} onChange={(e) => update(index, { unitLabel: e.target.value })} aria-label={`Unit type ${index + 1}`} /></div></td>
+                    <td><input className="cw2-field" list="cw2-places" value={line.where} title={line.where} onChange={(e) => update(index, { where: e.target.value })} aria-label={`Village or channel ${index + 1}`} /></td>
+                    <td><input className="cw2-field" list="cw2-timings" value={line.timing} title={line.timing} onChange={(e) => update(index, { timing: e.target.value })} aria-label={`Tentative timing ${index + 1}`} /></td>
+                    <td><input className="cw2-field" list="cw2-owners" value={line.owner} title={line.owner} onChange={(e) => update(index, { owner: e.target.value })} placeholder="Select owner" aria-label={`Assigned owner ${index + 1}`} /></td>
+                    <td className={`r cw2-budget-cell ${flashingLine === index ? 'cw2-budget-flash' : ''}`} title={line.breakdown}><label className="cw2-money"><span>₹</span><input type="number" min={0} step={0.05} value={line.manualBudget ?? displayedBudgets[index] ?? 0} onChange={(e) => update(index, { manualBudget: Number(e.target.value) })} aria-label={`Draft budget ${index + 1}`} /><span>L</span></label>{line.manualBudget !== undefined && <span className="cw2-manual-budget"><span>🔒 Manual</span><button type="button" title="Reset calculated budget" aria-label={`Reset budget for ${line.activity}`} onClick={() => update(index, { manualBudget: undefined })}><RotateCcw size={12} /></button></span>}</td>
                     <td><div className="cw2-row-actions"><button type="button" aria-label={`Focus ${line.activity} name`} title="Edit activity name" onClick={() => activityInputs.current[index]?.focus()}><Pencil size={13} /></button><button type="button" className="cw2-delete" aria-label={`Remove ${line.activity}`} title="Remove activity" onClick={() => removeActivity(index)}><Trash2 size={14} /></button></div></td>
                   </tr>
                 ))}</tbody>
@@ -290,6 +301,7 @@ export function Cw2() {
           </AiPanel>
         </aside>
       </div>
+      {hasChanges && <div className="draft-change-bar" role="status"><span>{changedCount} unsaved {changedCount === 1 ? 'change' : 'changes'} · Total {lakh(savedTotal, 2)} → {lakh(total, 2)}</span><div><Btn onClick={discard}>Discard</Btn><Btn variant="primary" onClick={() => { saveLines(lines); toast(`Budget updated to ${lakh(total, 2)}.`); }}>Confirm changes</Btn></div></div>}
       <Footer back={{ label: 'Back to CW.1 (Objective & Targeting)', to: 'cw.1' }}
         secondary={<Btn icon={<Save size={13} />} onClick={() => toast('Activity plan saved as draft.')}>Save Draft</Btn>}
         primary={{ label: 'Scenario & Expected Outcomes', to: 'cw.3' }} />
@@ -306,18 +318,18 @@ const SCENARIOS = [
 
 export function Cw3() {
   const { toast } = useNav();
+  const { total: cost } = useCampaignDraft();
   const [selected, setSelected] = useState('Base Case');
   const [realisation, setRealisation] = useState(100);
   const [margin, setMargin] = useState(35);
   const [reachPct, setReachPct] = useState(25);
   const [adoptPct, setAdoptPct] = useState(45);
   const [editing, setEditing] = useState(false);
-  const cost = 3.0;
   const rows = useMemo(() => SCENARIOS.map((s) => {
     const sales = (s.mt * 1000 * realisation) / 1e5; // lakh
     const contribution = sales * (margin / 100);
-    return { ...s, sales, contribution, roi: (contribution - cost) / cost };
-  }), [realisation, margin]);
+    return { ...s, sales, contribution, roi: cost > 0 ? (contribution - cost) / cost : 0 };
+  }), [realisation, margin, cost]);
   const base = rows.find((r) => r.name === selected)!;
   const reached = 640;
   const trials = Math.round(reached * (reachPct / 100));
@@ -329,7 +341,7 @@ export function Cw3() {
       <Steps steps={WIZARD} active={2} onStep />
       <Context items={[
         { label: 'Campaign', value: CAMPAIGN.name, sub: CAMPAIGN.villages },
-        { label: 'Draft campaign budget', value: '₹3.00 L' },
+        { label: 'Draft campaign budget', value: lakh(cost, 2) },
         { label: 'Plan-linked objective', value: '₹25 L', sub: 'Already included in approved ABP ₹4.20 Cr' },
       ]} />
       <Panel title="Scenario simulator" actions={<>
@@ -340,7 +352,7 @@ export function Cw3() {
           <div className="tm-assumptions">
             <label>Average realisation <span>₹<input type="number" value={realisation} onChange={(e) => setRealisation(Number(e.target.value))} />/kg</span></label>
             <label>Contribution margin <span><input type="number" value={margin} onChange={(e) => setMargin(Number(e.target.value))} />%</span></label>
-            <label>Campaign cost <span>₹{cost.toFixed(2)} L (from CW.2)</span></label>
+            <label>Campaign cost <span>{lakh(cost, 2)} (from CW.2)</span></label>
           </div>
         )}
         <div className="tm-scenarios">
@@ -417,12 +429,14 @@ const READINESS: Readiness[] = [
 
 export function Cw4() {
   const { toast, go } = useNav();
+  const { lines, total } = useCampaignDraft();
   const { stage } = useCampaignState();
   const submitted = stage >= 1;
   // Once submitted, the mandatory items were necessarily resolved (submission is blocked otherwise).
   const [items, setItems] = useState(() => (submitted ? READINESS.map((i) => (i.mandatory ? { ...i, resolved: true } : i)) : READINESS));
   const blockers = items.filter((i) => i.mandatory && !i.resolved);
   const resolvedCount = items.filter((i) => i.resolved).length;
+  const netRoi = total > 0 ? (4.2 - total) / total : 0;
   const resolve = () => {
     setItems((all) => all.map((i) => (i.mandatory ? { ...i, resolved: true } : i)));
     toast('Mandatory items resolved: CRM eligibility and consent validated. Non-critical items stay open as submission conditions.');
@@ -441,10 +455,10 @@ export function Cw4() {
             <div><dt>Audience</dt><dd><Status>{items[4].resolved ? 'Validated' : 'Validation pending'}</Status></dd></div>
           </dl>
           <div className="tm-brief-nums">
-            <div><span>Draft campaign budget</span><b>₹3.00 L</b></div>
+            <div><span>Draft campaign budget</span><b>{lakh(total, 2)}</b></div>
             <div><span>Base forecast incremental sales</span><b>₹12 L</b><small>12 MT at assumed ₹100/kg</small></div>
             <div><span>Contribution (35% margin)</span><b>₹4.2 L</b></div>
-            <div><span>Net ROI</span><b>+0.40×</b><small>(₹4.2 L − ₹3.0 L) ÷ ₹3.0 L</small></div>
+            <div><span>Net ROI</span><b>{netRoi >= 0 ? '+' : ''}{netRoi.toFixed(2)}×</b><small>(₹4.2 L − {lakh(total, 2)}) ÷ {lakh(total, 2)}</small></div>
           </div>
         </div>
         <div className="tm-objective-bar" aria-label="Objective coverage">
@@ -455,7 +469,7 @@ export function Cw4() {
       </Panel>
       <div className="tm-viz-row">
         <Panel title="Activity & budget summary">
-          <Donut center="₹3.00 L" sub="13 activities" size={130} segments={ACTIVITIES.map((a, i) => ({ label: `${a.activity} · ${a.units} ${a.unitLabel}`, value: a.budget, color: MIX_COLORS[i] }))} />
+          <Donut center={lakh(total, 2)} sub={`${lines.length} activities`} size={130} segments={lines.map((line, i) => ({ label: `${line.activity} · ${line.units} ${line.unitLabel}`, value: line.budget, color: MIX_COLORS[i % MIX_COLORS.length] }))} />
         </Panel>
         <Panel title="Readiness checklist" tone={blockers.length ? 'warn' : undefined}>
           <div className="tm-ready-head">
@@ -500,6 +514,7 @@ const COMMENTS = [
 
 export function TmC2() {
   const { toast } = useNav();
+  const { total } = useCampaignDraft();
   const { stage } = useCampaignState();
   const submitted = stage >= 1;
   const approved = stage >= 3;
@@ -515,7 +530,7 @@ export function TmC2() {
       <IconTiles items={[
         { icon: CheckCircle2, value: `${Math.max(stage, 0)} / 3`, label: 'Approval steps complete', note: 'Business Head step not required', tone: approved ? 'green' : 'amber' },
         { icon: CalendarRange, value: `${daysOpen} day${daysOpen === 1 ? '' : 's'}`, label: 'Time in approval', note: 'SLA: 5 working days end to end' },
-        { icon: Wallet, value: '₹3.00 L', label: approved ? 'Approved budget' : 'Requested budget', note: 'Below ₹5 L Business Head threshold', tone: 'blue' },
+        { icon: Wallet, value: lakh(total, 2), label: approved ? 'Approved budget' : 'Requested budget', note: total < 5 ? 'Below ₹5 L Business Head threshold' : 'Business Head threshold reached', tone: 'blue' },
         { icon: Lock, value: approved ? 'Unlocked' : 'Locked', label: 'Launch authorisation', note: approved ? 'Ready for execution' : 'Until Marketing Head approves', tone: approved ? 'green' : 'grey' },
       ]} />
       <Panel title="Approval pipeline" actions={submitted && !approved
@@ -621,7 +636,7 @@ export function TmC3() {
               onSelect: list[0] ? () => setSelected(list[0].name) : undefined,
             };
           })}
-          markerLegend={[{ label: 'Onion', color: '#2f8a3b' }, { label: 'Maize', color: '#d7a62f' }, { label: 'Retailer programme', color: '#9aa79c' }]} />
+          markerLegend={[{ label: 'Onion', color: 'var(--ok)' }, { label: 'Maize', color: 'var(--accent-600)' }, { label: 'Retailer programme', color: 'var(--ink-400)' }]} />
       </div>
       <Panel title="Season timeline">
         <div className="wide-scroll">

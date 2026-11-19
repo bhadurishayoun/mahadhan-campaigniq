@@ -8,16 +8,18 @@ import { CAMPAIGN, GANTT, IMPACT_VILLAGES, conversion, type GanttUnit } from './
 import { AiPanel, Context, Footer, HBars, Metrics, Note, Panel, Status, TmPage, lakh } from './ui';
 import { MAP_COLORS, TmMap } from './viz';
 import { LiveCopilot } from '../ui/LiveCopilot';
+import { useCampaignDraft } from './campaignDraft';
 
 const allUnits = GANTT.flatMap((row) => row.units);
 const count = (state: GanttUnit['state']) => allUnits.filter((u) => u.state === state).length;
 
 function CampaignStrip({ extra }: { extra?: { label: string; value: string; sub?: string }[] }) {
+  const { total } = useCampaignDraft();
   return (
     <Context items={[
       { label: 'Campaign', value: CAMPAIGN.name, sub: CAMPAIGN.villages },
       { label: 'Status', value: 'Approved · In progress' },
-      { label: 'Approved campaign budget', value: '₹3.00 L' },
+      { label: 'Approved campaign budget', value: lakh(total, 2) },
       { label: 'Plan-linked objective', value: '₹25 L', sub: 'Within approved Ambad ABP ₹4.20 Cr — not additional business' },
       ...(extra ?? []),
     ]} />
@@ -343,7 +345,7 @@ const TM_FACTS = [
   'Outlet plan: 8 dealers Rs 320 L last year -> Rs 380 L proposed (+18.8%) vs ABP Rs 420 L; gap Rs 40 L (90.5% allocated). Dhanora Agro Inputs 48->55 L, Ambad Crop Depot 36->43, Shiv Krushi Kendra 42->50 (flagged for potential review), Mahalaxmi Agro 45->53, other 4 dealers 149->179.',
   'Onion village plan Rs 165 L: Dhanora Rs 12 L / 15 MT (last year Rs 10 L / 10 MT, 500 -> 750 acres at 20 kg/acre; realisation Rs 100 -> 80/kg, -20%), Wadi Gaon 28, Ambad HQ 42, Pimpalgaon 23, other villages 60 (history unverified).',
   'Crop plan: Onion 1.65 Cr, Maize 1.10 Cr, Other 1.05 Cr = 3.80 Cr. Approved plan v3: Onion 1.90 (+25 L), Maize 1.25 (+15 L), Other 1.05 = 4.20 Cr.',
-  'Campaign Ambad Onion Croptek Conversion (Dhanora, Wadi Gaon, 3 retailers): budget Rs 3.00 L = field demos 4 units 1.05 L, retailer activation 3 sessions 0.75 L, farmer meetings 3 0.60 L, digital advisory 1 wave 0.30 L, follow-ups 2 rounds 0.30 L. Linked objective Rs 25 L (inside ABP). Scenarios: conservative Rs 8 L sales / ROI -0.07x, base Rs 12 L / +0.40x, optimistic Rs 16 L / +0.87x (Rs 100/kg, 35% margin). Base covers 48% of the objective; Rs 13 L must come from other interventions. Approval: content review then Marketing Head (Business Head only above Rs 5 L).',
+  'Campaign Ambad Onion Croptek Conversion (Dhanora, Wadi Gaon, 3 retailers): the current activity budget is supplied from the editable CW.2 draft. Linked objective Rs 25 L (inside ABP). Forecasts use Rs 100/kg and 35% contribution margin. Approval routes to Business Head when the live draft reaches Rs 5 L.',
   'Execution: 13 activities = 3 completed, 8 scheduled, 2 at risk: Dhanora field demonstration week 2 (stock confirmation pending, owner R. Jadhav) and Wadi Gaon farmer meeting week 2 (field confirmation pending).',
   'Impact checkpoint: reached 640, trials 160, adopters 72 (reach->trial 25%, trial->adoption 45%). Dhanora 280/62/24 = 38.7%, Rs 2.0 L tracked; Wadi Gaon 360/98/48 = 49.0%, Rs 3.4 L tracked. Gap 10.3 pp. Tracked sales Rs 5.4 L vs Rs 12 L base forecast (provisional, not verified incremental). Activities 9 of 13 completed at this checkpoint.',
   'Verified issues: Dhanora demo stock pending; Wadi Gaon meeting field confirmation pending. Unverified hypotheses: follow-up quality, retailer advocacy, contact quality. Actual ROI not yet attributable.',
@@ -359,6 +361,8 @@ const TM_SUGGESTIONS = [
 ];
 
 export function TmAi1() {
+  const { lines, total } = useCampaignDraft();
+  const pageContext = [...TM_FACTS, `Live CW.2 campaign budget: Rs ${total.toFixed(2)} L across ${lines.length} editable activities.`].join('\n');
   return (
     <TmPage crumbs={[{ label: 'AI Copilot' }, { label: CAMPAIGN.name }, { label: 'Campaign Diagnostics' }]}
       code="TM.AI1" title="AI Copilot" status="Live AI · evidence-linked · causation not yet verified">
@@ -387,7 +391,7 @@ export function TmAi1() {
               </div>
             </div>
           </div>
-          <LiveCopilot persona="Field Sales Manager" screen="tm.ai1" pageContext={TM_FACTS} suggestions={TM_SUGGESTIONS}
+          <LiveCopilot persona="Field Sales Manager" screen="tm.ai1" pageContext={pageContext} suggestions={TM_SUGGESTIONS}
             intro="Ask a follow-up about your plan, campaigns, execution or impact. The live model answers from the Field Sales Manager figures in this tool." />
         </section>
         <aside className="tm-copilot-right">

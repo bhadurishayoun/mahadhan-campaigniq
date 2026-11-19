@@ -139,15 +139,15 @@ export function CountUp({ value, duration = 900 }: { value: ReactNode; duration?
 export type Tone = 'green' | 'lime' | 'amber' | 'red' | 'blue' | 'grey' | 'dark' | 'purple';
 
 export const COLORS = {
-  dark: '#1f5f2c',
+  dark: 'var(--brand-700)',
   green: STATUS.ok,
-  mid: '#5fae4c',
-  light: '#9fd27f',
-  pale: '#d8edc9',
-  yellow: '#e8c13a',
-  amber: '#f0a830',
+  mid: 'var(--segment-growing)',
+  light: 'var(--data-baseline)',
+  pale: 'var(--line)',
+  yellow: 'var(--accent-600)',
+  amber: 'var(--accent-600)',
   red: STATUS.risk,
-  grey: '#c9cfc6',
+  grey: 'var(--data-baseline)',
   blue: STATUS.info,
 };
 
@@ -519,7 +519,7 @@ export function Donut({ segments, center, sub, size = 150, thickness = 28, showP
   );
 }
 
-const FUNNEL_COLORS = ['#1f6b2e', '#2f8a3b', '#4c9f43', '#76b84f', '#c9b52f', '#e8c13a', '#f0d36b'];
+const FUNNEL_COLORS = ['var(--brand-700)', 'var(--ok)', 'var(--crop-soybean)', 'var(--segment-growing)', 'var(--accent-600)', 'var(--accent-600)', 'var(--data-baseline)'];
 
 export function Funnel({ stages, showConversion = true }: {
   stages: { label: ReactNode; value: ReactNode; pct?: ReactNode; sub?: ReactNode }[];

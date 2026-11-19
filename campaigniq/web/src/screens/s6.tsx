@@ -780,7 +780,7 @@ export function ActivityWorkspace() {
             <Panel className="ai-panel" icon={<Sparkles size={16} />} title="AI Recommended Action" actions={<button type="button" className="s6-close" aria-label="Close" onClick={() => setAiOpen(false)}><X size={14} /></button>}>
               <div className="s6-rail-block" style={{ borderTop: 0, marginTop: 0, paddingTop: 0 }}>
                 <h4><Target size={13} color="var(--green)" />Recommended Action</h4>
-                <p>Reschedule the Dhanora demonstration to <b>26 Jan 2027</b> after stock receipt confirmation, notify affected farmers, and coordinate <span style={{ color: '#8a5b00' }}>retailer support for on-ground execution.</span></p>
+                <p>Reschedule the Dhanora demonstration to <b>26 Jan 2027</b> after stock receipt confirmation, notify affected farmers, and coordinate <span style={{ color: 'var(--accent-600)' }}>retailer support for on-ground execution.</span></p>
               </div>
               <div className="s6-rail-block">
                 <h4><BarChart3 size={13} color="var(--green)" />Rationale</h4>
