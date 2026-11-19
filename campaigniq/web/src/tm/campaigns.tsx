@@ -13,7 +13,7 @@ import { useNav, type ScreenId } from '../nav';
 import { api } from '../api';
 import { Btn, cx } from '../ui';
 import { ColumnBars } from '../ui/index';
-import { DonutMetric } from '../ui/viz';
+import { DonutMetric, GroupedColumns } from '../ui/viz';
 import { useDraftEdits } from '../ui/useDraftEdits';
 import {
   APPROVED, CAMPAIGN, CAMPAIGN_RETAILERS, PORTFOLIO, PORTFOLIO_MONTHS, PRIORITIES, SELECTED_RETAILERS,
@@ -23,6 +23,7 @@ import {
 import { calcLineBudget } from './costModel';
 import { CAMPAIGN_DRAFT_KEY, calculateDraftLine, useCampaignDraft, type CampaignDraftLine } from './campaignDraft';
 import { Card, StatusPill } from '../ui/system';
+import { chartTheme } from '../chartTheme';
 import { APPROVAL_STEPS, setCampaignStage, stageLabel, useCampaignState } from './state';
 import { AiPanel, Context, Footer, Note, Panel, Status, Steps, TmPage, WIZARD, crore, lakh } from './ui';
 import { ApprovalPipeline, Donut, IconTiles, MAP_COLORS, Ring, StageTimeline, TmMap, VILLAGE_PLACE } from './viz';
@@ -70,10 +71,11 @@ export function TmC1() {
   const c1Recommendation = priority.upliftL > 0
     ? `Prioritise the ${priority.title.replace(' — ', ' ')}: it carries ${upliftShare}% of the plan-linked uplift and its ${villageCount} villages hold ${retailerShare}% of linked retailers.`
     : `${priority.title} supports the existing plan rather than adding uplift; use it to strengthen advocacy across all ${TOTAL_RETAILERS} linked retailers.`;
-  const c1Evidence = [
-    { label: `Share of plan-linked uplift (₹${planLinkedUplift.toFixed(2)} L)`, value: priority.upliftL > 0 ? `₹${priority.upliftL.toFixed(2)} L · ${upliftShare}%` : 'Supports plan', ratio: upliftShare / 100 },
-    { label: 'Linked retailers in focus villages', value: `${retailers} of ${TOTAL_RETAILERS}`, ratio: retailers / TOTAL_RETAILERS },
-    { label: 'Last-year campaign ROI (FY 2024–25)', value: `${lastYearRoi.toFixed(2)}×`, ratio: lastYearRoi / 2.4 },
+  // Card 4 chart: how the growth priorities compare (computed shares, %).
+  const compareSeries = PRIORITIES.map((p) => ({ key: p.id, name: p.short, color: chartTheme.priority[p.id] }));
+  const compareRows = [
+    { x: 'Share of plan-linked uplift', ...Object.fromEntries(PRIORITIES.map((p) => [p.id, planLinkedUplift ? Math.round((p.upliftL / planLinkedUplift) * 100) : 0])) },
+    { x: 'Share of linked retailers', ...Object.fromEntries(PRIORITIES.map((p) => [p.id, Math.round((linkedRetailers(p) / TOTAL_RETAILERS) * 100)])) },
   ];
   const wizardOpen = selected === 'onion';
   const draftSaved = (() => { try { return Boolean(localStorage.getItem(CAMPAIGN_DRAFT_KEY)); } catch { return false; } })();
@@ -138,7 +140,7 @@ export function TmC1() {
         </Panel>
       </div>
       <div className="tm-map-row">
-        <TmMap title="Priority geography" label="Villages targeted by the selected business priority" height={280}
+        <TmMap title="Priority geography" label="Villages targeted by the selected business priority" height={420}
           selected={VILLAGE_PLACE[focusVillages[selected][0]]}
           markers={VILLAGE_CHOICES.map((v) => ({
             id: VILLAGE_PLACE[v], label: v,
@@ -150,11 +152,13 @@ export function TmC1() {
           <Card title="AI planning insight" context={priority.title} subtitle="Why this priority, and what to confirm before drafting"
             action={<StatusPill tone={priority.upliftL > 0 ? 'warn' : 'neutral'}>{priority.upliftL > 0 ? 'Moderate confidence' : 'Supporting priority'}</StatusPill>}>
             <p className="tm-c1-reco"><Sparkles size={16} aria-hidden="true" /><b>{c1Recommendation}</b></p>
-            <ul className="tm-c1-evidence">
-              {c1Evidence.map((e) => (
-                <li key={e.label}><span>{e.label}</span><i aria-hidden="true"><b style={{ width: `${Math.min(1, e.ratio) * 100}%` }} /></i><strong>{e.value}</strong></li>
-              ))}
-            </ul>
+            <div className="tm-c1-compare">
+              <small className="tm-c1-compare-title">How the growth priorities compare</small>
+              <GroupedColumns data={compareRows} x="x" series={compareSeries} fmt={(v) => `${v}%`} height={210} barSize={44}
+                yDomain={[0, 100]} yTicks={[0, 25, 50, 75, 100]} valueLabels highlightKey={selected} onSelect={setSelected}
+                tooltipText={(st, xLabel, v) => `${st.name}: ${v}% of ${xLabel.replace(/^Share of /, '')}`} />
+              <p className="tm-c1-bench">Benchmark for all priorities: last-year campaign ROI <b>{lastYearRoi.toFixed(2)}×</b> (FY 2024–25), used in the CW.3 forecast.</p>
+            </div>
             <div className="tm-c1-confirm"><small>Confirm in the wizard</small><div>{['Reach', 'Budget', 'Expected contribution'].map((x) => <span key={x}>{x} · To confirm</span>)}</div></div>
           </Card>
           <Card title="Campaign wizard" context={priority.title} subtitle="Four steps to a submitted campaign; values carry over from the approved plan"

@@ -103,11 +103,11 @@ export const CROP_PLAN = [
 export const APPROVED = { abp: 4.2, growth: 1.0, onion: 1.9, maize: 1.25, other: 1.05 };
 
 export const PRIORITIES = [
-  { id: 'onion', title: 'Onion — Croptek conversion', sub: 'Convert Non Saarthi nutrition users', geo: 'Dhanora · Wadi Gaon', uplift: '₹25.00 L', upliftL: 25, villages: ['Dhanora', 'Wadi Gaon'],
+  { id: 'onion', short: 'Onion Croptek', title: 'Onion — Croptek conversion', sub: 'Convert Non Saarthi nutrition users', geo: 'Dhanora · Wadi Gaon', uplift: '₹25.00 L', upliftL: 25, villages: ['Dhanora', 'Wadi Gaon'],
     audience: 'Non Saarthi nutrition users', approach: 'Retailer-led + field demos', coverage: 'Dhanora & Wadi Gaon' },
-  { id: 'maize', title: 'Maize — Portfolio expansion', sub: 'Expand coverage at existing outlets', geo: 'Ambad HQ · Pimpalgaon', uplift: '₹15.00 L', upliftL: 15, villages: ['Ambad HQ', 'Pimpalgaon'],
+  { id: 'maize', short: 'Maize expansion', title: 'Maize — Portfolio expansion', sub: 'Expand coverage at existing outlets', geo: 'Ambad HQ · Pimpalgaon', uplift: '₹15.00 L', upliftL: 15, villages: ['Ambad HQ', 'Pimpalgaon'],
     audience: 'Existing maize growers at linked outlets', approach: 'Outlet activation + farmer meetings', coverage: 'Ambad HQ & Pimpalgaon' },
-  { id: 'retail', title: 'Retailer engagement', sub: 'Improve channel advocacy and reach', geo: 'Across Ambad', uplift: 'Supports existing plan', upliftL: 0, villages: VILLAGES.map((v) => v.name),
+  { id: 'retail', short: 'Retailer engagement', title: 'Retailer engagement', sub: 'Improve channel advocacy and reach', geo: 'Across Ambad', uplift: 'Supports existing plan', upliftL: 0, villages: VILLAGES.map((v) => v.name),
     audience: 'Linked retailers (74)', approach: 'Retailer education programme', coverage: 'All Ambad villages' },
 ];
 

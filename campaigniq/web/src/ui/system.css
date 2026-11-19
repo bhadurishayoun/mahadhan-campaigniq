@@ -341,3 +341,14 @@
 .cq-funnel-stage b { font-size: 22px; line-height: 26px; font-weight: 700; color: var(--surface); }
 .cq-funnel-stage small { font-size: 12px; line-height: 16px; color: var(--surface); }
 .cq-funnel-conv { margin: 2px 0; font-size: 12px; line-height: 16px; color: var(--ink-600); }
+
+/* ---------- GroupedColumns: selectable legend, value labels, highlight fade */
+.cq-col-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.cq-col-legend button { display: inline-flex; align-items: center; gap: 6px; padding: 2px 0; border: 0; background: none; font-size: 12px; font-weight: 600; color: var(--ink-900); cursor: pointer; transition: opacity 150ms ease; }
+.cq-col-legend button:disabled { cursor: default; }
+.cq-col-legend button.dim { opacity: .55; }
+.cq-col-legend i { display: inline-block; width: 10px; height: 10px; }
+.cq-col-label { font-size: 12px; font-weight: 700; fill: var(--ink-900); }
+.cq-chart-select .cq-col-bar { cursor: pointer; }
+.cq-col-bar path { transition: fill-opacity 150ms ease; }
+.cq-col-tip { padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); box-shadow: var(--sh-1); font-size: 12px; color: var(--ink-900); }

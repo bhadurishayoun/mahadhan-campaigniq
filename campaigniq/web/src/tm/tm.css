@@ -546,11 +546,6 @@
 /* TM.C1 cards 4–5: AI planning insight + campaign wizard (driven by the selected growth priority). */
 .tm-c1-reco { display: flex; gap: 8px; align-items: flex-start; margin: 0; font-size: 14px; line-height: 20px; color: var(--ink-900); }
 .tm-c1-reco svg { flex-shrink: 0; margin-top: 2px; color: var(--brand-500); }
-.tm-c1-evidence { display: grid; gap: 10px; list-style: none; margin: 0; padding: 0; }
-.tm-c1-evidence li { display: grid; grid-template-columns: minmax(0, 1fr) 120px auto; gap: 12px; align-items: center; font-size: 13px; color: var(--ink-600); }
-.tm-c1-evidence i { display: block; height: 8px; border-radius: 4px; background: var(--brand-100); overflow: hidden; }
-.tm-c1-evidence i b { display: block; height: 100%; background: var(--brand-700); }
-.tm-c1-evidence strong { font-size: 13px; color: var(--ink-900); text-align: right; white-space: nowrap; min-width: 96px; }
 .tm-c1-confirm { display: grid; gap: 6px; margin-top: auto; }
 .tm-c1-confirm small { font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-600); }
 .tm-c1-confirm div { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -610,3 +605,8 @@
 .tm-im1-rate i b { display: block; height: 100%; background: var(--brand-700); }
 /* TM.IM1 only: the 6-village table needs the full width (no horizontal scroll); the map follows on its own row. */
 .app .persona-page-tm[data-screen="TM.IM1"] .tm-map-row { grid-template-columns: minmax(0, 1fr) !important; }
+/* TM.C1 card 4: priority comparison chart fills the card; chips stay at the bottom. */
+.tm-c1-compare { display: flex; flex-direction: column; gap: 8px; flex: 1 1 auto; min-height: 210px; }
+.tm-c1-compare-title { font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-600); }
+.tm-c1-bench { margin: 0; font-size: 12px; line-height: 16px; color: var(--ink-600); }
+.tm-c1-bench b { color: var(--ink-900); }

@@ -47,4 +47,6 @@ export const chartTheme = {
   base: 'var(--data-baseline)',
   /** Soft fill for the gap between a plan line and an actual line. */
   gapFill: 'var(--risk-bg)',
+  /** Fixed colours for the TM.C1 growth priorities. */
+  priority: { onion: 'var(--brand-700)', maize: 'var(--data-plan)', retail: 'var(--data-baseline)' } as Record<string, string>,
 } as const;

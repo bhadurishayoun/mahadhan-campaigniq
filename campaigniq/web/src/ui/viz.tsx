@@ -56,18 +56,47 @@ function rankedInsight(items: RankedItem[], fmt: Fmt, share: boolean) {
 }
 
 /* ---------------------------------------------------------------- GroupedColumns / TrendLine */
-export function GroupedColumns({ data, x, series, fmt = plain, height = 240, insight }: { data: Record<string, string | number>[]; x: string; series: VizSeries[]; fmt?: Fmt; height?: number; insight?: boolean | ReactNode }) {
+/**
+ * Grouped columns. Optional: `highlightKey` keeps one series at full opacity (others 30%, legend 55%); `onSelect` makes
+ * columns and legend items select a series; `valueLabels` prints values above columns; `yDomain`/`yTicks` fix the axis;
+ * `tooltipText` gives a one-line tooltip for the hovered column.
+ */
+export function GroupedColumns({ data, x, series, fmt = plain, height = 240, insight, highlightKey, onSelect, valueLabels, yDomain, yTicks, barSize, tooltipText }: {
+  data: Record<string, string | number>[]; x: string; series: VizSeries[]; fmt?: Fmt; height?: number; insight?: boolean | ReactNode;
+  highlightKey?: string; onSelect?: (key: string) => void; valueLabels?: boolean; yDomain?: [number, number]; yTicks?: number[]; barSize?: number;
+  tooltipText?: (s: VizSeries, xLabel: string, value: number) => string;
+}) {
+  const dim = (key: string) => highlightKey !== undefined && key !== highlightKey;
+  const custom = Boolean(highlightKey !== undefined || onSelect);
   return (
     <>
-    <div className="cq-chart cq-chart-fill" style={{ minHeight: height }}>
+    {custom && series.length > 1 && (
+      <div className="cq-col-legend" role={onSelect ? 'group' : undefined}>
+        {series.map((s, i) => (
+          <button key={s.key} type="button" className={dim(s.key) ? 'dim' : undefined} disabled={!onSelect} aria-pressed={highlightKey === s.key} onClick={() => onSelect?.(s.key)}>
+            <i style={{ background: colorAt(s, i) }} />{s.name}
+          </button>
+        ))}
+      </div>
+    )}
+    <div className={`cq-chart cq-chart-fill${onSelect ? ' cq-chart-select' : ''}`} style={{ minHeight: height }}>
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={chartTheme.margin} barGap={2}>
+        <BarChart data={data} margin={{ ...chartTheme.margin, top: valueLabels ? 20 : chartTheme.margin.top }} barGap={4}>
           <CartesianGrid {...chartTheme.grid} />
           <XAxis dataKey={x} {...chartTheme.axis} />
-          <YAxis {...chartTheme.axis} tickFormatter={fmt} width={56} />
-          <Tooltip {...chartTheme.tooltip} formatter={(v: number) => fmt(v)} />
-          {series.length > 1 && <Legend {...chartTheme.legend} />}
-          {series.map((s, i) => <Bar key={s.key} dataKey={s.key} name={s.name} fill={colorAt(s, i)} barSize={chartTheme.barSize} radius={chartTheme.radius} isAnimationActive={false} />)}
+          <YAxis {...chartTheme.axis} tickFormatter={fmt} width={48} domain={yDomain} ticks={yTicks} />
+          <Tooltip {...chartTheme.tooltip} shared={!tooltipText} formatter={(v: number) => fmt(v)}
+            content={tooltipText ? ({ active, payload, label }: { active?: boolean; payload?: { dataKey?: string | number; value?: number }[]; label?: string | number }) => {
+              const p = active && payload?.[0]; const s = p && series.find((x) => x.key === p.dataKey);
+              return p && s ? <div className="cq-col-tip">{tooltipText(s, String(label), Number(p.value))}</div> : null;
+            } : undefined} />
+          {!custom && series.length > 1 && <Legend {...chartTheme.legend} />}
+          {series.map((s, i) => (
+            <Bar key={s.key} dataKey={s.key} name={s.name} fill={colorAt(s, i)} fillOpacity={dim(s.key) ? 0.3 : 1} barSize={barSize ?? chartTheme.barSize} radius={chartTheme.radius}
+              isAnimationActive={false} onClick={onSelect ? () => onSelect(s.key) : undefined} className="cq-col-bar">
+              {valueLabels && <LabelList dataKey={s.key} position="top" formatter={(v: number) => fmt(v)} className="cq-col-label" fillOpacity={dim(s.key) ? 0.55 : 1} />}
+            </Bar>
+          ))}
         </BarChart>
       </ResponsiveContainer>
     </div>
