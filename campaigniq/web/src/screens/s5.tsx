@@ -228,7 +228,7 @@ export function DemandProjection() {
               <strong>Net ROI =</strong>
               <span style={{ textAlign: 'center' }}>Incremental Contribution − Campaign Spend<hr style={{ margin: '3px 0' }} />Campaign Spend</span>
               <span>=</span>
-              <span style={{ textAlign: 'center' }}>₹13.7 L − ₹8.0 L<hr style={{ margin: '3px 0' }} />₹8.0 L</span>
+              <span style={{ textAlign: 'center' }}>₹13.70 L − ₹8.00 L<hr style={{ margin: '3px 0' }} />₹8.00 L</span>
               <span>=</span>
               <strong style={{ color: COLORS.dark }}>0.71×</strong>
             </div>
@@ -555,7 +555,7 @@ export function StockReadiness() {
         <Panel title={<>Exposed Business Impact <span className="muted small"></span></>} icon={<Coins size={15} />}>
           <div className="s5-impact">
             <Users size={28} color={COLORS.green} />
-            <div><span className="small muted">Expected Adopters at Risk</span><strong>~378 farmers</strong><span className="small muted">(≈ 43 MT gap ÷ 0.114 MT/farmer)</span></div>
+            <div><span className="small muted">Expected Adopters at Risk</span><strong>~378 farmers</strong><span className="small muted">(≈ 43 MT gap ÷ 114 kg per farmer)</span></div>
             <div className="s5-impact-pct">−21%<small>of 1,832 target</small></div>
           </div>
           <div className="s5-impact">
@@ -662,7 +662,7 @@ export function DealerReadiness() {
   const [showDetail, setShowDetail] = useState(false);
   const [cluster, setCluster] = useState<string | undefined>(undefined);
   const [assigned, setAssigned] = useState<Record<string, string>>({});
-  const dealer = dealers.rows[selected] ?? dealers.rows[0];
+  const dealer = dealers.rows[selected] ?? dealers.rows[0] ?? DEALERS[0];
 
   const act = (verb: string, msg: string) => {
     setAssigned((a) => ({ ...a, [dealer.name]: verb }));

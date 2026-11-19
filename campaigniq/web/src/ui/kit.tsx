@@ -1,8 +1,8 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { BarChart3, MapPin, Sparkles, Target, AlertTriangle, ArrowRight, CheckCircle2, ChevronRight, Clock, Download, Info, Map as MapIcon, XCircle, type LucideIcon } from 'lucide-react';
 import { IndiaDistrictMap, type AreaInfo, type MapMarker, type MapTone, type MapView } from '../map/IndiaDistrictMap';
-import { Line, LineChart, ResponsiveContainer } from 'recharts';
 import { ICON } from '../icons';
+import { MetricTile, SectionTitle } from './system';
 import './ui.css';
 
 const cn = (...a: (string | false | null | undefined)[]) => a.filter(Boolean).join(' ');
@@ -32,28 +32,16 @@ export function ActionButton({ label, onClick, icon: Icon = ArrowRight, kind = '
 }
 
 /* ---------------------------------------------------------------- KpiCard */
-export function KpiCard({ icon: Icon, label, value, note, change, changeLabel, spark, tone = 'green', onClick }: {
+export function KpiCard({ icon: Icon, label, value, note, change, changeLabel, onClick }: {
   icon: LucideIcon; label: string; value: ReactNode; note?: ReactNode; change?: number; changeLabel?: string; spark?: number[]; tone?: 'green' | 'amber' | 'red' | 'blue'; onClick?: () => void;
 }) {
-  const data = useMemo(() => (spark ?? []).map((v, i) => ({ i, v })), [spark]);
-  const body = (
-    <>
-      <span className="iq-kpi-icon"><Icon size={22} strokeWidth={ICON.stroke} /></span>
-      <span className="iq-kpi-body">
-        <small>{label}</small>
-        <strong>{value}</strong>
-        {note && <span className="iq-kpi-note">{note}</span>}
-        {change !== undefined && <em className={change >= 0 ? 'up' : 'down'}>{change >= 0 ? '▲' : '▼'} {Math.abs(change).toFixed(1)}%{changeLabel ? ` ${changeLabel}` : ''}</em>}
-      </span>
-      {data.length > 1 && <span className="iq-kpi-spark"><ResponsiveContainer width="100%" height={32}><LineChart data={data}><Line type="monotone" dataKey="v" stroke="currentColor" strokeWidth={1.75} dot={false} isAnimationActive={false} /></LineChart></ResponsiveContainer></span>}
-    </>
-  );
-  return onClick
-    ? <button type="button" className={cn('iq-kpi clickable', `iq-kpi-${tone}`)} onClick={onClick}>{body}</button>
-    : <div className={cn('iq-kpi', `iq-kpi-${tone}`)}>{body}</div>;
+  const body = change !== undefined
+    ? <MetricTile icon={<Icon size={17} aria-hidden="true" />} label={label} value={value} trend={change >= 0 ? 'up' : 'down'} note={`${Math.abs(change).toFixed(2)}%${changeLabel ? ` ${changeLabel}` : ''}`} />
+    : <MetricTile icon={<Icon size={17} aria-hidden="true" />} label={label} value={value} note={note} />;
+  return onClick ? <button type="button" className="cq-metric-btn" onClick={onClick}>{body}</button> : body;
 }
-export function KpiGrid({ children, cols = 5 }: { children: ReactNode; cols?: number }) {
-  return <div className="iq-kpi-grid" style={{ ['--cols' as string]: cols }}>{children}</div>;
+export function KpiGrid({ children }: { children: ReactNode; cols?: number }) {
+  return <div className="cq-kpis">{children}</div>;
 }
 
 /* ---------------------------------------------------------------- PulseStrip */
@@ -72,17 +60,13 @@ export function PulseStrip({ title, items, ariaLabel }: { title: string; items: 
 }
 
 /* ---------------------------------------------------------------- ChartCard */
-export function ChartCard({ icon: Icon, title, hint, children, loading, empty, actions, className, minHeight }: {
+export function ChartCard({ title, hint, children, loading, empty, actions, className, minHeight }: {
   icon?: LucideIcon; title: string; hint?: string; children?: ReactNode; loading?: boolean; empty?: boolean | string; actions?: ReactNode; className?: string; minHeight?: number;
 }) {
   return (
-    <section className={cn('iq-card', className)}>
-      <header className="iq-card-head">
-        <h3>{Icon && <Icon size={ICON.md} strokeWidth={ICON.stroke} />}{title}</h3>
-        {actions}
-      </header>
-      {hint && <p className="iq-card-hint">{hint}</p>}
-      <div className="iq-card-body" style={minHeight ? { minHeight } : undefined}>
+    <section className={cn('cq-card', className)}>
+      <SectionTitle title={title} subtitle={hint} action={actions} />
+      <div className="cq-card-body" style={minHeight ? { minHeight } : undefined}>
         {loading ? <Skeleton /> : empty ? <EmptyState title={typeof empty === 'string' ? empty : undefined} /> : children}
       </div>
     </section>

@@ -1,8 +1,9 @@
 import { useEffect, useRef, type ReactNode } from 'react';
-import { ChevronRight, Home } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import { cx, type Tone } from '../ui';
 import { StatusChip } from '../ui/kit';
+import { PersonaHeader } from '../ui/system';
+import { MH_SCREENS } from './nav';
 
 export function toneOf(text: string): Tone {
   const t = text.toLowerCase();
@@ -19,7 +20,7 @@ export function Status({ children, tone }: { children: string; tone?: Tone; soli
   return <StatusChip kind={kind}>{children}</StatusChip>;
 }
 
-export function MhPage({ crumbs, code, title, status, subtitle, actions, children, className }: {
+export function MhPage({  code, title, status, subtitle, actions, children, className }: {
   crumbs: { label: string; to?: ScreenId }[];
   code: string;
   title: string;
@@ -29,7 +30,7 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
   children: ReactNode;
   className?: string;
 }) {
-  const { go, filters, marketingScope, marketingRegion } = useNav();
+  const { filters, marketingScope, marketingRegion } = useNav();
   const filterKey = [marketingScope, marketingRegion, filters.geography, filters.crop, filters.portfolio].join('|');
   const pageRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -39,6 +40,7 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
       let textNode: Node | null;
       while ((textNode = walker.nextNode())) {
+        if (textNode.parentElement?.closest('.cq-chips')) continue;
         const original = textNode.textContent ?? '';
         const cleaned = original.replace(/illustrative/gi, '').replace(/\(\s*\)/g, '').replace(/\s{2,}/g, ' ').replace(/\s+([,.;:])/g, '$1');
         if (cleaned !== original) textNode.textContent = cleaned;
@@ -51,29 +53,7 @@ export function MhPage({ crumbs, code, title, status, subtitle, actions, childre
   }, [code, filterKey]);
   return (
     <div key={filterKey} ref={pageRef} className={cx('pm-page', 'persona-page persona-page-mh', className)} data-screen={code} data-filter-key={filterKey}>
-      <nav className="breadcrumbs" aria-label="Breadcrumb">
-        <Home size={13} />
-        <span className="crumb">
-          <ChevronRight size={12} />
-          <button type="button" onClick={() => go('mh.1')}>Marketing Head</button>
-        </span>
-        {crumbs.map((item, index) => (
-          <span key={item.label} className={cx('crumb', index === crumbs.length - 1 && 'crumb-current')}>
-            <ChevronRight size={12} />
-            {item.to ? <button type="button" onClick={() => go(item.to!)}>{item.label}</button> : item.label}
-          </span>
-        ))}
-      </nav>
-      <div className="page-header">
-        <div className="page-title-block">
-          <div className="page-title-row">
-            <h1>{title}</h1>
-            {status && <Status>{status}</Status>}
-          </div>
-          {subtitle && <p className="page-subtitle">{subtitle}</p>}
-        </div>
-        {actions && <div className="page-actions">{actions}</div>}
-      </div>
+      <PersonaHeader list={MH_SCREENS} id={code} title={title} subtitle={subtitle} status={status} actions={actions} />
       {children}
     </div>
   );

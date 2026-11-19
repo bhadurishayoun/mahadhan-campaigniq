@@ -13,18 +13,19 @@ export const tooltipStyle = {
   cursor: { fill: 'var(--brand-50)' },
 } as const;
 
-/** Rupees -> "₹4.2 L" / "₹1.9 Cr" (en-IN). Input is in rupees. */
-export function fmtINR(rupees: number, digits = 1): string {
+/** Rupees -> "₹4.20 L" / "₹1.90 Cr" (en-IN). Input is in rupees. */
+export function fmtINR(rupees: number, digits = 2): string {
   const n = Math.abs(rupees);
   const sign = rupees < 0 ? '-' : '';
   if (n >= 1e7) return `${sign}₹${(n / 1e7).toFixed(digits)} Cr`;
   if (n >= 1e5) return `${sign}₹${(n / 1e5).toFixed(digits)} L`;
-  return `${sign}₹${n.toLocaleString('en-IN')}`;
+  return `${sign}₹${n.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 }
 /** Value already expressed in lakhs -> formatted rupee string. */
-export const fmtLakh = (lakh: number, digits = 1) => fmtINR(lakh * 1e5, digits);
+export const fmtLakh = (lakh: number, digits = 2) => fmtINR(lakh * 1e5, digits);
 export const fmtPct = (v: number, digits = 0) => `${v.toFixed(digits)}%`;
-export const fmtNum = (v: number) => v.toLocaleString('en-IN');
+export const fmtNum = (v: number) => v.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+export const fmtX = (v: number) => `${v.toFixed(2)}×`;
 
 /** The one chart config for every RankedBars / GroupedColumns / TrendLine / DonutMetric / HeatGrid (see CLAUDE.md §3). */
 export const chartTheme = {

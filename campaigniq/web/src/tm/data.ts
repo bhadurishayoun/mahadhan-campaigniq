@@ -16,7 +16,7 @@ export const TOTAL_ABP = 10.0;
 
 export const ACHIEVEMENT = [
   { label: 'Incentive achievement (FY 2024–25)', value: '92%', note: 'of incentive target earned' },
-  { label: 'Campaign ROI (FY 2024–25)', value: '1.6×', note: 'contribution ÷ campaign spend,' },
+  { label: 'Campaign ROI (FY 2024–25)', value: '1.60×', note: 'contribution ÷ campaign spend,' },
   { label: 'Historical target attainment', value: '94%', note: '3-year average vs ABP' },
 ];
 
@@ -34,32 +34,32 @@ export interface Outlet { name: string; type: 'Dealer' | 'Retailer'; dealer: str
 /** Outlets per village for the TM.2 explorer. Retailer values are secondary sales and never added to dealer primary. */
 export const OUTLETS: Record<string, Outlet[]> = {
   Dhanora: [
-    { name: 'Dhanora Agro Inputs', type: 'Dealer', dealer: '—', village: 'Dhanora', prev: '₹48 L primary', status: 'Active' },
-    { name: 'Dhanora Krushi Seva Kendra', type: 'Retailer', dealer: 'Dhanora Agro Inputs', village: 'Dhanora', prev: '₹6.2 L secondary (est.)', status: 'Active' },
-    { name: 'Ganesh Agro Point', type: 'Retailer', dealer: 'Dhanora Agro Inputs', village: 'Dhanora', prev: '₹4.8 L secondary (est.)', status: 'Active' },
-    { name: 'Shetkari Agro Mart', type: 'Retailer', dealer: 'Dhanora Agro Inputs', village: 'Dhanora', prev: '₹3.9 L secondary (est.)', status: 'Active' },
+    { name: 'Dhanora Agro Inputs', type: 'Dealer', dealer: '—', village: 'Dhanora', prev: '₹48.00 L primary', status: 'Active' },
+    { name: 'Dhanora Krushi Seva Kendra', type: 'Retailer', dealer: 'Dhanora Agro Inputs', village: 'Dhanora', prev: '₹6.20 L secondary (est.)', status: 'Active' },
+    { name: 'Ganesh Agro Point', type: 'Retailer', dealer: 'Dhanora Agro Inputs', village: 'Dhanora', prev: '₹4.80 L secondary (est.)', status: 'Active' },
+    { name: 'Shetkari Agro Mart', type: 'Retailer', dealer: 'Dhanora Agro Inputs', village: 'Dhanora', prev: '₹3.90 L secondary (est.)', status: 'Active' },
     { name: 'Kisan Seva Kendra', type: 'Retailer', dealer: 'Dhanora Agro Inputs', village: 'Dhanora', prev: 'No sales data', status: 'Inactive' },
     { name: 'Sai Krushi Bhandar', type: 'Retailer', dealer: 'Not mapped', village: 'Dhanora', prev: 'No sales data', status: 'Mapping missing' },
   ],
   'Wadi Gaon': [
-    { name: 'Shiv Krushi Kendra', type: 'Dealer', dealer: '—', village: 'Wadi Gaon', prev: '₹42 L primary', status: 'Active' },
-    { name: 'Wadi Gaon Kisan Point', type: 'Retailer', dealer: 'Shiv Krushi Kendra', village: 'Wadi Gaon', prev: '₹5.6 L secondary (est.)', status: 'Active' },
-    { name: 'Om Agro Services', type: 'Retailer', dealer: 'Shiv Krushi Kendra', village: 'Wadi Gaon', prev: '₹4.1 L secondary (est.)', status: 'Active' },
+    { name: 'Shiv Krushi Kendra', type: 'Dealer', dealer: '—', village: 'Wadi Gaon', prev: '₹42.00 L primary', status: 'Active' },
+    { name: 'Wadi Gaon Kisan Point', type: 'Retailer', dealer: 'Shiv Krushi Kendra', village: 'Wadi Gaon', prev: '₹5.60 L secondary (est.)', status: 'Active' },
+    { name: 'Om Agro Services', type: 'Retailer', dealer: 'Shiv Krushi Kendra', village: 'Wadi Gaon', prev: '₹4.10 L secondary (est.)', status: 'Active' },
     { name: 'Jai Bhavani Agro', type: 'Retailer', dealer: 'Not mapped', village: 'Wadi Gaon', prev: 'No sales data', status: 'Mapping missing' },
   ],
   'Ambad HQ': [
-    { name: 'Ambad Crop Depot', type: 'Dealer', dealer: '—', village: 'Ambad HQ', prev: '₹36 L primary', status: 'Active' },
-    { name: 'Om Sai Fertilisers', type: 'Dealer', dealer: '—', village: 'Ambad HQ', prev: '₹40 L primary', status: 'Active' },
-    { name: 'Samarth Agro Agencies', type: 'Dealer', dealer: '—', village: 'Ambad HQ', prev: '₹35 L primary', status: 'Active' },
-    { name: 'Ambad Market Agro', type: 'Retailer', dealer: 'Ambad Crop Depot', village: 'Ambad HQ', prev: '₹7.4 L secondary (est.)', status: 'Active' },
+    { name: 'Ambad Crop Depot', type: 'Dealer', dealer: '—', village: 'Ambad HQ', prev: '₹36.00 L primary', status: 'Active' },
+    { name: 'Om Sai Fertilisers', type: 'Dealer', dealer: '—', village: 'Ambad HQ', prev: '₹40.00 L primary', status: 'Active' },
+    { name: 'Samarth Agro Agencies', type: 'Dealer', dealer: '—', village: 'Ambad HQ', prev: '₹35.00 L primary', status: 'Active' },
+    { name: 'Ambad Market Agro', type: 'Retailer', dealer: 'Ambad Crop Depot', village: 'Ambad HQ', prev: '₹7.40 L secondary (est.)', status: 'Active' },
   ],
   Pimpalgaon: [
-    { name: 'Mahalaxmi Agro Agencies', type: 'Dealer', dealer: '—', village: 'Pimpalgaon', prev: '₹45 L primary', status: 'Active' },
+    { name: 'Mahalaxmi Agro Agencies', type: 'Dealer', dealer: '—', village: 'Pimpalgaon', prev: '₹45.00 L primary', status: 'Active' },
     { name: 'Pimpalgaon Agri Stores', type: 'Retailer', dealer: 'Mahalaxmi Agro Agencies', village: 'Pimpalgaon', prev: 'No sales data', status: 'Verification pending' },
   ],
   'Other villages': [
-    { name: 'Jai Kisan Traders', type: 'Dealer', dealer: '—', village: 'Other villages', prev: '₹38 L primary', status: 'Active' },
-    { name: 'Annapurna Krushi Bhandar', type: 'Dealer', dealer: '—', village: 'Other villages', prev: '₹36 L primary', status: 'Active' },
+    { name: 'Jai Kisan Traders', type: 'Dealer', dealer: '—', village: 'Other villages', prev: '₹38.00 L primary', status: 'Active' },
+    { name: 'Annapurna Krushi Bhandar', type: 'Dealer', dealer: '—', village: 'Other villages', prev: '₹36.00 L primary', status: 'Active' },
   ],
 };
 
@@ -68,16 +68,16 @@ export interface DealerPlan { name: string; village: string; ly: number; target:
 /** TM.3 dealer plan in Rs lakh: 320 -> 380. */
 export const DEALER_PLAN: DealerPlan[] = [
   { name: 'Dhanora Agro Inputs', village: 'Dhanora', ly: 48, target: 55, status: 'Draft', retailers: [
-    { name: 'Dhanora Krushi Seva Kendra', secondary: '₹7.0 L demand (est.)' },
-    { name: 'Ganesh Agro Point', secondary: '₹5.5 L demand (est.)' },
-    { name: 'Shetkari Agro Mart', secondary: '₹4.4 L demand (est.)' },
+    { name: 'Dhanora Krushi Seva Kendra', secondary: '₹7.00 L demand (est.)' },
+    { name: 'Ganesh Agro Point', secondary: '₹5.50 L demand (est.)' },
+    { name: 'Shetkari Agro Mart', secondary: '₹4.40 L demand (est.)' },
     { name: 'Kisan Seva Kendra', secondary: 'Not estimated — inactive' },
   ] },
   { name: 'Ambad Crop Depot', village: 'Ambad HQ', ly: 36, target: 43, status: 'Draft' },
   { name: 'Shiv Krushi Kendra', village: 'Wadi Gaon', ly: 42, target: 50, status: 'Review potential' },
   { name: 'Mahalaxmi Agro Agencies', village: 'Pimpalgaon', ly: 45, target: 53, status: 'Draft' },
   { name: 'Other 4 dealers', village: 'Ambad HQ · Other villages', ly: 149, target: 179, status: 'Draft',
-    group: ['Om Sai Fertilisers ₹40 L → ₹48 L', 'Jai Kisan Traders ₹38 L → ₹45 L', 'Annapurna Krushi Bhandar ₹36 L → ₹43 L', 'Samarth Agro Agencies ₹35 L → ₹43 L'] },
+    group: ['Om Sai Fertilisers ₹40.00 L → ₹48.00 L', 'Jai Kisan Traders ₹38.00 L → ₹45.00 L', 'Annapurna Krushi Bhandar ₹36.00 L → ₹43.00 L', 'Samarth Agro Agencies ₹35.00 L → ₹43.00 L'] },
 ];
 export const ABP_LAKH = 420;
 
@@ -103,9 +103,9 @@ export const CROP_PLAN = [
 export const APPROVED = { abp: 4.2, growth: 1.0, onion: 1.9, maize: 1.25, other: 1.05 };
 
 export const PRIORITIES = [
-  { id: 'onion', title: 'Onion — Croptek conversion', sub: 'Convert Non Saarthi nutrition users', geo: 'Dhanora · Wadi Gaon', uplift: '₹25 L',
+  { id: 'onion', title: 'Onion — Croptek conversion', sub: 'Convert Non Saarthi nutrition users', geo: 'Dhanora · Wadi Gaon', uplift: '₹25.00 L',
     audience: 'Non Saarthi nutrition users', approach: 'Retailer-led + field demos', coverage: 'Dhanora & Wadi Gaon' },
-  { id: 'maize', title: 'Maize — Portfolio expansion', sub: 'Expand coverage at existing outlets', geo: 'Ambad HQ · Pimpalgaon', uplift: '₹15 L',
+  { id: 'maize', title: 'Maize — Portfolio expansion', sub: 'Expand coverage at existing outlets', geo: 'Ambad HQ · Pimpalgaon', uplift: '₹15.00 L',
     audience: 'Existing maize growers at linked outlets', approach: 'Outlet activation + farmer meetings', coverage: 'Ambad HQ & Pimpalgaon' },
   { id: 'retail', title: 'Retailer engagement', sub: 'Improve channel advocacy and reach', geo: 'Across Ambad', uplift: 'Supports existing plan',
     audience: 'Linked retailers (74)', approach: 'Retailer education programme', coverage: 'All Ambad villages' },
@@ -160,13 +160,13 @@ export interface PortfolioCampaign {
   stage: 'Not drafted' | 'Draft' | 'In approval' | 'Approved' | 'Live' | 'Completed'; result?: string; months: [number, number]; color: string;
 }
 
-/** TM.C3 portfolio (budgets Rs lakh). Kharif 2025 results average to the 1.6x campaign ROI shown on TM.1. */
+/** TM.C3 portfolio (budgets Rs lakh). Kharif 2025 results average to the 1.60× campaign ROI shown on TM.1. */
 export const PORTFOLIO: PortfolioCampaign[] = [
-  { name: 'Ambad Onion Croptek Conversion', crop: 'Onion', season: 'Rabi 2025–26', villages: ['Dhanora', 'Wadi Gaon'], budget: 3.0, objective: '₹25 L', forecast: '₹12 L (base)', stage: 'In approval', months: [6, 9], color: '#2f8a3b' },
-  { name: 'Ambad Maize Portfolio Expansion', crop: 'Maize', season: 'Rabi 2025–26', villages: ['Ambad HQ', 'Pimpalgaon'], budget: 2.2, objective: '₹15 L', forecast: 'Not yet modelled', stage: 'Draft', months: [7, 10], color: '#d7a62f' },
+  { name: 'Ambad Onion Croptek Conversion', crop: 'Onion', season: 'Rabi 2025–26', villages: ['Dhanora', 'Wadi Gaon'], budget: 3.0, objective: '₹25.00 L', forecast: '₹12.00 L (base)', stage: 'In approval', months: [6, 9], color: '#2f8a3b' },
+  { name: 'Ambad Maize Portfolio Expansion', crop: 'Maize', season: 'Rabi 2025–26', villages: ['Ambad HQ', 'Pimpalgaon'], budget: 2.2, objective: '₹15.00 L', forecast: 'Not yet modelled', stage: 'Draft', months: [7, 10], color: '#d7a62f' },
   { name: 'Ambad Retailer Advocacy Programme', crop: 'Multi-crop', season: 'Rabi 2025–26', villages: ['Ambad HQ', 'Other villages'], budget: null, objective: 'Supports plan', forecast: '—', stage: 'Not drafted', months: [8, 10], color: '#9aa79c' },
-  { name: 'Ghansawangi Soybean Sulphur Awareness', crop: 'Soybean', season: 'Kharif 2025', villages: ['Ghansawangi'], budget: 2.4, objective: '₹18 L', forecast: '—', stage: 'Completed', result: 'ROI 1.8× · ₹19.6 L tracked', months: [0, 3], color: '#3972b8' },
-  { name: 'Badnapur Cotton Retailer Activation', crop: 'Cotton', season: 'Kharif 2025', villages: ['Badnapur'], budget: 1.8, objective: '₹12 L', forecast: '—', stage: 'Completed', result: 'ROI 1.4× · ₹11.2 L tracked', months: [1, 3], color: '#6b8fb8' },
+  { name: 'Ghansawangi Soybean Sulphur Awareness', crop: 'Soybean', season: 'Kharif 2025', villages: ['Ghansawangi'], budget: 2.4, objective: '₹18.00 L', forecast: '—', stage: 'Completed', result: 'ROI 1.80× · ₹19.60 L tracked', months: [0, 3], color: '#3972b8' },
+  { name: 'Badnapur Cotton Retailer Activation', crop: 'Cotton', season: 'Kharif 2025', villages: ['Badnapur'], budget: 1.8, objective: '₹12.00 L', forecast: '—', stage: 'Completed', result: 'ROI 1.40× · ₹11.20 L tracked', months: [1, 3], color: '#6b8fb8' },
 ];
 /** Timeline columns for the portfolio (index 0 = Jun 2025; Rabi campaigns Dec–Apr). */
 export const PORTFOLIO_MONTHS = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'];

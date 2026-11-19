@@ -90,7 +90,7 @@ export function Pm4a() {
         <Muted>Different source scopes; provisional evidence. 36% is not shown as poor without a comparator.</Muted>
       </Box>
       <Box title="Business-plan linkage" tone="soft">
-        <p className="small"> Ambad Onion growth objective of ₹25 L is already <b>included</b> within the approved all-product Ambad ABP of ₹4.20 Cr. It is not additive to the target and not Croptek-specific committed revenue.</p>
+        <p className="small"> Ambad Onion growth objective of ₹25.00 L is already <b>included</b> within the approved all-product Ambad ABP of ₹4.20 Cr. It is not additive to the target and not Croptek-specific committed revenue.</p>
       </Box>
       <Facts cols={2} rows={[
         ['Objective', THEME.objective],

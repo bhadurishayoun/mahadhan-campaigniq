@@ -1,3 +1,4 @@
+import { StepsPortal } from '../ui/system';
 import { useState, type ReactNode } from 'react';
 import './s3.css';
 import {
@@ -447,11 +448,11 @@ export function StageNutrition() {
         </Panel>
       </Grid>
 
-      <div className="s3-footer">
+      <StepsPortal>
         <Btn variant="outline" small to="s3.1" icon={<ArrowLeft size={13} />}>Back to Crop Nutrition Calendar</Btn>
         <span className="s3-footer-mid">RECOMMENDED NEXT: Nutrition Programme Builder</span>
         <Btn variant="primary" to="s3.3" icon={<ArrowRight size={14} />}>Configure Nutrition Programme</Btn>
-      </div>
+      </StepsPortal>
     </div>
   );
 }
@@ -658,7 +659,7 @@ export function ProgrammeBuilder() {
         </div>
       </Grid>
 
-      <div className="s3-footer">
+      <StepsPortal>
         <Btn variant="outline" small to="s3.2" icon={<ArrowLeft size={13} />}>Back to Nutrition Needs by Crop Stage</Btn>
         <span className="s3-footer-mid">Campaign Triggers</span>
         <div className="s3-action-bar">
@@ -666,7 +667,7 @@ export function ProgrammeBuilder() {
           <Btn variant="gold" onClick={submit} disabled={submitted}>{submitted ? 'Submitted for Agronomy Review' : 'Submit for Agronomy Review'}</Btn>
           <Btn variant="primary" to="s3.4" icon={<ArrowRight size={14} />}>Identify Campaign Opportunities</Btn>
         </div>
-      </div>
+      </StepsPortal>
     </div>
   );
 }
@@ -725,7 +726,7 @@ export function TriggerEngine() {
   const triggers = useDataset('nutrition.triggers', TRIGGERS);
   const [trigger, setTrigger] = useState(1);
   const [campaign, setCampaign] = useState<number | null>(null);
-  const active = triggers.rows.find((item) => item.n === trigger) ?? triggers.rows[0];
+  const active = triggers.rows.find((item) => item.n === trigger) ?? triggers.rows[0] ?? TRIGGERS[0];
 
   const viewRecommendation = (item: Trigger) => {
     setTrigger(item.n);
@@ -863,7 +864,7 @@ export function TriggerEngine() {
         </Panel>
       </Grid>
 
-      <div className="s3-footer">
+      <StepsPortal>
         <Btn variant="outline" small to="s3.3" icon={<ArrowLeft size={13} />}>Back to Nutrition Programme Builder</Btn>
         <span className="s3-footer-mid">
           Source: Nutrition Programme Builder <ArrowRight size={12} />
@@ -879,11 +880,11 @@ export function TriggerEngine() {
               go('s4.2');
             }}
           >
-            Create Recommended Campaign Create a Campaign
+            Create recommended campaign
           </Btn>
           <span className="small muted">Campaign can be drafted, but will not be auto-published.</span>
         </div>
-      </div>
+      </StepsPortal>
     </div>
   );
 }

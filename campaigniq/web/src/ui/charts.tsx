@@ -1,21 +1,17 @@
 import type { ReactNode } from 'react';
-import { Bar, BarChart, CartesianGrid, Cell, LabelList, Legend, Line, LineChart, ReferenceLine, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from 'recharts';
 import { SERIES, axisStyle, gridStyle, tooltipStyle } from '../chartTheme';
+import { GroupedColumns, RankedBars } from './viz';
 
 type Row = Record<string, string | number>;
 export interface Series { key: string; name?: string; color?: string }
 
 /** Compact, consistent single-series ranking chart for persona dashboards. */
-export function RankedBarChart({ items, height, format = (v:number)=>String(v), onSelect }: { items: { label:string; value:number; previous?:number; target?:number }[]; height?:number; format?:(v:number)=>string; onSelect?:(label:string)=>void }) {
-  const sorted=[...items].filter(x=>Number.isFinite(x.value)&&x.value>0).sort((a,b)=>b.value-a.value);
-  if(!sorted.length) return <div className="iq-empty"><span>No data for this selection</span></div>;
-  const visible=sorted.length>6?[...sorted.slice(0,6),{label:'Others',value:sorted.slice(6).reduce((s,x)=>s+x.value,0)}]:sorted;
-  const total=visible.reduce((s,x)=>s+x.value,0); const chartHeight=height??Math.max(130,visible.length*34+24);
-  const data=visible.map(x=>({...x,share:total?x.value/total*100:0,delta:x.previous===undefined?undefined:x.value-x.previous}));
-  return <div className="iq-fill" style={{minHeight:chartHeight}}><ResponsiveContainer width="100%" height="100%" minHeight={chartHeight}><BarChart data={data} layout="vertical" barCategoryGap="35%" margin={{top:2,right:42,bottom:2,left:4}}>
-    <CartesianGrid {...gridStyle} horizontal={false}/><XAxis type="number" tick={axisStyle} tickLine={false} axisLine={false} tickFormatter={format}/><YAxis type="category" dataKey="label" tick={axisStyle} tickLine={false} axisLine={false} width={118}/><Tooltip {...tooltipStyle} formatter={(v:number,_n:string,p:any)=>[`${format(v)} · ${p.payload.share.toFixed(0)}%${p.payload.delta===undefined?'':` · Δ ${format(p.payload.delta)}`}`,'Value']}/>
-    <Bar dataKey="value" name="Value" fill="var(--brand-700)" maxBarSize={16} radius={[0,4,4,0]} onClick={(entry:any)=>onSelect?.(entry.label)} cursor={onSelect?'pointer':'default'}><LabelList dataKey="share" position="right" formatter={(v:number)=>`${v.toFixed(0)}%`} style={{fill:'var(--ink-600)'}}/></Bar>
-  </BarChart></ResponsiveContainer></div>;
+export function RankedBarChart({ items, format = (v: number) => String(v), onSelect }: { items: { label: string; value: number; note?: string; tone?: string }[]; height?: number; format?: (v: number) => string; onSelect?: (label: string) => void }) {
+  // A note that starts with the formatted value ('76% vs 82% plan', '₹2.20 Cr') supplies the display value; the rest stays as the caption.
+  const VALUE = /^([₹~≈+-]?\s?[\d,.]+\s?(?:Cr|L|%|×|k|MT|acres?)?)(?:\s+(.+))?$/;
+  const split = (note?: string) => { const m = note?.trim().match(VALUE); return m ? { display: m[1], rest: m[2] } : { display: undefined, rest: note }; };
+  return <RankedBars items={items.map((i) => { const s = split(i.note); return { label: i.label, value: i.value, display: s.display, note: s.rest && s.rest !== format(i.value) ? s.rest : undefined, muted: i.tone === 'muted' }; })} fmt={(v) => (Number.isInteger(v) ? format(v) : v.toFixed(2))} share={items.some((i) => i.value > 100)} onSelect={onSelect} insight />;
 }
 const color = (s: Series, i: number) => {
   if (s.color) return s.color;
@@ -45,45 +41,21 @@ export function TrendLine({ data, x, series, height = 220, fmt }: { data: Row[];
 }
 
 /** ranking -> horizontal bar (single or stacked mix) */
-export function RankBars({ data, label = 'name', series, stacked, height, fmt, highlightFirst }: {
+export function RankBars({ data, label = 'name', series, stacked, height, fmt }: {
   data: Row[]; label?: string; series: Series[]; stacked?: boolean; height?: number; fmt?: (v: number) => string; highlightFirst?: boolean;
 }) {
-  const h = height ?? Math.max(120, data.length * 30 + 30);
-  return (
-    <div className="iq-fill" style={{ minHeight: h }}><ResponsiveContainer width="100%" height="100%" minHeight={h}>
-      <BarChart data={data} layout="vertical" barCategoryGap="28%" margin={{ top: 0, right: 16, bottom: 0, left: 0 }}>
-        <CartesianGrid {...gridStyle} horizontal={false} />
-        <XAxis type="number" tick={axisStyle} tickLine={false} axisLine={false} tickFormatter={fmt} />
-        <YAxis type="category" dataKey={label} tick={axisStyle} tickLine={false} axisLine={false} width={104} />
-        <Tooltip {...tooltipStyle} formatter={(v: number) => (fmt ? fmt(v) : v)} />
-        {series.length > 1 && <Legend iconType="square"  />}
-        {series.map((s, i) => (
-          <Bar key={s.key} dataKey={s.key} name={s.name ?? s.key} fill={color(s, i)} stackId={stacked ? 's' : undefined} radius={stacked ? 0 : [0, 6, 6, 0]} maxBarSize={series.length > 1 && !stacked ? 14 : 26}>
-            {highlightFirst && series.length === 1 && data.map((_, di) => <Cell key={di} fill={di === 0 ? SERIES[0] : 'var(--data-baseline)'} />)}
-          </Bar>
-        ))}
-      </BarChart>
-    </ResponsiveContainer></div>
-  );
+  const f = fmt ?? ((v: number) => (Number.isInteger(v) ? v.toLocaleString('en-IN') : v.toFixed(2)));
+  if (series.length > 1 || stacked) return <GroupedColumns data={data} x={label} series={series.map((x) => ({ key: x.key, name: x.name ?? x.key }))} fmt={f} height={height ?? 240} insight />;
+  const items = data.map((d) => ({ label: String(d[label]), value: Number(d[series[0].key]) }));
+  return <RankedBars items={items} fmt={f} share={items.some((i) => i.value > 100)} insight />;
 }
 
 /** category comparison -> vertical grouped / stacked columns */
-export function ColumnBars({ data, x, series, stacked, height = 220, fmt, target }: {
+export function ColumnBars({ data, x, series, height = 240, fmt }: {
   data: Row[]; x: string; series: Series[]; stacked?: boolean; height?: number; fmt?: (v: number) => string; target?: number;
 }) {
-  return (
-    <div className="iq-fill" style={{ minHeight: height }}><ResponsiveContainer width="100%" height="100%" minHeight={height}>
-      <BarChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
-        <CartesianGrid {...gridStyle} vertical={false} />
-        <XAxis dataKey={x} tick={axisStyle} tickLine={false} axisLine={false} />
-        <YAxis tick={axisStyle} tickLine={false} axisLine={false} width={44} tickFormatter={fmt} />
-        <Tooltip {...tooltipStyle} formatter={(v: number) => (fmt ? fmt(v) : v)} />
-        {series.length > 1 && <Legend iconType="square"  />}
-        {target !== undefined && <ReferenceLine y={target} stroke="var(--accent-600)" strokeDasharray="4 3" label={{ value: 'Target', fill: 'var(--crop-soybean)', position: 'right' }} />}
-        {series.map((s, i) => <Bar key={s.key} dataKey={s.key} name={s.name ?? s.key} fill={color(s, i)} stackId={stacked ? 's' : undefined} radius={stacked ? 0 : [6, 6, 0, 0]} />)}
-      </BarChart>
-    </ResponsiveContainer></div>
-  );
+  const f = fmt ?? ((v: number) => (Number.isInteger(v) ? v.toLocaleString('en-IN') : v.toFixed(2)));
+  return <GroupedColumns data={data} x={x} series={series.map((s) => ({ key: s.key, name: s.name ?? s.key }))} fmt={f} height={height} insight />;
 }
 
 /** target vs actual -> bullet / progress rows */

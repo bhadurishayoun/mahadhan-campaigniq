@@ -1,3 +1,4 @@
+import { StepsPortal } from '../ui/system';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import './ai.css';
 import {
@@ -164,10 +165,10 @@ const ANSWERS: Record<AnswerId, Answer> = {
       axis: '₹ Lakh',
       max: 3,
       bars: [
-        { label: 'Meetings', value: 2.4, display: '₹2.4L' },
-        { label: 'Demo plots', value: 2.2, display: '₹2.2L' },
-        { label: 'Retailers', value: 2.0, display: '₹2.0L' },
-        { label: 'Digital', value: 1.4, display: '₹1.4L' },
+        { label: 'Meetings', value: 2.4, display: '₹2.40L' },
+        { label: 'Demo plots', value: 2.2, display: '₹2.20L' },
+        { label: 'Retailers', value: 2.0, display: '₹2.00L' },
+        { label: 'Digital', value: 1.4, display: '₹1.40L' },
       ],
     },
     factors: ['Market opportunity of ~₹52 Lakh in Ambad.', '43 MT supply gap should be closed before activation.'],
@@ -659,14 +660,14 @@ export function CopilotWorkspace() {
         </div>
       </div>
 
-      <div className="ai1-footer">
+      <StepsPortal>
         <Layers size={16} color={COLORS.dark} />
         <span>Current: <strong>AI Copilot</strong></span>
         <span className="sep" />
         <span className="muted">Recommended actions:</span>
         <Btn small variant="outline" to={answer.primary.to} icon={<Zap size={12} />}>{answer.primary.label}</Btn>
         <Btn small variant="outline" to={answer.secondary.to} icon={<BarChart3 size={12} />}>{answer.secondary.label}</Btn>
-      </div>
+      </StepsPortal>
     </div>
   );
 }

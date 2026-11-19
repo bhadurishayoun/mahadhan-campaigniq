@@ -1,8 +1,12 @@
 import { useEffect, useRef, type ReactNode } from 'react';
-import { Activity, ArrowLeft, ArrowRight, Check, ChevronRight, Home, Sparkles } from 'lucide-react';
+import {  ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
-import { Btn, cx, type Tone } from '../ui';
-import { KpiCard, KpiGrid, StatusChip } from '../ui/kit';
+import {  cx, type Tone } from '../ui';
+import {  StatusChip } from '../ui/kit';
+import { PersonaHeader } from '../ui/system';
+import { TM_SCREENS } from './nav';
+import { MetricTile, SectionTitle, StepsPortal } from '../ui/system';
+import { RankedBars } from '../ui/viz';
 
 export function toneOf(text: string): Tone {
   const t = text.toLowerCase();
@@ -19,12 +23,12 @@ export function Status({ children, tone }: { children: string; tone?: Tone; soli
   return <StatusChip kind={kind}>{children}</StatusChip>;
 }
 
-export const lakh = (value: number, digits = 0) => `₹${value.toFixed(digits)} L`;
-export const crore = (value: number, digits = 2) => `₹${value.toFixed(digits)} Cr`;
+export const lakh = (value: number, _digits = 2) => `₹${value.toFixed(2)} L`;
+export const crore = (value: number, _digits = 2) => `₹${value.toFixed(2)} Cr`;
 export const pct = (value: number, digits = 1) => `${value >= 0 ? '+' : ''}${value.toFixed(digits)}%`;
 
 /** Page shell: breadcrumb, title row and the content. No pulse strip or injected charts (the V2 specs exclude them). */
-export function TmPage({ crumbs, code, title, status, subtitle, actions, children, className, banner }: {
+export function TmPage({  code, title, status, subtitle, actions, children, className, banner }: {
   crumbs: { label: string; to?: ScreenId }[];
   code: string;
   title: string;
@@ -35,7 +39,6 @@ export function TmPage({ crumbs, code, title, status, subtitle, actions, childre
   className?: string;
   banner?: ReactNode;
 }) {
-  const { go } = useNav();
   const pageRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const root = pageRef.current;
@@ -56,25 +59,7 @@ export function TmPage({ crumbs, code, title, status, subtitle, actions, childre
   }, [code]);
   return (
     <div ref={pageRef} className={cx('pm-page', 'persona-page persona-page-tm tm-page', className)} data-screen={code}>
-      <nav className="breadcrumbs" aria-label="Breadcrumb">
-        <Home size={13} />
-        {crumbs.map((item, index) => (
-          <span key={`${item.label}-${index}`} className={cx('crumb', index === crumbs.length - 1 && 'crumb-current')}>
-            {index > 0 && <ChevronRight size={12} />}
-            {item.to ? <button type="button" onClick={() => go(item.to!)}>{item.label}</button> : item.label}
-          </span>
-        ))}
-      </nav>
-      <div className="page-header">
-        <div className="page-title-block">
-          <div className="page-title-row">
-            <h1>{title}</h1>
-            {status && <Status>{status}</Status>}
-          </div>
-          {subtitle && <p className="page-subtitle">{subtitle}</p>}
-        </div>
-        {actions && <div className="page-actions">{actions}</div>}
-      </div>
+      <PersonaHeader list={TM_SCREENS} id={code} title={title} subtitle={subtitle} status={status} actions={actions} />
       {banner}
       {children}
     </div>
@@ -150,12 +135,10 @@ export function Context({ items, tone }: { items: { label: string; value: ReactN
 
 /** Big headline metric cards (TM.1, TM.EX1, TM.IM1). */
 export function Metrics({ items }: { items: { label: string; value: ReactNode; sub?: ReactNode; tone?: 'amber' | 'green' | 'red' }[] }) {
-  return (
-    <KpiGrid cols={items.length}>{items.map((item) => <KpiCard key={item.label} icon={Activity} label={item.label} value={item.value} note={item.sub} tone={item.tone === 'amber' ? 'amber' : item.tone === 'red' ? 'red' : 'green'} />)}</KpiGrid>
-  );
+  return <div className="cq-kpis">{items.map((item) => <MetricTile key={item.label} label={item.label} value={item.value} note={item.sub} />)}</div>;
 }
 
-export function Panel({ title, icon, actions, children, className, tone }: {
+export function Panel({ title, actions, children, className, tone }: {
   title?: ReactNode;
   icon?: ReactNode;
   actions?: ReactNode;
@@ -164,20 +147,15 @@ export function Panel({ title, icon, actions, children, className, tone }: {
   tone?: 'ai' | 'warn' | 'soft' | 'green';
 }) {
   return (
-    <section className={cx('tm-panel', tone && `tm-panel-${tone}`, className)}>
-      {(title || actions) && (
-        <header className="tm-panel-head">
-          {title && <h3>{icon}{title}</h3>}
-          {actions && <div className="tm-panel-actions">{actions}</div>}
-        </header>
-      )}
+    <section className={cx('cq-card', tone === 'ai' && 'cq-ai', className)}>
+      {(title || actions) && <SectionTitle n={title ? undefined : 0} title={title ?? ''} action={actions} />}
       {children}
     </section>
   );
 }
 
-export function AiPanel({ title = 'AI Insight', children }: { title?: string; children: ReactNode }) {
-  return <Panel tone="ai" title={title} icon={<Sparkles size={14} />}>{children}</Panel>;
+export function AiPanel({ title = 'AI insight', children }: { title?: string; children: ReactNode }) {
+  return <section className="cq-card cq-ai"><SectionTitle title={title} /><div className="cq-ai-body"><Sparkles size={15} aria-hidden="true" /><div>{children}</div></div></section>;
 }
 
 export function Note({ children, tone = 'info' }: { children: ReactNode; tone?: 'info' | 'warn' | 'ok' }) {
@@ -190,36 +168,21 @@ export function Footer({ back, primary, secondary }: {
   primary?: { label: string; to?: ScreenId; onClick?: () => void; disabled?: boolean };
   secondary?: ReactNode;
 }) {
-  const { goBack } = useNav();
+  const { go, goBack } = useNav();
   return (
-    <footer className="tm-footer">
-      <div className="tm-footer-bar">
-        {back ? <Btn to={back.to} icon={<ArrowLeft size={13} />}>{back.label}</Btn> : <button type="button" className="btn btn-outline" onClick={() => goBack('tm.1')}><ArrowLeft size={13} />Back</button>}
-        <div className="tm-footer-right">
-          {secondary}
-          {primary && (
-            <Btn variant="primary" to={primary.disabled ? undefined : primary.to} onClick={primary.disabled ? undefined : primary.onClick} disabled={primary.disabled} icon={<ArrowRight size={13} />}>
-              {primary.label}
-            </Btn>
-          )}
-        </div>
-      </div>
-    </footer>
+    <StepsPortal>
+      <button type="button" className="cq-btn" onClick={() => (back ? go(back.to) : goBack('tm.1'))}><ArrowLeft size={13} />{back ? back.label : 'Back'}</button>
+      {secondary}
+      {primary && (
+        <button type="button" className="cq-btn cq-btn-primary" disabled={primary.disabled} onClick={() => { if (primary.disabled) return; primary.onClick?.(); if (primary.to) go(primary.to); }}>
+          {primary.label}<ArrowRight size={13} />
+        </button>
+      )}
+    </StepsPortal>
   );
 }
 
 /** Horizontal percentage bars (conversion comparisons, budget mix). */
 export function HBars({ rows, max = 100, unit = '%', digits = 1 }: { rows: { label: string; value: number; tone?: 'green' | 'amber' | 'grey' | 'blue'; note?: string }[]; max?: number; unit?: string; digits?: number }) {
-  return (
-    <div className="tm-hbars">
-      {rows.map((row) => (
-        <div key={row.label} className="tm-hbar">
-          <span className="tm-hbar-label">{row.label}</span>
-          <div className="tm-hbar-track"><i className={`tm-fill-${row.tone ?? 'green'}`} style={{ width: `${Math.min(100, (row.value / max) * 100)}%` }} /></div>
-          <b>{row.value.toFixed(digits)}{unit}</b>
-          {row.note && <small>{row.note}</small>}
-        </div>
-      ))}
-    </div>
-  );
+  return <RankedBars items={rows.map((r) => ({ label: r.label, value: r.value, note: r.note, muted: r.tone === 'grey', display: `${r.value.toFixed(Math.min(digits, 2))}${unit}` }))} max={max} share={false} insight />;
 }

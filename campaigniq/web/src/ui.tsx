@@ -1,8 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowDown, ArrowRight, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Home, Info, Maximize2, Minimize2, Sparkles } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUp, ArrowUpDown, ChevronLeft, Sparkles } from 'lucide-react';
 import { STATUS } from './chartTheme';
-import { useNav, type ScreenId } from './nav';
+import { SCREENS, useNav, type ScreenId } from './nav';
+import { NumberedTabs, PageHeader as SysPageHeader, StepsPortal } from './ui/system';
+import { MetricTile, SectionTitle } from './ui/system';
+import { DonutMetric, GroupedColumns, RankedBars } from './ui/viz';
+import { fmtNum } from './chartTheme';
 
 /* ------------------------------------------------------------------ layout helpers */
 
@@ -101,7 +105,7 @@ export function TooltipLayer() {
 
 const NUMBER_RE = /-?\d[\d,]*(?:\.\d+)?/;
 
-/** Counts up to the first number inside a value such as "₹6.4 Cr", "3.2 Lakh", "63%" or 1,240. */
+/** Counts up to the first number inside a value such as "₹6.40 Cr", "3.2 Lakh", "63%" or 1,240. */
 export function CountUp({ value, duration = 900 }: { value: ReactNode; duration?: number }) {
   const parsed = useMemo(() => {
     if (typeof value !== 'string' && typeof value !== 'number') return null;
@@ -198,7 +202,7 @@ export function DataBadge({ data }: { data: { name: string; live: boolean; sourc
   );
 }
 
-export function Panel({ title, icon, info, actions, className, children, number, subtitle, style, data }: {
+export function Panel({ title, actions, className, children, subtitle, style }: {
   title?: ReactNode;
   icon?: ReactNode;
   info?: boolean;
@@ -210,51 +214,16 @@ export function Panel({ title, icon, info, actions, className, children, number,
   style?: CSSProperties;
   data?: { name: string; live: boolean; source?: string; uploadedAt?: string };
 }) {
-  const [expanded, setExpanded] = useState(false);
-  useEffect(() => {
-    if (!expanded) return;
-    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') setExpanded(false); };
-    window.addEventListener('keydown', onKey);
-    document.body.classList.add('has-expanded-panel');
-    return () => { window.removeEventListener('keydown', onKey); document.body.classList.remove('has-expanded-panel'); };
-  }, [expanded]);
   return (
-    <>
-      {expanded && <div className="panel-backdrop" onClick={() => setExpanded(false)} />}
-      <section className={cx('panel', className, expanded && 'panel-expanded')} style={style} aria-modal={expanded || undefined}>
-        {(title || actions) && (
-          <header className="panel-head">
-            <div className="panel-title">
-              {number !== undefined && <span className="panel-number">{number}.</span>}
-              {icon && <span className="panel-icon">{icon}</span>}
-              <h3>{title}</h3>
-              {info && <span className="panel-info" data-tip="Hover or tap chart elements for exact values. Use ⤢ to open this panel full screen."><Info size={13} className="muted-icon" /></span>}
-              {data && <DataBadge data={data} />}
-            </div>
-            <div className="panel-head-right">
-              {actions && <div className="panel-actions">{actions}</div>}
-              {title && (
-                <button
-                  type="button"
-                  className="panel-expand"
-                  aria-label={expanded ? 'Exit full screen' : 'Open panel full screen'}
-                  data-tip={expanded ? 'Close (Esc)' : 'Full screen'}
-                  onClick={() => setExpanded((open) => !open)}
-                >
-                  {expanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
-                </button>
-              )}
-            </div>
-          </header>
-        )}
-        {subtitle && <p className="panel-sub">{subtitle}</p>}
-        <ExpandedContext.Provider value={expanded}>{children}</ExpandedContext.Provider>
-      </section>
-    </>
+    <section className={cx('cq-card', className)} style={style}>
+      {(title || actions) && <SectionTitle n={title ? undefined : 0} title={title ?? ''} subtitle={subtitle} action={actions} />}
+      {!title && !actions && subtitle && <p className="cq-card-sub">{subtitle}</p>}
+      {children}
+    </section>
   );
 }
 
-export function Kpi({ icon, label, value, sub, trend, spark, tone, badge, compact }: {
+export function Kpi({ icon, label, value, sub, trend, badge }: {
   icon?: ReactNode;
   label: ReactNode;
   value: ReactNode;
@@ -265,24 +234,11 @@ export function Kpi({ icon, label, value, sub, trend, spark, tone, badge, compac
   badge?: ReactNode;
   compact?: boolean;
 }) {
-  return (
-    <div className={cx('kpi', tone && `kpi-${tone}`, compact && 'kpi-compact')}>
-      {icon && <div className="kpi-icon">{icon}</div>}
-      <div className="kpi-body">
-        <div className="kpi-label">{label}</div>
-        <div className="kpi-value-row">
-          <span className="kpi-value"><CountUp value={value} /></span>
-          {badge}
-          {spark && <Spark points={Array.isArray(spark) ? spark : undefined} tone={trend === 'down' ? 'red' : 'green'} />}
-        </div>
-        {sub && <div className={cx('kpi-sub', trend && `trend-${trend}`)}>{trend === 'up' ? '▲ ' : trend === 'down' ? '▼ ' : ''}{sub}</div>}
-      </div>
-    </div>
-  );
+  return <MetricTile icon={icon} label={label} value={<CountUp value={value} />} note={sub} trend={trend} extra={badge} />;
 }
 
 export function KpiRow({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cx('kpi-row', className)}>{children}</div>;
+  return <div className={cx('cq-kpis', className)}>{children}</div>;
 }
 
 export function Spark({ points = [3, 5, 4, 6, 5, 7, 6, 8, 9], tone = 'green', width = 64, height = 22 }: {
@@ -330,6 +286,13 @@ export interface Column<T> {
   align?: 'left' | 'right' | 'center';
   render?: (row: T, index: number) => ReactNode;
   width?: string | number;
+}
+
+/** Plain cell values: ROI/multiples as 2-decimal "×", other fractional numbers capped at 2 decimals. */
+function fmtCell(key: string, v: unknown): ReactNode {
+  if (typeof v === 'number') return /roi|multiple/i.test(key) ? `${v.toFixed(2)}×` : Number.isInteger(v) ? v.toLocaleString('en-IN') : v.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+  if (typeof v === 'string' && /roi/i.test(key) && /^\d+(\.\d+)?×?$/.test(v)) return `${parseFloat(v).toFixed(2)}×`;
+  return v as ReactNode;
 }
 
 export function DataTable<T extends Record<string, unknown>>({ columns, rows, highlight, total, onRowClick, compact }: {
@@ -399,7 +362,7 @@ export function DataTable<T extends Record<string, unknown>>({ columns, rows, hi
             >
               {columns.map((column) => (
                 <td key={column.key} style={{ textAlign: column.align ?? 'left' }} data-label={typeof column.label === 'string' ? column.label : undefined}>
-                  {column.render ? column.render(row, index) : (row[column.key] as ReactNode)}
+                  {column.render ? column.render(row, index) : fmtCell(column.key, row[column.key])}
                 </td>
               ))}
             </tr>
@@ -426,7 +389,7 @@ export interface Segment {
   note?: ReactNode;
 }
 
-export function Donut({ segments, center, sub, size = 150, thickness = 28, showPct = true, legend = true }: {
+export function Donut({ segments, center, sub }: {
   segments: Segment[];
   center?: ReactNode;
   sub?: ReactNode;
@@ -435,88 +398,7 @@ export function Donut({ segments, center, sub, size = 150, thickness = 28, showP
   showPct?: boolean;
   legend?: boolean;
 }) {
-  const total = segments.reduce((sum, segment) => sum + segment.value, 0) || 1;
-  const radius = size / 2 - thickness / 2 - 2;
-  const circumference = 2 * Math.PI * radius;
-  const [active, setActive] = useState<string | null>(null);
-  const activeSegment = segments.find((segment) => segment.label === active);
-  let offset = 0;
-  return (
-    <div className={cx('donut-block', active && 'donut-has-active')} onMouseLeave={() => setActive(null)}>
-      <div className="donut" style={{ width: size, height: size }}>
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-          {segments.map((segment, index) => {
-            const length = (segment.value / total) * circumference;
-            const angle = ((offset + length / 2) / circumference) * Math.PI * 2 - Math.PI / 2;
-            const pct = Math.round((segment.value / total) * 100);
-            const element = (
-              <g
-                key={segment.label}
-                className={cx('donut-seg', active === segment.label && 'active')}
-                style={{ animationDelay: `${index * 70}ms` }}
-                onMouseEnter={() => setActive(segment.label)}
-                onClick={() => setActive((current) => (current === segment.label ? null : segment.label))}
-                data-tip={`${segment.label}: ${pct}%`}
-              >
-                <circle
-                  r={radius}
-                  cx={size / 2}
-                  cy={size / 2}
-                  fill="none"
-                  stroke={segment.color}
-                  strokeWidth={thickness}
-                  strokeDasharray={`${length} ${circumference - length}`}
-                  strokeDashoffset={-offset}
-                  transform={`rotate(-90 ${size / 2} ${size / 2})`}
-                />
-                {showPct && segment.value / total >= 0.05 && (
-                  <text
-                    x={size / 2 + Math.cos(angle) * radius}
-                    y={size / 2 + Math.sin(angle) * radius + 4}
-                    textAnchor="middle"
-                    className="donut-pct"
-                  >
-                    {Math.round((segment.value / total) * 100)}%
-                  </text>
-                )}
-              </g>
-            );
-            offset += length;
-            return element;
-          })}
-        </svg>
-        <div className="donut-center">
-          {activeSegment ? (
-            <>
-              <strong>{Math.round((activeSegment.value / total) * 100)}%</strong>
-              <span className="donut-center-label">{activeSegment.label}</span>
-            </>
-          ) : (
-            <>
-              <strong>{center}</strong>
-              {sub && <span>{sub}</span>}
-            </>
-          )}
-        </div>
-      </div>
-      {legend && (
-        <ul className="legend">
-          {segments.map((segment) => (
-            <li
-              key={segment.label}
-              className={cx('legend-item', active === segment.label && 'active')}
-              onMouseEnter={() => setActive(segment.label)}
-              onClick={() => setActive((current) => (current === segment.label ? null : segment.label))}
-            >
-              <i style={{ background: segment.color }} />
-              <span>{segment.label}</span>
-              {segment.note && <em>{segment.note}</em>}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+  return <DonutMetric items={segments.map((s) => ({ label: s.label, value: s.value }))} value={center ?? ''} label={typeof sub === 'string' ? sub : ''} insight />;
 }
 
 const FUNNEL_COLORS = ['var(--brand-700)', 'var(--ok)', 'var(--crop-soybean)', 'var(--segment-growing)', 'var(--accent-600)', 'var(--accent-600)', 'var(--data-baseline)'];
@@ -566,29 +448,17 @@ export function StackFunnel({ stages }: { stages: { value: ReactNode; label: Rea
   );
 }
 
-export function HBars({ rows, max, tone = 'green', valueSuffix = '' }: {
+export function HBars({ rows, max, valueSuffix = '' }: {
   rows: { label: ReactNode; value: number; display?: ReactNode; tone?: Tone }[];
   max?: number;
   tone?: Tone;
   valueSuffix?: string;
 }) {
-  const top = max ?? Math.max(...rows.map((row) => row.value), 1);
-  return (
-    <div className="hbars">
-      {rows.map((row, index) => (
-        <div className="hbar-row" key={index}>
-          <span className="hbar-label">{row.label}</span>
-          <div className="hbar-track" data-tip={`${typeof row.label === 'string' ? `${row.label}: ` : ''}${typeof row.display === 'string' ? row.display : `${row.value}${valueSuffix}`}`}>
-            <div className={cx('hbar-fill', `fill-${row.tone ?? tone}`)} style={{ width: `${(row.value / top) * 100}%`, animationDelay: `${index * 60}ms` }} />
-          </div>
-          <span className="hbar-value">{row.display ?? `${row.value}${valueSuffix}`}</span>
-        </div>
-      ))}
-    </div>
-  );
+  const items = rows.map((row, i) => ({ label: typeof row.label === 'string' ? row.label : `Item ${i + 1}`, value: row.value, display: typeof row.display === 'string' ? row.display : `${fmtNum(row.value)}${valueSuffix}`, muted: row.tone === 'grey' }));
+  return <RankedBars items={items} max={max} share={!valueSuffix.includes('%') && max === undefined} insight />;
 }
 
-export function VBars({ data, series, height: baseHeight = 150, max, showValues = true, valueFormat }: {
+export function VBars({ data, series, height = 220, valueFormat }: {
   data: { label: ReactNode; values: number[]; labels?: ReactNode[] }[];
   series: { label: string; color: string }[];
   height?: number;
@@ -596,51 +466,13 @@ export function VBars({ data, series, height: baseHeight = 150, max, showValues 
   showValues?: boolean;
   valueFormat?: (value: number) => ReactNode;
 }) {
-  const height = useChartHeight(baseHeight);
-  const top = max ?? Math.max(...data.flatMap((item) => item.values), 1);
-  return (
-    <div className="vbars-block">
-      <div className="vbars" style={{ height }}>
-        {data.map((item, index) => (
-          <div className="vbar-group" key={index}>
-            <div className="vbar-cols">
-              {item.values.map((value, seriesIndex) => {
-                const shown = item.labels?.[seriesIndex] ?? (valueFormat ? valueFormat(value) : value);
-                const tip = `${typeof item.label === 'string' ? `${item.label} · ` : ''}${series[seriesIndex]?.label ?? ''}${series[seriesIndex]?.label ? ': ' : ''}${typeof shown === 'string' || typeof shown === 'number' ? shown : value}`;
-                return (
-                  <div className="vbar-col" key={seriesIndex} data-tip={tip}>
-                    {showValues && <span className="vbar-value">{shown}</span>}
-                    <div className="vbar" style={{ height: `${(value / top) * (height - 34)}px`, background: series[seriesIndex]?.color, animationDelay: `${index * 60 + seriesIndex * 30}ms` }} />
-                  </div>
-                );
-              })}
-            </div>
-            <span className="vbar-label">{item.label}</span>
-          </div>
-        ))}
-      </div>
-      {series.length > 1 && (
-        <ul className="legend legend-inline">
-          {series.map((serie) => <li key={serie.label}><i style={{ background: serie.color }} /><span>{serie.label}</span></li>)}
-        </ul>
-      )}
-    </div>
-  );
+  const rows = data.map((d, i) => ({ x: typeof d.label === 'string' ? d.label : `${i + 1}`, ...Object.fromEntries(d.values.map((v, j) => [`s${j}`, v])) }));
+  const fmt = (v: number) => { const r = valueFormat?.(v); return typeof r === 'string' ? r : fmtNum(v); };
+  return <GroupedColumns data={rows} x="x" series={series.map((s, j) => ({ key: `s${j}`, name: s.label }))} fmt={fmt} height={height} insight />;
 }
 
-export function Breadcrumbs({ items }: { items: { label: string; to?: ScreenId }[] }) {
-  const { go } = useNav();
-  return (
-    <nav className="breadcrumbs" aria-label="Breadcrumb">
-      <Home size={13} />
-      {items.map((item, index) => (
-        <span key={item.label} className={cx('crumb', index === items.length - 1 && 'crumb-current')}>
-          <ChevronRight size={12} />
-          {item.to ? <button type="button" onClick={() => go(item.to!)}>{item.label}</button> : item.label}
-        </span>
-      ))}
-    </nav>
-  );
+export function Breadcrumbs(_props: { items: { label: string; to?: ScreenId }[] }) {
+  return null;
 }
 
 export function PageHeader({ code, title, subtitle, badge, actions, back }: {
@@ -651,20 +483,17 @@ export function PageHeader({ code, title, subtitle, badge, actions, back }: {
   actions?: ReactNode;
   back?: ScreenId;
 }) {
-  const { go } = useNav();
+  void code; void back;
+  const { screen } = useNav();
+  const meta = SCREENS.find((m) => m.id === screen);
+  const group = meta ? SCREENS.filter((m) => m.module === meta.module) : [];
   return (
-    <div className="page-header" data-screen={code}>
-      <div className="page-title-block">
-        <div className="page-title-row">
-          {back && <button type="button" className="back-btn" aria-label="Back" onClick={() => go(back)}><ChevronLeft size={18} /></button>}
-          
-          <h1>{title}</h1>
-          {badge}
-        </div>
-        {subtitle && <p className="page-subtitle">{subtitle}</p>}
-      </div>
-      {actions && <div className="page-actions">{actions}</div>}
-    </div>
+    <>
+      <SysPageHeader title={title} subtitle={subtitle} />
+      {group.length > 1 && <NumberedTabs tabs={group.map((m) => ({ label: m.title, to: m.id }))} active={screen} />}
+      {badge}
+      {actions && <StepsPortal>{actions}</StepsPortal>}
+    </>
   );
 }
 
@@ -683,11 +512,11 @@ export function FlowFooter({ steps }: {
   const currentIndex = steps.findIndex((step) => step.current);
   const fallback = currentIndex > 0 ? [...steps.slice(0, currentIndex)].reverse().find((step) => step.to)?.to : steps.find((step) => step.to)?.to;
   return (
-    <footer className="flow-footer">
-      <button type="button" className="btn btn-outline" onClick={() => goBack(fallback)}>
+    <StepsPortal>
+      <button type="button" className="cq-btn" onClick={() => goBack(fallback)}>
         <ChevronLeft size={14} />Back
       </button>
-    </footer>
+    </StepsPortal>
   );
 }
 

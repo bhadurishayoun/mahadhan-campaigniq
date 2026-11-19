@@ -144,11 +144,11 @@ const SWITCHING_BARRIERS = [
 type MarketRow = { rank: number; geo: string; crop: string; score: number; potential: string; gap: string; readiness: string; to?: ScreenId };
 
 const TOP_MARKETS: MarketRow[] = [
-  { rank: 1, geo: 'Jalna', crop: 'Onion', score: 92, potential: '₹2.4 Cr', gap: '24 pp', readiness: 'High', to: 's2.2' },
-  { rank: 2, geo: 'Dhule', crop: 'Onion', score: 88, potential: '₹1.8 Cr', gap: '18 pp', readiness: 'High', to: 's2.2' },
-  { rank: 3, geo: 'Nashik', crop: 'Onion', score: 78, potential: '₹1.6 Cr', gap: '16 pp', readiness: 'Medium', to: 's2.2' },
-  { rank: 4, geo: 'Sangli', crop: 'Onion', score: 76, potential: '₹1.1 Cr', gap: '15 pp', readiness: 'Medium', to: 's2.2' },
-  { rank: 5, geo: 'Anantapur', crop: 'Onion', score: 74, potential: '₹1.0 Cr', gap: '17 pp', readiness: 'Medium', to: 's2.2' },
+  { rank: 1, geo: 'Jalna', crop: 'Onion', score: 92, potential: '₹2.40 Cr', gap: '24 pp', readiness: 'High', to: 's2.2' },
+  { rank: 2, geo: 'Dhule', crop: 'Onion', score: 88, potential: '₹1.80 Cr', gap: '18 pp', readiness: 'High', to: 's2.2' },
+  { rank: 3, geo: 'Nashik', crop: 'Onion', score: 78, potential: '₹1.60 Cr', gap: '16 pp', readiness: 'Medium', to: 's2.2' },
+  { rank: 4, geo: 'Sangli', crop: 'Onion', score: 76, potential: '₹1.10 Cr', gap: '15 pp', readiness: 'Medium', to: 's2.2' },
+  { rank: 5, geo: 'Anantapur', crop: 'Onion', score: 74, potential: '₹1.00 Cr', gap: '17 pp', readiness: 'Medium', to: 's2.2' },
 ];
 
 const INSIGHTS = [
@@ -157,14 +157,14 @@ const INSIGHTS = [
     icon: <Star size={16} />,
     tone: 'amber' as Tone,
     title: 'Jalna (Onion) shows high acreage and low Croptek penetration; prioritize acquisition campaign.',
-    body: 'Rationale: 1.8 L acres, 46% penetration (−24 pp vs. state avg), ₹2.4 Cr opportunity, high retailer readiness (91).',
+    body: 'Rationale: 1.8 L acres, 46% penetration (−24 pp vs. state avg), ₹2.40 Cr opportunity, high retailer readiness (91).',
   },
   {
     id: 'Dhule',
     icon: <BarChart3 size={16} />,
     tone: 'green' as Tone,
     title: 'Dhule is retailer-ready with strong coverage; ideal for scale-up and trial conversion.',
-    body: 'Rationale: 1.4 L acres, 52% penetration, ₹1.8 Cr opportunity, 26 active clusters, readiness score 88.',
+    body: 'Rationale: 1.4 L acres, 52% penetration, ₹1.80 Cr opportunity, 26 active clusters, readiness score 88.',
   },
   {
     id: 'Nashik',
@@ -227,7 +227,7 @@ export function OpportunityAtlas() {
       />
 
       <KpiRow>
-        <Kpi icon={<Coins size={18} />} label="Addressable Market Potential" value="₹18.6 Cr" sub="+14% vs. previous season" trend="up" spark />
+        <Kpi icon={<Coins size={18} />} label="Addressable Market Potential" value="₹18.60 Cr" sub="+14% vs. previous season" trend="up" spark />
         <Kpi icon={<Target size={18} />} label="Opportunity Coverage" value="63%" sub="+7 pp vs. previous season" trend="up" spark />
         <Kpi icon={<BarChart3 size={18} />} label="Underpenetrated High-Potential Districts" value="12" sub="+3 vs. previous season" trend="up" spark />
         <Kpi icon={<MapPin size={18} />} label="Priority Target Talukas" value="38" sub="+12% vs. previous season" trend="up" spark />
@@ -239,10 +239,10 @@ export function OpportunityAtlas() {
         <Panel title="India Opportunity Heatmap" info>
           <div className="s2-mapwrap">
             <div className="s2-callouts">
-              <Callout title="Gujarat" lines="Opportunity: ₹2.1 Cr" />
-              <Callout title="Maharashtra" lines="Opportunity: ₹8.7 Cr" />
-              <Callout title="Karnataka" lines="Opportunity: ₹2.3 Cr" />
-              <Callout title="Sangli" lines="₹1.1 Cr | Score: 76" active={hover === 'Sangli'} />
+              <Callout title="Gujarat" lines="Opportunity: ₹2.10 Cr" />
+              <Callout title="Maharashtra" lines="Opportunity: ₹8.70 Cr" />
+              <Callout title="Karnataka" lines="Opportunity: ₹2.30 Cr" />
+              <Callout title="Sangli" lines="₹1.10 Cr | Score: 76" active={hover === 'Sangli'} />
             </div>
             <IndiaDistrictMap
               label="India opportunity heatmap"
@@ -250,29 +250,29 @@ export function OpportunityAtlas() {
               view="india"
               selected={hover.toLowerCase()}
               states={{
-                Gujarat: { tone: 2, info: 'Opportunity ₹2.1 Cr' },
-                Maharashtra: { tone: 3, info: 'Opportunity ₹8.7 Cr' },
+                Gujarat: { tone: 2, info: 'Opportunity ₹2.10 Cr' },
+                Maharashtra: { tone: 3, info: 'Opportunity ₹8.70 Cr' },
                 Telangana: { tone: 1 },
-                Karnataka: { tone: 2, info: 'Opportunity ₹2.3 Cr' },
-                'Andhra Pradesh': { tone: 2, info: 'Opportunity ₹1.9 Cr' },
+                Karnataka: { tone: 2, info: 'Opportunity ₹2.30 Cr' },
+                'Andhra Pradesh': { tone: 2, info: 'Opportunity ₹1.90 Cr' },
                 Goa: { tone: 0 },
                 'Tamil Nadu': { tone: 1 },
               }}
               markers={[
-                { id: 'dhule', info: '₹1.8 Cr | Score 88 · priority district', action: { label: 'Open Jalna Taluka View', run: () => go('s2.2') } },
-                { id: 'jalna', info: '₹2.4 Cr | Score 92 · priority district', action: { label: 'Open Jalna Taluka View', run: () => go('s2.2') } },
-                { id: 'nashik', info: '₹1.6 Cr | Score 78', onSelect: () => setHover('Nashik') },
-                { id: 'sangli', info: '₹1.1 Cr | Score 76', onSelect: () => setHover('Sangli') },
-                { id: 'anantapur', info: '₹1.0 Cr | Score 74', onSelect: () => setHover('Anantapur') },
+                { id: 'dhule', info: '₹1.80 Cr | Score 88 · priority district', action: { label: 'Open Jalna Taluka View', run: () => go('s2.2') } },
+                { id: 'jalna', info: '₹2.40 Cr | Score 92 · priority district', action: { label: 'Open Jalna Taluka View', run: () => go('s2.2') } },
+                { id: 'nashik', info: '₹1.60 Cr | Score 78', onSelect: () => setHover('Nashik') },
+                { id: 'sangli', info: '₹1.10 Cr | Score 76', onSelect: () => setHover('Sangli') },
+                { id: 'anantapur', info: '₹1.00 Cr | Score 74', onSelect: () => setHover('Anantapur') },
               ]}
               scale={{ title: 'Opportunity (₹ Cr)', items: [{ label: '≥ 5.0', tone: 4 }, { label: '3.0–5.0', tone: 3 }, { label: '1.0–3.0', tone: 2 }, { label: '< 1.0', tone: 0 }] }}
             />
             <div className="s2-callouts">
-              <Callout title="Dhule" star lines="₹1.8 Cr | Score: 88" onClick={() => go('s2.2')} />
-              <Callout title="Jalna" star lines="₹2.4 Cr | Score: 92" onClick={() => go('s2.2')} />
-              <Callout title="Nashik" lines="₹1.6 Cr | Score: 78" active={hover === 'Nashik'} />
-              <Callout title="Andhra Pradesh" lines="Opportunity: ₹1.9 Cr" />
-              <Callout title="Anantapur" lines="₹1.0 Cr | Score: 74" active={hover === 'Anantapur'} />
+              <Callout title="Dhule" star lines="₹1.80 Cr | Score: 88" onClick={() => go('s2.2')} />
+              <Callout title="Jalna" star lines="₹2.40 Cr | Score: 92" onClick={() => go('s2.2')} />
+              <Callout title="Nashik" lines="₹1.60 Cr | Score: 78" active={hover === 'Nashik'} />
+              <Callout title="Andhra Pradesh" lines="Opportunity: ₹1.90 Cr" />
+              <Callout title="Anantapur" lines="₹1.00 Cr | Score: 74" active={hover === 'Anantapur'} />
             </div>
           </div>
           <div className="row-between" style={{ marginTop: 8 }}>
@@ -406,11 +406,11 @@ export function OpportunityAtlas() {
 type TalukaRow = { rank: number; taluka: string; score: number; potential: string; gap: string; retailers: number; readiness: string };
 
 const TALUKAS: TalukaRow[] = [
-  { rank: 1, taluka: 'Ambad', score: 94, potential: '₹52 L', gap: '28 pp', retailers: 74, readiness: 'High' },
-  { rank: 2, taluka: 'Partur', score: 91, potential: '₹46 L', gap: '25 pp', retailers: 61, readiness: 'High' },
-  { rank: 3, taluka: 'Badnapur', score: 89, potential: '₹39 L', gap: '21 pp', retailers: 58, readiness: 'High' },
-  { rank: 4, taluka: 'Jalna', score: 86, potential: '₹34 L', gap: '18 pp', retailers: 82, readiness: 'Medium' },
-  { rank: 5, taluka: 'Mantha', score: 83, potential: '₹29 L', gap: '19 pp', retailers: 47, readiness: 'Medium' },
+  { rank: 1, taluka: 'Ambad', score: 94, potential: '₹52.00 L', gap: '28 pp', retailers: 74, readiness: 'High' },
+  { rank: 2, taluka: 'Partur', score: 91, potential: '₹46.00 L', gap: '25 pp', retailers: 61, readiness: 'High' },
+  { rank: 3, taluka: 'Badnapur', score: 89, potential: '₹39.00 L', gap: '21 pp', retailers: 58, readiness: 'High' },
+  { rank: 4, taluka: 'Jalna', score: 86, potential: '₹34.00 L', gap: '18 pp', retailers: 82, readiness: 'Medium' },
+  { rank: 5, taluka: 'Mantha', score: 83, potential: '₹29.00 L', gap: '19 pp', retailers: 47, readiness: 'Medium' },
 ];
 
 type FactorRow = { factor: string; croptek: string; npk: string; local: string };
@@ -509,7 +509,7 @@ export function DistrictIntelligence() {
 
       <KpiRow>
         <Kpi icon={<Star size={18} />} label="Jalna Opportunity Score" value="92" sub="+12 vs. previous season" trend="up" spark />
-        <Kpi icon={<Coins size={18} />} label="Estimated Opportunity" value="₹2.4 Cr" sub="+9% vs. previous season" trend="up" spark />
+        <Kpi icon={<Coins size={18} />} label="Estimated Opportunity" value="₹2.40 Cr" sub="+9% vs. previous season" trend="up" spark />
         <Kpi icon={<Target size={18} />} label="Penetration Gap" value="24 pp" sub="-5 pp vs. previous season" trend="down" spark={[9, 8, 8, 7, 7, 6, 6, 5, 4]} />
         <Kpi icon={<Store size={18} />} label="Active Retailers" value="412" sub="+8% vs. previous season" trend="up" spark />
         <Kpi icon={<ShieldCheck size={18} />} label="Campaign Readiness" value="91 (High)" sub="+6 vs. previous season" trend="up" spark />
@@ -625,7 +625,7 @@ export function DistrictIntelligence() {
             total={{
               rank: <strong>District Total (Jalna)</strong>,
               score: <span className="num-badge">92</span>,
-              potential: <strong>₹2.4 Cr</strong>,
+              potential: <strong>₹2.40 Cr</strong>,
               gap: <strong>24 pp</strong>,
               retailers: <strong>412</strong>,
               readiness: <Pill tone="green">High</Pill>,
@@ -711,10 +711,10 @@ const SEGMENT_ROWS: SegRow[] = [
 ];
 
 const QUADS = [
-  { id: 'trial', title: 'Targeted Trial', meta: '(16% | ₹8 L)', bullets: ['Trial → repeat conversion'], icon: <FlaskConical size={14} />, cls: '' },
-  { id: 'npk', title: 'Priority Acquisition', meta: '(38% | ₹20 L)', bullets: ['Conventional NPK users', 'High conversion'], icon: <Star size={14} fill={COLORS.green} color={COLORS.green} />, cls: 'q-hot' },
-  { id: 'repeat', title: 'Low-Cost Nurturing', meta: '(10% | ₹5 L)', bullets: ['Retain & cross-sell'], icon: <Sprout size={14} />, cls: '' },
-  { id: 'non', title: 'Nurture & Convert', meta: '(23% | ₹11 L)', bullets: ['Non-users', 'Demo & evidence-led'], icon: <Users size={14} />, cls: 'q-blue' },
+  { id: 'trial', title: 'Targeted Trial', meta: '(16% | ₹8.00 L)', bullets: ['Trial → repeat conversion'], icon: <FlaskConical size={14} />, cls: '' },
+  { id: 'npk', title: 'Priority Acquisition', meta: '(38% | ₹20.00 L)', bullets: ['Conventional NPK users', 'High conversion'], icon: <Star size={14} fill={COLORS.green} color={COLORS.green} />, cls: 'q-hot' },
+  { id: 'repeat', title: 'Low-Cost Nurturing', meta: '(10% | ₹5.00 L)', bullets: ['Retain & cross-sell'], icon: <Sprout size={14} />, cls: '' },
+  { id: 'non', title: 'Nurture & Convert', meta: '(23% | ₹11.00 L)', bullets: ['Non-users', 'Demo & evidence-led'], icon: <Users size={14} />, cls: 'q-blue' },
 ];
 
 export function MicroMarketSegmentation() {
@@ -809,7 +809,7 @@ export function MicroMarketSegmentation() {
 
         <Panel title="AI Recommended Interventions" icon={<Sparkles size={15} />} className="ai-panel">
           <div className="stack" style={{ gap: 6 }}>
-            <AiItem icon={<Target size={15} />}>Focus on 1,832 conventional NPK users (₹20 L opportunity) with retailer-led conversion drive.</AiItem>
+            <AiItem icon={<Target size={15} />}>Focus on 1,832 conventional NPK users (₹20.00 L opportunity) with retailer-led conversion drive.</AiItem>
             <AiItem icon={<FlaskConical size={15} />}>Conduct 12 demo plots across top 5 villages (coverage ~240 acres).</AiItem>
             <AiItem icon={<Users size={15} />}>Run cluster farmer meetings (≥15) in low-penetration villages (Golegaon, Dhanora).</AiItem>
             <AiItem icon={<MessageCircle size={15} />}>Offer crop-stage advisory &amp; nutrition schedule via WhatsApp to trial &amp; non-users (2,000+ farmers).</AiItem>
@@ -1166,9 +1166,9 @@ const STRATEGIES = [
 type OutcomeRow = { scenario: string; reach: string; trials: string; adoption: string; demand: string; revenue: string; roi: string };
 
 const OUTCOMES: OutcomeRow[] = [
-  { scenario: 'Conservative', reach: '3,000', trials: '600 (20%)', adoption: '720 (24%)', demand: '144 MT', revenue: '₹36 Lakh', roi: '2.5×' },
-  { scenario: 'Base Case (Recommended)', reach: '3,600', trials: '900 (25%)', adoption: '1,044 (29%)', demand: '209 MT', revenue: '₹52 Lakh', roi: '3.3×' },
-  { scenario: 'Optimistic', reach: '4,200', trials: '1,260 (30%)', adoption: '1,386 (33%)', demand: '277 MT', revenue: '₹69 Lakh', roi: '4.1×' },
+  { scenario: 'Conservative', reach: '3,000', trials: '600 (20%)', adoption: '720 (24%)', demand: '144 MT', revenue: '₹36 Lakh', roi: '2.50×' },
+  { scenario: 'Base Case (Recommended)', reach: '3,600', trials: '900 (25%)', adoption: '1,044 (29%)', demand: '209 MT', revenue: '₹52 Lakh', roi: '3.30×' },
+  { scenario: 'Optimistic', reach: '4,200', trials: '1,260 (30%)', adoption: '1,386 (33%)', demand: '277 MT', revenue: '₹69 Lakh', roi: '4.10×' },
 ];
 
 const TIMELINE = [
@@ -1273,12 +1273,12 @@ export function CampaignRecommendations() {
                 center="₹8.0"
                 sub="Lakh"
                 segments={[
-                  { label: 'Farmer demonstrations', value: 30, color: COLORS.dark, note: '₹2.4 L (30%)' },
-                  { label: 'Retailer activation', value: 25, color: COLORS.green, note: '₹2.0 L (25%)' },
-                  { label: 'Farmer meetings', value: 20, color: COLORS.mid, note: '₹1.6 L (20%)' },
-                  { label: 'Digital advisory', value: 10, color: COLORS.yellow, note: '₹0.8 L (10%)' },
-                  { label: 'Field follow-ups', value: 10, color: COLORS.light, note: '₹0.8 L (10%)' },
-                  { label: 'Contingency', value: 5, color: COLORS.grey, note: '₹0.4 L (5%)' },
+                  { label: 'Farmer demonstrations', value: 30, color: COLORS.dark, note: '₹2.40 L (30%)' },
+                  { label: 'Retailer activation', value: 25, color: COLORS.green, note: '₹2.00 L (25%)' },
+                  { label: 'Farmer meetings', value: 20, color: COLORS.mid, note: '₹1.60 L (20%)' },
+                  { label: 'Digital advisory', value: 10, color: COLORS.yellow, note: '₹0.80 L (10%)' },
+                  { label: 'Field follow-ups', value: 10, color: COLORS.light, note: '₹0.80 L (10%)' },
+                  { label: 'Contingency', value: 5, color: COLORS.grey, note: '₹0.40 L (5%)' },
                 ]}
               />
             </Panel>

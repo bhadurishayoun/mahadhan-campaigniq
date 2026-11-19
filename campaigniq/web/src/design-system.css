@@ -84,12 +84,8 @@
   border-bottom: 1px solid var(--g200);
 }
 
-/* Green chart and section bands require white titles for legibility. */
-.app .persona-page-mh .iq-card-head { background: var(--brand-700); }
-.app .persona-page-mh .iq-card-head h3,
-.app .persona-page-mh .iq-card-head h3 svg,
-.app .persona-page-mh .iq-card-head .iq-drill button { color: var(--surface) !important; }
-.app .persona-page-mh .mh-section > h2 { background: var(--brand-700) !important; color: var(--surface) !important; border-bottom-color: var(--brand-700); }
+/* Section bands are white everywhere (CLAUDE.md §5); MH sections use the shared section-title look. */
+.app .persona-page-mh .mh-section > h2 { background: none !important; color: var(--ink-900) !important; border-bottom: 0; padding: 0; font-size: 13px !important; line-height: 18px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
 
 /* A single semantic mapping for progress charts and workflow rails. */
 .app .tm-step-active {

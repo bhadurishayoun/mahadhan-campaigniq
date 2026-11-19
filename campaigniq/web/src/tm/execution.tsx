@@ -20,7 +20,7 @@ function CampaignStrip({ extra }: { extra?: { label: string; value: string; sub?
       { label: 'Campaign', value: CAMPAIGN.name, sub: CAMPAIGN.villages },
       { label: 'Status', value: 'Approved · In progress' },
       { label: 'Approved campaign budget', value: lakh(total, 2) },
-      { label: 'Plan-linked objective', value: '₹25 L', sub: 'Within approved Ambad ABP ₹4.20 Cr — not additional business' },
+      { label: 'Plan-linked objective', value: '₹25.00 L', sub: 'Within approved Ambad ABP ₹4.20 Cr — not additional business' },
       ...(extra ?? []),
     ]} />
   );
@@ -203,7 +203,7 @@ export function TmIm1() {
       >
       <CampaignStrip />
       <Metrics items={[
-        { label: 'Base-case forecast campaign sales', value: '₹12.0 L', sub: 'Planning forecast (CW.3)' },
+        { label: 'Base-case forecast campaign sales', value: '₹12.00 L', sub: 'Planning forecast (CW.3)' },
         { label: 'Tracked campaign-linked sales to date', value: lakh(sales, 1), sub: 'Provisional attribution — not verified incremental', tone: 'amber' },
         { label: 'Completed activities', value: `${completed} / ${planned}`, sub: '2 scheduled · 2 at risk' },
         { label: 'Recorded adopters', value: adopters, tone: 'green' },
@@ -216,7 +216,7 @@ export function TmIm1() {
         <Panel title="Business impact">
           <div className="tm-recon">
             <div><span>Tracked campaign-linked sales</span><b>{lakh(sales, 1)}</b></div>
-            <div><span>Base forecast</span><b>₹12.0 L</b></div>
+            <div><span>Base forecast</span><b>₹12.00 L</b></div>
             <div className="tm-recon-gap"><span>Variance at this checkpoint</span><b>−{lakh(12 - sales, 1)}</b></div>
           </div>
           <ul className="tm-checks">
@@ -224,7 +224,7 @@ export function TmIm1() {
             <li className="warn"><span>Actual ROI</span><Status>Pending validation</Status></li>
             <li><span>Forecast net ROI (planning assumption)</span><Status tone="grey">+0.40×</Status></li>
           </ul>
-          <small className="tm-muted">The linked ₹25 L objective is already within the ABP and is not double counted.</small>
+          <small className="tm-muted">The linked ₹25.00 L objective is already within the ABP and is not double counted.</small>
         </Panel>
       </div>
       <div className="tm-map-row tm-map-row-right">
@@ -340,7 +340,7 @@ export function TmIm2() {
 const TM_FACTS = [
   'Persona: Field Sales Manager, Jalna Cluster, FY 2025-26. ',
   'Territories: Ambad Rs 3.2 Cr last year -> Rs 4.2 Cr ABP (+31.3%), Ghansawangi 2.8 -> 3.4 (+21.4%), Badnapur 2.0 -> 2.4 (+20%); cluster 8.0 -> 10.0 Cr (+25%).',
-  'Last year: incentive achievement 92%, campaign ROI 1.6x, 3-year target attainment 94%.',
+  'Last year: incentive achievement 92%, campaign ROI 1.60×, 3-year target attainment 94%.',
   'Ambad network: 8 dealers, 74 retailers. Dhanora 1 dealer/12 retailers (Sai Krushi Bhandar unmapped, Kisan Seva Kendra inactive); Wadi Gaon 1/14; Ambad HQ 3/22; Pimpalgaon 1/10; other villages 2/16.',
   'Outlet plan: 8 dealers Rs 320 L last year -> Rs 380 L proposed (+18.8%) vs ABP Rs 420 L; gap Rs 40 L (90.5% allocated). Dhanora Agro Inputs 48->55 L, Ambad Crop Depot 36->43, Shiv Krushi Kendra 42->50 (flagged for potential review), Mahalaxmi Agro 45->53, other 4 dealers 149->179.',
   'Onion village plan Rs 165 L: Dhanora Rs 12 L / 15 MT (last year Rs 10 L / 10 MT, 500 -> 750 acres at 20 kg/acre; realisation Rs 100 -> 80/kg, -20%), Wadi Gaon 28, Ambad HQ 42, Pimpalgaon 23, other villages 60 (history unverified).',
@@ -349,15 +349,15 @@ const TM_FACTS = [
   'Execution: 13 activities = 3 completed, 8 scheduled, 2 at risk: Dhanora field demonstration week 2 (stock confirmation pending, owner R. Jadhav) and Wadi Gaon farmer meeting week 2 (field confirmation pending).',
   'Impact checkpoint: reached 640, trials 160, adopters 72 (reach->trial 25%, trial->adoption 45%). Dhanora 280/62/24 = 38.7%, Rs 2.0 L tracked; Wadi Gaon 360/98/48 = 49.0%, Rs 3.4 L tracked. Gap 10.3 pp. Tracked sales Rs 5.4 L vs Rs 12 L base forecast (provisional, not verified incremental). Activities 9 of 13 completed at this checkpoint.',
   'Verified issues: Dhanora demo stock pending; Wadi Gaon meeting field confirmation pending. Unverified hypotheses: follow-up quality, retailer advocacy, contact quality. Actual ROI not yet attributable.',
-  'Other priorities: Maize portfolio expansion Rs 15 L (Ambad HQ, Pimpalgaon) - draft campaign Rs 2.2 L, not modelled; retailer advocacy programme not drafted. Kharif 2025: Ghansawangi soybean sulphur campaign ROI 1.8x, Badnapur cotton retailer activation ROI 1.4x.',
+  'Other priorities: Maize portfolio expansion Rs 15 L (Ambad HQ, Pimpalgaon) - draft campaign Rs 2.2 L, not modelled; retailer advocacy programme not drafted. Kharif 2025: Ghansawangi soybean sulphur campaign ROI 1.80×, Badnapur cotton retailer activation ROI 1.40×.',
 ].join('\n');
 
 const TM_SUGGESTIONS = [
   'Why is Croptek adoption lower in Dhanora, and what should I do?',
   'Which activities are at risk this week?',
-  'How can I close the ₹13 L gap to the onion objective?',
-  'Is the Maize ₹15 L priority ready for a campaign?',
-  'Which dealers should I review to close the ₹40 L ABP gap?',
+  'How can I close the ₹13.00 L gap to the onion objective?',
+  'Is the Maize ₹15.00 L priority ready for a campaign?',
+  'Which dealers should I review to close the ₹40.00 L ABP gap?',
 ];
 
 export function TmAi1() {
@@ -399,7 +399,7 @@ export function TmAi1() {
             <dl className="tm-facts">
               <div><dt>Campaign</dt><dd>{CAMPAIGN.name}</dd></div>
               <div><dt>Selected village</dt><dd>Dhanora</dd></div>
-              <div><dt>Linked objective</dt><dd>₹25 L — already in the ₹4.20 Cr Ambad ABP</dd></div>
+              <div><dt>Linked objective</dt><dd>₹25.00 L — already in the ₹4.20 Cr Ambad ABP</dd></div>
               <div><dt>Status</dt><dd><Status>In progress</Status></dd></div>
             </dl>
           </Panel>

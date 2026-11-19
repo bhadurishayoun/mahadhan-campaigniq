@@ -45,7 +45,7 @@ export function ImpactDashboard() {
   const channelData = useDataset('impact.channel_effectiveness', CHANNEL_ROWS);
   const [cluster, setCluster] = useState('Dhanora');
   const [channel, setChannel] = useState('Retailer Activation');
-  const sel = clusterData.rows.find((r) => r.cluster === cluster) ?? clusterData.rows[1] ?? clusterData.rows[0];
+  const sel = clusterData.rows.find((r) => r.cluster === cluster) ?? clusterData.rows[1] ?? clusterData.rows[0] ?? CLUSTER_ROWS[0];
 
   return (
     <div className="s7-page">
@@ -69,11 +69,11 @@ export function ImpactDashboard() {
       <ContextStrip items={[
         { icon: <Target size={16} />, label: 'Campaign', value: 'Croptek Onion Conversion — Ambad, Jalna' },
         { icon: <Users size={16} />, label: 'Target Farmers (Plan)', value: '1,832' },
-        { icon: <Coins size={16} />, label: 'Campaign Budget', value: '₹8.0 lakh' },
+        { icon: <Coins size={16} />, label: 'Campaign Budget', value: '₹8.00 lakh' },
         { icon: <Sprout size={16} />, label: 'Forecast Adopters', value: '532' },
         { icon: <Boxes size={16} />, label: 'Projected Demand', value: '209 MT' },
         { icon: <BarChart3 size={16} />, label: 'Projected Revenue', value: '₹52 lakh' },
-        { icon: <IndianRupee size={16} />, label: 'Projected Contribution', value: '₹13.7 lakh' },
+        { icon: <IndianRupee size={16} />, label: 'Projected Contribution', value: '₹13.70 lakh' },
         { icon: <Gauge size={16} />, label: 'Forecast Net ROI', value: '0.71×' },
       ]} />
 
@@ -146,7 +146,7 @@ export function ImpactDashboard() {
               { key: 'reached', label: 'Reached', align: 'right' },
               { key: 'trials', label: <>Trials<br />Generated</>, align: 'right' },
               { key: 'conv', label: <>Adopter<br />Conversion</>, align: 'right' },
-              { key: 'cei', label: <>Cost Efficiency Index<br /><small className="muted">(Adopters per ₹1 L)</small></>, align: 'right' },
+              { key: 'cei', label: <>Cost Efficiency Index<br /><small className="muted">(Adopters per ₹1.00 L)</small></>, align: 'right' },
               { key: 'rel', label: <>Relative<br />Effectiveness</>, align: 'center', render: (r) => <Pill tone={REL_TONE[r.rel]}>{r.rel}</Pill> },
             ]}
             rows={channelData.rows}
@@ -162,9 +162,9 @@ export function ImpactDashboard() {
               <div className="s7-list">
                 <div><span><Users size={13} />Realized Demand</span><b>102 MT</b></div>
                 <Progress value={102} max={209} label="49% of forecast" />
-                <div><span><BarChart3 size={13} />Estimated Revenue <small className="muted">(linked to campaign progress)</small></span><b>₹25.4 lakh</b></div>
+                <div><span><BarChart3 size={13} />Estimated Revenue <small className="muted">(linked to campaign progress)</small></span><b>₹25.40 lakh</b></div>
                 <Progress value={25.4} max={52} label="49%" />
-                <div><span><Coins size={13} />Estimated Contribution</span><b>₹6.3 lakh</b></div>
+                <div><span><Coins size={13} />Estimated Contribution</span><b>₹6.30 lakh</b></div>
                 <Progress value={6.3} max={13.7} label="46%" />
               </div>
             </div>
@@ -173,7 +173,7 @@ export function ImpactDashboard() {
               <div className="s7-list">
                 <div><span><Boxes size={13} />Projected Demand</span><b>209 MT</b></div>
                 <div><span><BarChart3 size={13} />Projected Revenue</span><b>₹52 lakh</b></div>
-                <div><span><Coins size={13} />Projected Contribution</span><b>₹13.7 lakh</b></div>
+                <div><span><Coins size={13} />Projected Contribution</span><b>₹13.70 lakh</b></div>
                 <div><span><Gauge size={13} />Forecast Net ROI</span><b>0.71×</b></div>
               </div>
             </div>
@@ -252,7 +252,7 @@ export function DiagnosticsStudio() {
   const [insight, setInsight] = useState('under');
   const [saved, setSaved] = useState<boolean[]>(LEARNINGS.map(() => true));
   const [geoSel, setGeoSel] = useState('Dhanora');
-  const geo = geoData.rows.find((g) => g.cluster === geoSel) ?? geoData.rows[2] ?? geoData.rows[0];
+  const geo = geoData.rows.find((g) => g.cluster === geoSel) ?? geoData.rows[2] ?? geoData.rows[0] ?? GEO_ROWS[0];
 
   const dirArrow = (r: GeoRow) => (r.dir === 'up' ? '▲ ' : r.dir === 'down' ? '▼ ' : r.dir === 'flat' ? '↑ ' : '');
   const dirColor = (r: GeoRow) => (r.dir === 'up' ? 'var(--green)' : r.dir === 'down' ? 'var(--red)' : 'var(--muted)');

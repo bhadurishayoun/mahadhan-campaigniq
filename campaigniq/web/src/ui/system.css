@@ -1,8 +1,8 @@
 /* Consistency system (CLAUDE.md). Tokens only - no hex values here. */
 
 /* ---------- Page frame */
-.page:has(> .cq-page) { padding: 0; gap: 0; }
-.cq-page { display: flex; flex-direction: column; gap: 16px; padding: 20px 28px; min-width: 0; }
+.app .page.cq-page { display: flex; flex-direction: column; gap: 16px; padding: 20px 28px; min-width: 0; counter-reset: cqsec; }
+.cq-frame, .cq-page > .persona-page, .cq-page > .bh-page, .cq-page > .pm-page { display: flex; flex-direction: column; gap: 16px; min-width: 0; padding: 0; }
 .cq-page-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
 .cq-page-header h1 { font-size: 22px; line-height: 28px; font-weight: 700; color: var(--brand-900); letter-spacing: -.01em; }
 .cq-page-header p { margin-top: 2px; font-size: 13px; line-height: 18px; color: var(--ink-600); }
@@ -31,7 +31,8 @@
 /* ---------- Section title, card, grids */
 .cq-section-title { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
 .cq-section-title h2 { font-size: 13px; line-height: 18px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-900); }
-.cq-section-title h2 b { color: var(--brand-500); margin-right: 6px; }
+.cq-section-title h2 .cq-num { color: var(--brand-500); margin-right: 6px; }
+.cq-section-title h2 .cq-num::before { counter-increment: cqsec; content: counter(cqsec) "."; }
 .cq-section-title h2 em { font-style: normal; font-weight: 600; color: var(--ink-400); letter-spacing: .03em; }
 .cq-section-title p { margin-top: 2px; font-size: 13px; line-height: 18px; color: var(--ink-600); }
 .cq-section-action { flex-shrink: 0; }
@@ -71,6 +72,14 @@
 .cq-btn-primary { background: var(--brand-700); border-color: var(--brand-700); color: var(--surface); }
 .cq-btn-primary:hover { background: var(--brand-900); color: var(--surface); }
 .cq-btn-sm { height: 30px; padding: 0 10px; font-size: 12px; }
+.cq-next-btns, .cq-next-slot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cq-next-slot:not(:empty) + .cq-back-default { display: none; }
+.cq-next-slot :is(button, a) { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); color: var(--ink-900); font-size: 13px; font-weight: 600; box-shadow: none; text-decoration: none; cursor: pointer; }
+.cq-next-slot :is(button, a):hover { border-color: var(--brand-500); color: var(--brand-700); }
+.cq-next-slot :is(.cq-btn-primary, .btn-primary, .primary, .iq-btn-primary, .pm-btn-primary, .gold, .btn-gold, .btn-dark, [data-primary]) { background: var(--brand-700); border-color: var(--brand-700); color: var(--surface); }
+.cq-next-slot :is(.cq-btn-primary, .btn-primary, .primary, .iq-btn-primary, .pm-btn-primary, .btn-gold, .btn-dark, [data-primary]):hover { background: var(--brand-900); color: var(--surface); }
+.cq-next-slot :is(div, span, p) { display: contents; }
+.cq-next-slot small, .cq-next-slot .tm-footer-meta { display: none; }
 .cq-footer { font-size: 12px; line-height: 16px; color: var(--ink-400); text-align: center; }
 
 /* ---------- Tables */
@@ -121,7 +130,7 @@
 .cq-heat-total, .cq-heat-foot td { font-size: 13px; font-weight: 700; color: var(--ink-900); }
 
 @media (max-width: 760px) {
-  .cq-page { padding: 16px; }
+  .app .page.cq-page { padding: 16px; }
   .cq-chips { justify-content: flex-start; }
 }
 
@@ -133,3 +142,74 @@
 }
 @media (max-width: 1499px) { .cq-kpis:has(> :nth-child(6)):not(:has(> :nth-child(7))) { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .cq-kpis:has(> :nth-child(6)) { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); } }
+
+/* ---------- Phase C bridges */
+.cq-card-sub { font-size: 13px; line-height: 18px; color: var(--ink-600); }
+.cq-card-soft, .cq-card-tint { background: var(--surface); }
+.cq-ai-body { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 19px; color: var(--ink-600); }
+.cq-ai-body > svg { flex-shrink: 0; margin-top: 2px; color: var(--brand-500); }
+.cq-ai-body p, .cq-ai-body li { font-size: 13px; line-height: 19px; }
+.cq-metric-btn { display: flex; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; }
+.cq-metric-btn > .cq-metric { flex: 1; }
+.cq-metric-btn:hover > .cq-metric { border-color: var(--brand-500); }
+.cq-section-title h2 svg { display: none; }
+.cq-section-action { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cq-kpis > .cq-metric { min-height: 0; }
+/* Next steps: at most four buttons; free text/labels never shown in the bar. */
+.cq-next-slot > :nth-child(n + 5) { display: none; }
+.cq-next-slot > span:not(:has(button, a)), .cq-next-slot > svg, .cq-next-slot .sep, .cq-next-slot .muted { display: none !important; }
+/* In-card content switches share one pill style. */
+.cq-card .tabs, .cq-card .s6-toggle { display: inline-flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; border: 0; background: none; }
+.cq-card .tabs > button, .cq-card .s6-toggle > button { height: 30px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--r-pill); background: var(--surface); color: var(--ink-600); font-size: 12px; font-weight: 600; box-shadow: none; }
+.cq-card .tabs > button.active, .cq-card .s6-toggle > button.active { background: var(--brand-700); border-color: var(--brand-700); color: var(--surface); }
+
+/* ---------- MH sections → shared card + numbered section title */
+.app .persona-page-mh .mh-section { display: flex; flex-direction: column; gap: 14px; padding: 18px 20px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); box-shadow: var(--sh-1); overflow: visible; }
+.app .persona-page-mh :is(.mh-section, .mh-detail-observations, .mh-stage-progress) > h2 { display: flex; align-items: baseline; gap: 6px; margin: 0; padding: 0; min-height: 0; background: none !important; color: var(--ink-900) !important; border: 0; font-size: 13px !important; line-height: 18px !important; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.app .persona-page-mh :is(.mh-section, .mh-detail-observations, .mh-stage-progress) > h2::before { counter-increment: cqsec; content: counter(cqsec) "."; color: var(--brand-500); }
+.app .persona-page-mh :is(.mh-section, .mh-detail-observations, .mh-stage-progress) > h2 svg { display: none; }
+.app .persona-page-mh :is(.mh-section, .mh-detail-observations, .mh-stage-progress) > h2 :is(small, span) { font-weight: 600; color: var(--ink-400); text-transform: none; letter-spacing: 0; }
+
+/* Long tables scroll inside their card (sticky header) so pages never run to thousands of rows. */
+.cq-card :is(.table-wrap, .cq-table-scroll, .iq-table-scroll, .tbl-wrap) { max-height: 520px; overflow: auto; }
+.cq-card :is(.table-wrap, .cq-table-scroll, .iq-table-scroll, .tbl-wrap) thead th { position: sticky; top: 0; z-index: 1; }
+
+/* Text floor (CLAUDE.md §12): unstyled <small>/<sub>/<sup> would render at parent ÷ 1.2 (10–11.7px). */
+.app :is(small, sub, sup) { font-size: max(12px, 0.8333em); }
+
+/* ---------- Every table inside a card follows the cq-table look (CLAUDE.md §10). */
+.app .cq-card table:not(.cq-heat) { display: table; width: 100%; border-collapse: collapse; font-size: 14px; }
+.app .cq-card table:not(.cq-heat) th { padding: 8px 12px; background: var(--neutral-bg); color: var(--ink-600); font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; text-align: left; border: 0; white-space: nowrap; }
+.app .cq-card table:not(.cq-heat) td { padding: 10px 12px; border: 0; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 20px; color: var(--ink-900); vertical-align: middle; background: none; }
+.app .cq-card table:not(.cq-heat) :is(tfoot td, tr.total td, tr.totals td) { font-weight: 700; border-top: 2px solid var(--line); }
+.app .cq-card :is(.bh-table-wrap, .table-wrap, .iq-table-wrap) { width: 100%; }
+
+/* ---------- No dead space: ranked lists stretch to the card height they share with a taller neighbour. */
+.cq-card > .cq-ranked, .cq-card > * > .cq-ranked:only-child { flex: 1 1 auto; align-content: space-evenly; }
+.cq-card > .bh-bars, .cq-card > .pm-box-body:has(> .cq-ranked:only-child) { display: flex; flex-direction: column; flex: 1 1 auto; }
+
+/* ---------- Next steps bar: real buttons, exactly one green primary (the last visible one when none is marked). */
+.app .cq-next-slot :is(button, a) { height: 36px; padding: 0 14px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); color: var(--ink-900); font-size: 13px; font-weight: 600; text-decoration: none; box-shadow: none; }
+.app .cq-next-slot:not(:has(:is(.cq-btn-primary, .btn-primary, .primary, .iq-btn-primary, .btn-gold, .btn-dark))) > :is(button, a):is(:last-child:nth-child(-n + 4), :nth-child(4)) { background: var(--brand-700); border-color: var(--brand-700); color: var(--surface); }
+.app .cq-next-slot :is(.cq-btn-primary, .btn-primary, .primary, .iq-btn-primary, .btn-gold, .btn-dark) { background: var(--brand-700); border-color: var(--brand-700); color: var(--surface); }
+.cq-card-body { display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; }
+.cq-chart-fill { position: relative; flex: 1 1 auto; }
+.cq-chart-fill > .recharts-responsive-container { position: absolute; inset: 0; }
+
+/* Overflow guards: maps clip to their frame; section-title rows wrap instead of pushing the page wide. */
+.app .imap-svg { overflow: hidden; max-width: 100%; }
+.app :has(> .imap-svg) { overflow: hidden; max-width: 100%; }
+.cq-section-title { flex-wrap: wrap; min-width: 0; }
+.cq-section-title > div:first-child { min-width: 0; flex: 1 1 260px; }
+.cq-section-action { min-width: 0; max-width: 100%; }
+/* Grid children may shrink below their content width (prevents page-wide horizontal scroll). */
+.cq-card :is([class*="-cov"], [class*="-split"], [class*="-grid"], .grid) > * { min-width: 0; }
+.cq-card :is(.warn-box, .danger-box, .info-box) { max-width: 100%; overflow-wrap: anywhere; }
+.app .persona-page-mh .mh-section table { width: 100%; border-collapse: collapse; }
+.app .persona-page-mh .mh-section table th { padding: 8px 12px; background: var(--neutral-bg); color: var(--ink-600); font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; text-align: left; border: 0; }
+.app .persona-page-mh .mh-section table td { padding: 10px 12px; border: 0; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 20px; background: none; }
+.app .cq-page :is(.grid, .cq-grid2, .cq-grid3, [class*="-grid"], [class*="-split"]) > * { min-width: 0; }
+.app .page.cq-page { width: 100%; max-width: 100%; box-sizing: border-box; overflow-x: clip; }
+/* Any wrapper that directly holds a table scrolls horizontally inside its card instead of being clipped. */
+.app .cq-card :has(> table:not(.cq-heat)) { max-width: 100%; overflow-x: auto; }
+.app .cq-card > table:not(.cq-heat) { display: block; overflow-x: auto; }

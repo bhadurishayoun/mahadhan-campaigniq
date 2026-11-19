@@ -21,7 +21,7 @@
 .app-mh .mh-topctx svg { color: var(--ink-600); }
 .app-mh .mh-topctx label { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; color: var(--ink-600); font-size: var(--fs-caption); }
 .app-mh .mh-topctx select { border: 1px solid var(--line); border-radius: var(--r-sm); padding: 4px 8px; background: var(--brand-50); color: var(--brand-700); font-weight: 700; font-size: var(--fs-body); }
-.app-mh .search { display: none; }
+/* search shown in every persona top bar */
 .app-mh .user-role { display: none; }
 .app-mh .avatar { background: var(--brand-700); }
 .persona-page-mh { gap: 11px; color: var(--brand-900); }

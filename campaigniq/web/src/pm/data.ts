@@ -22,7 +22,7 @@ export const AMBAD = {
   abp: '₹4.20 Cr',
   submitted: '₹3.80 Cr',
   gap: '₹0.40 Cr',
-  gapLakh: '₹40 L',
+  gapLakh: '₹40.00 L',
 };
 
 export const CROP_PLAN = [
@@ -34,7 +34,7 @@ export const CROP_TOTAL = '₹3.80 Cr';
 export const ONION_APPROVED_LATER = '₹1.90 Cr';
 
 export const DHANORA = {
-  histRev: '₹10 L', histVol: '10 MT', tgtRev: '₹12 L', tgtVol: '15 MT',
+  histRev: '₹10.00 L', histVol: '10 MT', tgtRev: '₹12.00 L', tgtVol: '15 MT',
   prevAcres: '500 acres', reqAcres: '750 acres', rate: '20 kg/acre',
   realPrev: '₹100/kg', realNew: '₹80/kg',
 };
@@ -50,7 +50,7 @@ export const THEME = {
 
 export const EVIDENCE = {
   penetration: '14–18% (indicative)',
-  quarterly: ['₹40 L', '₹43 L', '₹45 L', '₹48 L'],
+  quarterly: ['₹40.00 L', '₹43.00 L', '₹45.00 L', '₹48.00 L'],
   trials: 150, purchases: 54, trialToPurchase: '36%',
 };
 
@@ -95,12 +95,12 @@ export const COLLATERALS: { name: string; kind: CreativeKind; lang: string; form
 ];
 
 /* Business case */
-export const INVESTMENT = '₹12 L';
+export const INVESTMENT = '₹12.00 L';
 export const MARGIN = '35% (assumed)';
 export const SCENARIOS = [
-  { name: 'Conservative', sales: '₹36 L', contribution: '₹12.6 L', roi: '+0.05x', salesL: 36, contribL: 12.6 },
-  { name: 'Base', sales: '₹48 L', contribution: '₹16.8 L', roi: '+0.40x', salesL: 48, contribL: 16.8 },
-  { name: 'Optimistic', sales: '₹60 L', contribution: '₹21.0 L', roi: '+0.75x', salesL: 60, contribL: 21 },
+  { name: 'Conservative', sales: '₹36.00 L', contribution: '₹12.60 L', roi: '+0.05×', salesL: 36, contribL: 12.6 },
+  { name: 'Base', sales: '₹48.00 L', contribution: '₹16.80 L', roi: '+0.40×', salesL: 48, contribL: 16.8 },
+  { name: 'Optimistic', sales: '₹60.00 L', contribution: '₹21.00 L', roi: '+0.75×', salesL: 60, contribL: 21 },
 ];
 
 /* Territory activity plan (local, Ambad) */
@@ -122,7 +122,7 @@ export const ACTIVITIES = [
 export const ACTIVITY_TOTAL = { units: 13, done: 9, budget: '₹3.00 L', completion: '69.2%' };
 
 /* Interim campaign results (local Ambad, illustrative) */
-export const IMPACT = { reached: 640, trials: 160, adopters: 72, rate: '45.0%', linkedSales: '₹5.4 L', activities: '9 / 13' };
+export const IMPACT = { reached: 640, trials: 160, adopters: 72, rate: '45.0%', linkedSales: '₹5.40 L', activities: '9 / 13' };
 export const VILLAGES = [
   { village: 'Dhanora', reached: 280, trials: 62, adopters: 24, rate: 38.7 },
   { village: 'Wadi Gaon', reached: 360, trials: 98, adopters: 48, rate: 49.0 },

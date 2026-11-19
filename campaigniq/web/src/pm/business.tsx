@@ -37,7 +37,7 @@ export function Pm8() {
                 ['', ...SCENARIOS.map((_, index) => <Btn small variant={index === scenario ? 'primary' : 'outline'} onClick={() => setScenario(index)}>{index === scenario ? 'Selected' : 'Select'}</Btn>)],
               ]}
             />
-            <Muted>ROI = (contribution − ₹12 L) ÷ ₹12 L. All figures are PM forecasts; none are actual or approved.</Muted>
+            <Muted>ROI = (contribution − ₹12.00 L) ÷ ₹12.00 L. All figures are PM forecasts; none are actual or approved.</Muted>
           </Box>
           <Box title="Core assumptions (editable)" tone="soft" actions={<Btn small to="pm.8b">View Assumptions & Calculation Logic</Btn>}>
             <div className="pm-form pm-form-2">
@@ -68,7 +68,7 @@ export function Pm8() {
               { label: 'Attribution method', status: 'Pending' },
             ]} />
           </Box>
-          <p className="pm-callout">The region-wide ₹12 L investment is an envelope to be allocated later to local territory campaigns, not additive to local spend. Expected incremental sales must be reconciled to approved ABP objectives and an incremental baseline, never simply added to ABP.</p>
+          <p className="pm-callout">The region-wide ₹12.00 L investment is an envelope to be allocated later to local territory campaigns, not additive to local spend. Expected incremental sales must be reconciled to approved ABP objectives and an incremental baseline, never simply added to ABP.</p>
         </div>
       </div>
       <Actions
@@ -152,7 +152,7 @@ const ASSUMPTIONS = [
   { parameter: 'Expected incremental purchasers', value: 'Pending', method: 'Eligible audience × attributable incremental conversion', source: 'Derived', status: 'Pending' },
   { parameter: 'Incremental product volume', value: 'Pending', method: 'Incremental purchasers × forecast quantity per purchaser', source: 'Derived', status: 'Pending' },
   { parameter: 'Net realization per SKU', value: 'Pending', method: 'Authorized price list less schemes', source: 'Product Master / ERP', status: 'Pending' },
-  { parameter: 'Incremental sales', value: '₹48 L base-case target', method: 'Incremental volume × net realization', source: 'PM proposal', status: 'Not bottom-up reconciled' },
+  { parameter: 'Incremental sales', value: '₹48.00 L base-case target', method: 'Incremental volume × net realization', source: 'PM proposal', status: 'Not bottom-up reconciled' },
   { parameter: 'Contribution margin', value: '35% assumed', method: 'Finance standard margin', source: 'Finance', status: 'Pending Finance verification' },
   { parameter: 'Campaign investment', value: INVESTMENT, method: 'PM proposal (regional envelope)', source: 'PM', status: 'Proposed' },
 ];
@@ -170,7 +170,7 @@ export function Pm8b() {
         { label: 'Proposed regional investment', value: INVESTMENT },
         { label: 'Forecast incremental sales', value: BASE.sales },
         { label: `Forecast contribution (${MARGIN})`, value: BASE.contribution },
-        { label: 'Forecast net ROI', value: `${BASE.roi} = (₹16.8 L − ₹12 L) ÷ ₹12 L`, tone: 'amber' },
+        { label: 'Forecast net ROI', value: `${BASE.roi} = (₹16.80 L − ₹12.00 L) ÷ ₹12.00 L`, tone: 'amber' },
       ]} />
       <div className="pm-two">
         <div className="pm-stack">
@@ -182,7 +182,7 @@ export function Pm8b() {
             <Muted>The regional investment envelope is distinct from subsequent local territory budget allocations (not additive). The hypothetical 36% matched pilot trial-to-purchase is historical observed conversion, not proof of weakness and not incremental conversion.</Muted>
           </Box>
           <Box title="Financial driver bridge" tone="soft">
-            <Workflow compact steps={[{ label: 'Audience', sub: 'Pending', state: 'pending' }, { label: 'Incremental Buyers', sub: 'Pending' }, { label: 'Incremental Volume', sub: 'Pending' }, { label: 'Incremental Sales', sub: '₹48 L target (not reconciled)' }]} />
+            <Workflow compact steps={[{ label: 'Audience', sub: 'Pending', state: 'pending' }, { label: 'Incremental Buyers', sub: 'Pending' }, { label: 'Incremental Volume', sub: 'Pending' }, { label: 'Incremental Sales', sub: '₹48.00 L target (not reconciled)' }]} />
           </Box>
         </div>
         <div className="pm-stack">
@@ -252,7 +252,7 @@ export function Pm8c() {
             <div className="slider-row"><span>Incremental sales</span><input type="range" min={20} max={80} value={sales} onChange={(event) => setSales(Number(event.target.value))} /><b>₹{sales} L</b></div>
             <div className="slider-row"><span>Margin</span><input type="range" min={20} max={50} value={margin} onChange={(event) => setMargin(Number(event.target.value))} /><b>{margin}%</b></div>
             <div className="slider-row"><span>Investment</span><input type="range" min={6} max={24} value={invest} onChange={(event) => setInvest(Number(event.target.value))} /><b>₹{invest} L</b></div>
-            <Facts cols={2} rows={[['What-if contribution', `₹${contrib.toFixed(1)} L`], ['What-if net ROI', <b>{roi >= 0 ? '+' : ''}{roi.toFixed(2)}x</b>]]} />
+            <Facts cols={2} rows={[['What-if contribution', `₹${contrib.toFixed(2)} L`], ['What-if net ROI', <b>{roi >= 0 ? '+' : ''}{roi.toFixed(2)}x</b>]]} />
           </Box>
           <AiBox title="AI Scenario Risk" items={[
             { text: 'Missing historical conversion comparator.', tone: 'amber' },
@@ -458,7 +458,7 @@ export function PmOpt1() {
           <Box title="Current approved campaign version">
             <Table head={['Item', 'Current authorized state', 'Revision control']} rows={[
               ['Campaign', 'Retailer-Led Croptek Conversion · West Region', 'Current version stays active'],
-              ['Investment envelope', 'Approved version · ₹12 L allocation', 'Revalidate if materially changed'],
+              ['Investment envelope', 'Approved version · ₹12.00 L allocation', 'Revalidate if materially changed'],
               ['Territory availability', 'Previously released recommendations', 'Do not overwrite existing release'],
             ]} />
           </Box>

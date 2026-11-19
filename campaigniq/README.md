@@ -43,6 +43,7 @@ All data is **illustrative**: the backend is filled from a synthetic data workbo
 
 | Commit | Change |
 |---|---|
+| (this) | **Consistency system, phases B + C**: one frame on all 137 routes (header + filter chips, numbered tabs, single Next steps bar + source footer, error boundary); every filter moved to the sidebar box (MH scope/region/state/crop/product, legacy filters, S1/S4/S6 screen filters via `useSidebarField`); breadcrumbs, V2 badge, per-card expand/info buttons and decorative glyphs removed. Persona kits re-implemented on the system (cards, KPIs, charts with auto insight, footers), auto-numbered sections, MH green bands removed. Numbers: ₹ and × always 2 decimals, one ROI value per row (investment-weighted). Fixed crashes on S3.4/S5.3/S7.1/S7.2 when a dataset is empty. |
 | (this) | **Consistency system, phase A**: new shared components in `web/src/ui/system.tsx` (Page, PageHeader + filter chips, NumberedTabs, numbered SectionTitle/Card, InsightStrip, Metric/KpiStrip, ActionCard, NextSteps, StatusPill, `cq-table`), charts in `ui/viz.tsx` (RankedBars, GroupedColumns, TrendLine, DonutMetric, HeatGrid) driven by `chartTheme`, and persona filters in the sidebar (`ui/filters.tsx`). BH.2 and TM.1 rebuilt on them. Rules live in `campaigniq/CLAUDE.md`. |
 | `a127d87` | Screen, tab, breadcrumb and panel titles rewritten in plain business language across all personas (e.g. "National Business & Marketing Command Centre" → "Business & Marketing Overview"); docs use the new names; naming convention added below |
 | `93585cc` | README / DEPLOYMENT rewritten as a handover guide (this section) |
@@ -85,7 +86,7 @@ Full history: `git log --oneline`.
 
 ### Suggested next steps (in priority order)
 
-0. **Finish the consistency rollout** tracked in `campaigniq/CLAUDE.md` (phases B to E: page frame + sidebar filters on every route, migrate each persona, consistency checks, release screenshots). BH.2 and TM.1 are the reference pages.
+0. **Finish the consistency rollout** (phases D and E in `campaigniq/CLAUDE.md`): tighten the 11 BH cards that still show blank space beside a taller neighbour, split multi-value cells (e.g. BH.1 "₹14.20 Cr / ₹16.00 Cr · 88.8%"), trim legacy helper text on S1–S7 ("Opened from…", story-flow strips), then release screenshots and deploy.
 1. **Recalibrate the synthetic data**: in `generate_synthetic_workbook.py` derive marketing-unit crop area from each district's real village count, and lower the treated share so a taluka-sized territory sells ≈ ₹3–4 Cr/year; regenerate, run `python -m campaign_api.workbook`, run the tests.
 2. **Rework the Marketing Head and Business Head workspaces** against `ui-mockups/V2-persona-mockup-specs.md`, the same way TM was done (hero element per screen, sub-tabs, footer with "Recommended next", no decorative charts). BH had only a brief in the mockup chat, no image prompts.
 3. **Connect persona screens to backend data**: replace the constants in `web/src/*/data.ts` with `useDataset()` / API calls, keeping the current values as the demo fallback.

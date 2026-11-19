@@ -1,7 +1,8 @@
+import { useSidebarField } from '../ui/filters';
 import { useState, type ReactNode } from 'react';
 import {
   AlertTriangle, BarChart3, Calendar, CalendarDays, Camera, Check, CheckCircle2, ClipboardCheck, Download, FileText,
-  Filter, LayoutGrid, Link2, List, ListChecks, MapPin, MessageSquare, Package, Plus, RotateCcw, Shuffle, Smartphone,
+  LayoutGrid, Link2, List, ListChecks, MapPin, MessageSquare, Package, Plus, RotateCcw, Shuffle, Smartphone,
   Sparkles, Sprout, Store, Target, Truck, UserCheck, UserPlus, Users, Workflow, X, ArrowUpCircle, Eye,
 } from 'lucide-react';
 import { useNav } from '../nav';
@@ -493,7 +494,7 @@ export function ActivityWorkspace() {
   const [cards, setCards] = useState<Card[]>(INITIAL_CARDS);
   const [selectedId, setSelectedId] = useState('demo');
   const [view, setView] = useState<'board' | 'list'>('board');
-  const [typeFilter, setTypeFilter] = useState('All Activity Types');
+  const [typeFilter] = useSidebarField('activityType', 'Activity type', ['All Activity Types', ...Object.keys(TYPE_ICON)]);
   const [tab, setTab] = useState(EVIDENCE_TABS[0]);
   const [tasks, setTasks] = useState(INITIAL_TASKS);
   const [verified, setVerified] = useState(false);
@@ -605,12 +606,6 @@ export function ActivityWorkspace() {
             icon={<Workflow size={16} />}
             title="Activity Management Board — Ambad Croptek Onion Conversion"
             actions={<>
-              <span className="row small"><Filter size={13} /><select className="s6-select" defaultValue="All Activities"><option>All Activities</option><option>My Activities</option><option>At Risk Only</option></select></span>
-              <select className="s6-select" defaultValue="Ambad (Jalna)"><option>Ambad (Jalna)</option>{CLUSTERS.map((c) => <option key={c}>{c}</option>)}</select>
-              <select className="s6-select" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
-                <option>All Activity Types</option>
-                {Object.keys(TYPE_ICON).map((t) => <option key={t}>{t}</option>)}
-              </select>
               <div className="s6-toggle">
                 <button type="button" className={cx(view === 'board' && 'active')} onClick={() => setView('board')}><LayoutGrid size={12} />Board</button>
                 <button type="button" className={cx(view === 'list' && 'active')} onClick={() => setView('list')}><List size={12} />List</button>
@@ -709,7 +704,7 @@ export function ActivityWorkspace() {
                   </div>
                   <div className={ev('Geotag')}>
                     <h4><MapPin size={13} />Geotag (Event Location)</h4>
-                    <dl className="kv"><dt>Lat</dt><dd>19.8362° N</dd><dt>Long</dt><dd>75.7571° E</dd></dl>
+                    <dl className="kv"><dt>Lat</dt><dd>19.84° N</dd><dt>Long</dt><dd>75.76° E</dd></dl>
                     <div style={{ marginTop: 8 }}><Pill tone="green"><CheckCircle2 size={11} />Verified</Pill></div>
                   </div>
                 </Grid>

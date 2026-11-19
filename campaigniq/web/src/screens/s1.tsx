@@ -1,3 +1,4 @@
+import { useSidebarField } from '../ui/filters';
 import { useState, type ReactNode } from 'react';
 import {
   AlertTriangle, ArrowLeft, ArrowRight, BarChart3, Boxes, Calendar, CalendarClock, CheckCircle2, ChevronRight, CircleDollarSign,
@@ -223,11 +224,11 @@ function TrendChart({ months, series }: { months: string[]; series: { label: str
 type StateKey = 'Gujarat' | 'Maharashtra' | 'Karnataka' | 'Telangana' | 'Andhra Pradesh';
 
 const STATE_INFO: Record<StateKey, { text: string; value: string; coverage: string; crop: string }> = {
-  Gujarat: { text: 'Opportunity', value: '₹2.9 Cr', coverage: '51%', crop: 'Cotton & groundnut' },
-  Maharashtra: { text: 'Onion opportunity', value: '₹5.8 Cr', coverage: '42%', crop: 'Onion (Jalna, Dhule, Nashik)' },
-  Karnataka: { text: 'Sugarcane nutrition opportunity', value: '₹4.1 Cr', coverage: '46%', crop: 'Sugarcane' },
-  Telangana: { text: 'Opportunity', value: '₹2.6 Cr', coverage: '44%', crop: 'Cotton & maize' },
-  'Andhra Pradesh': { text: 'Horticulture specialty opportunity', value: '₹3.9 Cr', coverage: '38%', crop: 'Horticulture' },
+  Gujarat: { text: 'Opportunity', value: '₹2.90 Cr', coverage: '51%', crop: 'Cotton & groundnut' },
+  Maharashtra: { text: 'Onion opportunity', value: '₹5.80 Cr', coverage: '42%', crop: 'Onion (Jalna, Dhule, Nashik)' },
+  Karnataka: { text: 'Sugarcane nutrition opportunity', value: '₹4.10 Cr', coverage: '46%', crop: 'Sugarcane' },
+  Telangana: { text: 'Opportunity', value: '₹2.60 Cr', coverage: '44%', crop: 'Cotton & maize' },
+  'Andhra Pradesh': { text: 'Horticulture specialty opportunity', value: '₹3.90 Cr', coverage: '38%', crop: 'Horticulture' },
 };
 /** Market-potential band per state (same bands as the Market Potential legend: >=5, 3-5, 1-3, <1 Rs Cr). */
 const STATE_TONE: Record<StateKey, MapTone> = { Maharashtra: 4, Karnataka: 3, 'Andhra Pradesh': 3, Gujarat: 2, Telangana: 2 };
@@ -239,7 +240,7 @@ function IndiaMap({ selected, onSelect }: { selected: StateKey; onSelect: (s: St
     info: <>{STATE_INFO[key].text}: <b>{STATE_INFO[key].value}</b> · coverage {STATE_INFO[key].coverage} · {STATE_INFO[key].crop}</>,
     onSelect: () => onSelect(key),
   }]));
-  const onion = { info: 'Onion opportunity cluster (Maharashtra: ₹5.8 Cr, 42% coverage)', action: { label: 'Drill into Jalna / Ambad', run: () => go('s2.1') } };
+  const onion = { info: 'Onion opportunity cluster (Maharashtra: ₹5.80 Cr, 42% coverage)', action: { label: 'Drill into Jalna / Ambad', run: () => go('s2.1') } };
   return (
     <IndiaDistrictMap
       label="Crop × geography campaign opportunity across India"
@@ -271,11 +272,11 @@ type CampaignRow = {
 };
 
 const CAMPAIGNS: CampaignRow[] = [
-  { name: 'Croptek Onion Adoption', objective: 'Competitive conversion', crop: 'Onion', geography: 'Dhule & Jalna, MH', region: 'Maharashtra', budget: '₹0.80 Cr', stage: 'Execute', progress: 72, trial: '27%*', risk: 'Medium', roi: '2.1x', next: 'Resolve stock gap' },
-  { name: 'Solutek Grape Advisory', objective: 'Stage-based education', crop: 'Grapes', geography: 'Nashik, MH', region: 'Maharashtra', budget: '₹0.46 Cr', stage: 'Deploy', progress: 61, trial: '31%*', risk: 'Low', roi: '2.8x', next: 'Launch stage burst' },
-  { name: 'Smartek Sugarcane Push', objective: 'Repeat adoption', crop: 'Sugarcane', geography: 'North Karnataka', region: 'Karnataka', budget: '₹0.95 Cr', stage: 'Scale', progress: 84, trial: '36%*', risk: 'Low', roi: '3.0x', next: 'Expand cluster' },
-  { name: 'Cotton Micronutrient Recovery', objective: 'Underperforming territories', crop: 'Cotton', geography: 'Telangana', region: 'Telangana', budget: '₹0.38 Cr', stage: 'Review', progress: 49, trial: '16%*', risk: 'High', roi: '1.2x', next: 'Diagnose adoption drop' },
-  { name: 'Dealer Activation South', objective: 'Channel readiness', crop: 'Multi-crop', geography: 'AP & Telangana', region: 'AP & Telangana', budget: '₹0.55 Cr', stage: 'Execute', progress: 68, trial: '24%*', risk: 'Medium', roi: '1.9x', next: 'Increase field follow-up' },
+  { name: 'Croptek Onion Adoption', objective: 'Competitive conversion', crop: 'Onion', geography: 'Dhule & Jalna, MH', region: 'Maharashtra', budget: '₹0.80 Cr', stage: 'Execute', progress: 72, trial: '27%*', risk: 'Medium', roi: '2.10×', next: 'Resolve stock gap' },
+  { name: 'Solutek Grape Advisory', objective: 'Stage-based education', crop: 'Grapes', geography: 'Nashik, MH', region: 'Maharashtra', budget: '₹0.46 Cr', stage: 'Deploy', progress: 61, trial: '31%*', risk: 'Low', roi: '2.80×', next: 'Launch stage burst' },
+  { name: 'Smartek Sugarcane Push', objective: 'Repeat adoption', crop: 'Sugarcane', geography: 'North Karnataka', region: 'Karnataka', budget: '₹0.95 Cr', stage: 'Scale', progress: 84, trial: '36%*', risk: 'Low', roi: '3.00×', next: 'Expand cluster' },
+  { name: 'Cotton Micronutrient Recovery', objective: 'Underperforming territories', crop: 'Cotton', geography: 'Telangana', region: 'Telangana', budget: '₹0.38 Cr', stage: 'Review', progress: 49, trial: '16%*', risk: 'High', roi: '1.20×', next: 'Diagnose adoption drop' },
+  { name: 'Dealer Activation South', objective: 'Channel readiness', crop: 'Multi-crop', geography: 'AP & Telangana', region: 'AP & Telangana', budget: '₹0.55 Cr', stage: 'Execute', progress: 68, trial: '24%*', risk: 'Medium', roi: '1.90×', next: 'Increase field follow-up' },
 ];
 
 const STAGE_TONE: Record<string, Tone> = { Execute: 'green', Deploy: 'blue', Scale: 'dark', Review: 'amber' };
@@ -284,11 +285,11 @@ function PortfolioKpis({ icons }: { icons?: boolean }) {
   return (
     <KpiRow>
       <Kpi icon={<Megaphone size={18} />} label="Active Campaigns" value="28" sub="+12% vs. previous season" trend="up" spark={icons ? undefined : [4, 6, 5, 7, 6, 8, 7, 9]} />
-      <Kpi icon={<Wallet size={18} />} label="Campaign Investment" value="₹6.4 Cr" sub="+8% vs. plan" trend="up" spark={icons ? undefined : [3, 4, 4, 5, 6, 5, 7, 7]} />
+      <Kpi icon={<Wallet size={18} />} label="Campaign Investment" value="₹6.40 Cr" sub="+8% vs. plan" trend="up" spark={icons ? undefined : [3, 4, 4, 5, 6, 5, 7, 7]} />
       <Kpi icon={<Target size={18} />} label="Opportunity Coverage" value="63%" sub="+7 pp vs. previous season" trend="up" spark={icons ? undefined : [5, 4, 6, 5, 7, 6, 8, 9]} />
       <Kpi icon={<Users size={18} />} label="Verified Farmer Reach" value="3.2 Lakh" sub="+18% vs. previous season" trend="up" spark={icons ? undefined : [3, 5, 4, 6, 7, 6, 8, 9]} />
       <Kpi icon={<Sprout size={18} />} label="Trial-to-Adoption Rate" value="27%" sub="+6 pp vs. previous season" trend="up" spark={icons ? undefined : [4, 4, 5, 6, 5, 7, 7, 8]} />
-      <Kpi icon={<TrendingUp size={18} />} label="Est. Incremental Revenue" value="₹88.7 Cr" sub="+22% vs. previous season" trend="up" spark={icons ? undefined : [3, 4, 6, 5, 7, 8, 7, 9]} />
+      <Kpi icon={<TrendingUp size={18} />} label="Est. Incremental Revenue" value="₹88.70 Cr" sub="+22% vs. previous season" trend="up" spark={icons ? undefined : [3, 4, 6, 5, 7, 8, 7, 9]} />
     </KpiRow>
   );
 }
@@ -315,11 +316,11 @@ export function CommandCentre() {
     { label: 'Cotton Micronutrient', lines: ['Cotton', 'Micronutrient'], x: 0.16, y: 1.2, r: 6, color: 'var(--data-baseline)' },
   ];
   const pickedInfo: Record<string, string> = {
-    'Grape Solutek': 'Low spend, high ROI (2.9x) — candidate for scale-up in Nashik.',
-    'Sugarcane Programme': 'Highest spend and ROI (3.1x) — scale to adjacent North Karnataka districts.',
-    'Onion Conversion': 'Mid ROI (2.3x) held back by Jalna stock gap — see root cause.',
-    'Retailer Activation': 'ROI 1.9x — increase field follow-up to lift conversion.',
-    'Cotton Micronutrient': 'Lowest ROI (1.2x) — diagnose adoption drop before more spend.',
+    'Grape Solutek': 'Low spend, high ROI (2.90×) — candidate for scale-up in Nashik.',
+    'Sugarcane Programme': 'Highest spend and ROI (3.10×) — scale to adjacent North Karnataka districts.',
+    'Onion Conversion': 'Mid ROI (2.30×) held back by Jalna stock gap — see root cause.',
+    'Retailer Activation': 'ROI 1.90× — increase field follow-up to lift conversion.',
+    'Cotton Micronutrient': 'Lowest ROI (1.20×) — diagnose adoption drop before more spend.',
   };
 
   const columns = [
@@ -387,7 +388,7 @@ export function CommandCentre() {
             {[
               { icon: <AlertTriangle size={16} />, tone: 'amber' as Tone, title: 'Maharashtra onion campaigns show strong reach but low verified conversion; likely stock gap in Jalna and Dhule.', next: 'Reallocate stock and increase retailer activation.' },
               { icon: <Calendar size={16} />, tone: 'green' as Tone, title: 'Grape Solutek programmes in Nashik approaching stage window in 9 days.', next: 'Launch advisory burst and field demo follow-up.' },
-              { icon: <TrendingUp size={16} />, tone: 'green' as Tone, title: 'Sugarcane Smartek campaigns in North Karnataka delivering 1.4x better repeat adoption than benchmark.', next: 'Scale to adjacent districts.' },
+              { icon: <TrendingUp size={16} />, tone: 'green' as Tone, title: 'Sugarcane Smartek campaigns in North Karnataka delivering 1.40× better repeat adoption than benchmark.', next: 'Scale to adjacent districts.' },
             ].map((item) => (
               <AiItem key={item.title} icon={item.icon} tone={item.tone} title={item.title}
                 action={<div className="row" style={{ flexWrap: 'nowrap' }}>
@@ -453,7 +454,7 @@ export function PortfolioDashboard() {
   const { go, toast } = useNav();
   const campaigns = useDataset('portfolio.campaigns', CAMPAIGNS);
   const [query, setQuery] = useState('');
-  const [riskFilter, setRiskFilter] = useState('All');
+  const [riskFilter] = useSidebarField('risk', 'Risk level', [{ value: 'All', label: 'All risk levels' }, 'High', 'Medium', 'Low']);
   const [showAll, setShowAll] = useState(false);
 
   const q = query.trim().toLowerCase();
@@ -510,11 +511,11 @@ export function PortfolioDashboard() {
         </Panel>
         <Panel title="Estimated Return on Campaign Spend">
           <HBars max={3.2} rows={[
-            { label: 'Smartek Sugarcane', value: 3.0, display: '3.0x', tone: 'dark' },
-            { label: 'Solutek Grape', value: 2.8, display: '2.8x', tone: 'dark' },
-            { label: 'Croptek Onion', value: 2.1, display: '2.1x', tone: 'green' },
-            { label: 'Dealer Activation South', value: 1.9, display: '1.9x', tone: 'green' },
-            { label: 'Cotton Micronutrient', value: 1.2, display: '1.2x', tone: 'lime' },
+            { label: 'Smartek Sugarcane', value: 3.0, display: '3.00×', tone: 'dark' },
+            { label: 'Solutek Grape', value: 2.8, display: '2.80×', tone: 'dark' },
+            { label: 'Croptek Onion', value: 2.1, display: '2.10×', tone: 'green' },
+            { label: 'Dealer Activation South', value: 1.9, display: '1.90×', tone: 'green' },
+            { label: 'Cotton Micronutrient', value: 1.2, display: '1.20×', tone: 'lime' },
           ]} />
           <p className="small muted" style={{ margin: '8px 0 0' }}>Compare campaign spend, ROI and adoption before shifting investment.</p>
         </Panel>
@@ -527,7 +528,7 @@ export function PortfolioDashboard() {
             </div>
             <div className="highlight-box small">
               <div className="row"><Pill tone="green" solid>SCALE</Pill><strong>Smartek Sugarcane · Karnataka</strong></div>
-              <p style={{ margin: '6px 0' }} className="muted">Highest sample ROI at 3.0x. Explore adjacent target clusters.</p>
+              <p style={{ margin: '6px 0' }} className="muted">Highest sample ROI at 3.00×. Explore adjacent target clusters.</p>
               <button type="button" className="s1-link" onClick={() => go('s1.3')}>Open Campaign Summary</button>
             </div>
           </div>
@@ -541,12 +542,6 @@ export function PortfolioDashboard() {
         actions={<>
           <div className="field" style={{ flexDirection: 'row' }}>
             <input placeholder="Search campaigns..." value={query} onChange={(e) => setQuery(e.target.value)} style={{ width: 190 }} />
-            <select value={riskFilter} onChange={(e) => setRiskFilter(e.target.value)}>
-              <option value="All">All risk levels</option>
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-            </select>
           </div>
           <button type="button" className="s1-link small" onClick={() => { setShowAll(true); toast('Showing all sample campaigns; full list of 28 loads from portfolio service'); }}>View all 28 →</button>
         </>}
@@ -583,7 +578,7 @@ type DecisionRow = { decision: string; owner: string; urgency: string; icon: Rea
 export function ExecutiveSummary() {
   const { go, toast } = useNav();
   const campaigns = useDataset('portfolio.campaigns', CAMPAIGNS);
-  const [campaign, setCampaign] = useState('Croptek Onion Adoption');
+  const [campaign] = useSidebarField('campaign', 'Campaign', campaigns.rows.map((c) => c.name), 'Croptek Onion Adoption');
   const [assigned, setAssigned] = useState<Record<string, boolean>>({});
   const [done, setDone] = useState<Record<number, boolean>>({});
 
@@ -596,9 +591,9 @@ export function ExecutiveSummary() {
   ];
   const statusTone: Record<string, Tone> = { 'On Track': 'green', 'Moderate Risk': 'amber', Behind: 'red', 'High Risk': 'red' };
   const geoRows: GeoRow[] = [
-    { geo: 'Dhule', reach: '28.6 K', trial: '41%', adoption: '34%', roi: '2.6x' },
-    { geo: 'Jalna', reach: '20.1 K', trial: '36%', adoption: '24%', roi: '1.5x' },
-    { geo: 'Nashik', reach: '29.7 K', trial: '40%', adoption: '32%', roi: '2.4x' },
+    { geo: 'Dhule', reach: '28.6 K', trial: '41%', adoption: '34%', roi: '2.60×' },
+    { geo: 'Jalna', reach: '20.1 K', trial: '36%', adoption: '24%', roi: '1.50×' },
+    { geo: 'Nashik', reach: '29.7 K', trial: '40%', adoption: '32%', roi: '2.40×' },
   ];
   const decisions: DecisionRow[] = [
     { decision: 'Reallocate Croptek stock to Jalna and expedite replenishment.', owner: 'Supply Lead', urgency: 'High', icon: <Package size={14} /> },
@@ -626,9 +621,6 @@ export function ExecutiveSummary() {
         </>}
       />
       <div className="s1-ctx">
-        <select value={campaign} onChange={(e) => { setCampaign(e.target.value); if (e.target.value !== 'Croptek Onion Adoption') toast(`Scorecard for ${e.target.value} uses portfolio sample data`); }}>
-          {campaigns.rows.map((c) => <option key={c.name}>{c.name}</option>)}
-        </select>
         <span><MapPin size={13} /> Maharashtra</span>
         <span><Sprout size={13} /> Onion</span>
         <span><Calendar size={13} /> Late Rabi 2026–27</span>
@@ -646,8 +638,8 @@ export function ExecutiveSummary() {
         <Kpi icon={<Users size={18} />} label="Verified Farmer Reach" value="78.4 K" sub="+16% vs. plan" trend="up" spark />
         <Kpi icon={<Target size={18} />} label="Engagement Rate" value="64%" sub="+8 pp vs. plan" trend="up" spark />
         <Kpi icon={<Sprout size={18} />} label="Trial-to-Adoption" value="29%" sub="+2 pp vs. plan" trend="up" spark />
-        <Kpi icon={<BarChart3 size={18} />} label="Estimated Incremental Revenue" value="₹2.1 Cr" sub="+19% vs. plan" trend="up" spark />
-        <Kpi icon={<Layers size={18} />} label="Campaign ROI" value="2.1x" sub="+0.3x vs. benchmark" trend="up" spark />
+        <Kpi icon={<BarChart3 size={18} />} label="Estimated Incremental Revenue" value="₹2.10 Cr" sub="+19% vs. plan" trend="up" spark />
+        <Kpi icon={<Layers size={18} />} label="Campaign ROI" value="2.10×" sub="+0.30× vs. benchmark" trend="up" spark />
       </KpiRow>
 
       <Grid cols="1.55fr 1fr">
@@ -923,14 +915,6 @@ export function RiskAnalysis() {
         subtitle="Croptek Onion Adoption / Diagnose low conversion in Jalna"
         back="s1.3"
         actions={<>
-          <Pill tone="lime">Opened from View Root Cause</Pill>
-          <label className="field" style={{ flexDirection: 'row', alignItems: 'center' }}>Campaign:
-            <select defaultValue="Croptek – Onion Adoption" onChange={(e) => toast(`Risk model for ${e.target.value} uses portfolio sample data`)}>
-              <option>Croptek – Onion Adoption</option>
-              <option>Cotton Micronutrient Recovery</option>
-              <option>Dealer Activation South</option>
-            </select>
-          </label>
         </>}
       />
 
@@ -994,7 +978,7 @@ export function RiskAnalysis() {
                 </div>
               ))}
               <div className="row-between">
-                <span className="small muted">Recommended: Combined Recovery Plan (best ROI 3.6x)</span>
+                <span className="small muted">Recommended: Combined Recovery Plan (best ROI 3.60×)</span>
                 <Btn variant="primary" icon={<ArrowRight size={14} />} to="s1.5">Open Recovery &amp; Replanning</Btn>
               </div>
             </div>
@@ -1073,16 +1057,16 @@ type Scenario = {
 const SCENARIOS: Scenario[] = [
   { key: 'A', name: 'Scenario A: Retailer Activation Boost', short: 'Retailer Activation Boost', icon: <Calendar size={20} />,
     actions: 'Onboard 25 additional retailers, stock replenishment in low-coverage clusters, retailer scheme push.',
-    uplift: 3.5, cost: '₹0.08 Cr', timeline: 'Low', risk: 'Medium', roi: '3.3x',
+    uplift: 3.5, cost: '₹0.08 Cr', timeline: 'Low', risk: 'Medium', roi: '3.30×',
     details: ['25 retailers identified across Wadi Gaon, Dhanora and Ambad HQ', 'Stock reallocation of 43 MT gap prioritised to Jalna', 'Retailer scheme push for 18 high-influence retailers'] },
   { key: 'B', name: 'Scenario B: Demo Plot Acceleration', short: 'Demo Plot Acceleration', icon: <Sprout size={20} />,
     actions: 'Add 5 demo plots, 2 field days, 1 advisory burst, follow-up visits.',
-    uplift: 4.2, cost: '₹0.11 Cr', timeline: 'Medium', risk: 'Low', roi: '3.4x',
+    uplift: 4.2, cost: '₹0.11 Cr', timeline: 'Medium', risk: 'Low', roi: '3.40×',
     details: ['5 new demo plots in high-potential clusters', '2 field days aligned with transplanting stage', '1 advisory burst to demo attendees'] },
   { key: 'C', name: 'Scenario C: Combined Recovery Plan', short: 'Combined Recovery Plan', icon: <Layers size={20} />,
     actions: 'Retailer activation + 5 demo plots + reschedule 2 field days + advisory burst.',
-    uplift: 7.0, cost: '₹0.17 Cr', timeline: 'Moderate', risk: 'Medium', roi: '3.6x',
-    details: ['Combines Scenario A and B levers', 'Weather-adjusted schedule for 2 field days', 'Best ROI (3.6x) and balanced execution risk'] },
+    uplift: 7.0, cost: '₹0.17 Cr', timeline: 'Moderate', risk: 'Medium', roi: '3.60×',
+    details: ['Combines Scenario A and B levers', 'Weather-adjusted schedule for 2 field days', 'Best ROI (3.60×) and balanced execution risk'] },
 ];
 
 const IMPACT_GROUPS = [
@@ -1214,7 +1198,7 @@ export function RecoveryReplanning() {
       <KpiRow>
         <Kpi icon={<Sprout size={18} />} label="Current Adoption" value="34%" sub="-6 pp vs. plan (40% target)" trend="down" spark={[30, 32, 31, 33, 34]} />
         <Kpi icon={<Target size={18} />} label="Target Adoption" value="40%" sub="Campaign target for Late Rabi 2026-27" />
-        <Kpi icon={<BarChart3 size={18} />} label="Campaign ROI" value="3.1x" sub="+0.3x vs. 2.8x plan" trend="up" spark />
+        <Kpi icon={<BarChart3 size={18} />} label="Campaign ROI" value="3.10×" sub="+0.30× vs. 2.80× plan" trend="up" spark />
         <Kpi icon={<AlertTriangle size={18} />} label="Jalna Risk Score" value={<Pill tone="red" solid>High</Pill>} sub="Lower adoption (28%) vs. target (34%)" tone="red" />
         <Kpi icon={<Package size={18} />} label="Stock Readiness" value="93%" badge={<CheckCircle2 size={16} color={COLORS.green} />} sub="Sufficient for recovery plans" />
         <Kpi icon={<TrendingUp size={18} />} label="Estimated Recovery Upside" value="+7 to +8 pp" sub="Post recovery scenario (to ~41–42%)" trend="up" />
@@ -1254,7 +1238,7 @@ export function RecoveryReplanning() {
         </Panel>
         <Panel title="AI Replanning Recommendation" icon={<Sparkles size={15} />} className="ai-panel">
           <div className="highlight-box small" style={{ marginBottom: 10 }}>
-            <b>Recommend Scenario C (Combined Recovery Plan)</b> to drive ~7.0 pp higher adoption, taking campaign adoption to ~41%, with the best ROI (3.6x) and balanced execution risk.
+            <b>Recommend Scenario C (Combined Recovery Plan)</b> to drive ~7.0 pp higher adoption, taking campaign adoption to ~41%, with the best ROI (3.60×) and balanced execution risk.
           </div>
           <ul className="s1-insights">
             <li>Jalna retailer coverage is the largest addressable recovery lever.</li>
@@ -1309,7 +1293,7 @@ export function RecoveryReplanning() {
           <div className="cell"><Layers size={22} color={COLORS.dark} /><div>Recommended Plan<strong>{scen.short}</strong></div></div>
           <div className="cell"><CircleDollarSign size={22} color={COLORS.amber} /><div>Additional Budget Required<strong>{scen.cost}</strong></div></div>
           <div className="cell"><TrendingUp size={22} color={COLORS.green} /><div>Expected Jalna Adoption Improvement<strong>28% → {improved}%</strong></div></div>
-          <div className="cell"><BarChart3 size={22} color={COLORS.green} /><div>Expected Campaign ROI<strong>3.1x → {scen.roi}</strong></div></div>
+          <div className="cell"><BarChart3 size={22} color={COLORS.green} /><div>Expected Campaign ROI<strong>3.10× → {scen.roi}</strong></div></div>
           <div className="cell"><UserCheck size={22} color={COLORS.dark} /><div>Approval Owner<strong>National Campaign Head</strong></div></div>
           <div className="cell"><Users size={22} color={COLORS.dark} /><div>Execution Owners<strong>Regional Sales Lead, Campaign Lead, Supply Lead</strong></div></div>
         </div>

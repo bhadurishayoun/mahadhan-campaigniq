@@ -10,7 +10,7 @@ import {
   ABP_LAKH, ACHIEVEMENT, CROP_PLAN, DEALER_PLAN, ELIGIBLE_ACRES_DHANORA, ONION_VILLAGES, OUTLETS, PLANNED_REALISATION,
   PREVIOUS_REALISATION, TERRITORIES, TOTAL_ABP, TOTAL_LY, VILLAGES,
 } from './data';
-import { AiPanel, Context, Footer, Note, Panel, PlanTabs, Status, TmPage, crore, lakh, pct } from './ui';
+import { AiPanel, Context, Footer, Note, Panel, Status, TmPage, crore, lakh, pct } from './ui';
 import { Donut, JALNA_VIEW, MAP_COLORS, Ring, TmMap, VILLAGE_PLACE } from './viz';
 
 const growth = (ly: number, target: number) => ((target - ly) / ly) * 100;
@@ -76,21 +76,21 @@ export function Tm1() {
           insight={`${TERRITORIES.map((t) => `${t.name} needs ${pct(growth(t.ly, t.abp))}`).join(', ')}; Ambad is shaded darkest.`}>
           <IndiaDistrictMap label="Jalna cluster territories shaded by required growth" view={JALNA_VIEW} height={300}
             talukas={{
-              Ambad: { tone: 4, info: <><b>Ambad</b><br />₹3.2 Cr → ₹4.2 Cr · +31.3% (+₹1.0 Cr)</>, onSelect: () => go('tm.2') },
-              Ghansawangi: { tone: 3, info: <><b>Ghansawangi</b><br />₹2.8 Cr → ₹3.4 Cr · +21.4%</> },
-              Badnapur: { tone: 2, info: <><b>Badnapur</b><br />₹2.0 Cr → ₹2.4 Cr · +20.0%</> },
+              Ambad: { tone: 4, info: <><b>Ambad</b><br />₹3.20 Cr → ₹4.20 Cr · +31.3% (+₹1.00 Cr)</>, onSelect: () => go('tm.2') },
+              Ghansawangi: { tone: 3, info: <><b>Ghansawangi</b><br />₹2.80 Cr → ₹3.40 Cr · +21.4%</> },
+              Badnapur: { tone: 2, info: <><b>Badnapur</b><br />₹2.00 Cr → ₹2.40 Cr · +20.0%</> },
             }}
             markers={[
-              { id: 't-ambad', label: 'Ambad', color: MAP_COLORS.green, info: 'Largest uplift: +₹1.0 Cr', action: { label: 'Plan Territory', run: () => go('tm.2') } },
-              { id: 't-ghansawangi', label: 'Ghansawangi', color: MAP_COLORS.grey, info: '+₹0.6 Cr required' },
-              { id: 't-badnapur', label: 'Badnapur', color: MAP_COLORS.grey, info: '+₹0.4 Cr required' },
+              { id: 't-ambad', label: 'Ambad', color: MAP_COLORS.green, info: 'Largest uplift: +₹1.00 Cr', action: { label: 'Plan Territory', run: () => go('tm.2') } },
+              { id: 't-ghansawangi', label: 'Ghansawangi', color: MAP_COLORS.grey, info: '+₹0.60 Cr required' },
+              { id: 't-badnapur', label: 'Badnapur', color: MAP_COLORS.grey, info: '+₹0.40 Cr required' },
             ]}
             selected={`t-${(territory === 'All Territories' ? 'Ambad' : territory).toLowerCase()}`}
             scale={{ title: 'Required growth', items: [{ label: '+20%', tone: 2 }, { label: '+21%', tone: 3 }, { label: '+31%', tone: 4 }] }} />
         </Card>
         <Card n={3} title="Growth required by territory" context={ctx} subtitle="Absolute uplift over last year, with each territory's share of the cluster uplift."
           insight={lead && lead.name === 'Ambad'
-            ? <>Ambad needs the largest absolute uplift (+₹1.0 Cr, +31.3%), well above the cluster's +25%.</>
+            ? <>Ambad needs the largest absolute uplift (+₹1.00 Cr, +31.3%), well above the cluster's +25%.</>
             : lead && <>{lead.name} needs +{crore(lead.abp - lead.ly, 1)} ({pct(growth(lead.ly, lead.abp))}) this year.</>}>
           <RankedBars fmt={(v) => `+${crore(v, 1)}`} items={ranked.map((t) => ({ label: t.name, value: t.abp - t.ly, muted: t.name !== 'Ambad' }))} />
         </Card>
@@ -112,11 +112,10 @@ export function Tm2() {
   return (
     <TmPage crumbs={[{ label: 'My Plan', to: 'tm.1' }, { label: 'My Performance', to: 'tm.1' }, { label: 'Ambad' }, { label: 'Territory Network' }]}
       code="TM.2" title="Territory Network" subtitle="Explore Ambad's villages, dealers and linked retailers before setting outlet targets.">
-      <PlanTabs active="tm.2" />
       <Context items={[
         { label: 'Territory', value: 'Ambad', sub: 'Jalna district' },
-        { label: 'Last Year Liquidation', value: '₹3.2 Cr' },
-        { label: 'Current-year ABP target', value: '₹4.2 Cr' },
+        { label: 'Last Year Liquidation', value: '₹3.20 Cr' },
+        { label: 'Current-year ABP target', value: '₹4.20 Cr' },
         { label: 'Required growth', value: '+31.3%' },
         { label: 'Network ', value: '8 dealers · 74 retailers' },
       ]} />
@@ -205,11 +204,10 @@ export function Tm3() {
         <Btn icon={<Download size={13} />} onClick={() => toast('Template downloaded: Ambad_outlet_plan_template.xlsx ')}>Download Template</Btn>
         <Btn icon={<Save size={13} />} onClick={() => toast('Outlet plan saved as draft.')}>Save Draft</Btn>
       </>}>
-      <PlanTabs active="tm.3" />
       <Context items={[
         { label: 'Territory', value: 'Ambad, Jalna' },
-        { label: 'Last Year Liquidation', value: '₹3.2 Cr' },
-        { label: 'ABP target', value: '₹4.2 Cr' },
+        { label: 'Last Year Liquidation', value: '₹3.20 Cr' },
+        { label: 'ABP target', value: '₹4.20 Cr' },
         { label: 'Dealers in plan', value: '8' },
       ]} />
       <Panel title="Dealer-wise business plan" actions={<span className="tm-muted">₹ lakh · targets are editable</span>}>
@@ -265,7 +263,7 @@ export function Tm3() {
         </Panel>
         <AiPanel title="AI Planning Insight">
           <p className="tm-ai-text">{gap > 0
-            ? <>₹{gap.toFixed(0)} L of the ABP is still unallocated. Review outlet potential (Shiv Krushi Kendra is flagged for review) before finalising — no confirmed outlet data supports a higher target yet.</>
+            ? <>₹{gap.toFixed(2)} L of the ABP is still unallocated. Review outlet potential (Shiv Krushi Kendra is flagged for review) before finalising — no confirmed outlet data supports a higher target yet.</>
             : <>The plan now covers the full ABP. Confirm stretch targets are backed by outlet potential before moving on.</>}
           </p>
         </AiPanel>
@@ -296,7 +294,6 @@ export function Tm4() {
   return (
     <TmPage crumbs={[{ label: 'My Plan', to: 'tm.1' }, { label: 'Outlet Planning', to: 'tm.3' }, { label: 'Ambad' }, { label: 'Crop & Product Plan' }]}
       code="TM.4" title="Village Crop Plan" subtitle="Turn the onion business target into village volumes and the crop area that must be covered.">
-      <PlanTabs active="tm.4" />
       <Context items={[
         { label: 'Territory', value: 'Ambad, Jalna', sub: 'FY 2025–26' },
         { label: 'ABP', value: '₹4.20 Cr' },
@@ -383,13 +380,12 @@ export function Tm4() {
 /* ------------------------------------------------------------------ TM.5 */
 export function Tm5() {
   const { toast, go } = useNav();
-  const [note, setNote] = useState('Onion +₹25 L and Maize +₹15 L opportunities identified; outlet allocation pending field validation.');
+  const [note, setNote] = useState('Onion +₹25.00 L and Maize +₹15.00 L opportunities identified; outlet allocation pending field validation.');
   const cropTotal = CROP_PLAN.reduce((sum, c) => sum + c.value, 0);
   return (
     <TmPage crumbs={[{ label: 'My Plan', to: 'tm.1' }, { label: 'Ambad' }, { label: 'Crop & Product Plan', to: 'tm.4' }, { label: 'Review & Approval' }]}
       code="TM.5" title="Plan Review & Approval" status="Draft — Reconciliation Required"
       subtitle="Check that the outlet and crop views reconcile, resolve the ABP gap, then submit for leadership approval.">
-      <PlanTabs active="tm.5" />
       <Context items={[
         { label: 'ABP target', value: '₹4.20 Cr' },
         { label: 'Proposed plan', value: '₹3.80 Cr' },
@@ -432,8 +428,8 @@ export function Tm5() {
         <Panel title="Plan validation" tone="warn">
           <ul className="tm-checks">
             <li className="ok"><span>Outlet and crop aggregates reconciled</span><Status>Reconciled · ₹3.80 Cr</Status></li>
-            <li className="risk"><span>ABP gap of ₹40 L</span><Status>Unresolved</Status></li>
-            <li className="warn"><span>Onion +₹25 L and Maize +₹15 L opportunities</span><Status>Uncommitted — validate & allocate</Status></li>
+            <li className="risk"><span>ABP gap of ₹40.00 L</span><Status>Unresolved</Status></li>
+            <li className="warn"><span>Onion +₹25.00 L and Maize +₹15.00 L opportunities</span><Status>Uncommitted — validate & allocate</Status></li>
           </ul>
           <div className="tm-row-actions">
             <Btn variant="primary" onClick={() => go('tm.3')}>Resolve Planning Gap (Outlet Plan)</Btn>

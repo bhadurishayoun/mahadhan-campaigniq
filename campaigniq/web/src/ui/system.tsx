@@ -1,6 +1,8 @@
 /** Consistency system building blocks (CLAUDE.md §1–11). Every persona page is composed from these. */
-import type { ReactNode } from 'react';
-import { ArrowRight, Sparkles, type LucideIcon } from 'lucide-react';
+import { Component, createContext, useContext, type ErrorInfo, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
+import { ArrowLeft, ArrowRight, Sparkles, type LucideIcon } from 'lucide-react';
+import { Activity, BarChart3, CalendarCheck, CheckCircle2, Clock, IndianRupee, MapPin, Megaphone, Percent, Sprout, Store, Target, TrendingUp, Users } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import { useSideFilters, type Workspace } from './filters';
 import './system.css';
@@ -19,11 +21,11 @@ export function FilterChips({ chips }: { chips: string[] }) {
   );
 }
 
-export function PageHeader({ title, subtitle, chips }: { title: string; subtitle?: ReactNode; chips?: string[] }) {
+export function PageHeader({ title, subtitle, chips, status }: { title: ReactNode; subtitle?: ReactNode; chips?: string[]; status?: string }) {
   const side = useSideFilters();
   return (
     <header className="cq-page-header">
-      <div><h1>{title}</h1>{subtitle && <p>{subtitle}</p>}</div>
+      <div><h1>{title}{status && <StatusPill>{status}</StatusPill>}</h1>{subtitle && <p>{subtitle}</p>}</div>
       <FilterChips chips={chips ?? side.chips} />
     </header>
   );
@@ -43,12 +45,12 @@ export function NumberedTabs({ tabs, active }: { tabs: TabDef[]; active: ScreenI
   );
 }
 
-/** Whole page: PageHeader → NumberedTabs → body (20px 28px, gap 16). End the children with <NextSteps/>. */
+/** Page content: PageHeader → NumberedTabs → sections. The App frame adds padding, the NextSteps bar and the footer line. */
 export function Page({ title, subtitle, chips, tabs, active, children, className }: {
   title: string; subtitle?: ReactNode; chips?: string[]; tabs?: TabDef[]; active?: ScreenId; children: ReactNode; className?: string;
 }) {
   return (
-    <div className={cn('cq-page', className)}>
+    <div className={cn('cq-frame', className)}>
       <PageHeader title={title} subtitle={subtitle} chips={chips} />
       {tabs && active && <NumberedTabs tabs={tabs} active={active} />}
       {children}
@@ -56,12 +58,39 @@ export function Page({ title, subtitle, chips, tabs, active, children, className
   );
 }
 
+interface NavMeta { id: string; code: string; title: string; tab: string }
+const sentence = (t: string) => t.replace(/\b([A-Z])([a-z]+)/g, (m, a, b, i) => (i === 0 ? m : a.toLowerCase() + b)).replace(/\bai\b/gi, 'AI');
+/** Sub-screen tabs for a section: main screens of the same nav group (drill-ins like 3A map to their parent; wizard steps CW.* excluded). */
+export function tabsFor(list: readonly NavMeta[], id: string): { tabs: TabDef[]; active: ScreenId } | null {
+  const me = list.find((m) => m.id === id || m.code === id);
+  if (!me) return null;
+  const isMain = (m: NavMeta) => /^[A-Z]+\.(?:\d+|[A-Z]+\d+)$/.test(m.code) && !/^CW\./.test(m.code);
+  const group = list.filter((m) => m.tab === me.tab && isMain(m));
+  if (group.length < 2) return null;
+  let active = me;
+  if (!isMain(me)) { const i = list.indexOf(me); active = [...list.slice(0, i)].reverse().find((m) => m.tab === me.tab && isMain(m)) ?? group[0]; }
+  return { tabs: group.map((m) => ({ label: sentence(m.title), to: m.id as ScreenId })), active: active.id as ScreenId };
+}
+
+/** Header used by every persona page wrapper: PageHeader + numbered tabs; header actions move to the NextSteps bar. */
+export function PersonaHeader({ list, id, title, subtitle, status, actions }: { list: readonly NavMeta[]; id: string; title: string; subtitle?: ReactNode; status?: string; actions?: ReactNode }) {
+  const t = tabsFor(list, id);
+  return (
+    <>
+      <PageHeader title={title} subtitle={subtitle} status={status} />
+      {t && <NumberedTabs tabs={t.tabs} active={t.active} />}
+      {actions && <StepsPortal>{actions}</StepsPortal>}
+    </>
+  );
+}
+
 /* ---------------------------------------------------------------- Sections & cards */
-export function SectionTitle({ n, title, context, subtitle, action }: { n?: number; title: string; context?: string; subtitle?: ReactNode; action?: ReactNode }) {
+/** Numbered automatically (CSS counter per page, reading order); pass n={0} for an unnumbered title. */
+export function SectionTitle({ n, title, context, subtitle, action }: { n?: number; title: ReactNode; context?: string; subtitle?: ReactNode; action?: ReactNode }) {
   return (
     <div className="cq-section-title">
       <div>
-        <h2>{n !== undefined && <b>{n}.</b>}<span>{title}</span>{context && <em> — {context}</em>}</h2>
+        <h2>{n !== 0 && <b className="cq-num" aria-hidden="true" />}<span>{title}</span>{context && <em> — {context}</em>}</h2>
         {subtitle && <p>{subtitle}</p>}
       </div>
       {action && <div className="cq-section-action">{action}</div>}
@@ -75,7 +104,7 @@ export function InsightStrip({ children }: { children: ReactNode }) {
 
 /** One card style everywhere. Pass n/title for a numbered section; `insight` closes chart cards with an InsightStrip. */
 export function Card({ n, title, context, subtitle, action, insight, children, className, flush }: {
-  n?: number; title?: string; context?: string; subtitle?: ReactNode; action?: ReactNode; insight?: ReactNode; children?: ReactNode; className?: string; flush?: boolean;
+  n?: number; title?: ReactNode; context?: string; subtitle?: ReactNode; action?: ReactNode; insight?: ReactNode; children?: ReactNode; className?: string; flush?: boolean;
 }) {
   return (
     <section className={cn('cq-card', flush && 'cq-card-flush', className)}>
@@ -128,17 +157,32 @@ export function ActionGrid({ children }: { children: ReactNode }) {
 }
 
 export interface StepAction { label: string; to?: ScreenId; onClick?: () => void }
-/** Closing bar on every page + the data-source footer line. */
-export function NextSteps({ actions = [], primary, asOf = AS_OF }: { actions?: StepAction[]; primary?: StepAction; asOf?: string }) {
+/** The App renders one NextSteps bar per page; footers anywhere in the page portal their buttons into it. */
+export const StepsSlotContext = createContext<HTMLElement | null>(null);
+export function StepsPortal({ children }: { children: ReactNode }) {
+  const slot = useContext(StepsSlotContext);
+  return slot ? createPortal(children, slot) : null;
+}
+/** Adds outline actions + one green primary to the page's NextSteps bar. */
+export function NextSteps({ actions = [], primary }: { actions?: StepAction[]; primary?: StepAction }) {
   const { go } = useNav();
   const run = (a: StepAction) => () => (a.onClick ? a.onClick() : a.to && go(a.to));
+  return (
+    <StepsPortal>
+      {actions.slice(0, 3).map((a) => <button key={a.label} type="button" className="cq-btn" onClick={run(a)}>{a.label}</button>)}
+      {primary && <button type="button" className="cq-btn cq-btn-primary" onClick={run(primary)}>{primary.label}<ArrowRight size={14} aria-hidden="true" /></button>}
+    </StepsPortal>
+  );
+}
+/** Rendered once by the App at the end of every route. */
+export function NextStepsBar({ onSlot, onBack, asOf = AS_OF }: { onSlot: (el: HTMLDivElement | null) => void; onBack: () => void; asOf?: string }) {
   return (
     <>
       <nav className="cq-next" aria-label="Next steps">
         <span>Next steps</span>
-        <div>
-          {actions.slice(0, 3).map((a) => <button key={a.label} type="button" className="cq-btn" onClick={run(a)}>{a.label}</button>)}
-          {primary && <button type="button" className="cq-btn cq-btn-primary" onClick={run(primary)}>{primary.label}<ArrowRight size={14} aria-hidden="true" /></button>}
+        <div className="cq-next-btns">
+          <div className="cq-next-slot" ref={onSlot} />
+          <button type="button" className="cq-btn cq-back-default" onClick={onBack}><ArrowLeft size={14} aria-hidden="true" />Back</button>
         </div>
       </nav>
       <p className="cq-footer">Illustrative data for demonstration · Source: CampaignIQ synthetic dataset · as of {asOf}</p>
@@ -157,4 +201,51 @@ export function pillTone(text: string): PillTone {
 }
 export function StatusPill({ tone, children }: { tone?: PillTone; children: string }) {
   return <span className={`cq-pill cq-pill-${tone ?? pillTone(children)}`}>{children}</span>;
+}
+
+/* ---------------------------------------------------------------- Legacy bridges (used by persona kits) */
+const ICON_RULES: [RegExp, LucideIcon][] = [
+  [/₹|rupee|budget|spend|invest|revenue|sales|cost|value|liquidation|abp|business/i, IndianRupee],
+  [/adopt|farmer|reach|audience|people|participant/i, Users],
+  [/dealer|retailer|outlet|store|channel/i, Store],
+  [/village|territor|district|region|geograph|market|state/i, MapPin],
+  [/campaign|theme|concept|collateral/i, Megaphone],
+  [/crop|acre|product|sku/i, Sprout],
+  [/roi|growth|uplift|trend|lift/i, TrendingUp],
+  [/target|goal|attain/i, Target],
+  [/%|rate|share|conversion|achiev/i, Percent],
+  [/day|time|week|due|overdue|pending|await/i, Clock],
+  [/approv|complete|done|validated|closed/i, CheckCircle2],
+  [/activit|event|demo|meeting|plan/i, CalendarCheck],
+  [/score|index|count|total/i, BarChart3],
+];
+/** Icon for a KPI from its label (keeps every metric tile consistent when a screen supplies none). */
+export function iconFor(label: unknown): LucideIcon {
+  const t = typeof label === 'string' ? label : '';
+  return ICON_RULES.find(([re]) => re.test(t))?.[1] ?? Activity;
+}
+const textOf = (n: ReactNode): string => (typeof n === 'string' || typeof n === 'number' ? String(n) : Array.isArray(n) ? n.map(textOf).join('') : '');
+
+/** Metric tile for legacy KPI components: same markup as <Metric/> but accepts ReactNode labels/icons. */
+export function MetricTile({ icon, label, value, note, trend, extra }: { icon?: ReactNode; label: ReactNode; value: ReactNode; note?: ReactNode; trend?: 'up' | 'down'; extra?: ReactNode }) {
+  const Icon = iconFor(textOf(label));
+  return (
+    <div className="cq-metric">
+      <div className="cq-metric-head"><span className="cq-icon-tile">{icon ?? <Icon size={17} aria-hidden="true" />}</span><small>{label}</small></div>
+      <strong>{value}{extra}</strong>
+      {note && (trend ? <em className={trend === 'up' ? 'ok' : 'risk'}>{trend === 'up' ? '▲' : '▼'} {note}</em> : <span className="cq-metric-note">{note}</span>)}
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- Screen error boundary */
+/** Keeps one failing screen from blanking the whole app; the frame, sidebar and NextSteps stay usable. */
+export class ScreenBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  componentDidCatch(error: Error, info: ErrorInfo) { console.error('Screen failed to render', error, info.componentStack?.slice(0, 200)); }
+  render() {
+    if (!this.state.failed) return this.props.children;
+    return <section className="cq-card"><SectionTitle n={0} title="This view could not be loaded" subtitle="Its data is unavailable right now. Use the sidebar or Back to continue." /></section>;
+  }
 }

@@ -1,3 +1,4 @@
+import { useSidebarField } from '../ui/filters';
 import { useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import {
   AlertTriangle, BarChart3, Bot, CalendarDays, CheckCircle2, ClipboardCheck, ClipboardList, Clock, CloudSun, Coins, FileBarChart,
@@ -197,8 +198,8 @@ export function TemplateLibrary() {
   const [tab, setTab] = useState<'rec' | 'all' | 'saved'>('rec');
   const [selected, setSelected] = useState('crop-stage');
   const [query, setQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All');
-  const [sort, setSort] = useState('updated');
+  const [statusFilter] = useSidebarField('status', 'Status', [{ value: 'All', label: 'All statuses' }, 'Approved', 'Draft', 'Awaiting Review', 'Planned']);
+  const [sort] = useSidebarField('sort', 'Sort by', [{ value: 'updated', label: 'Updated recently' }, { value: 'name', label: 'Name' }]);
   const visible = TEMPLATES.filter((t) => (tab === 'rec' ? t.recommended : tab === 'saved' ? SAVED_TEMPLATES.includes(t.id) : true));
   const sel = TEMPLATES.find((t) => t.id === selected) ?? TEMPLATES[0];
   const rows = PORTFOLIO
@@ -275,13 +276,6 @@ export function TemplateLibrary() {
         actions={<div className="s4-filter">
           <Search size={13} className="muted" />
           <input placeholder="Search campaigns" value={query} onChange={(e) => setQuery(e.target.value)} />
-          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-            {['All', 'Approved', 'Draft', 'Awaiting Review', 'Planned'].map((s) => <option key={s} value={s}>Status: {s}</option>)}
-          </select>
-          <select value={sort} onChange={(e) => setSort(e.target.value)}>
-            <option value="updated">Sort: Updated recently</option>
-            <option value="name">Sort: Name</option>
-          </select>
         </div>}
       >
         <DataTable<PortfolioRow>
@@ -448,7 +442,7 @@ export function CreationWizard() {
               </div>
             ))}
           </Panel>
-          <div className="s4-roi"><span className="row"><BarChart3 size={18} color={COLORS.green} /> Expected Campaign ROI:</span><strong>3.3×</strong></div>
+          <div className="s4-roi"><span className="row"><BarChart3 size={18} color={COLORS.green} /> Expected Campaign ROI:</span><strong>3.30×</strong></div>
         </div>
       </Grid>
       <div className="s4-actionbar">
@@ -531,7 +525,7 @@ export function ActivityMixPlanner() {
         { icon: <Coins size={20} />, label: 'Market Opportunity', value: '₹52 Lakh' },
         { icon: <IndianRupee size={20} />, label: 'Total Campaign Budget', value: `₹${lakh(plan.total)} Lakh`, tone: overBudget ? 'red' : undefined },
         { icon: <BarChart3 size={20} />, label: 'Expected Adoption', value: `${inr(plan.adopters)} (${Math.round(plan.pp)}%)` },
-        { icon: <TrendingUp size={20} />, label: 'Projected ROI', value: `${plan.roi.toFixed(1)}×` },
+        { icon: <TrendingUp size={20} />, label: 'Projected ROI', value: `${plan.roi.toFixed(2)}×` },
       ]} />
       <Grid cols="1.25fr 1fr">
         <div className="stack">
@@ -661,7 +655,7 @@ function ScenarioCard({ id, o, selected, onSelect }: { id: ScenarioId; o: Outcom
         <dt>Adoption (of 1,832)</dt><dd>{o.adoptPct}% ({inr(o.adopted)})</dd>
         <dt>Incremental Demand</dt><dd>{inr(o.demand)} MT</dd>
         <dt>Incremental Revenue</dt><dd>₹{Math.round(o.revenue)} Lakh</dd>
-        <dt>Contribution</dt><dd>₹{o.contribution.toFixed(1)} Lakh</dd>
+        <dt>Contribution</dt><dd>₹{o.contribution.toFixed(2)} Lakh</dd>
         <dt><strong>Net ROI</strong></dt><dd><strong>{o.roi.toFixed(2)}×</strong></dd>
       </dl>
     </label>
@@ -761,8 +755,8 @@ export function ScenarioSimulator() {
                 rows={[
                   { p: 'Incremental Product Demand', v: `${inr(sel.demand)} MT`, icon: <Package size={14} /> },
                   { p: 'Incremental Revenue', v: `₹${Math.round(sel.revenue)} Lakh`, icon: <BarChart3 size={14} /> },
-                  { p: 'Estimated Contribution (≈26%)', v: `₹${sel.contribution.toFixed(1)} Lakh`, icon: <Coins size={14} /> },
-                  { p: 'Campaign Investment', v: `₹${sel.spend.toFixed(1)} Lakh`, icon: <Target size={14} /> },
+                  { p: 'Estimated Contribution (≈26%)', v: `₹${sel.contribution.toFixed(2)} Lakh`, icon: <Coins size={14} /> },
+                  { p: 'Campaign Investment', v: `₹${sel.spend.toFixed(2)} Lakh`, icon: <Target size={14} /> },
                 ]}
               />
               <div className="s4-roi-box"><span>Projected Net ROI</span><strong>{sel.roi.toFixed(2)}×</strong></div>
@@ -774,7 +768,7 @@ export function ScenarioSimulator() {
           <Panel title="AI Campaign Recommendation" icon={<Sparkles size={15} />} className="ai-panel">
             <div className="highlight-box small">
               <strong>{SCENARIO_LABEL[s.scenario]}: {sel.adoptPct}% of targeted farmers adopt.</strong><br />
-              Net campaign ROI: {sel.roi.toFixed(2)}× on INR {sel.spend.toFixed(1)}L spend.<br />
+              Net campaign ROI: {sel.roi.toFixed(2)}× on INR {sel.spend.toFixed(2)}L spend.<br />
               Validate attribution before approval.
             </div>
             <strong className="small" style={{ display: 'block', margin: '10px 0 6px' }}>Key Rationale</strong>
@@ -859,7 +853,7 @@ export function ApprovalReview() {
     { role: 'Campaign Owner', sub: '(Strategy Team)', status: status === 'Draft for Approval' || status === 'Changes Requested' || status === 'Sent Back' ? (status === 'Draft for Approval' ? 'Draft' : status) : 'Submitted', tone: status === 'Sent Back' ? 'red' : status === 'Draft for Approval' || status === 'Changes Requested' ? 'amber' : 'green', comment: 'Campaign plan, base case & readiness submitted for approval.', due: '15 Dec 2026', can: false },
     { role: 'Regional Marketing Head', status: approved ? 'Approved' : 'Pending Approval', tone: approved ? 'green' : 'amber', comment: 'Review plan, activity mix & field readiness.', due: '17 Dec 2026', can: true },
     { role: 'Supply Chain Lead', status: approved ? 'Confirmed' : 'Pending Stock Confirmation', tone: approved ? 'green' : 'amber', comment: 'Confirm stock availability & replenishment plan.', due: '17 Dec 2026', can: true },
-    { role: 'Finance Controller', status: approved ? 'Signed-off' : 'Pending Budget Sign-off', tone: approved ? 'green' : 'amber', comment: `Validate budget (₹${sel.spend.toFixed(1)} Lakh) & ROI (${sel.roi.toFixed(2)}×).`, due: '18 Dec 2026', can: true },
+    { role: 'Finance Controller', status: approved ? 'Signed-off' : 'Pending Budget Sign-off', tone: approved ? 'green' : 'amber', comment: `Validate budget (₹${sel.spend.toFixed(2)} Lakh) & ROI (${sel.roi.toFixed(2)}×).`, due: '18 Dec 2026', can: true },
     { role: 'Compliance Officer', status: approved ? 'Cleared' : 'Pending Content / Compliance', tone: approved ? 'green' : 'amber', comment: 'Approve advisory content & agronomic claims.', due: '18 Dec 2026', can: true },
     { role: 'Business Head', status: approved ? 'Final Approval ✓' : 'Final Approval (Pending)', tone: approved ? 'green' : 'grey', comment: 'Authorize campaign for deployment after all prerequisites.', due: '19 Dec 2026', can: true },
   ];
@@ -878,7 +872,7 @@ export function ApprovalReview() {
       <ContextStrip items={[
         { icon: <ClipboardList size={20} />, label: 'Campaign ID', value: <>CAMP-R26-AMB-014 <Pill tone={STATUS_TONE[status]}>{status}</Pill></> },
         { icon: <Users size={20} />, label: 'Target Farmers', value: '1,832' },
-        { icon: <Coins size={20} />, label: 'Budget', value: `₹${sel.spend.toFixed(1)} lakh` },
+        { icon: <Coins size={20} />, label: 'Budget', value: `₹${sel.spend.toFixed(2)} lakh` },
         { icon: <Sprout size={20} />, label: `${SCENARIO_LABEL[s.scenario]} Adoption`, value: `${inr(sel.adopted)} farmers`, sub: `(${sel.adoptPct}% of target)` },
         { icon: <Package size={20} />, label: 'Incremental Demand', value: `${inr(sel.demand)} MT` },
         { icon: <BarChart3 size={20} />, label: 'Net Campaign ROI', value: `${sel.roi.toFixed(2)}×` },
@@ -912,9 +906,9 @@ export function ApprovalReview() {
                 </div>
                 <div>
                   <div className="s4-side-metric"><Package size={16} /><span>Incremental Demand<strong>{inr(sel.demand)} MT</strong></span></div>
-                  <div className="s4-side-metric"><BarChart3 size={16} /><span>Incremental Revenue<strong>₹{sel.revenue.toFixed(1)} Lakh</strong></span></div>
-                  <div className="s4-side-metric"><Coins size={16} /><span>Incremental Contribution<strong>₹{sel.contribution.toFixed(1)} Lakh</strong></span></div>
-                  <div className="s4-side-metric"><IndianRupee size={16} /><span>Campaign Spend<strong>₹{sel.spend.toFixed(1)} Lakh</strong></span></div>
+                  <div className="s4-side-metric"><BarChart3 size={16} /><span>Incremental Revenue<strong>₹{sel.revenue.toFixed(2)} Lakh</strong></span></div>
+                  <div className="s4-side-metric"><Coins size={16} /><span>Incremental Contribution<strong>₹{sel.contribution.toFixed(2)} Lakh</strong></span></div>
+                  <div className="s4-side-metric"><IndianRupee size={16} /><span>Campaign Spend<strong>₹{sel.spend.toFixed(2)} Lakh</strong></span></div>
                 </div>
               </Grid>
             </Panel>
@@ -929,7 +923,7 @@ export function ApprovalReview() {
                   { key: 'owner', label: 'Owner', render: (r) => <span className="small">{ACTIVITIES.find((a) => a.key === r.key)!.owner}</span> },
                 ]}
                 rows={budgetRows}
-                total={{ key: 'Total Campaign Budget', budget: `₹${plan.total.toFixed(1)} Lakh`, share: '100%' }}
+                total={{ key: 'Total Campaign Budget', budget: `₹${plan.total.toFixed(2)} Lakh`, share: '100%' }}
               />
             </Panel>
           </Grid>
@@ -944,7 +938,7 @@ export function ApprovalReview() {
               <Check status="done">Result shown as forecast, not realized performance.</Check>
               <div className="s4-formula">
                 Net ROI = (Incremental contribution − campaign spend) / campaign spend<br />
-                = (₹{sel.contribution.toFixed(1)}L − ₹{sel.spend.toFixed(1)}L) / ₹{sel.spend.toFixed(1)}L<br />
+                = (₹{sel.contribution.toFixed(2)}L − ₹{sel.spend.toFixed(2)}L) / ₹{sel.spend.toFixed(2)}L<br />
                 <strong className="big">= {sel.roi.toFixed(2)}×</strong>
               </div>
             </Panel>
@@ -1011,7 +1005,7 @@ export function ApprovalReview() {
             <AiItem icon={<CheckCircle2 size={16} />} title="Recommendation: Submit for approval">with 2 dependencies to close.</AiItem>
             <strong className="small" style={{ display: 'block', margin: '8px 0 4px' }}>Why:</strong>
             <Check status="done">Strong market opportunity (₹52 lakh) in Ambad.</Check>
-            <Check status="done">Coherent {SCENARIO_LABEL[s.scenario].toLowerCase()} economics (contribution ₹{sel.contribution.toFixed(1)}L; net ROI {sel.roi.toFixed(2)}×).</Check>
+            <Check status="done">Coherent {SCENARIO_LABEL[s.scenario].toLowerCase()} economics (contribution ₹{sel.contribution.toFixed(2)}L; net ROI {sel.roi.toFixed(2)}×).</Check>
             <Check status="done">Well-structured, retailer-led activity plan aligned to crop stages and target audience.</Check>
             <strong className="small" style={{ display: 'block', margin: '8px 0 4px' }}><Lightbulb size={13} /> Outstanding actions (to close before final approval):</strong>
             <Check status={approved ? 'done' : 'pending'}>1. Finalize demonstration content (agronomy, product use, claims) – pending legal/compliance sign-off.</Check>

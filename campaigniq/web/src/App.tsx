@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
-  BarChart3, Bell, ChevronsLeft, ChevronsRight, CalendarDays, CheckSquare, ChevronDown, ClipboardCheck, Database, Gauge, Presentation, HelpCircle, Home, Inbox, Layers, MapPin, Menu, Radio, Search, ShoppingCart, SlidersHorizontal, Sparkles, Sprout, User, Wallet, X,
+  BarChart3, Bell, ChevronsLeft, ChevronsRight, CalendarDays, CheckSquare, ChevronDown, ClipboardCheck, Database, Gauge, Presentation, HelpCircle, Home, Inbox, Layers, MapPin, Menu, Radio, Search, ShoppingCart, Sparkles, Sprout, User, Wallet, X,
 } from 'lucide-react';
 import {
   MODULES, NavContext, PERSONAS, SCREENS, personaOf, screenMeta, type Filters, type ModuleId, type ModuleScreenId, type ScreenId, type PersonaId,
@@ -11,7 +11,8 @@ import { TM_TABS, TmScreen, isTmScreen, tmMeta, type TmTabId } from './tm';
 import { MH_TABS, MhScreen, isMhScreen, mhMeta, type MhTabId } from './mh';
 import { BH_TABS, BhScreen, isBhScreen, bhMeta, type BhTabId } from './bh';
 import { filterOptions, normalizeFilters, scopeOf, useReference } from './data/reference';
-import { SideFilterProvider, SidebarFilters } from './ui/filters';
+import { SideFilterProvider, SidebarFilters, useSideFilters, type ExternalFilters } from './ui/filters';
+import { NextStepsBar, ScreenBoundary, StepsSlotContext } from './ui/system';
 import { DataSources } from './screens/admin';
 import * as P from './screens/prototype';
 import { TooltipLayer } from './ui';
@@ -170,7 +171,6 @@ export default function App() {
   const [message, setMessage] = useState<string | null>(null);
   const [navOpen, setNavOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const [filtersOpen, setFiltersOpen] = useState(false);
   const [personaOpen, setPersonaOpen] = useState(false);
   useEffect(() => {
     document.querySelectorAll<HTMLButtonElement>('.side-link').forEach((b) => { b.title = b.querySelector('span')?.textContent ?? ''; });
@@ -315,6 +315,52 @@ export default function App() {
     </nav>
   );
 
+  const [stepsSlot, setStepsSlot] = useState<HTMLElement | null>(null);
+  const mhState = filters.geography === 'India' ? 'All States' : filters.geography;
+  const mhFilters: ExternalFilters = {
+    fields: [
+      { key: 'scope', label: 'Scope', options: ['National', 'Regional'], noContext: true },
+      { key: 'region', label: 'Region', options: ['All Regions', 'West Region', 'South Region', 'North Region', 'East Region'] },
+      { key: 'state', label: 'State', options: ['All States', ...mhStateOptions] },
+      { key: 'crop', label: 'Crop', options: ['All Crops', ...reference.crops.map((crop) => crop.name)] },
+      { key: 'product', label: 'Product', options: ['All Products', ...mhProductOptions.map((product) => product.name)] },
+    ],
+    values: { scope: marketingScope, region: marketingRegion, state: mhState, crop: filters.crop, product: filters.portfolio },
+    set: (key, value) => {
+      if (key === 'scope') {
+        const nextScope = value as 'National' | 'Regional';
+        setMarketingScope(nextScope);
+        if (nextScope === 'National') { setMarketingRegion('All Regions'); setFilters({ ...filters, geography: 'India', district: 'All Districts' }); }
+        else {
+          const nextRegion = marketingRegion === 'All Regions' ? 'West Region' : marketingRegion;
+          setMarketingRegion(nextRegion);
+          const allowed = MH_REGION_STATES[nextRegion] ?? [];
+          if (filters.geography === 'India' || !allowed.length || !allowed.includes(filters.geography)) setFilters({ ...filters, geography: allowed[0] ?? 'India', district: 'All Districts' });
+        }
+      } else if (key === 'region') {
+        setMarketingRegion(value);
+        setMarketingScope(value === 'All Regions' ? 'National' : 'Regional');
+        const allowed = MH_REGION_STATES[value] ?? [];
+        if (value === 'All Regions') setFilters({ ...filters, geography: 'India', district: 'All Districts' });
+        else if (!allowed.length || (filters.geography !== 'India' && !allowed.includes(filters.geography))) setFilters({ ...filters, geography: 'India', district: 'All Districts' });
+      } else if (key === 'state') {
+        if (value === 'All States') setFilters({ ...filters, geography: 'India', district: 'All Districts' });
+        else { setMarketingScope('Regional'); setMarketingRegion(REGION_FOR_STATE[value] ?? marketingRegion); setFilters({ ...filters, geography: value, district: 'All Districts' }); }
+      } else if (key === 'crop') {
+        const validProducts = reference.products.filter((product) => product.active !== false && (!product.crops?.length || product.crops.includes(value.toLowerCase())));
+        const productStillValid = filters.portfolio === 'All Products' || validProducts.some((product) => product.name === filters.portfolio);
+        setFilters({ ...filters, crop: value, portfolio: productStillValid ? filters.portfolio : 'All Products' });
+      } else if (key === 'product') setFilters({ ...filters, portfolio: value });
+    },
+  };
+  const legacyFilters: ExternalFilters = {
+    fields: (Object.keys(FILTER_LABELS) as (keyof Filters)[]).map((key) => ({
+      key, label: FILTER_LABELS[key], options: options[key].includes(filters[key]) ? options[key] : [filters[key], ...options[key]],
+    })),
+    values: filters as unknown as Record<string, string>,
+    set: (key, value) => setFilters({ ...filters, [key]: value }),
+  };
+
   if (!session) {
     return (
       <LoginPage
@@ -331,13 +377,12 @@ export default function App() {
 
   return (
     <NavContext.Provider value={{ screen, go, goBack, filters, setFilters, marketingScope, marketingRegion, setMarketingScope, setMarketingRegion, scope, reference, toast }}>
-      <SideFilterProvider workspace={bh ? 'bh' : mh ? 'mh' : pm ? 'pm' : tm ? 'tm' : 'legacy'}>
+      <SideFilterProvider workspace={bh ? 'bh' : mh ? 'mh' : pm ? 'pm' : tm ? 'tm' : 'legacy'} external={mh ? mhFilters : bh || pm || tm ? undefined : legacyFilters}>
       <div className={`app${collapsed ? ' app-collapsed' : ''}${mh ? ' app-mh' : ''}`}>
         <aside className={navOpen ? 'sidebar open' : 'sidebar'} aria-label="Main navigation">
           <button type="button" className="brand" onClick={() => go(personaMeta.home)}>
             {mh ? <span className="mh-brand-mark" aria-hidden="true"><i /><b /></span> : <Sprout size={26} className="brand-leaf" />}
             <span>Mahadhan<br />CampaignIQ</span>
-            {mh && <b className="mh-brand-version">V2</b>}
           </button>
           <SidebarFilters />
           <button type="button" className="nav-close" aria-label="Close menu" onClick={() => setNavOpen(false)}><X size={18} /></button>
@@ -367,93 +412,8 @@ export default function App() {
         <div className="main">
           <header className="topbar">
             <button type="button" className="menu-btn" aria-label="Open menu" aria-expanded={navOpen} onClick={() => setNavOpen(true)}><Menu size={20} /></button>
-            {!mh && <span className="topbar-title">{meta.title}</span>}
-
-            {pm ? (
-              <div className="pm-topctx">
-                <span><b>Zonal Manager</b></span>
-                <span>{pm.period}</span>
-                <span>Crop Nutrition Portfolio</span>
-              </div>
-            ) : tm ? (
-              <div className="pm-topctx">
-                <span><b>Field Sales Manager</b></span>
-                <span>{tm.period}</span>
-                <span>Territory workspace</span>
-              </div>
-            ) : mh ? (
-              <div className="pm-topctx mh-topctx">
-                <span className="mh-topctx-person"><User size={14} /><b>Marketing Head</b><ChevronDown size={12} /></span>
-                <span><CalendarDays size={14} />FY 2025-26 <ChevronDown size={12} /></span>
-                <span><Layers size={14} />National Marketing Portfolio <ChevronDown size={12} /></span>
-                <label><small>Scope:</small><select value={marketingScope} onChange={(e) => {
-                  const nextScope = e.target.value as 'National' | 'Regional';
-                  setMarketingScope(nextScope);
-                  if (nextScope === 'National') {
-                    setMarketingRegion('All Regions');
-                    setFilters({ ...filters, geography: 'India', district: 'All Districts' });
-                  } else {
-                    const nextRegion = marketingRegion === 'All Regions' ? 'West Region' : marketingRegion;
-                    setMarketingRegion(nextRegion);
-                    const allowed = MH_REGION_STATES[nextRegion] ?? [];
-                    if (filters.geography === 'India' || !allowed.length || !allowed.includes(filters.geography))
-                      setFilters({ ...filters, geography: allowed[0] ?? 'India', district: 'All Districts' });
-                  }
-                }}><option>National</option><option>Regional</option></select></label>
-                <label><small>Region</small><select value={marketingRegion} onChange={(e) => {
-                  const nextRegion = e.target.value;
-                  setMarketingRegion(nextRegion);
-                  setMarketingScope(nextRegion === 'All Regions' ? 'National' : 'Regional');
-                  const allowed = MH_REGION_STATES[nextRegion] ?? [];
-                  if (nextRegion === 'All Regions') setFilters({ ...filters, geography: 'India', district: 'All Districts' });
-                  else if (!allowed.length || (filters.geography !== 'India' && !allowed.includes(filters.geography)))
-                    setFilters({ ...filters, geography: 'India', district: 'All Districts' });
-                }}><option>All Regions</option><option>West Region</option><option>South Region</option><option>North Region</option><option>East Region</option></select></label>
-                <label><small>State</small><select value={filters.geography === 'India' ? 'All States' : filters.geography} onChange={(e) => {
-                  const selectedState = e.target.value;
-                  if (selectedState === 'All States') setFilters({ ...filters, geography: 'India', district: 'All Districts' });
-                  else {
-                    setMarketingScope('Regional');
-                    setMarketingRegion(REGION_FOR_STATE[selectedState] ?? marketingRegion);
-                    setFilters({ ...filters, geography: selectedState, district: 'All Districts' });
-                  }
-                }}><option>All States</option>{mhStateOptions.map((state) => <option key={state}>{state}</option>)}</select></label>
-                <label><small>Crop</small><select value={filters.crop} onChange={(e) => {
-                  const nextCrop = e.target.value;
-                  const validProducts = reference.products.filter((product) => product.active !== false && (!product.crops?.length || product.crops.includes(nextCrop.toLowerCase())));
-                  const productStillValid = filters.portfolio === 'All Products' || validProducts.some((product) => product.name === filters.portfolio);
-                  setFilters({ ...filters, crop: nextCrop, portfolio: productStillValid ? filters.portfolio : 'All Products' });
-                }}><option>All Crops</option>{reference.crops.map((crop) => <option key={crop.id}>{crop.name}</option>)}</select></label>
-                <label><small>Product</small><select value={filters.portfolio} onChange={(e) => setFilters({ ...filters, portfolio: e.target.value })}><option>All Products</option>{mhProductOptions.map((product) => <option key={product.id}>{product.name}</option>)}</select></label>
-              </div>
-            ) : bh ? (
-              <div className="pm-topctx bh-topctx">
-                <span><b>Business Head</b></span>
-                <span>FY 2026–27</span>
-                <span>All regions · YTD</span>
-              </div>
-            ) : (
-              <>
-                <button type="button" className={filtersOpen ? 'filters-btn active' : 'filters-btn'} aria-expanded={filtersOpen} onClick={() => setFiltersOpen((open) => !open)}>
-                  <SlidersHorizontal size={15} /> Filters
-                </button>
-                <div className={filtersOpen ? 'filters open' : 'filters'}>
-                  {(Object.keys(FILTER_LABELS) as (keyof Filters)[]).map((key) => (
-                    <label key={key} className="filter">
-                      <span>{FILTER_LABELS[key]}</span>
-                      <div className="select-wrap">
-                        <select value={filters[key]} onChange={(event) => setFilters({ ...filters, [key]: event.target.value })}>
-                          {(options[key].includes(filters[key]) ? options[key] : [filters[key], ...options[key]]).map((option) => <option key={option}>{option}</option>)}
-                        </select>
-                        <ChevronDown size={14} />
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {!mh && <div className="search">
+            <TopContext role={personaMeta.label} fy={pm ? pm.period : tm ? tm.period : bh ? 'FY 2026–27' : mh ? 'FY 2025–26' : filters.season} />
+            <div className="search">
               <Search size={15} />
               <input
                 value={query}
@@ -472,7 +432,7 @@ export default function App() {
                   ))}
                 </ul>
               )}
-            </div>}
+            </div>
             <button type="button" className="icon-btn" aria-label="Notifications" onClick={() => toast('3 new risk alerts in Jalna and Dhanora')}>
               <Bell size={17} /><span className="notif-count" aria-label="3 unread notifications">3</span>
             </button>
@@ -525,8 +485,11 @@ export default function App() {
             </div>
           </header>
           <main className="main-scroll">
-            <div className="page" key={screen}>
-              <Screen />
+            <div className="page cq-page" key={screen}>
+              <StepsSlotContext.Provider value={stepsSlot}>
+                <ScreenBoundary><Screen /></ScreenBoundary>
+              </StepsSlotContext.Provider>
+              <NextStepsBar onSlot={setStepsSlot} onBack={() => goBack(personaMeta.home)} />
             </div>
           </main>
         </div>
@@ -540,4 +503,14 @@ export default function App() {
   );
 }
 
-
+/** Top-bar context chips, identical for every persona: role · financial year · live scope from the sidebar filters. */
+function TopContext({ role, fy }: { role: string; fy: string }) {
+  const side = useSideFilters();
+  return (
+    <div className="pm-topctx">
+      <span><b>{role}</b></span>
+      <span>{fy}</span>
+      <span>{side.context('All regions')}</span>
+    </div>
+  );
+}

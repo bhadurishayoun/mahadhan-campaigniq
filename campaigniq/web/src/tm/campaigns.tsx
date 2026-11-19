@@ -42,7 +42,7 @@ function PlanLink({ extra }: { extra?: { label: string; value: string; sub?: str
     <Context tone="green" items={[
       { label: 'Approved plan linked', value: 'Ambad ABP ₹4.20 Cr', sub: 'Plan v3 · targets reconciled' },
       { label: 'Onion approved crop allocation', value: crore(APPROVED.onion) },
-      { label: 'Plan-linked growth objective', value: '₹25 L', sub: 'Already included in the ABP — not additional sales or a forecast' },
+      { label: 'Plan-linked growth objective', value: '₹25.00 L', sub: 'Already included in the ABP — not additional sales or a forecast' },
       ...(extra ?? []),
     ]} />
   );
@@ -87,10 +87,10 @@ export function TmC1() {
           <Note>Growth objectives are already included in the ₹4.20 Cr approved plan; they are not additional revenue. Campaign impact is not yet forecast.</Note>
           <div className="tm-uplift-bar" aria-label="Plan-linked uplift inside the approved plan">
             <span style={{ flex: 380 }}>Base plan ₹3.80 Cr</span>
-            <span className="onion" style={{ flex: 25 }} title="Onion ₹25 L" />
-            <span className="maize" style={{ flex: 15 }} title="Maize ₹15 L" />
+            <span className="onion" style={{ flex: 25 }} title="Onion ₹25.00 L" />
+            <span className="maize" style={{ flex: 15 }} title="Maize ₹15.00 L" />
           </div>
-          <div className="tm-uplift-legend"><span><i className="onion" />Onion uplift ₹25 L</span><span><i className="maize" />Maize uplift ₹15 L</span><span>= ₹4.20 Cr approved</span></div>
+          <div className="tm-uplift-legend"><span><i className="onion" />Onion uplift ₹25.00 L</span><span><i className="maize" />Maize uplift ₹15.00 L</span><span>= ₹4.20 Cr approved</span></div>
         </Panel>
         <Panel title="Selected business priority" tone="green">
           <h2 className="tm-selected-title">{priority.title}</h2>
@@ -147,7 +147,7 @@ export function Cw1() {
       <PlanLink />
       <IconTiles items={[
         { icon: MapPin, value: villages.length, label: 'Target villages', note: villages.join(' · ') || 'None selected', tone: 'green' },
-        { icon: Target, value: lakh(covered), label: 'Onion target in scope', note: 'of ₹165 L village plan' },
+        { icon: Target, value: lakh(covered), label: 'Onion target in scope', note: 'of ₹165.00 L village plan' },
         { icon: Store, value: retailers.length, label: 'Linked retailers', note: 'Outlet linkage to confirm', tone: 'blue' },
         { icon: Users, value: 'Pending', label: 'Eligible audience', note: 'CRM cohort validation', tone: 'amber' },
       ]} />
@@ -189,7 +189,7 @@ export function Cw1() {
             }))}
             markerLegend={[{ label: 'Selected', color: MAP_COLORS.green }, { label: 'Not selected', color: MAP_COLORS.grey }]} />
           <AiPanel title="AI Targeting Recommendation">
-            <p className="tm-ai-text"><b>Dhanora and Wadi Gaon</b> hold ₹40 L of the onion target and the plan's largest coverage growth, with active dealers and linked retailers already mapped.</p>
+            <p className="tm-ai-text"><b>Dhanora and Wadi Gaon</b> hold ₹40.00 L of the onion target and the plan's largest coverage growth, with active dealers and linked retailers already mapped.</p>
             <ul className="tm-ai-list">
               <li><ShieldCheck size={12} /> Audience eligibility must be verified from the CRM cohort.</li>
               <li><ShieldCheck size={12} /> Communication consent must be checked before any outreach.</li>
@@ -254,7 +254,7 @@ export function Cw2() {
         { label: 'Campaign name', value: CAMPAIGN.name },
         { label: 'Geography (villages)', value: CAMPAIGN.villages },
         { label: 'Selected retailers', value: '3' },
-        { label: 'Linked growth objective', value: '₹25 L', sub: 'Already included in approved Ambad ABP ₹4.20 Cr' },
+        { label: 'Linked growth objective', value: '₹25.00 L', sub: 'Already included in approved Ambad ABP ₹4.20 Cr' },
       ]} />
       <div className="cw2-layout">
         <div className="cw2-main">
@@ -343,7 +343,7 @@ export function Cw3() {
       <Context items={[
         { label: 'Campaign', value: CAMPAIGN.name, sub: CAMPAIGN.villages },
         { label: 'Draft campaign budget', value: lakh(cost, 2) },
-        { label: 'Plan-linked objective', value: '₹25 L', sub: 'Already included in approved ABP ₹4.20 Cr' },
+        { label: 'Plan-linked objective', value: '₹25.00 L', sub: 'Already included in approved ABP ₹4.20 Cr' },
       ]} />
       <Panel title="Scenario simulator" actions={<>
         <Btn small onClick={() => setEditing((e) => !e)}>{editing ? 'Done' : 'Adjust Assumptions'}</Btn>
@@ -370,7 +370,7 @@ export function Cw3() {
             </button>
           ))}
         </div>
-        <Note>Forecasts assume ₹{realisation}/kg realisation and {margin}% contribution margin. Net ROI = (contribution − ₹3.0 L cost) ÷ ₹3.0 L. These are not actual results.</Note>
+        <Note>Forecasts assume ₹{realisation}/kg realisation and {margin}% contribution margin. Net ROI = (contribution − ₹3.00 L cost) ÷ ₹3.00 L. These are not actual results.</Note>
       </Panel>
       <div className="tm-viz-row">
         <Panel title="Sales, contribution and cost by scenario">
@@ -380,7 +380,7 @@ export function Cw3() {
         </Panel>
         <Panel title={`${selected} at a glance`}>
           <div className="tm-ring-row">
-            <Ring value={coverage} label={`${coverage.toFixed(0)}%`} sub="of ₹25 L objective" tone={coverage >= 100 ? 'green' : 'amber'} />
+            <Ring value={coverage} label={`${coverage.toFixed(0)}%`} sub="of ₹25.00 L objective" tone={coverage >= 100 ? 'green' : 'amber'} />
             <Ring value={Math.max(0, base.roi * 100)} label={`${base.roi >= 0 ? '+' : '−'}${Math.abs(base.roi).toFixed(2)}×`} sub="modelled net ROI" tone={base.roi >= 0 ? 'green' : 'red'} />
           </div>
           <div className="tm-recon">
@@ -407,7 +407,7 @@ export function Cw3() {
         </Panel>
         <AiPanel title="AI Scenario Recommendation">
           <p className="tm-ai-text">The base scenario is positive on modelled net ROI but covers only {Math.round((rows[1].sales / 25) * 100)}% of the plan-linked objective. Evaluate higher conversion and complementary approved interventions. Confidence depends on CRM cohort, realisation, margin, stock and agronomy validation.</p>
-          <small className="tm-muted">The ₹25 L sits inside the approved ABP; the campaign forecast is not additional business.</small>
+          <small className="tm-muted">The ₹25.00 L sits inside the approved ABP; the campaign forecast is not additional business.</small>
         </AiPanel>
       </div>
       <Footer back={{ label: 'Back to Activity & Budget Mix', to: 'cw.2' }}
@@ -457,16 +457,16 @@ export function Cw4() {
           </dl>
           <div className="tm-brief-nums">
             <div><span>Draft campaign budget</span><b>{lakh(total, 2)}</b></div>
-            <div><span>Base forecast incremental sales</span><b>₹12 L</b><small>12 MT at assumed ₹100/kg</small></div>
-            <div><span>Contribution (35% margin)</span><b>₹4.2 L</b></div>
-            <div><span>Net ROI</span><b>{netRoi >= 0 ? '+' : ''}{netRoi.toFixed(2)}×</b><small>(₹4.2 L − {lakh(total, 2)}) ÷ {lakh(total, 2)}</small></div>
+            <div><span>Base forecast incremental sales</span><b>₹12.00 L</b><small>12 MT at assumed ₹100/kg</small></div>
+            <div><span>Contribution (35% margin)</span><b>₹4.20 L</b></div>
+            <div><span>Net ROI</span><b>{netRoi >= 0 ? '+' : ''}{netRoi.toFixed(2)}×</b><small>(₹4.20 L − {lakh(total, 2)}) ÷ {lakh(total, 2)}</small></div>
           </div>
         </div>
         <div className="tm-objective-bar" aria-label="Objective coverage">
-          <span className="forecast" style={{ flex: 12 }}>Campaign forecast ₹12 L (48%)</span>
-          <span className="other" style={{ flex: 13 }}>Other interventions ₹13 L</span>
+          <span className="forecast" style={{ flex: 12 }}>Campaign forecast ₹12.00 L (48%)</span>
+          <span className="other" style={{ flex: 13 }}>Other interventions ₹13.00 L</span>
         </div>
-        <Note>Plan linkage: the ₹25 L growth objective is already inside the approved Ambad ABP (₹4.20 Cr). Forecasts are not actuals and are not double counted.</Note>
+        <Note>Plan linkage: the ₹25.00 L growth objective is already inside the approved Ambad ABP (₹4.20 Cr). Forecasts are not actuals and are not double counted.</Note>
       </Panel>
       <div className="tm-viz-row">
         <Panel title="Activity & budget summary">
@@ -493,7 +493,7 @@ export function Cw4() {
       </div>
       <Panel title="Approval routing">
         <ApprovalPipeline current={submitted ? stage : 0} steps={APPROVAL_STEPS.map((s, i) => ({ ...s, skipped: i === 3 }))} />
-        <Note>Submission is not launch authorisation. Mandatory blockers prevent submission, and launch stays <Lock size={11} /> locked until approvals are complete. Business Head escalation applies only above ₹5 L.</Note>
+        <Note>Submission is not launch authorisation. Mandatory blockers prevent submission, and launch stays <Lock size={11} /> locked until approvals are complete. Business Head escalation applies only above ₹5.00 L.</Note>
         <label className="pm-field"><span>Submission rationale</span><textarea className="tm-textarea" rows={2} defaultValue="Supports the approved Onion growth objective in Dhanora and Wadi Gaon; base scenario ROI +0.40× (forecast)." /></label>
       </Panel>
       <Footer back={{ label: 'Back to Scenario', to: 'cw.3' }}
@@ -531,7 +531,7 @@ export function TmC2() {
       <IconTiles items={[
         { icon: CheckCircle2, value: `${Math.max(stage, 0)} / 3`, label: 'Approval steps complete', note: 'Business Head step not required', tone: approved ? 'green' : 'amber' },
         { icon: CalendarRange, value: `${daysOpen} day${daysOpen === 1 ? '' : 's'}`, label: 'Time in approval', note: 'SLA: 5 working days end to end' },
-        { icon: Wallet, value: lakh(total, 2), label: approved ? 'Approved budget' : 'Requested budget', note: total < 5 ? 'Below ₹5 L Business Head threshold' : 'Business Head threshold reached', tone: 'blue' },
+        { icon: Wallet, value: lakh(total, 2), label: approved ? 'Approved budget' : 'Requested budget', note: total < 5 ? 'Below ₹5.00 L Business Head threshold' : 'Business Head threshold reached', tone: 'blue' },
         { icon: Lock, value: approved ? 'Unlocked' : 'Locked', label: 'Launch authorisation', note: approved ? 'Ready for execution' : 'Until Marketing Head approves', tone: approved ? 'green' : 'grey' },
       ]} />
       <Panel title="Approval pipeline" actions={submitted && !approved
@@ -565,7 +565,7 @@ export function TmC2() {
           <AiPanel title="AI Approval Assistant">
             <p className="tm-ai-text">{approved
               ? 'Approved with two conditions. Confirm Dhanora demo stock and keep consent logs before activating the digital wave.'
-              : 'Typical approvals for campaigns under ₹5 L complete in 4–5 working days. Pre-confirming demo stock usually avoids a conditional approval.'}</p>
+              : 'Typical approvals for campaigns under ₹5.00 L complete in 4–5 working days. Pre-confirming demo stock usually avoids a conditional approval.'}</p>
           </AiPanel>
         </div>
       </div>
@@ -596,8 +596,8 @@ export function TmC3() {
       <IconTiles items={[
         { icon: Target, value: current.length, label: 'Campaigns this season', note: `1 ${onionStage.toLowerCase()} · 1 draft · 1 idea`, tone: 'green' },
         { icon: Wallet, value: lakh(budgetSum, 2), label: 'Campaign budget requested', note: 'Onion ₹3.00 L + Maize ₹2.20 L (draft)', tone: 'amber' },
-        { icon: Sprout, value: '₹40 L', label: 'Plan-linked growth covered', note: 'Onion ₹25 L + Maize ₹15 L objectives', tone: 'blue' },
-        { icon: FlaskConical, value: '1.6×', label: 'Last-season campaign ROI', note: 'Kharif 2025 average (2 campaigns)' },
+        { icon: Sprout, value: '₹40.00 L', label: 'Plan-linked growth covered', note: 'Onion ₹25.00 L + Maize ₹15.00 L objectives', tone: 'blue' },
+        { icon: FlaskConical, value: '1.60×', label: 'Last-season campaign ROI', note: 'Kharif 2025 average (2 campaigns)' },
       ]} />
       <Panel title="Campaign pipeline">
         <div className="tm-pipeline-board">
@@ -622,8 +622,8 @@ export function TmC3() {
         </Panel>
         <Panel title="Objective vs forecast">
           <div className="tm-obj-rows">
-            <div><span>Onion conversion</span><div className="tm-obj-track"><i style={{ width: '48%' }} /><em style={{ left: '100%' }} /></div><b>₹12 L of ₹25 L</b></div>
-            <div><span>Maize expansion</span><div className="tm-obj-track"><i className="none" style={{ width: '0%' }} /><em style={{ left: '100%' }} /></div><b>Not modelled · ₹15 L</b></div>
+            <div><span>Onion conversion</span><div className="tm-obj-track"><i style={{ width: '48%' }} /><em style={{ left: '100%' }} /></div><b>₹12.00 L of ₹25.00 L</b></div>
+            <div><span>Maize expansion</span><div className="tm-obj-track"><i className="none" style={{ width: '0%' }} /><em style={{ left: '100%' }} /></div><b>Not modelled · ₹15.00 L</b></div>
           </div>
           <small className="tm-muted">Forecasts are planning estimates; objectives are already inside the ₹4.20 Cr ABP.</small>
         </Panel>
@@ -674,8 +674,8 @@ export function TmC3() {
         </Panel>
         <AiPanel title="AI Portfolio Insight">
           <ul className="tm-ai-list">
-            <li>Onion and Maize campaigns cover the full ₹40 L plan-linked uplift, but only Onion has a modelled forecast (48% of its objective).</li>
-            <li>Last season's soybean sulphur campaign returned 1.8× — reuse its retailer-led format for the Maize draft.</li>
+            <li>Onion and Maize campaigns cover the full ₹40.00 L plan-linked uplift, but only Onion has a modelled forecast (48% of its objective).</li>
+            <li>Last season's soybean sulphur campaign returned 1.80× — reuse its retailer-led format for the Maize draft.</li>
             <li>Ambad HQ is targeted by two campaigns; stagger activities to avoid retailer fatigue.</li>
           </ul>
         </AiPanel>

@@ -71,7 +71,7 @@ const reducedMotion = () => typeof window !== 'undefined' && !!window.matchMedia
 const ease = (p: number) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 const textW = (text: string, size: number) => text.length * size * 0.58 + 4;
 const overlaps = (a: Box, list: Box[]) => list.some((b) => a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0);
-const fmtCoord = (p: Place) => `${p.lat.toFixed(4)}° N, ${p.lon.toFixed(4)}° E`;
+const fmtCoord = (p: Place) => `${p.lat.toFixed(2)}° N, ${p.lon.toFixed(2)}° E`;
 const viewKey = (v: MapView | null | undefined) => (v ? JSON.stringify(v) : '');
 
 /** District paths are the heavy part (790 shapes): rendered once and only redrawn when fills change. */
@@ -180,7 +180,7 @@ export function IndiaDistrictMap({ label, markers, states, talukas, view = 'indi
         }
         return !(event as MouseEvent).button;
       })
-      // ~1.2x per mouse-wheel notch; trackpad pinch (small deltas + ctrlKey) is amplified so it stays responsive
+      // ~1.20× per mouse-wheel notch; trackpad pinch (small deltas + ctrlKey) is amplified so it stays responsive
       .wheelDelta((event: WheelEvent) => {
         const base = -event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 0.0028);
         return Math.abs(event.deltaY) < 40 ? base * 4 : base;

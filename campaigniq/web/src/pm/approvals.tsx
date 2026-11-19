@@ -37,7 +37,7 @@ export function Pm9b() {
         <div className="pm-stack">
           <Box title="Selected submission · Ambad" tone="soft">
             <Facts rows={ACTIVITIES.map((item) => [item.activity, item.units] as [string, string])} />
-            <Facts cols={2} rows={[['Total activities', '13'], ['Local budget', <>₹3 L <Muted>Within approved regional {INVESTMENT} envelope (not additive)</Muted></>]]} />
+            <Facts cols={2} rows={[['Total activities', '13'], ['Local budget', <>₹3.00 L <Muted>Within approved regional {INVESTMENT} envelope (not additive)</Muted></>]]} />
           </Box>
           <Box title="Readiness checks">
             <Checklist items={[
@@ -93,7 +93,7 @@ export function Pm9() {
           <Box title="Campaign Alignment & Compliance" tone="soft">
             <Checklist items={[
               { label: 'Approved product / crop / geography scope', status: 'Aligned' },
-              { label: 'Local ₹3 L within approved regional ₹12 L envelope', status: 'Remaining allocation verification pending' },
+              { label: 'Local ₹3.00 L within approved regional ₹12.00 L envelope', status: 'Remaining allocation verification pending' },
               { label: 'Crop-stage / agronomy validation', status: 'Pending' },
               { label: 'Approved collateral version check', status: 'Pending' },
               { label: 'Stock readiness', status: 'Not Verified' },
@@ -136,7 +136,7 @@ export function Pm9a() {
       </>}
     >
       <Facts cols={3} rows={[
-        ['Planned', '4 demonstrations'], ['Split', 'Dhanora 2 · Wadi Gaon 2'], ['Proposed local allocation', <>₹1.05 L <Muted>Within ₹3 L local plan and ₹12 L regional envelope</Muted></>],
+        ['Planned', '4 demonstrations'], ['Split', 'Dhanora 2 · Wadi Gaon 2'], ['Proposed local allocation', <>₹1.05 L <Muted>Within ₹3.00 L local plan and ₹12.00 L regional envelope</Muted></>],
         ['Planned dates', <Status>To Confirm</Status>], ['Assigned owner', <>R. Jadhav (proposed) <Status>Confirmation Pending</Status></>], ['Double counting', 'None — one allocation'],
       ]} />
       <Box title="Validation checklist">
@@ -164,14 +164,14 @@ const CORRECTIONS = [
   { activity: 'Field Demonstrations (4 planned)', exception: 'Crop-stage / agronomy timing Pending · stock Not Verified', change: 'Confirm agronomy window and distributor stock', status: 'Pending' },
   { activity: 'Retailer Activation (3 planned)', exception: 'Owner confirmation Pending', change: 'Confirm activity owner', status: 'Pending' },
   { activity: 'All activities', exception: 'Approved collateral version verification', change: 'Reference authorized asset versions', status: 'Pending' },
-  { activity: 'Local budget ₹3 L', exception: 'Allocation vs available regional envelope balance', change: 'Confirm remaining envelope', status: 'Pending' },
+  { activity: 'Local budget ₹3.00 L', exception: 'Allocation vs available regional envelope balance', change: 'Confirm remaining envelope', status: 'Pending' },
   { activity: 'Farmer meetings & advisory', exception: 'Eligible audience / consent checks', change: 'Attach consent evidence', status: 'Pending' },
 ];
 
 export function Pm9c() {
   const [selected, setSelected] = useState(0);
   return (
-    <Drawer title="Territory Request Corrections" status="Draft / Not Sent" width="50%" back="pm.9" subtitle={`${LOCAL_PLAN.name} · Maharashtra Onion · parent ${APPROVED_CAMPAIGN} · 13 units · ₹3.00 L local (within ₹12 L envelope, not additive)`}
+    <Drawer title="Territory Request Corrections" status="Draft / Not Sent" width="50%" back="pm.9" subtitle={`${LOCAL_PLAN.name} · Maharashtra Onion · parent ${APPROVED_CAMPAIGN} · 13 units · ₹3.00 L local (within ₹12.00 L envelope, not additive)`}
       footer={<>
         <Act message="Original TM plan v1 opened read-only">View Original TM Plan</Act>
         <Act message="Draft request saved — not sent">Save Draft Request</Act>
@@ -280,7 +280,7 @@ export function Pm9e() {
             { label: 'Confirmed activity ownership', status: 'Outstanding' },
             { label: 'Stock feasibility', status: 'Unverified' },
             { label: 'Latest authorized collateral versions & consent', status: 'Outstanding' },
-            { label: 'Local ₹3 L within remaining regional ₹12 L envelope', status: 'Unverified' },
+            { label: 'Local ₹3.00 L within remaining regional ₹12.00 L envelope', status: 'Unverified' },
             { label: 'Closure of corrections & exceptions', status: 'Outstanding' },
           ]} />
         </Box>

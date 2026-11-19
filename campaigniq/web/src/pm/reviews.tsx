@@ -40,7 +40,7 @@ export function Pm1() {
               height={130}
               data={PORTFOLIO.map((row) => ({ label: row.product.replace('Specialty ', 'Spec. '), values: [row.ly, row.abp] }))}
               series={[{ label: 'FY 2024–25 sales', color: COLORS.light }, { label: 'FY 2025–26 ABP', color: COLORS.dark }]}
-              format={(value) => `₹${value.toFixed(1)} Cr`}
+              format={(value) => `₹${value.toFixed(2)} Cr`}
             />
           </Box>
           <Box title="Previous-year campaign indicators" tone="soft">
@@ -120,7 +120,7 @@ export function Pm2() {
             ]} />
           </Box>
           <AiBox title="AI Planning Insight" items={[
-            { title: 'Ambad shows a ₹40 L all-product allocation shortfall.', text: 'Submitted ₹3.80 Cr against a ₹4.20 Cr territory ABP. This is an all-product gap, not a portfolio-specific one.', tone: 'amber' },
+            { title: 'Ambad shows a ₹40.00 L all-product allocation shortfall.', text: 'Submitted ₹3.80 Cr against a ₹4.20 Cr territory ABP. This is an all-product gap, not a portfolio-specific one.', tone: 'amber' },
             { title: 'Map Croptek, Water Soluble and Specialty Nutrition SKU contributions before drawing portfolio-gap conclusions.', text: 'Open the pending SKU mapping to see what can and cannot be attributed yet.' },
           ]} />
         </div>
@@ -383,7 +383,7 @@ export function Pm3b() {
 const COMPARISON = [
   { parameter: 'All-product submitted plan vs ABP', original: '₹3.80 Cr vs ₹4.20 Cr', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
   { parameter: 'Onion allocation', original: '₹1.65 Cr', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
-  { parameter: 'Dhanora revenue / volume', original: '₹10 L / 10 MT → ₹12 L / 15 MT', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
+  { parameter: 'Dhanora revenue / volume', original: '₹10.00 L / 10 MT → ₹12.00 L / 15 MT', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
   { parameter: 'Implied realization', original: '₹100 → ₹80/kg', revised: 'View TM Revised Submission', variation: 'Awaiting Revalidation', status: 'Pending' },
   { parameter: 'Application rate', original: '20 kg/acre (unvalidated)', revised: 'View TM Revised Submission', variation: '—', status: 'Agronomy Validation Pending' },
 ];

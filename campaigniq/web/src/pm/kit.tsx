@@ -1,11 +1,15 @@
 import { useState, type ReactNode } from 'react';
-import { ArrowLeft, ArrowRight, ChevronRight, Home, Lock, Sparkles, X } from 'lucide-react';
+import {  ArrowRight, Lock, Sparkles, X } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import { Btn, cx, type Tone } from '../ui';
-import { PulseStrip, type PulseItem } from '../ui/index';
-import { PM_CHARTS, PM_DRAWER_CHARTS, PM_PULSE as PM_PULSE_BY_CODE } from './charts';
+import {  type PulseItem } from '../ui/index';
+import { PM_CHARTS, PM_DRAWER_CHARTS } from './charts';
 import { StatusChip } from '../ui/index';
 import type { CreativeKind } from './data';
+import { PersonaHeader } from '../ui/system';
+import { PM_SCREENS } from './nav';
+import { MetricTile, SectionTitle, StepsPortal } from '../ui/system';
+import { GroupedColumns } from '../ui/viz';
 
 export function toneOf(text: string): Tone {
   const t = text.toLowerCase();
@@ -29,7 +33,7 @@ export const PM_PULSE: PulseItem[] = [
   { label: 'Execution coverage', value: 76 },
 ];
 
-export function PmPage({ crumbs, code, title, status, subtitle, actions, children, className, pulse }: {
+export function PmPage({  code, title, status, subtitle, actions, children, className }: {
   crumbs: { label: string; to?: ScreenId }[];
   code: string;
   title: string;
@@ -40,30 +44,9 @@ export function PmPage({ crumbs, code, title, status, subtitle, actions, childre
   className?: string;
   pulse?: PulseItem[];
 }) {
-  const { go } = useNav();
   return (
     <div className={cx('pm-page', 'persona-page persona-page-pm', className)}>
-      <nav className="breadcrumbs" aria-label="Breadcrumb">
-        <Home size={13} />
-        <span className="crumb"><ChevronRight size={12} /><button type="button" onClick={() => go('pm.1')}>Zonal Manager</button></span>
-        {crumbs.map((item, index) => (
-          <span key={item.label} className={cx('crumb', index === crumbs.length - 1 && 'crumb-current')}>
-            <ChevronRight size={12} />
-            {item.to ? <button type="button" onClick={() => go(item.to!)}>{item.label}</button> : item.label}
-          </span>
-        ))}
-      </nav>
-      <div className="page-header">
-        <div className="page-title-block">
-          <div className="page-title-row">
-            <h1>{title}</h1>
-            {status && <Status>{status}</Status>}
-          </div>
-          {subtitle && <p className="page-subtitle">{subtitle}</p>}
-        </div>
-        {actions && <div className="page-actions">{actions}</div>}
-      </div>
-      <PulseStrip title="Status at a glance" ariaLabel="Zonal Manager visual summary" items={pulse ?? PM_PULSE_BY_CODE[code] ?? PM_PULSE} />
+      <PersonaHeader list={PM_SCREENS} id={code} title={title} subtitle={subtitle} status={status} actions={actions} />
       {PM_CHARTS[code]}
       {children}
     </div>
@@ -201,20 +184,10 @@ export function Facts({ rows, cols = 1 }: { rows: [ReactNode, ReactNode][]; cols
 }
 
 export function Strip({ items }: { items: { label: string; value: ReactNode; sub?: ReactNode; tone?: 'amber' | 'green' }[] }) {
-  return (
-    <div className="pm-strip">
-      {items.map((item) => (
-        <article key={item.label} className={cx('pm-strip-item', item.tone && `pm-strip-${item.tone}`)}>
-          <span>{item.label}</span>
-          <b>{item.value}</b>
-          {item.sub && <small>{item.sub}</small>}
-        </article>
-      ))}
-    </div>
-  );
+  return <div className="cq-kpis">{items.map((item) => <MetricTile key={item.label} label={item.label} value={item.value} note={item.sub} />)}</div>;
 }
 
-export function Box({ title, children, tone, actions, className, icon }: {
+export function Box({ title, children, tone, actions, className }: {
   title?: ReactNode;
   children: ReactNode;
   tone?: 'soft' | 'tint';
@@ -223,13 +196,8 @@ export function Box({ title, children, tone, actions, className, icon }: {
   icon?: ReactNode;
 }) {
   return (
-    <section className={cx('pm-box', tone && `pm-box-${tone}`, className)}>
-      {title && (
-        <header className="pm-box-head">
-          <h3>{icon}{title}</h3>
-          {actions && <div className="pm-box-actions">{actions}</div>}
-        </header>
-      )}
+    <section className={cx('cq-card', tone && `cq-card-${tone}`, className)}>
+      {(title || actions) && <SectionTitle n={title ? undefined : 0} title={title ?? ''} action={actions} />}
       <div className="pm-box-body">{children}</div>
     </section>
   );
@@ -271,14 +239,8 @@ export function Checklist({ items }: { items: { label: ReactNode; status: string
   );
 }
 
-export function Actions({ left, right, note }: { left?: ReactNode; right?: ReactNode; note?: ReactNode }) {
-  return (
-    <div className="pm-actions">
-      <div className="pm-actions-left">{left}</div>
-      {note && <div className="pm-actions-note">{note}</div>}
-      <div className="pm-actions-right">{right}</div>
-    </div>
-  );
+export function Actions({ left, right }: { left?: ReactNode; right?: ReactNode; note?: ReactNode }) {
+  return <StepsPortal>{left}{right}</StepsPortal>;
 }
 
 export function Cta({ to, children, locked, onClick, small, message }: { to?: ScreenId; children: ReactNode; locked?: string; onClick?: () => void; small?: boolean; message?: string }) {
@@ -300,10 +262,8 @@ export function Act({ children, message, to, small, icon }: { children: ReactNod
   return <Btn small={small} variant="outline" icon={icon} onClick={() => { if (message) toast(message); if (to) go(to); }}>{children}</Btn>;
 }
 
-export function Next({ label, to }: { label: string; to: ScreenId; sub?: string }) {
-  void label; void to;
-  const { goBack } = useNav();
-  return <div className="pm-next-link"><Btn variant="outline" icon={<ArrowLeft size={13} />} onClick={() => goBack('pm.1')}>Back</Btn></div>;
+export function Next(_props: { label: string; to: ScreenId; sub?: string }) {
+  return null;
 }
 
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: ReactNode }) {
@@ -360,33 +320,14 @@ export function Tabs({ items, active, onSelect }: { items: string[]; active: str
   );
 }
 
-export function Bars({ data, series, height = 120, format = (value: number) => String(value) }: {
+export function Bars({ data, series, height = 200, format = (value: number) => String(value) }: {
   data: { label: string; values: number[] }[];
   series: { name?: string; label?: string; color: string }[];
   height?: number;
   format?: (value: number) => string;
 }) {
-  const max = Math.max(1, ...data.flatMap((item) => item.values));
-  return (
-    <div className="pm-bars">
-      <div className="pm-bars-plot" style={{ height, marginBottom: 22 }}>
-        {data.map((item) => (
-          <div key={item.label} className="pm-bars-group">
-            <div className="pm-bars-cols" style={{ height: '100%', flex: 'none' }}>
-              {item.values.map((value, index) => (
-                <div key={index} className="pm-bar-col" title={`${series[index]?.name ?? series[index]?.label ?? `Series ${index + 1}`}: ${format(value)}`}>
-                  <span>{format(value)}</span>
-                  <i style={{ height: `${(value / max) * 100}%`, background: series[index]?.color ?? 'var(--segment-growing)' }} />
-                </div>
-              ))}
-            </div>
-            <span className="pm-bars-label">{item.label}</span>
-          </div>
-        ))}
-      </div>
-      <div className="pm-bars-legend">{series.map((s, i) => <span key={`${s.name ?? s.label ?? 'series'}-${i}`}><i style={{ background: s.color }} />{s.name ?? s.label ?? `Series ${i + 1}`}</span>)}</div>
-    </div>
-  );
+  const rows = data.map((d) => ({ x: d.label, ...Object.fromEntries(d.values.map((v, j) => [`s${j}`, v])) }));
+  return <GroupedColumns data={rows} x="x" series={series.map((s, j) => ({ key: `s${j}`, name: s.name ?? s.label ?? `Series ${j + 1}` }))} fmt={format} height={Math.max(height, 200)} insight />;
 }
 
 export function Meter({ value, max, label, tone = 'green' }: { value: number; max: number; label?: ReactNode; tone?: Tone }) {

@@ -194,7 +194,7 @@ export function Pm10c() {
       <Box title="Incrementality method">
         <Table compact head={['Component', 'Status']} rows={[
           ['Verified eligible exposed cohort', <P />], ['Valid comparable baseline / control', <Status>Missing Baseline</Status>], ['Incremental purchases above baseline', <P />],
-          ['Validated incremental net sales', <P />], ['Contribution margin', <P>Finance verification</P>], ['Eligible campaign investment', <>{INVESTMENT} regional envelope · local ₹3 L <Status>To reconcile</Status></>],
+          ['Validated incremental net sales', <P />], ['Contribution margin', <P>Finance verification</P>], ['Eligible campaign investment', <>{INVESTMENT} regional envelope · local ₹3.00 L <Status>To reconcile</Status></>],
         ]} />
         <Muted>{IMPACT.linkedSales}Linked sales are not treated as incremental benefit; the 36% historical conversion is not causal lift.</Muted>
       </Box>
@@ -454,7 +454,7 @@ export function Pm11d() {
 
 /* ------------------------------------------------------------------ PM.AI1 */
 
-const QUESTIONS = ['Which intervention worked?', 'Where is growth lagging?', 'What should change next year?', 'Is the ₹12 L investment justified?'];
+const QUESTIONS = ['Which intervention worked?', 'Where is growth lagging?', 'What should change next year?', 'Is the ₹12.00 L investment justified?'];
 
 /** Zonal Manager figures handed to the live LLM as grounding context. */
 const PM_FACTS = [

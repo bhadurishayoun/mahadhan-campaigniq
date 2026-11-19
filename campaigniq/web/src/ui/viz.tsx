@@ -2,39 +2,55 @@
 import type { ReactNode } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { chartTheme } from '../chartTheme';
+import { InsightStrip } from './system';
 
 type Fmt = (v: number) => string;
-const plain: Fmt = (v) => v.toLocaleString('en-IN');
+const plain: Fmt = (v) => (Number.isInteger(v) ? v.toLocaleString('en-IN') : v.toFixed(2));
 export interface VizSeries { key: string; name: string; color?: string }
-const colorAt = (s: VizSeries, i: number) => s.color ?? chartTheme.series[i % chartTheme.series.length];
+/** Planned/target series → --data-plan, actual/observed → --data-actual, others by position. */
+export const seriesColor = (name: string, i: number) => (/plan|target|abp|benchmark/i.test(name) ? chartTheme.planned : /actual|observ|achiev|recorded/i.test(name) ? chartTheme.actual : chartTheme.series[i % chartTheme.series.length]);
+const colorAt = (s: VizSeries, i: number) => s.color ?? seriesColor(s.name, i);
+const pctOf = (v: number, t: number) => Math.round((v / (t || 1)) * 100);
 
 /* ---------------------------------------------------------------- RankedBars */
-export interface RankedItem { label: string; value: number; /** caption under the label */ note?: string; /** muted bar */ muted?: boolean }
+export interface RankedItem { label: string; value: number; /** caption under the label */ note?: string; /** muted bar */ muted?: boolean; /** preformatted value */ display?: string }
 /** Horizontal ranked bars: square 14px bars, bold value + grey share at the bar end. */
-export function RankedBars({ items, fmt = plain, share = true, onSelect }: { items: RankedItem[]; fmt?: Fmt; share?: boolean; onSelect?: (label: string) => void }) {
-  const max = Math.max(1, ...items.map((i) => Math.abs(i.value)));
+export function RankedBars({ items, fmt = plain, share = true, onSelect, max: fixedMax, insight }: { items: RankedItem[]; fmt?: Fmt; share?: boolean; onSelect?: (label: string) => void; max?: number; insight?: boolean | ReactNode }) {
+  const max = fixedMax ?? Math.max(1, ...items.map((i) => Math.abs(i.value)));
   const total = items.reduce((s, i) => s + Math.abs(i.value), 0) || 1;
   return (
+    <>
     <ol className="cq-ranked">
       {items.map((it) => (
         <li key={it.label} className={onSelect ? 'clickable' : undefined} onClick={onSelect ? () => onSelect(it.label) : undefined}>
           <span className="cq-ranked-label">{it.label}{it.note && <small>{it.note}</small>}</span>
           <span className="cq-ranked-track">
-            <i className={it.muted ? 'muted' : undefined} style={{ width: `${(Math.abs(it.value) / max) * 72}%` }} />
-            <b>{fmt(it.value)}</b>
+            <i className={it.muted ? 'muted' : undefined} style={{ width: `${Math.min(1, Math.abs(it.value) / max) * 72}%` }} />
+            <b>{it.display ?? fmt(it.value)}</b>
             {share && <span>{Math.round((Math.abs(it.value) / total) * 100)}%</span>}
           </span>
         </li>
       ))}
     </ol>
+    {insight && items.length > 0 && <InsightStrip>{insight === true ? rankedInsight(items, fmt, share) : insight}</InsightStrip>}
+    </>
   );
+}
+function rankedInsight(items: RankedItem[], fmt: Fmt, share: boolean) {
+  const sorted = [...items].sort((a, b) => b.value - a.value);
+  const top = sorted[0], low = sorted[sorted.length - 1];
+  const total = items.reduce((t, i) => t + Math.abs(i.value), 0);
+  const v = (i: RankedItem) => i.display ?? fmt(i.value);
+  if (share && items.length > 1) return `${top.label} leads at ${v(top)}, ${pctOf(top.value, total)}% of the total.`;
+  return items.length > 1 ? `${top.label} is highest at ${v(top)}; ${low.label} is lowest at ${v(low)}.` : `${top.label}: ${v(top)}.`;
 }
 
 /* ---------------------------------------------------------------- GroupedColumns / TrendLine */
-export function GroupedColumns({ data, x, series, fmt = plain, height = 240 }: { data: Record<string, string | number>[]; x: string; series: VizSeries[]; fmt?: Fmt; height?: number }) {
+export function GroupedColumns({ data, x, series, fmt = plain, height = 240, insight }: { data: Record<string, string | number>[]; x: string; series: VizSeries[]; fmt?: Fmt; height?: number; insight?: boolean | ReactNode }) {
   return (
-    <div className="cq-chart">
-      <ResponsiveContainer width="100%" height={height}>
+    <>
+    <div className="cq-chart cq-chart-fill" style={{ minHeight: height }}>
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={chartTheme.margin} barGap={2}>
           <CartesianGrid {...chartTheme.grid} />
           <XAxis dataKey={x} {...chartTheme.axis} />
@@ -45,7 +61,20 @@ export function GroupedColumns({ data, x, series, fmt = plain, height = 240 }: {
         </BarChart>
       </ResponsiveContainer>
     </div>
+    {insight && data.length > 0 && <InsightStrip>{insight === true ? columnsInsight(data, x, series, fmt) : insight}</InsightStrip>}
+    </>
   );
+}
+
+function columnsInsight(data: Record<string, string | number>[], x: string, series: VizSeries[], fmt: Fmt) {
+  const s0 = series[0];
+  const top = [...data].sort((a, b) => Number(b[s0.key]) - Number(a[s0.key]))[0];
+  if (series.length > 1) {
+    const s1 = series[1];
+    const gap = [...data].sort((a, b) => Math.abs(Number(b[s0.key]) - Number(b[s1.key])) - Math.abs(Number(a[s0.key]) - Number(a[s1.key])))[0];
+    return `${top[x]} has the highest ${s0.name.toLowerCase()} (${fmt(Number(top[s0.key]))}); the widest gap to ${s1.name.toLowerCase()} is in ${gap[x]} (${fmt(Number(gap[s0.key]))} vs ${fmt(Number(gap[s1.key]))}).`;
+  }
+  return `${top[x]} is highest at ${fmt(Number(top[s0.key]))}.`;
 }
 
 export function TrendLine({ data, x, series, fmt = plain, height = 240 }: { data: Record<string, string | number>[]; x: string; series: VizSeries[]; fmt?: Fmt; height?: number }) {
@@ -66,11 +95,13 @@ export function TrendLine({ data, x, series, fmt = plain, height = 240 }: { data
 }
 
 /* ---------------------------------------------------------------- DonutMetric */
-export function DonutMetric({ items, value, label, fmt = plain }: { items: { label: string; value: number; color?: string }[]; value: ReactNode; label: string; fmt?: Fmt }) {
+export function DonutMetric({ items, value, label, fmt = plain, insight }: { items: { label: string; value: number; color?: string }[]; value: ReactNode; label: string; fmt?: Fmt; insight?: boolean | ReactNode }) {
   const total = items.reduce((s, i) => s + i.value, 0) || 1;
   const r = 52, c = 2 * Math.PI * r;
   let offset = 0;
+  const big = [...items].sort((a, b) => b.value - a.value)[0];
   return (
+    <>
     <div className="cq-donut">
       <div className="cq-donut-ring">
         <svg viewBox="0 0 140 140" role="img" aria-label={label}>
@@ -90,6 +121,8 @@ export function DonutMetric({ items, value, label, fmt = plain }: { items: { lab
         ))}
       </ul>
     </div>
+    {insight && big && <InsightStrip>{insight === true ? `${big.label} is the largest share at ${pctOf(big.value, total)}% (${fmt(big.value)}).` : insight}</InsightStrip>}
+    </>
   );
 }
 

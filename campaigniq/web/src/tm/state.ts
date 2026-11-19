@@ -8,7 +8,7 @@ export const APPROVAL_STEPS = [
   { role: 'Field Sales Manager', action: 'Submits campaign', who: 'You', sla: 'Day 0' },
   { role: 'Product / content review', action: 'Advisory & claims check', who: 'Zonal Manager — Crop Nutrition', sla: '2 working days' },
   { role: 'Marketing Head', action: 'Campaign approval', who: 'Marketing Head — West Region', sla: '3 working days' },
-  { role: 'Business Head', action: 'Threshold escalation', who: 'Only above ₹5 L budget — not required', sla: 'n/a' },
+  { role: 'Business Head', action: 'Threshold escalation', who: 'Only above ₹5.00 L budget — not required', sla: 'n/a' },
 ];
 
 export interface CampaignState {
