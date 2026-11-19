@@ -233,3 +233,21 @@ export const conversion = (adopters: number, trials: number) => (trials ? (adopt
 
 
 export const isOwnerPending = (owner: string) => !owner || owner === OWNER_PENDING;
+
+/** Farmer conversion funnel (reached → trials → adopters), summed over the execution campaigns or one campaign. */
+export function conversionFunnel(ids: string[] = EXECUTION_CAMPAIGNS.map((c) => c.id)) {
+  return ids.reduce((t, id) => {
+    const e = EXECUTION[id];
+    return e ? { reached: t.reached + e.reached, trials: t.trials + e.trials, adopters: t.adopters + e.adopters } : t;
+  }, { reached: 0, trials: 0, adopters: 0 });
+}
+/** Cost per adopter (₹) = spent (₹ L × 1,00,000) ÷ adopters, per execution campaign, plus the portfolio average. */
+export function costPerAdopter() {
+  const rows = EXECUTION_CAMPAIGNS.map((c) => {
+    const e = EXECUTION[c.id];
+    return { id: c.id, name: c.name, spent: e.spent, approved: e.budgetApproved, adopters: e.adopters, cost: e.adopters ? (e.spent * 1e5) / e.adopters : 0 };
+  });
+  const spent = rows.reduce((s, r) => s + r.spent, 0);
+  const adopters = rows.reduce((s, r) => s + r.adopters, 0);
+  return { rows, average: adopters ? (spent * 1e5) / adopters : 0 };
+}

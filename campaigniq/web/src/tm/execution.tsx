@@ -4,13 +4,13 @@ import { AlertTriangle, Bot, Camera, CheckCircle2, FileText, Upload, UserRound, 
 import { useNav } from '../nav';
 import { Btn, cx } from '../ui';
 import { FunnelBars } from '../ui/index';
-import { CAMPAIGN, EXECUTION_CAMPAIGNS, executionSummary, portfolioExecution, EXECUTION, FIELD_OWNERS, IMPACT_VILLAGES, conversion, type GanttUnit } from './data';
+import { CAMPAIGN, EXECUTION_CAMPAIGNS, conversionFunnel, costPerAdopter, executionSummary, portfolioExecution, EXECUTION, FIELD_OWNERS, IMPACT_VILLAGES, conversion, type GanttUnit } from './data';
 import { AiPanel, Context, Footer, HBars, Metrics, Note, Panel, Status, TmPage, lakh } from './ui';
 import { MAP_COLORS, TmMap } from './viz';
 import { LiveCopilot } from '../ui/LiveCopilot';
 import { useCampaignDraft } from './campaignDraft';
 import { Card, Grid, InsightStrip, KpiStrip, Metric, NextSteps } from '../ui/system';
-import { GroupedColumns, TrendLine, DonutMetric, RankedBars } from '../ui/viz';
+import { FunnelSteps, GroupedColumns, TrendLine, DonutMetric, RankedBars } from '../ui/viz';
 import { DataTable, StatusChip } from '../ui/kit';
 import { useExecutionCampaign, setExecutionCampaign } from './state';
 import { CampaignSwitcher } from './ui';
@@ -43,6 +43,23 @@ export function TmEx0() {
     { icon: Users, title: noOwner ? 'Assign campaign activity owner' : 'Review field ownership', detail: noOwner ? `${noOwner.campaign.name} has an unassigned activity.` : 'All listed activities have an owner.', id: (noOwner ?? campaigns[0]).campaign.id },
     { icon: CalendarDays, title: 'Review campaign close date', detail: `${campaigns.filter((s) => s.campaign.stage === 'Live').length} live campaigns are active.`, id: campaigns.filter((s) => s.campaign.stage === 'Live').sort((a, b) => a.campaign.months[1] - b.campaign.months[1])[0]?.campaign.id ?? campaigns[0].campaign.id },
   ];
+  // Card 4: weekly gap (live campaigns, same scope as the chart).
+  const gaps = weekly.map((w) => Number(w.planned) - Number(w.completed));
+  const lastWeek = weekly[weekly.length - 1];
+  const widened = gaps.every((g, i) => i === 0 || g > gaps[i - 1]);
+  const weeklyInsight = `By ${String(lastWeek.week).toLowerCase()} only ${lastWeek.completed} of ${lastWeek.planned} planned activities are complete; ${widened ? 'the gap has widened every week' : `the gap stands at ${gaps[gaps.length - 1]} activities`}.`;
+  // Card 5: conversion funnel, all campaigns or the selected one.
+  const [funnelMode, setFunnelMode] = useLocalState<'all' | 'selected'>('all');
+  const selectedSummary = campaigns.find((s) => s.campaign.id === selectedCampaignId) ?? campaigns[0];
+  const funnel = conversionFunnel(funnelMode === 'all' ? undefined : [selectedSummary.campaign.id]);
+  const trialLoss = funnel.reached - funnel.trials, adoptLoss = funnel.trials - funnel.adopters;
+  const funnelInsight = trialLoss >= adoptLoss
+    ? `The trial step loses the most farmers: ${Math.round((trialLoss / Math.max(1, funnel.reached)) * 100)}% of those reached never try the product.`
+    : `The adoption step loses the most farmers: ${Math.round((adoptLoss / Math.max(1, funnel.trials)) * 100)}% of those who tried do not adopt.`;
+  // Card 6: cost per adopter vs the portfolio average.
+  const cpa = costPerAdopter();
+  const worstCpa = [...cpa.rows].sort((a, b) => b.cost - a.cost)[0];
+  const cpaInsight = `${worstCpa.name} costs ₹${Math.round(worstCpa.cost).toLocaleString('en-IN')} per adopter, ${(worstCpa.cost / cpa.average).toFixed(1)}× the portfolio average${worstCpa.spent > worstCpa.approved ? ', in line with its budget overrun' : ''}.`;
   return <TmPage code="TM.EX0" title="Execution overview" subtitle="Campaign execution" headerActions={<CampaignSwitcher />}>
     <KpiStrip>
       <Metric icon={TrendingUp} label="Campaigns running" value={totals.running} comparator="vs plan" />
@@ -65,9 +82,26 @@ export function TmEx0() {
         <GroupedColumns data={campaigns.map((s) => ({ campaign: s.campaign.name.split(' ').slice(0, 2).join(' '), approved: s.budgetApproved, spent: s.spent }))} x="campaign" series={[{ key: 'approved', name: 'Plan approved' }, { key: 'spent', name: 'Actual spent' }]} fmt={executionFmt} height={240} />
         <InsightStrip>{executionFmt(totals.spent)} spent against {executionFmt(totals.budgetApproved)} approved across the five execution campaigns.</InsightStrip>
       </Card>
-      <Card title="Weekly activity completion">
-        <TrendLine data={weekly} x="week" series={[{ key: 'planned', name: 'Planned' }, { key: 'completed', name: 'Completed' }]} fmt={(v) => `${v} activities`} height={240} />
-        <InsightStrip>{totals.activitiesDone} of {totals.activitiesTotal} campaign activities are complete across live and completed campaigns.</InsightStrip>
+      <Card title="Weekly activity completion" context="Live campaigns" subtitle="Cumulative activities, planned vs completed">
+        <TrendLine data={weekly} x="week" series={[{ key: 'planned', name: 'Planned', dashed: true }, { key: 'completed', name: 'Completed' }]}
+          fmt={(v) => `${v} activities`} tickFmt={(v) => String(v)} height={240}
+          gap={{ upper: 'planned', lower: 'completed' }} endLabel={(s, v) => `${v} ${s.key}`} />
+        <InsightStrip>{weeklyInsight}</InsightStrip>
+      </Card>
+      <Card title="Farmer conversion funnel" context={funnelMode === 'all' ? 'All campaigns' : selectedSummary.campaign.name}
+        subtitle={funnelMode === 'all' ? 'Reached → trial → adopter, live and completed campaigns' : 'Reached → trial → adopter, selected campaign'}
+        action={<div className="cq-tabs"><button className={funnelMode === 'all' ? 'cq-tab active' : 'cq-tab'} onClick={() => setFunnelMode('all')}>All campaigns</button><button className={funnelMode === 'selected' ? 'cq-tab active' : 'cq-tab'} onClick={() => setFunnelMode('selected')} title={selectedSummary.campaign.name}>Selected campaign</button></div>}>
+        <FunnelSteps steps={[{ label: 'Reached', value: funnel.reached }, { label: 'Trials', value: funnel.trials }, { label: 'Adopters', value: funnel.adopters }]} />
+        <InsightStrip>{funnelInsight}</InsightStrip>
+      </Card>
+      <Card title="Cost per adopter by campaign" context="All campaigns" subtitle="Campaign spend ÷ recorded adopters">
+        <RankedBars share={false} fmt={(v) => `₹${Math.round(v).toLocaleString('en-IN')}`}
+          items={cpa.rows.slice().sort((a, b) => b.cost - a.cost).map((r) => ({ label: r.name, value: r.cost }))}
+          reference={{ value: cpa.average, label: `Portfolio average ₹${Math.round(cpa.average).toLocaleString('en-IN')}` }}
+          highlight={(it) => it.value > cpa.average * 1.5}
+          legend={{ base: 'Cost per adopter', highlight: 'Above 1.5× average' }}
+          onSelect={(label) => { const r = cpa.rows.find((x) => x.name === label); if (r) { setExecutionCampaign(r.id); go('tm.ex1'); } }} />
+        <InsightStrip>{cpaInsight}</InsightStrip>
       </Card>
     </Grid>
     <Card title="Campaign execution table">

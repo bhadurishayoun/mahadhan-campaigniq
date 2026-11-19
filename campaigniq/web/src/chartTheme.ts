@@ -45,4 +45,6 @@ export const chartTheme = {
   tint: (rank: number, count: number) => (rank === 0 ? 'var(--brand-700)' : `color-mix(in srgb, var(--brand-700) ${Math.round(100 - (rank / Math.max(1, count - 1)) * 62)}%, var(--brand-100))`),
   /** Neutral colour for a 'base' part (e.g. last-year base under a growth gap). */
   base: 'var(--data-baseline)',
+  /** Soft fill for the gap between a plan line and an actual line. */
+  gapFill: 'var(--risk-bg)',
 } as const;

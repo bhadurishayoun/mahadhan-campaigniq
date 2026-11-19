@@ -1,31 +1,41 @@
 /** The only chart set (CLAUDE.md §3). All styling comes from chartTheme; no inline colours here. */
 import { useId, useRef, useState, type ReactNode } from 'react';
-import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Area, Bar, BarChart, CartesianGrid, ComposedChart, LabelList, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { chartTheme } from '../chartTheme';
 import { InsightStrip } from './system';
 
 type Fmt = (v: number) => string;
 const plain: Fmt = (v) => (Number.isInteger(v) ? v.toLocaleString('en-IN') : v.toFixed(2));
-export interface VizSeries { key: string; name: string; color?: string }
+export interface VizSeries { key: string; name: string; color?: string; dashed?: boolean }
 /** Planned/target series → --data-plan, actual/observed → --data-actual, others by position. */
-export const seriesColor = (name: string, i: number) => (/plan|target|abp|benchmark/i.test(name) ? chartTheme.planned : /actual|observ|achiev|recorded/i.test(name) ? chartTheme.actual : chartTheme.series[i % chartTheme.series.length]);
+export const seriesColor = (name: string, i: number) => (/plan|target|abp|benchmark/i.test(name) ? chartTheme.planned : /actual|observ|achiev|recorded|complet|done|spent|deliver/i.test(name) ? chartTheme.actual : chartTheme.series[i % chartTheme.series.length]);
 const colorAt = (s: VizSeries, i: number) => s.color ?? seriesColor(s.name, i);
 const pctOf = (v: number, t: number) => Math.round((v / (t || 1)) * 100);
 
 /* ---------------------------------------------------------------- RankedBars */
 export interface RankedItem { label: string; value: number; /** caption under the label */ note?: string; /** muted bar */ muted?: boolean; /** preformatted value */ display?: string; segments?: { label: string; value: number; color: string }[] }
 /** Horizontal ranked bars: square 14px bars, bold value + grey share at the bar end. */
-export function RankedBars({ items, fmt = plain, share = true, onSelect, max: fixedMax, insight }: { items: RankedItem[]; fmt?: Fmt; share?: boolean; onSelect?: (label: string) => void; max?: number; insight?: boolean | ReactNode }) {
+export function RankedBars({ items, fmt = plain, share = true, onSelect, max: fixedMax, insight, reference, highlight, legend }: { items: RankedItem[]; fmt?: Fmt; share?: boolean; onSelect?: (label: string) => void; max?: number; insight?: boolean | ReactNode;
+  /** Dashed plan-colour vertical line (e.g. an average) with a legend entry. */ reference?: { value: number; label: string }; /** Items drawn in the risk colour. */ highlight?: (item: RankedItem) => boolean; /** Legend labels for the base and highlighted bars. */ legend?: { base: string; highlight?: string } }) {
   const max = fixedMax ?? Math.max(1, ...items.map((i) => i.segments ? i.segments.reduce((sum, segment) => sum + segment.value, 0) : Math.abs(i.value)));
   const total = items.reduce((s, i) => s + Math.abs(i.value), 0) || 1;
+  const scale = Math.max(max, reference?.value ?? 0);
   return (
     <>
-    <ol className="cq-ranked">
+    {(legend || reference) && (
+      <div className="cq-ranked-legend">
+        {legend && <span><i className="base" />{legend.base}</span>}
+        {legend?.highlight && <span><i className="risk" />{legend.highlight}</span>}
+        {reference && <span><i className="ref" />{reference.label}</span>}
+      </div>
+    )}
+    <ol className={`cq-ranked${reference ? ' has-ref' : ''}`}>
       {items.map((it) => (
         <li key={it.label} className={onSelect ? 'clickable' : undefined} onClick={onSelect ? () => onSelect(it.label) : undefined}>
           <span className="cq-ranked-label">{it.label}{it.note && <small>{it.note}</small>}</span>
-          <span className="cq-ranked-track">
-            {it.segments ? <span className="cq-ranked-stack" aria-label={it.segments.map((s) => `${s.value} ${s.label}`).join(', ')}>{it.segments.map((s) => <i key={s.label} title={`${s.label}: ${s.value}`} style={{ width: `${Math.max(0, s.value / max) * 100}%`, backgroundColor: s.color }} />)}</span> : <i className={it.muted ? 'muted' : undefined} style={{ width: `${Math.min(1, Math.abs(it.value) / max) * 72}%` }} />}
+          <span className="cq-ranked-track" title={`${it.label}: ${it.display ?? fmt(it.value)}`}>
+            {reference && <em className="cq-ranked-ref" style={{ left: `${(reference.value / scale) * 72}%` }} aria-hidden="true" />}
+            {it.segments ? <span className="cq-ranked-stack" aria-label={it.segments.map((s) => `${s.value} ${s.label}`).join(', ')}>{it.segments.map((s) => <i key={s.label} title={`${s.label}: ${s.value}`} style={{ width: `${Math.max(0, s.value / max) * 100}%`, backgroundColor: s.color }} />)}</span> : <i className={highlight?.(it) ? 'risk' : it.muted ? 'muted' : undefined} style={{ width: `${Math.min(1, Math.abs(it.value) / scale) * 72}%` }} />}
             <b>{it.display ?? fmt(it.value)}</b>
             {share && <span>{Math.round((Math.abs(it.value) / total) * 100)}%</span>}
           </span>
@@ -77,18 +87,40 @@ function columnsInsight(data: Record<string, string | number>[], x: string, seri
   return `${top[x]} is highest at ${fmt(Number(top[s0.key]))}.`;
 }
 
-export function TrendLine({ data, x, series, fmt = plain, height = 240 }: { data: Record<string, string | number>[]; x: string; series: VizSeries[]; fmt?: Fmt; height?: number }) {
+/** Line trend. Optional: `gap` shades the band between two series (risk tint) and labels it at the last point;
+ *  `endLabel` prints a label after each line's last point; `tickFmt` formats axis ticks (defaults to fmt). */
+export function TrendLine({ data, x, series, fmt = plain, tickFmt, height = 240, gap, endLabel }: {
+  data: Record<string, string | number>[]; x: string; series: VizSeries[]; fmt?: Fmt; tickFmt?: Fmt; height?: number;
+  gap?: { upper: string; lower: string; label?: (gap: number) => string }; endLabel?: (s: VizSeries, value: number) => string;
+}) {
+  const last = data.length - 1;
+  const rows = gap ? data.map((d) => ({ ...d, __band: [Number(d[gap.lower]), Number(d[gap.upper])], __mid: (Number(d[gap.lower]) + Number(d[gap.upper])) / 2 })) : data;
+  const endAt = (s: VizSeries, i: number) => (props: { x?: number | string; y?: number | string; index?: number; value?: number | string }) => (
+    props.index === last && endLabel ? <text x={Number(props.x) + 8} y={Number(props.y) + 4} className="cq-end-label" fill={colorAt(s, i)}>{endLabel(s, Number(props.value))}</text> : null
+  );
   return (
     <div className="cq-chart">
       <ResponsiveContainer width="100%" height={height}>
-        <LineChart data={data} margin={chartTheme.margin}>
+        <ComposedChart data={rows} margin={{ ...chartTheme.margin, right: endLabel ? 88 : chartTheme.margin.right }}>
           <CartesianGrid {...chartTheme.grid} />
-          <XAxis dataKey={x} {...chartTheme.axis} />
-          <YAxis {...chartTheme.axis} tickFormatter={fmt} width={56} />
-          <Tooltip {...chartTheme.tooltip} formatter={(v: number) => fmt(v)} />
-          {series.length > 1 && <Legend {...chartTheme.legend} />}
-          {series.map((s, i) => <Line key={s.key} dataKey={s.key} name={s.name} stroke={colorAt(s, i)} strokeWidth={2} dot={{ r: 3 }} isAnimationActive={false} />)}
-        </LineChart>
+          <XAxis dataKey={x} {...chartTheme.axis} padding={{ left: 8, right: 8 }} />
+          <YAxis {...chartTheme.axis} tickFormatter={tickFmt ?? fmt} width={40} />
+          <Tooltip {...chartTheme.tooltip} formatter={(v: number | number[], name: string) => (Array.isArray(v) ? [String(v[1] - v[0]), 'Gap'] : [fmt(v), name])} />
+          {series.length > 1 && <Legend {...chartTheme.legend} payload={series.map((s, i) => ({ value: s.name, type: s.dashed ? 'plainline' : 'square', color: colorAt(s, i), payload: { strokeDasharray: s.dashed ? '6 4' : '0' } }))} />}
+          {gap && <Area dataKey="__band" stroke="none" fill={chartTheme.gapFill} isAnimationActive={false} legendType="none" activeDot={false} />}
+          {series.map((s, i) => (
+            <Line key={s.key} dataKey={s.key} name={s.name} stroke={colorAt(s, i)} strokeWidth={2} strokeDasharray={s.dashed ? '6 4' : undefined} dot={{ r: 3 }} isAnimationActive={false}>
+              {endLabel && <LabelList dataKey={s.key} content={endAt(s, i)} />}
+            </Line>
+          ))}
+          {gap && (
+            <Line dataKey="__mid" stroke="none" dot={false} activeDot={false} legendType="none" isAnimationActive={false}>
+              <LabelList dataKey="__mid" content={(p: { x?: number | string; y?: number | string; index?: number }) => (p.index === last ? (
+                <text x={Number(p.x) + 8} y={Number(p.y) + 4} className="cq-gap-label">{(gap.label ?? ((g: number) => `Gap ${g}`))(Number(data[last][gap.upper]) - Number(data[last][gap.lower]))}</text>
+              ) : null)} />
+            </Line>
+          )}
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );
@@ -218,5 +250,34 @@ export function HeatGrid({ rows, cols, values, corner = '', fmt = plain, totals,
         </tbody>
       </table>
     </div>
+  );
+}
+
+/* ---------------------------------------------------------------- FunnelSteps */
+export interface FunnelStep { label: string; value: number }
+/**
+ * Conversion funnel: one full-width bar per step scaled to step 1 (brand tints, dark → light), value + % of the
+ * previous step on the right, and the drop-off between steps as a risk-coloured line. Hover shows a tooltip.
+ */
+export function FunnelSteps({ steps, fmt = (v: number) => v.toLocaleString('en-IN'), unit = 'farmers' }: { steps: FunnelStep[]; fmt?: Fmt; unit?: string }) {
+  const first = steps[0]?.value || 1;
+  return (
+    <ol className="cq-funnel">
+      {steps.map((s, i) => {
+        const prev = steps[i - 1];
+        const pctPrev = prev ? Math.round((s.value / (prev.value || 1)) * 100) : 100;
+        const tip = prev ? `${s.label}: ${fmt(s.value)} · ${pctPrev}% of ${prev.label.toLowerCase()}` : `${s.label}: ${fmt(s.value)}`;
+        return (
+          <li key={s.label}>
+            {prev && <p className="cq-funnel-drop">↓ {fmt(prev.value - s.value)} {unit} did not move to the next step</p>}
+            <div className="cq-funnel-row" title={tip}>
+              <span className="cq-funnel-label">{s.label}</span>
+              <span className="cq-funnel-track"><i style={{ width: `${(s.value / first) * 100}%`, background: chartTheme.tint(i, steps.length) }} /></span>
+              <span className="cq-funnel-value"><b>{fmt(s.value)}</b>{prev && <small>{pctPrev}% of {prev.label.toLowerCase()}</small>}</span>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
   );
 }

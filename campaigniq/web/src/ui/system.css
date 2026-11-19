@@ -309,3 +309,27 @@
 }
 .app .cq-next-btns :is(button, a)[data-step] { margin: 0 !important; }
 .cq-section-action .pm-view-toggles { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+
+/* ---------- TrendLine labels */
+.cq-end-label { font-size: 12px; font-weight: 700; }
+.cq-gap-label { font-size: 12px; font-weight: 700; fill: var(--risk); }
+/* ---------- FunnelSteps */
+.cq-funnel { display: grid; gap: 4px; list-style: none; flex: 1 1 auto; align-content: center; }
+.cq-funnel-row { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.cq-funnel-label { font-size: 13px; font-weight: 600; color: var(--ink-900); }
+.cq-funnel-track { display: block; height: 22px; }
+.cq-funnel-track i { display: block; height: 100%; border-radius: 2px; min-width: 2px; }
+.cq-funnel-value { display: grid; justify-items: end; text-align: right; min-width: 104px; }
+.cq-funnel-value b { font-size: 14px; color: var(--ink-900); }
+.cq-funnel-value small { font-size: 12px; color: var(--ink-600); }
+.cq-funnel-drop { margin: 2px 0 2px 82px; font-size: 12px; line-height: 16px; color: var(--risk); }
+/* ---------- RankedBars legend, risk highlight, reference line */
+.cq-ranked-legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 14px; font-size: 12px; color: var(--ink-600); }
+.cq-ranked-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.cq-ranked-legend i { display: inline-block; width: 10px; height: 10px; }
+.cq-ranked-legend i.base { background: var(--data-actual); }
+.cq-ranked-legend i.risk { background: var(--risk); }
+.cq-ranked-legend i.ref { width: 0; height: 12px; border-left: 2px dashed var(--data-plan); }
+.cq-ranked.has-ref .cq-ranked-track { position: relative; }
+.cq-ranked-track i.risk { background: var(--risk); }
+.cq-ranked-ref { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 2px dashed var(--data-plan); pointer-events: none; }
