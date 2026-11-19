@@ -51,7 +51,7 @@ function Mh1Charts() {
 function Mh2Charts() {
   return (
     <div className="iq-stack">
-      <ChartCard icon={BarChart3} title="Product Sales Trend - Croptek (Onion), Maharashtra" hint="Secondary sales">
+      <ChartCard className="mh2-trend" icon={BarChart3} title="Product Sales Trend - Croptek (Onion), Maharashtra" hint="Secondary sales">
         <div className="mh-trend-layout"><svg className="mh-sales-trend" viewBox="0 0 650 185" role="img" aria-label="Quarterly secondary sales rise from 40 lakh to 48 lakh">
           {[30,60,90,120,150].map(y=><line key={y} x1="54" x2="628" y1={y} y2={y} stroke="var(--line)" strokeWidth="1"/>)}
           <path d="M72 121 L242 96 L412 80 L582 56 L582 150 L72 150 Z" fill="var(--brand-50)"/>
@@ -60,11 +60,11 @@ function Mh2Charts() {
           {[0,10,20,30,40,50,60].map((v,i)=><text key={v} x="42" y={154-i*20} textAnchor="end" className="mh-trend-axis">INR {v}L</text>)}
         </svg><div className="mh-quarter-total"><small>Four-quarter total</small><strong>INR 1.76 Cr</strong><span>Secondary sales</span></div></div>
       </ChartCard>
-      <div className="iq-grid-2">
+      <div className="iq-grid-2 mh2-tables">
         <ChartCard icon={Target} title="Market Opportunity vs Product Penetration" hint="West Region market estimates"><div className="mh-report-table-wrap"><table className="mh-report-table mh-opportunity-table"><thead><tr><th>State</th><th>Addressable opportunity<small>Indicative range, ₹ Cr</small></th><th>Opportunity</th><th>Product penetration</th><th>Penetration</th></tr></thead><tbody>{[
           ['Maharashtra','~₹7–10 Cr','14–18%',88],['Gujarat','~₹5–7 Cr','18–22%',58],['Madhya Pradesh','~₹4–6 Cr','12–16%',47],['Rajasthan','~₹3–5 Cr','16–20%',35],
         ].map(([state,market,penetration,width])=><tr key={state as string} className={state==='Maharashtra'?'priority':''}><td><b>{state}</b></td><td>{market}</td><td><span className="mh-meter"><i style={{width:`${width}%`}}/></span></td><td>{penetration}</td><td><span className="mh-meter mh-meter-slim"><i style={{width:`${Number(String(penetration).split('–')[0].replace('%',''))*4}%`}}/></span></td></tr>)}</tbody></table></div></ChartCard>
-        <ChartCard icon={Target} title="Previous Campaign Effectiveness" hint="Croptek, Onion – Maharashtra"><div className="mh-report-table-wrap"><table className="mh-report-table mh-effectiveness-table"><thead><tr><th>Intervention</th><th>Engagement / adoption</th><th>Commercial evidence</th><th>Evidence confidence</th></tr></thead><tbody>{[
+        <ChartCard icon={Target} title="Previous Campaign Effectiveness" hint="Croptek, Onion – Maharashtra"><div className="mh-report-table-wrap"><table className="mh-report-table mh-effectiveness-table"><thead><tr><th>Intervention</th><th>{"Engagement / adoption"}</th><th>Commercial evidence</th><th>Evidence confidence</th></tr></thead><tbody>{[
           {icon:<Store/>,name:'Retailer Activation',value:'~62%',effect:'Higher offtake at participating outlets',quality:'High evidence',tone:'good'},
           {icon:<Activity/>,name:'Conversion',value:'~45%',effect:'Improved product trials and repeat',quality:'Moderate evidence',tone:'review'},
           {icon:<Megaphone/>,name:'Awareness',value:'~74%',effect:'Strong reach and interest generation',quality:'Limited evidence',tone:'review'},
