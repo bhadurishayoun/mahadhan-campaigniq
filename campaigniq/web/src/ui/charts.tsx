@@ -4,7 +4,13 @@ import { SERIES, axisStyle, gridStyle, tooltipStyle } from '../chartTheme';
 
 type Row = Record<string, string | number>;
 export interface Series { key: string; name?: string; color?: string }
-const color = (s: Series, i: number) => s.color ?? SERIES[i % SERIES.length];
+const color = (s: Series, i: number) => {
+  if (s.color) return s.color;
+  const label = `${s.key} ${s.name ?? ''}`.toLowerCase();
+  if (/planned|\bplan\b|target/.test(label)) return '#d7a62f';
+  if (/observed|\bactual\b|achieved/.test(label)) return '#2f8a3b';
+  return SERIES[i % SERIES.length];
+};
 
 /** time -> line */
 export function TrendLine({ data, x, series, height = 220, fmt }: { data: Row[]; x: string; series: Series[]; height?: number; fmt?: (v: number) => string }) {

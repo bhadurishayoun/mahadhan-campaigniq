@@ -4,6 +4,7 @@ import App from './App';
 import './styles.css';
 import './responsive.css';
 import './enhance.css';
+import './design-system.css';
 
 /**
  * Layout modes (see README "Responsive layout"):

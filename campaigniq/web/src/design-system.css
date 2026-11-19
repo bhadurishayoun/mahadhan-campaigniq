@@ -1,0 +1,94 @@
+/* Shared visual rules for all personas. Keep these semantic colors and title scales in one place. */
+:root {
+  --series-planned: var(--amber-500);
+  --series-observed: var(--g600);
+  --heading-color: var(--g900);
+  --heading-size-page: 26px;
+  --heading-size-section: 16px;
+}
+
+/* One clear page-title treatment across BH, MH, ZM and FSM workspaces. */
+.app .persona-page .page-header,
+.app .page-header,
+.app .bh-page .bh-page-head {
+  min-height: 72px;
+  padding: 14px 18px;
+  align-items: center;
+  border: 1px solid var(--n200);
+  border-radius: var(--radius-md);
+  background: var(--card);
+}
+
+.app .page-title-row h1,
+.app .bh-page .bh-title-row h1 {
+  color: var(--heading-color) !important;
+  font-size: var(--heading-size-page) !important;
+  font-weight: 750 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -.025em !important;
+}
+
+/* Consistent section headings across the different persona card components. */
+.app .bh-card-head h2,
+.app .pm-box-head h3,
+.app .tm-panel-head h3,
+.app .panel-title h3,
+.app .iq-card-head h3,
+.app .mh-section > h2 {
+  color: var(--heading-color) !important;
+  font-size: var(--heading-size-section) !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+}
+
+.app .bh-card-head,
+.app .pm-box-head,
+.app .tm-panel-head,
+.app .panel-head,
+.app .iq-card-head {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--g200);
+}
+
+/* MH uses filled section bands; keep the band in the same green palette as all other personas. */
+.app .mh-section > h2 {
+  background: var(--g800) !important;
+  color: #fff !important;
+  border-bottom: 1px solid var(--g900);
+}
+
+/* A single semantic mapping for progress charts and workflow rails. */
+.app .tm-step-active {
+  background: var(--g50);
+  box-shadow: inset 0 -3px 0 var(--g700);
+}
+.app .pm-journey-step.active { background: var(--g50); border-color: var(--g700); }
+.app .pm-journey-num,
+.app .tm-step-active .tm-step-num,
+.app .bh-workflow li.active i { background: var(--g700); border-color: var(--g700); color: #fff; }
+.app .tm-step-active > div,
+.app .bh-workflow li.active { color: var(--g800); }
+
+.app .mh-chart-legend i.planned,
+.app .mh-bar-pair .planned,
+.app .mh-ai-legend .mh-planned,
+.app .mh-ai-bar.mh-planned,
+.app .mh-side-legend .planned,
+.app .mh-progress-compare .mh-planned-bar { background: var(--series-planned) !important; }
+.app .mh-chart-legend i.observed,
+.app .mh-bar-pair .observed,
+.app .mh-ai-legend .mh-observed,
+.app .mh-ai-bar.mh-observed,
+.app .mh-side-legend .observed,
+.app .mh-progress-compare .mh-observed-bar { background: var(--series-observed) !important; }
+.app .mh-progress-compare .mh-planned-bar { color: var(--n900); }
+
+@media (max-width: 760px) {
+  .app .page-header,
+  .app .bh-page .bh-page-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .app .page-title-row h1,
+  .app .bh-page .bh-title-row h1 { font-size: 23px !important; }
+}
