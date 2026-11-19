@@ -1,5 +1,5 @@
 /** Consistency system building blocks (CLAUDE.md §1–11). Every persona page is composed from these. */
-import { Component, createContext, useContext, type ErrorInfo, type ReactNode } from 'react';
+import { Component, createContext, useContext, useEffect, useRef, type ErrorInfo, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowLeft, ArrowRight, Sparkles, type LucideIcon } from 'lucide-react';
 import { Activity, BarChart3, CalendarCheck, CheckCircle2, Clock, IndianRupee, MapPin, Megaphone, Percent, Sprout, Store, Target, TrendingUp, Users } from 'lucide-react';
@@ -161,26 +161,53 @@ export function StepsPortal({ children }: { children: ReactNode }) {
   const slot = useContext(StepsSlotContext);
   return slot ? createPortal(children, slot) : null;
 }
-/** Adds outline actions + one green primary to the page's NextSteps bar. */
-export function NextSteps({ actions = [], primary }: { actions?: StepAction[]; primary?: StepAction }) {
+/** Adds a back link, outline actions and one green "next" button to the page's bottom bar. */
+export function NextSteps({ back, actions = [], primary }: { back?: StepAction; actions?: StepAction[]; primary?: StepAction }) {
   const { go } = useNav();
   const run = (a: StepAction) => () => (a.onClick ? a.onClick() : a.to && go(a.to));
   return (
     <StepsPortal>
-      {actions.slice(0, 3).map((a) => <button key={a.label} type="button" className="cq-btn" onClick={run(a)}>{a.label}</button>)}
-      {primary && <button type="button" className="cq-btn cq-btn-primary" onClick={run(primary)}>{primary.label}<ArrowRight size={14} aria-hidden="true" /></button>}
+      {back && <button type="button" className="cq-btn" data-step="back" onClick={run(back)}><ArrowLeft size={14} aria-hidden="true" />{back.label}</button>}
+      {actions.slice(0, 3).map((a) => <button key={a.label} type="button" className="cq-btn" data-step="action" onClick={run(a)}>{a.label}</button>)}
+      {primary && <button type="button" className="cq-btn cq-btn-primary" data-step="next" onClick={run(primary)}>{primary.label}<ArrowRight size={14} aria-hidden="true" /></button>}
     </StepsPortal>
   );
 }
-/** Rendered once by the App at the end of every route. */
+
+/** Role of a bar button: back (left edge), next (right edge) or action (spread between). */
+const PRIMARY_CLASSES = '.cq-btn-primary, .btn-primary, .primary, .iq-btn-primary, .pm-btn-primary, .gold, .btn-gold, .btn-dark, [data-primary]';
+export function stepRole(el: Element): 'back' | 'action' | 'next' {
+  const label = (el.textContent || '').replace(/\s+/g, ' ').trim();
+  if (/^(←\s*)?back\b/i.test(label) || el.querySelector('.lucide-arrow-left, .lucide-chevron-left')) return 'back';
+  if (el.matches(PRIMARY_CLASSES) || /^(next|continue|proceed|submit|send|approve|confirm)\b/i.test(label)) return 'next';
+  return 'action';
+}
+/** Tags every untagged button in the bar; keeps a single "next" (the last one) so only one sits on the right edge. */
+function tagSteps(root: HTMLElement) {
+  const buttons = [...root.querySelectorAll<HTMLElement>('.cq-next-slot :is(button, a)')];
+  for (const b of buttons) if (!b.dataset.step || b.dataset.auto) { b.dataset.step = stepRole(b); b.dataset.auto = '1'; }
+  const nexts = buttons.filter((b) => b.dataset.step === 'next' && getComputedStyle(b).display !== 'none');
+  nexts.slice(0, -1).forEach((b) => { b.dataset.step = 'action'; });
+}
+
+/** Rendered once by the App at the end of every route: Back on the left edge, next on the right, actions evenly between. */
 export function NextStepsBar({ onSlot, onBack }: { onSlot: (el: HTMLDivElement | null) => void; onBack: () => void }) {
+  const bar = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const root = bar.current;
+    if (!root) return;
+    tagSteps(root);
+    const observer = new MutationObserver(() => tagSteps(root));
+    observer.observe(root, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
   return (
-      <nav className="cq-next" aria-label="Page navigation">
-        <div className="cq-next-btns">
-          <div className="cq-next-slot" ref={onSlot} />
-          <button type="button" className="cq-btn cq-back-default" onClick={onBack}><ArrowLeft size={14} aria-hidden="true" />Back</button>
-        </div>
-      </nav>
+    <nav ref={bar} className="cq-next" aria-label="Page navigation">
+      <div className="cq-next-btns">
+        <button type="button" className="cq-btn cq-back-default" data-step="back" onClick={onBack}><ArrowLeft size={14} aria-hidden="true" />Back</button>
+        <div className="cq-next-slot" ref={onSlot} />
+      </div>
+    </nav>
   );
 }
 

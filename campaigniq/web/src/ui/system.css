@@ -280,3 +280,30 @@
 .cq-card > .cq-donut-live > ul { align-content: space-evenly; }
 .cq-gapbar { background: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---------- Bottom action bar: Back on the left edge, next on the right edge, actions evenly spread between. */
+.app .cq-next { display: block; }
+.app .cq-next .cq-next-btns { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: nowrap; }
+.app .cq-next .cq-next-slot { display: contents; }
+.app .cq-next-btns :is(button, a)[data-step] { flex: 0 1 auto; min-width: 0; height: 36px; padding: 0 14px; border-radius: var(--r-sm); font-size: 13px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-flex; align-items: center; gap: 6px; box-shadow: none; text-decoration: none; }
+.app .cq-next-btns [data-step="back"] { order: -1; }
+.app .cq-next-btns [data-step="action"] { order: 0; }
+.app .cq-next-btns [data-step="next"] { order: 99; }
+.app .cq-next-btns :is([data-step="back"], [data-step="action"]) { background: var(--surface) !important; border: 1px solid var(--line) !important; color: var(--ink-900) !important; }
+.app .cq-next-btns :is([data-step="back"], [data-step="action"]):hover { border-color: var(--brand-500) !important; color: var(--brand-700) !important; }
+.app .cq-next-btns [data-step="next"] { background: var(--brand-700) !important; border: 1px solid var(--brand-700) !important; color: var(--surface) !important; }
+.app .cq-next-btns [data-step="next"]:hover { background: var(--brand-900) !important; }
+.app .cq-next-btns [data-step="next"]:disabled { opacity: .55; cursor: not-allowed; }
+.app .cq-next-btns > [data-step="action"]:only-child,
+.app .cq-next-btns > [data-step="next"]:only-child { margin-left: auto !important; }
+/* The default Back yields to a page-supplied back. */
+.app .cq-next-btns:has([data-step="back"]:not(.cq-back-default)) .cq-back-default { display: none !important; }
+@media (max-width: 720px) {
+  .app .cq-next .cq-next-btns { flex-wrap: wrap; }
+  .app .cq-next-btns [data-step="next"] { order: -2; flex: 1 1 100%; justify-content: center; }
+  .app .cq-next-btns [data-step="action"] { flex: 1 1 calc(50% - 6px); justify-content: center; }
+  .app .cq-next-btns [data-step="back"] { order: 100; flex: 1 1 100%; justify-content: center; }
+}
+.app .cq-next-btns :is(button, a)[data-step] { margin: 0 !important; }
+.cq-section-action .pm-view-toggles { display: inline-flex; flex-wrap: wrap; gap: 6px; }

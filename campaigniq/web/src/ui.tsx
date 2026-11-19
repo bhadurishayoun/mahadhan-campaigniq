@@ -514,7 +514,7 @@ export function FlowFooter({ steps }: {
   const fallback = currentIndex > 0 ? [...steps.slice(0, currentIndex)].reverse().find((step) => step.to)?.to : steps.find((step) => step.to)?.to;
   return (
     <StepsPortal>
-      <button type="button" className="cq-btn" onClick={() => goBack(fallback)}>
+      <button type="button" className="cq-btn" data-step="back" onClick={() => goBack(fallback)}>
         <ChevronLeft size={14} />Back
       </button>
     </StepsPortal>

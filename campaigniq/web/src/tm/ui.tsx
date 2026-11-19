@@ -171,10 +171,10 @@ export function Footer({ back, primary, secondary }: {
   const { go, goBack } = useNav();
   return (
     <StepsPortal>
-      <button type="button" className="cq-btn" onClick={() => (back ? go(back.to) : goBack('tm.1'))}><ArrowLeft size={13} />{back ? back.label : 'Back'}</button>
+      <button type="button" className="cq-btn" data-step="back" onClick={() => (back ? go(back.to) : goBack('tm.1'))}><ArrowLeft size={13} />{back ? back.label : 'Back'}</button>
       {secondary}
       {primary && (
-        <button type="button" className="cq-btn cq-btn-primary" disabled={primary.disabled} onClick={() => { if (primary.disabled) return; primary.onClick?.(); if (primary.to) go(primary.to); }}>
+        <button type="button" className="cq-btn cq-btn-primary" data-step="next" disabled={primary.disabled} onClick={() => { if (primary.disabled) return; primary.onClick?.(); if (primary.to) go(primary.to); }}>
           {primary.label}<ArrowRight size={13} />
         </button>
       )}
