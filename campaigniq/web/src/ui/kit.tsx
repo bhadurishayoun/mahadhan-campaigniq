@@ -89,8 +89,8 @@ export function MapCard({ title = 'Where is it happening?', label, markers, stat
 
 /* ---------------------------------------------------------------- DataTable */
 export interface Col<T> { key: keyof T & string; header: string; align?: 'l' | 'r'; pct?: boolean; status?: boolean; render?: (row: T) => ReactNode }
-export function DataTable<T extends Record<string, string | number>>({ columns, rows, csvName, onRow, statusKind }: {
-  columns: Col<T>[]; rows: T[]; csvName?: string; onRow?: (row: T, index: number) => void; statusKind?: (v: string) => StatusKind;
+export function DataTable<T extends Record<string, string | number>>({ columns, rows, csvName, onRow, statusKind, rowClassName }: {
+  columns: Col<T>[]; rows: T[]; csvName?: string; onRow?: (row: T, index: number) => void; statusKind?: (v: string) => StatusKind; rowClassName?: (row: T) => string | undefined;
 }) {
   const [sort, setSort] = useState<{ k: string; dir: 1 | -1 } | null>(null);
   const sorted = useMemo(() => {
@@ -123,7 +123,7 @@ export function DataTable<T extends Record<string, string | number>>({ columns, 
           </thead>
           <tbody>
             {sorted.map((row, ri) => (
-              <tr key={ri} className={onRow ? 'clickable' : ''} onClick={onRow ? () => onRow(row, ri) : undefined}>
+              <tr key={ri} className={[onRow ? 'clickable' : '', rowClassName?.(row) ?? ''].filter(Boolean).join(' ')} onClick={onRow ? () => onRow(row, ri) : undefined}>
                 {columns.map((c) => {
                   const v = row[c.key];
                   let cell: ReactNode = c.render ? c.render(row) : v;

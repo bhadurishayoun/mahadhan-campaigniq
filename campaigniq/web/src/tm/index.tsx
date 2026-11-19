@@ -8,7 +8,7 @@ import { useNav } from '../nav';
 import { TM_SCREENS, isTmScreen, type TmScreenId } from './nav';
 import { Tm1, Tm2, Tm3, Tm4, Tm5 } from './plan';
 import { Cw1, Cw2, Cw3, Cw4, TmC1, TmC2, TmC3 } from './campaigns';
-import { TmAi1, TmEx1, TmEx2, TmIm1, TmIm2 } from './execution';
+import { TmAi1, TmEx0, TmEx1, TmEx2, TmIm1, TmIm2 } from './execution';
 import './tm.css';
 
 export { TM_SCREENS, TM_TABS, isTmScreen, tmMeta } from './nav';
@@ -27,6 +27,7 @@ const REGISTRY: Record<TmScreenId, ComponentType> = {
   'cw.4': Cw4,
   'tm.c2': TmC2,
   'tm.c3': TmC3,
+  'tm.ex0': TmEx0,
   'tm.ex1': TmEx1,
   'tm.ex2': TmEx2,
   'tm.im1': TmIm1,

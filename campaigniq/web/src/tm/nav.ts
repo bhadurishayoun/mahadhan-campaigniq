@@ -21,6 +21,7 @@ export const TM_IDS = [
   'cw.4',
   'tm.c2',
   'tm.c3',
+  'tm.ex0',
   'tm.ex1',
   'tm.ex2',
   'tm.im1',
@@ -44,7 +45,7 @@ const FY25 = 'FY 2025–26 · Jalna Cluster';
 export const TM_TABS: { id: TmTabId; label: string; home: TmScreenId }[] = [
   { id: 'plan', label: 'My Plan', home: 'tm.1' },
   { id: 'campaigns', label: 'My Campaigns', home: 'tm.c1' },
-  { id: 'execution', label: 'Campaign Execution', home: 'tm.ex1' },
+  { id: 'execution', label: 'Campaign Execution', home: 'tm.ex0' },
   { id: 'impact', label: 'Impact & Learning', home: 'tm.im1' },
   { id: 'copilot', label: 'AI Copilot', home: 'tm.ai1' },
 ];
@@ -64,6 +65,7 @@ export const TM_SCREENS: TmMeta[] = [
   { id: 'tm.c2', code: 'TM.C2', title: 'Approval Status', tab: 'campaigns', period: FY25 },
   { id: 'tm.c3', code: 'TM.C3', title: 'Campaign Portfolio', tab: 'campaigns', period: FY25 },
 
+  { id: 'tm.ex0', code: 'TM.EX0', title: 'Execution overview', tab: 'execution', period: FY25 },
   { id: 'tm.ex1', code: 'TM.EX1', title: 'Activity Tracker', tab: 'execution', period: FY25 },
   { id: 'tm.ex2', code: 'TM.EX2', title: 'Activity Follow-up', tab: 'execution', period: FY25 },
   { id: 'tm.im1', code: 'TM.IM1', title: 'Campaign Results', tab: 'impact', period: FY25 },

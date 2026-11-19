@@ -19,12 +19,12 @@ export function FilterChips({ chips }: { chips: string[] }) {
   );
 }
 
-export function PageHeader({ title, subtitle, chips, status }: { title: ReactNode; subtitle?: ReactNode; chips?: string[]; status?: string }) {
+export function PageHeader({ title, subtitle, chips, status, actions }: { title: ReactNode; subtitle?: ReactNode; chips?: string[]; status?: string; actions?: ReactNode }) {
   const side = useSideFilters();
   return (
     <header className="cq-page-header">
       <div><h1>{title}{status && <StatusPill>{status}</StatusPill>}</h1>{subtitle && <p>{subtitle}</p>}</div>
-      <FilterChips chips={chips ?? side.chips} />
+      <FilterChips chips={chips ?? side.chips} />{actions}
     </header>
   );
 }
@@ -71,11 +71,11 @@ export function tabsFor(list: readonly NavMeta[], id: string): { tabs: TabDef[];
 }
 
 /** Header used by every persona page wrapper: PageHeader + numbered tabs; header actions move to the NextSteps bar. */
-export function PersonaHeader({ list, id, title, subtitle, status, actions }: { list: readonly NavMeta[]; id: string; title: string; subtitle?: ReactNode; status?: string; actions?: ReactNode }) {
+export function PersonaHeader({ list, id, title, subtitle, status, actions, headerActions }: { list: readonly NavMeta[]; id: string; title: string; subtitle?: ReactNode; status?: string; actions?: ReactNode; headerActions?: ReactNode }) {
   const t = tabsFor(list, id);
   return (
     <>
-      <PageHeader title={title} subtitle={subtitle} status={status} />
+      <PageHeader title={title} subtitle={subtitle} status={status} actions={headerActions} />
       {t && <NumberedTabs tabs={t.tabs} active={t.active} />}
       {actions && <StepsPortal>{actions}</StepsPortal>}
     </>

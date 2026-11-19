@@ -104,6 +104,8 @@
 .cq-ranked-label small { display: block; font-size: 12px; line-height: 16px; color: var(--ink-600); }
 .cq-ranked-track { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .cq-ranked-track i { display: block; height: 14px; min-width: 2px; background: var(--data-actual); }
+.cq-ranked-stack { display: flex; width: 72%; min-width: 0; height: 14px; overflow: hidden; background: var(--neutral-bg); }
+.cq-ranked-stack i { min-width: 0; height: 14px; }
 .cq-ranked-track i.muted { background: var(--data-baseline); }
 .cq-ranked-track b { font-size: 13px; font-weight: 700; color: var(--ink-900); white-space: nowrap; }
 .cq-ranked-track span { font-size: 12px; color: var(--ink-400); }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react';
-import {  ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
+import {  ArrowLeft, ArrowRight, Check, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
 import {  cx, type Tone } from '../ui';
 import {  StatusChip } from '../ui/kit';
@@ -7,6 +7,29 @@ import { PersonaHeader } from '../ui/system';
 import { TM_SCREENS } from './nav';
 import { MetricTile, SectionTitle, StepsPortal } from '../ui/system';
 import { RankedBars } from '../ui/viz';
+import { EXECUTION_CAMPAIGNS } from './data';
+import { setExecutionCampaign, useExecutionCampaign } from './state';
+import { useSideFilters } from '../ui/filters';
+
+export function CampaignSwitcher() {
+  const selected = useExecutionCampaign();
+  const side = useSideFilters();
+  const options = EXECUTION_CAMPAIGNS;
+  const id = options.some((campaign) => campaign.id === selected) ? selected : options[0].id;
+  useEffect(() => { if (id !== selected) setExecutionCampaign(id); }, [id, selected]);
+  useEffect(() => { if (side.values.campaign !== id) side.set('campaign', id); }, [id, side.values.campaign]);
+  useEffect(() => { if (side.values.campaign && side.values.campaign !== 'All Campaigns' && side.values.campaign !== selected && options.some((campaign) => campaign.id === side.values.campaign)) setExecutionCampaign(side.values.campaign); }, [side.values.campaign, selected]);
+  const index = Math.max(0, options.findIndex((campaign) => campaign.id === id));
+  const choose = (next: string) => { setExecutionCampaign(next); side.set('campaign', next); };
+  return <div className="cq-filterbar" aria-label="Campaign selector">
+    <button type="button" className="cq-btn" aria-label="Previous campaign" onClick={() => choose(options[(index - 1 + options.length) % options.length].id)}><ChevronLeft size={14} /></button>
+    <select aria-label="Campaign" value={id} onChange={(event) => choose(event.target.value)}>
+      {(['Live', 'Completed'] as const).map((stage) => <optgroup key={stage} label={stage}>{options.filter((campaign) => campaign.stage === stage).map((campaign) => <option key={campaign.id} value={campaign.id}>{campaign.name} · {campaign.crop} · {campaign.stage}</option>)}</optgroup>)}
+    </select>
+    <button type="button" className="cq-btn" aria-label="Next campaign" onClick={() => choose(options[(index + 1) % options.length].id)}><ChevronRight size={14} /></button>
+    <span>{index + 1} of {options.length}</span>
+  </div>;
+}
 
 export function toneOf(text: string): Tone {
   const t = text.toLowerCase();
@@ -28,13 +51,14 @@ export const crore = (value: number, _digits = 2) => `₹${value.toFixed(2)} Cr`
 export const pct = (value: number, digits = 1) => `${value >= 0 ? '+' : ''}${value.toFixed(digits)}%`;
 
 /** Page shell: breadcrumb, title row and the content. No pulse strip or injected charts (the V2 specs exclude them). */
-export function TmPage({  code, title, status, subtitle, actions, children, className, banner }: {
-  crumbs: { label: string; to?: ScreenId }[];
+export function TmPage({  code, title, status, subtitle, actions, headerActions, children, className, banner }: {
+  crumbs?: { label: string; to?: ScreenId }[];
   code: string;
   title: string;
   status?: string;
   subtitle?: ReactNode;
   actions?: ReactNode;
+  headerActions?: ReactNode;
   children: ReactNode;
   className?: string;
   banner?: ReactNode;
@@ -59,7 +83,7 @@ export function TmPage({  code, title, status, subtitle, actions, children, clas
   }, [code]);
   return (
     <div ref={pageRef} className={cx('pm-page', 'persona-page persona-page-tm tm-page', className)} data-screen={code}>
-      <PersonaHeader list={TM_SCREENS} id={code} title={title} subtitle={subtitle} status={status} actions={actions} />
+      <PersonaHeader list={TM_SCREENS} id={code} title={title} subtitle={subtitle} status={status} actions={actions} headerActions={headerActions} />
       {banner}
       {children}
     </div>

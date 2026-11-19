@@ -131,7 +131,7 @@ export type UnitState = 'done' | 'scheduled' | 'risk';
 export interface GanttUnit { week: number; village: string; state: UnitState; note?: string }
 
 /** TM.EX1 calendar: 13 units = 3 done + 8 scheduled + 2 at risk. */
-export const GANTT: { activity: string; owner: string; units: GanttUnit[] }[] = [
+const AMBAD_ACTIVITIES: { activity: string; owner: string; units: GanttUnit[] }[] = [
   { activity: 'Field Demonstrations', owner: 'R. Jadhav', units: [
     { week: 1, village: 'Wadi Gaon', state: 'done' },
     { week: 2, village: 'Dhanora', state: 'risk', note: 'Stock confirmation pending' },
@@ -156,28 +156,26 @@ export const GANTT: { activity: string; owner: string; units: GanttUnit[] }[] = 
 ];
 
 export interface PortfolioCampaign {
+  id: string;
   name: string; crop: string; season: string; villages: string[]; budget: number | null; objective: string; forecast: string;
-  stage: 'Not drafted' | 'Draft' | 'In approval' | 'Approved' | 'Live' | 'Completed'; result?: string; months: [number, number]; color: string;
+  stage: 'Not drafted' | 'Draft' | 'In approval' | 'Approved' | 'Live' | 'Completed'; result?: string; approvedAt?: string; months: [number, number]; color: string;
 }
 
 /** TM.C3 portfolio (budgets Rs lakh). Kharif 2025 results average to the 1.60× campaign ROI shown on TM.1. */
 export const PORTFOLIO: PortfolioCampaign[] = [
-  { name: 'Ambad Onion Croptek Conversion', crop: 'Onion', season: 'Rabi 2025–26', villages: ['Dhanora', 'Wadi Gaon'], budget: 3.0, objective: '₹25.00 L', forecast: '₹12.00 L (base)', stage: 'In approval', months: [6, 9], color: '#2f8a3b' },
-  { name: 'Ambad Maize Portfolio Expansion', crop: 'Maize', season: 'Rabi 2025–26', villages: ['Ambad HQ', 'Pimpalgaon'], budget: 2.2, objective: '₹15.00 L', forecast: 'Not yet modelled', stage: 'Draft', months: [7, 10], color: '#d7a62f' },
-  { name: 'Ambad Retailer Advocacy Programme', crop: 'Multi-crop', season: 'Rabi 2025–26', villages: ['Ambad HQ', 'Other villages'], budget: null, objective: 'Supports plan', forecast: '—', stage: 'Not drafted', months: [8, 10], color: '#9aa79c' },
-  { name: 'Ghansawangi Soybean Sulphur Awareness', crop: 'Soybean', season: 'Kharif 2025', villages: ['Ghansawangi'], budget: 2.4, objective: '₹18.00 L', forecast: '—', stage: 'Completed', result: 'ROI 1.80× · ₹19.60 L tracked', months: [0, 3], color: '#3972b8' },
-  { name: 'Badnapur Cotton Retailer Activation', crop: 'Cotton', season: 'Kharif 2025', villages: ['Badnapur'], budget: 1.8, objective: '₹12.00 L', forecast: '—', stage: 'Completed', result: 'ROI 1.40× · ₹11.20 L tracked', months: [1, 3], color: '#6b8fb8' },
+  { id: 'ambad-onion-croptek', name: 'Ambad Onion Croptek Conversion', crop: 'Onion', season: 'Rabi 2025–26', villages: ['Dhanora', 'Wadi Gaon'], budget: 3.0, objective: '₹25.00 L', forecast: '₹12.00 L (base)', stage: 'Live', approvedAt: '12 Nov 2026', months: [6, 9], color: '#2f8a3b' },
+  { id: 'ambad-maize-expansion', name: 'Ambad Maize Portfolio Expansion', crop: 'Maize', season: 'Rabi 2025–26', villages: ['Ambad HQ', 'Pimpalgaon'], budget: 2.2, objective: '₹15.00 L', forecast: 'Not yet modelled', stage: 'Draft', months: [7, 10], color: '#d7a62f' },
+  { id: 'ambad-retailer-advocacy', name: 'Ambad Retailer Advocacy Programme', crop: 'Multi-crop', season: 'Rabi 2025–26', villages: ['Ambad HQ', 'Other villages'], budget: null, objective: 'Supports plan', forecast: '—', stage: 'Not drafted', months: [8, 10], color: '#9aa79c' },
+  { id: 'ghansawangi-soybean-awareness', name: 'Ghansawangi Soybean Sulphur Awareness', crop: 'Soybean', season: 'Kharif 2025', villages: ['Ghansawangi'], budget: 2.4, objective: '₹18.00 L', forecast: '—', stage: 'Completed', result: 'ROI 1.80×', months: [0, 3], color: '#3972b8' },
+  { id: 'badnapur-cotton-retailer', name: 'Badnapur Cotton Retailer Activation', crop: 'Cotton', season: 'Kharif 2025', villages: ['Badnapur'], budget: 1.8, objective: '₹12.00 L', forecast: '—', stage: 'Completed', result: 'ROI 1.40×', months: [1, 3], color: '#6b8fb8' },
+  { id: 'ghansawangi-onion-followup', name: 'Ghansawangi Onion Trial & Follow-up', crop: 'Onion', season: 'Rabi 2025–26', villages: ['Ghansawangi villages'], budget: 2.4, objective: 'Trial & Follow-up', forecast: '—', stage: 'Live', months: [7, 10], color: '#2f8a3b' },
+  { id: 'badnapur-maize-retailer', name: 'Badnapur Maize Retailer Enablement', crop: 'Maize', season: 'Rabi 2025–26', villages: ['Badnapur villages'], budget: 1.9, objective: 'Retailer Enablement', forecast: '—', stage: 'Live', months: [7, 10], color: '#2f8a3b' },
 ];
-/** Timeline columns for the portfolio (index 0 = Jun 2025; Rabi campaigns Dec–Apr). */
-export const PORTFOLIO_MONTHS = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'];
+export const GANTT = AMBAD_ACTIVITIES;
 
-/** TM.IM1 / IM2 interim checkpoint: 640 reached, 160 trials, 72 adopters, Rs 5.4 L tracked sales. */
-export const IMPACT_VILLAGES = [
-  { village: 'Dhanora', reached: 280, trials: 62, adopters: 24, planned: 6, completed: 4, sales: 2.0 },
-  { village: 'Wadi Gaon', reached: 360, trials: 98, adopters: 48, planned: 7, completed: 5, sales: 3.4 },
-];
-export const conversion = (adopters: number, trials: number) => (trials ? (adopters / trials) * 100 : 0);
-
+export interface ExecutionUnit extends GanttUnit { state: UnitState; note?: string }
+export interface ExecutionActivity { activity: string; owner: string; units: ExecutionUnit[] }
+export interface CampaignExecution { activities: ExecutionActivity[]; budgetApproved: number; spent: number; reached: number; trials: number; adopters: number; trackedSales: number }
 /** The one field-owner master: every owner dropdown and the CW.2 cost model read from here
  *  (mirrored in server/data/reference/masters.json → people). */
 export interface FieldOwner { name: string; role: string; base: string; costFactor: number; group: 'Field owners (MDO)' | 'Specialists' }
@@ -193,4 +191,45 @@ export const FIELD_OWNERS: FieldOwner[] = [
 ];
 export const OWNER_PENDING = 'Owner pending';
 export const ownerLabel = (o: FieldOwner) => `${o.name} · ${o.role} · ${o.base}`;
+const unitsFor = (villages: string[], mode: UnitState, count = 8): ExecutionActivity[] => {
+  const ownerNames = FIELD_OWNERS.slice(0, 3).map((owner) => owner.name);
+  const unitState = (i: number): UnitState => mode === 'done' ? 'done' : mode === 'risk' && i % 5 === 0 ? 'risk' : mode === 'risk' && i < 3 ? 'done' : 'scheduled';
+  return [
+  { activity: 'Field Demonstrations', owner: ownerNames[0], units: Array.from({ length: count }, (_, i) => ({ week: i % 4 + 1, village: villages[i % villages.length], state: unitState(i), note: unitState(i) === 'risk' ? 'Owner confirmation required' : undefined })) },
+  { activity: 'Retailer Activation', owner: ownerNames[1], units: Array.from({ length: Math.max(2, Math.round(count / 2)) }, (_, i) => ({ week: i % 4 + 1, village: villages[i % villages.length], state: mode === 'done' ? 'done' : 'scheduled' })) },
+  { activity: 'Farmer Meetings', owner: ownerNames[2], units: Array.from({ length: Math.max(2, Math.round(count / 2)) }, (_, i) => ({ week: i % 4 + 1, village: villages[i % villages.length], state: mode === 'done' ? 'done' : 'scheduled' })) },
+  ];
+};
+export const EXECUTION: Record<string, CampaignExecution> = {
+  'ambad-onion-croptek': { activities: AMBAD_ACTIVITIES, budgetApproved: 3, spent: 1.35, reached: 640, trials: 160, adopters: 72, trackedSales: 5.4 },
+  'ghansawangi-onion-followup': { activities: unitsFor(['Ghansawangi'], 'risk', 9), budgetApproved: 2.4, spent: 0.92, reached: 420, trials: 126, adopters: 46, trackedSales: 3.6 },
+  'badnapur-maize-retailer': { activities: unitsFor(['Badnapur'], 'scheduled', 8), budgetApproved: 1.9, spent: 2.02, reached: 350, trials: 98, adopters: 35, trackedSales: 2.8 },
+  'ghansawangi-soybean-awareness': { activities: unitsFor(['Ghansawangi'], 'done', 8), budgetApproved: 2.4, spent: 2.4, reached: 520, trials: 180, adopters: 90, trackedSales: 4.32 },
+  'badnapur-cotton-retailer': { activities: unitsFor(['Badnapur'], 'done', 7), budgetApproved: 1.8, spent: 1.8, reached: 410, trials: 140, adopters: 70, trackedSales: 2.52 },
+};
+export const EXECUTION_CAMPAIGNS = PORTFOLIO.filter((p) => ['Live', 'Completed'].includes(p.stage) && p.id in EXECUTION);
+export function executionSummary(id: string) {
+  const campaign = EXECUTION_CAMPAIGNS.find((p) => p.id === id) ?? EXECUTION_CAMPAIGNS[0];
+  const data = EXECUTION[campaign.id];
+  const units = data.activities.flatMap((activity) => activity.units);
+  const completed = units.filter((u) => u.state === 'done').length;
+  const scheduled = units.filter((u) => u.state === 'scheduled').length;
+  const atRisk = units.filter((u) => u.state === 'risk').length;
+  return { campaign, ...data, units, completed, scheduled, atRisk, totalUnits: units.length, progress: units.length ? Math.round(completed / units.length * 100) : 0, roi: campaign.stage === 'Completed' && data.budgetApproved ? data.trackedSales / data.budgetApproved : null };
+}
+export function portfolioExecution() {
+  const summaries = EXECUTION_CAMPAIGNS.map((c) => executionSummary(c.id));
+  return summaries.reduce((t, s) => ({ campaigns: summaries.length, running: t.running + Number(s.campaign.stage === 'Live'), completed: t.completed + Number(s.campaign.stage === 'Completed'), activitiesDone: t.activitiesDone + s.completed, activitiesTotal: t.activitiesTotal + s.totalUnits, atRisk: t.atRisk + s.atRisk, budgetApproved: t.budgetApproved + s.budgetApproved, spent: t.spent + s.spent, adopters: t.adopters + s.adopters, trackedSales: t.trackedSales + s.trackedSales, reached: t.reached + s.reached, trials: t.trials + s.trials }), { campaigns: 0, running: 0, completed: 0, activitiesDone: 0, activitiesTotal: 0, atRisk: 0, budgetApproved: 0, spent: 0, adopters: 0, trackedSales: 0, reached: 0, trials: 0 });
+}
+/** Timeline columns for the portfolio (index 0 = Jun 2025; Rabi campaigns Dec–Apr). */
+export const PORTFOLIO_MONTHS = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'];
+
+/** TM.IM1 / IM2 interim checkpoint: 640 reached, 160 trials, 72 adopters, Rs 5.4 L tracked sales. */
+export const IMPACT_VILLAGES = [
+  { village: 'Dhanora', reached: 280, trials: 62, adopters: 24, planned: 6, completed: 4, sales: 2.0 },
+  { village: 'Wadi Gaon', reached: 360, trials: 98, adopters: 48, planned: 7, completed: 5, sales: 3.4 },
+];
+export const conversion = (adopters: number, trials: number) => (trials ? (adopters / trials) * 100 : 0);
+
+
 export const isOwnerPending = (owner: string) => !owner || owner === OWNER_PENDING;

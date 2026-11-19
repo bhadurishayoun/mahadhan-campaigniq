@@ -13,10 +13,10 @@ const colorAt = (s: VizSeries, i: number) => s.color ?? seriesColor(s.name, i);
 const pctOf = (v: number, t: number) => Math.round((v / (t || 1)) * 100);
 
 /* ---------------------------------------------------------------- RankedBars */
-export interface RankedItem { label: string; value: number; /** caption under the label */ note?: string; /** muted bar */ muted?: boolean; /** preformatted value */ display?: string }
+export interface RankedItem { label: string; value: number; /** caption under the label */ note?: string; /** muted bar */ muted?: boolean; /** preformatted value */ display?: string; segments?: { label: string; value: number; color: string }[] }
 /** Horizontal ranked bars: square 14px bars, bold value + grey share at the bar end. */
 export function RankedBars({ items, fmt = plain, share = true, onSelect, max: fixedMax, insight }: { items: RankedItem[]; fmt?: Fmt; share?: boolean; onSelect?: (label: string) => void; max?: number; insight?: boolean | ReactNode }) {
-  const max = fixedMax ?? Math.max(1, ...items.map((i) => Math.abs(i.value)));
+  const max = fixedMax ?? Math.max(1, ...items.map((i) => i.segments ? i.segments.reduce((sum, segment) => sum + segment.value, 0) : Math.abs(i.value)));
   const total = items.reduce((s, i) => s + Math.abs(i.value), 0) || 1;
   return (
     <>
@@ -25,7 +25,7 @@ export function RankedBars({ items, fmt = plain, share = true, onSelect, max: fi
         <li key={it.label} className={onSelect ? 'clickable' : undefined} onClick={onSelect ? () => onSelect(it.label) : undefined}>
           <span className="cq-ranked-label">{it.label}{it.note && <small>{it.note}</small>}</span>
           <span className="cq-ranked-track">
-            <i className={it.muted ? 'muted' : undefined} style={{ width: `${Math.min(1, Math.abs(it.value) / max) * 72}%` }} />
+            {it.segments ? <span className="cq-ranked-stack" aria-label={it.segments.map((s) => `${s.value} ${s.label}`).join(', ')}>{it.segments.map((s) => <i key={s.label} title={`${s.label}: ${s.value}`} style={{ width: `${Math.max(0, s.value / max) * 100}%`, backgroundColor: s.color }} />)}</span> : <i className={it.muted ? 'muted' : undefined} style={{ width: `${Math.min(1, Math.abs(it.value) / max) * 72}%` }} />}
             <b>{it.display ?? fmt(it.value)}</b>
             {share && <span>{Math.round((Math.abs(it.value) / total) * 100)}%</span>}
           </span>

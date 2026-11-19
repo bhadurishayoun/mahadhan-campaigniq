@@ -1,17 +1,91 @@
 /** Field Sales Manager - Campaign Execution (TM.EX1-EX2), Impact & Learning (TM.IM1-IM2) and AI Copilot (TM.AI1). */
 import { useState } from 'react';
-import { AlertTriangle, Bot, Camera, CheckCircle2, Clock, FileText, ShieldAlert, Upload, UserRound } from 'lucide-react';
+import { AlertTriangle, Bot, Camera, CheckCircle2, FileText, Upload, UserRound, CircleDollarSign, Users, ListChecks, AlertOctagon, TrendingUp, CalendarDays } from 'lucide-react';
 import { useNav } from '../nav';
 import { Btn, cx } from '../ui';
 import { FunnelBars } from '../ui/index';
-import { CAMPAIGN, FIELD_OWNERS, GANTT, IMPACT_VILLAGES, conversion, type GanttUnit } from './data';
+import { CAMPAIGN, EXECUTION_CAMPAIGNS, executionSummary, portfolioExecution, EXECUTION, FIELD_OWNERS, IMPACT_VILLAGES, conversion, type GanttUnit } from './data';
 import { AiPanel, Context, Footer, HBars, Metrics, Note, Panel, Status, TmPage, lakh } from './ui';
 import { MAP_COLORS, TmMap } from './viz';
 import { LiveCopilot } from '../ui/LiveCopilot';
 import { useCampaignDraft } from './campaignDraft';
+import { Card, Grid, InsightStrip, KpiStrip, Metric, NextSteps } from '../ui/system';
+import { GroupedColumns, TrendLine, DonutMetric, RankedBars } from '../ui/viz';
+import { DataTable, StatusChip } from '../ui/kit';
+import { useExecutionCampaign, setExecutionCampaign } from './state';
+import { CampaignSwitcher } from './ui';
+import { useState as useLocalState } from 'react';
 
-const allUnits = GANTT.flatMap((row) => row.units);
-const count = (state: GanttUnit['state']) => allUnits.filter((u) => u.state === state).length;
+const executionFmt = (value: number) => `₹${value.toFixed(2)} L`;
+export function TmEx0() {
+  const { go } = useNav();
+  const selectedCampaignId = useExecutionCampaign();
+  const totals = portfolioExecution();
+  const campaigns = EXECUTION_CAMPAIGNS.map((c) => executionSummary(c.id));
+  const [donutMode, setDonutMode] = useLocalState<'Tracked sales' | 'Adopters'>('Tracked sales');
+  const atRisk = [...campaigns].sort((a, b) => b.atRisk - a.atRisk);
+  const donutRows = campaigns.map((s) => ({ label: s.campaign.name, value: donutMode === 'Tracked sales' ? s.trackedSales : s.adopters }));
+  const weekly = [1, 2, 3, 4].map((week) => campaigns.filter((s) => s.campaign.stage === 'Live').reduce((row, s) => {
+    const count = s.units.filter((u) => u.week <= week).length;
+    const completed = s.units.filter((u) => u.week <= week && u.state === 'done').length;
+    return { week: `Week ${week}`, planned: Number(row.planned) + count, completed: Number(row.completed) + completed };
+  }, { week: `Week ${week}`, planned: 0, completed: 0 }));
+  const rows = [
+    ...campaigns.map((s) => ({ id: s.campaign.id, campaign: s.campaign.name, crop: s.campaign.crop, villages: s.campaign.villages.join(', '), status: s.campaign.stage, progress: s.progress, spend: s.spent, budget: s.budgetApproved, adopters: s.adopters, sales: s.trackedSales, roi: s.roi === null ? '—' : `${s.roi.toFixed(2)}×` })),
+    { id: 'total', campaign: 'Total', crop: '—', villages: '—', status: 'Total', progress: Math.round(totals.activitiesDone / totals.activitiesTotal * 100), spend: totals.spent, budget: totals.budgetApproved, adopters: totals.adopters, sales: totals.trackedSales, roi: '—' },
+  ];
+  const highestRisk = atRisk[0];
+  const overrun = [...campaigns].sort((a, b) => (b.spent - b.budgetApproved) - (a.spent - a.budgetApproved))[0];
+  const noOwner = campaigns.find((s) => s.activities.some((a) => !a.owner || a.owner === 'Owner pending'));
+  const actions = [
+    { icon: AlertOctagon, title: 'Resolve highest activity risk', detail: `${highestRisk.campaign.name}: ${highestRisk.atRisk} activities at risk.`, id: highestRisk.campaign.id },
+    { icon: CircleDollarSign, title: 'Review budget variance', detail: `${overrun.campaign.name}: ${executionFmt(overrun.spent - overrun.budgetApproved)} against approved budget.`, id: overrun.campaign.id },
+    { icon: Users, title: noOwner ? 'Assign campaign activity owner' : 'Review field ownership', detail: noOwner ? `${noOwner.campaign.name} has an unassigned activity.` : 'All listed activities have an owner.', id: (noOwner ?? campaigns[0]).campaign.id },
+    { icon: CalendarDays, title: 'Review campaign close date', detail: `${campaigns.filter((s) => s.campaign.stage === 'Live').length} live campaigns are active.`, id: campaigns.filter((s) => s.campaign.stage === 'Live').sort((a, b) => a.campaign.months[1] - b.campaign.months[1])[0]?.campaign.id ?? campaigns[0].campaign.id },
+  ];
+  return <TmPage code="TM.EX0" title="Execution overview" subtitle="Campaign execution" headerActions={<CampaignSwitcher />}>
+    <KpiStrip>
+      <Metric icon={TrendingUp} label="Campaigns running" value={totals.running} comparator="vs plan" />
+      <Metric icon={CheckCircle2} label="Completed" value={totals.completed} comparator="vs plan" />
+      <Metric icon={ListChecks} label="Activities completed" value={`${totals.activitiesDone} / ${totals.activitiesTotal}`} note={`${Math.round(totals.activitiesDone / totals.activitiesTotal * 100)}% complete`} />
+      <Metric icon={AlertOctagon} label="At-risk activities" value={totals.atRisk} comparator="vs plan" />
+      <Metric icon={CircleDollarSign} label="Budget spent / approved" value={`${executionFmt(totals.spent)} / ${executionFmt(totals.budgetApproved)}`} note={`${Math.round(totals.spent / totals.budgetApproved * 100)}% used`} />
+      <Metric icon={Users} label="Adopters recorded" value={totals.adopters.toLocaleString('en-IN')} comparator="vs plan" />
+    </KpiStrip>
+    <Grid>
+      <Card title="Execution status by campaign" subtitle="Completed, scheduled and at-risk activities">
+        <RankedBars items={atRisk.map((s) => ({ label: s.campaign.name, value: s.totalUnits, note: `${s.completed} completed · ${s.scheduled} scheduled · ${s.atRisk} at risk`, display: `${s.atRisk} at risk`, segments: [{ label: 'Completed', value: s.completed, color: 'var(--ok)' }, { label: 'Scheduled', value: s.scheduled, color: 'var(--warn)' }, { label: 'At risk', value: s.atRisk, color: 'var(--risk)' }] }))} onSelect={(label) => { const campaign = campaigns.find((s) => s.campaign.name === label); if (campaign) { setExecutionCampaign(campaign.campaign.id); go('tm.ex1'); } }} share={false} />
+        <InsightStrip>{highestRisk.campaign.name} has {highestRisk.atRisk} activities at risk, the most across campaigns.</InsightStrip>
+      </Card>
+      <Card title="Contribution by campaign" action={<div className="cq-tabs"><button className={donutMode === 'Tracked sales' ? 'cq-tab active' : 'cq-tab'} onClick={() => setDonutMode('Tracked sales')}>Tracked sales</button><button className={donutMode === 'Adopters' ? 'cq-tab active' : 'cq-tab'} onClick={() => setDonutMode('Adopters')}>Adopters</button></div>}>
+        <DonutMetric items={donutRows} value={donutMode === 'Tracked sales' ? executionFmt(totals.trackedSales) : totals.adopters.toLocaleString('en-IN')} label={donutMode} fmt={donutMode === 'Tracked sales' ? executionFmt : (v) => v.toLocaleString('en-IN')} interactive selected={campaigns.find((s) => s.campaign.id === selectedCampaignId)?.campaign.name} onSelect={(item) => { const campaign = campaigns.find((s) => s.campaign.name === item.label); if (campaign) { setExecutionCampaign(campaign.campaign.id); go('tm.ex1'); } }} />
+        <InsightStrip>{donutMode === 'Tracked sales' ? `Tracked campaign sales total ${executionFmt(totals.trackedSales)}.` : `${totals.adopters.toLocaleString('en-IN')} adopters are recorded across the execution portfolio.`}</InsightStrip>
+      </Card>
+      <Card title="Budget used vs approved">
+        <GroupedColumns data={campaigns.map((s) => ({ campaign: s.campaign.name.split(' ').slice(0, 2).join(' '), approved: s.budgetApproved, spent: s.spent }))} x="campaign" series={[{ key: 'approved', name: 'Plan approved' }, { key: 'spent', name: 'Actual spent' }]} fmt={executionFmt} height={240} />
+        <InsightStrip>{executionFmt(totals.spent)} spent against {executionFmt(totals.budgetApproved)} approved across the five execution campaigns.</InsightStrip>
+      </Card>
+      <Card title="Weekly activity completion">
+        <TrendLine data={weekly} x="week" series={[{ key: 'planned', name: 'Planned' }, { key: 'completed', name: 'Completed' }]} fmt={(v) => `${v} activities`} height={240} />
+        <InsightStrip>{totals.activitiesDone} of {totals.activitiesTotal} campaign activities are complete across live and completed campaigns.</InsightStrip>
+      </Card>
+    </Grid>
+    <Card title="Campaign execution table">
+      <DataTable columns={[
+        { key: 'campaign', header: 'Campaign' }, { key: 'crop', header: 'Crop' }, { key: 'villages', header: 'Villages' },
+        { key: 'status', header: 'Status', status: true, render: (r) => r.status === 'Total' ? '—' : <StatusChip kind={r.status === 'Completed' ? 'ok' : 'info'}>{r.status}</StatusChip> },
+        { key: 'progress', header: 'Progress', align: 'r', render: (r) => <span className="iq-pctcell"><i style={{ width: `${Number(r.progress)}%` }} /><b>{Number(r.progress)}%</b></span> },
+        { key: 'spend', header: 'Spent / approved', align: 'r', render: (r) => `${executionFmt(Number(r.spend))} / ${executionFmt(Number(r.budget))}` },
+        { key: 'adopters', header: 'Adopters', align: 'r' }, { key: 'sales', header: 'Tracked sales', align: 'r', render: (r) => executionFmt(Number(r.sales)) },
+        { key: 'roi', header: 'ROI', align: 'r' },
+      ]} rows={rows} rowClassName={(row) => row.id === 'total' ? 'total' : undefined} onRow={(row) => { if (row.id !== 'total') { setExecutionCampaign(row.id); go('tm.ex1'); } }} />
+    </Card>
+    <Card title="Next best actions">
+      <div className="cq-grid2">{actions.map((item) => <button key={item.title} type="button" className="cq-action-card" onClick={() => { setExecutionCampaign(item.id); go('tm.ex1'); }}><item.icon size={18} /><b>{item.title}</b><span>{item.detail}</span><strong>Open activity tracker →</strong></button>)}</div>
+    </Card>
+    <NextSteps back={{ label: 'Campaign portfolio', to: 'tm.c3' }} primary={{ label: 'Open activity tracker', to: 'tm.ex1' }} />
+  </TmPage>;
+}
 
 function CampaignStrip({ extra }: { extra?: { label: string; value: string; sub?: string }[] }) {
   const { total } = useCampaignDraft();
@@ -29,68 +103,24 @@ function CampaignStrip({ extra }: { extra?: { label: string; value: string; sub?
 /* ------------------------------------------------------------------ TM.EX1 */
 export function TmEx1() {
   const { go } = useNav();
-  const total = allUnits.length;
-  return (
-    <TmPage crumbs={[{ label: 'Campaign Execution' }, { label: 'Approved Campaigns' }, { label: CAMPAIGN.name }, { label: 'Activity Tracker' }]}
-      code="TM.EX1" title="Activity Tracker" status="In progress"
-      actions={<span className="tm-sync"><Clock size={12} /> Last synced 18 Nov 2026, 09:40 · field app</span>}>
-      <CampaignStrip />
-      <Metrics items={[
-        { label: 'Planned activities', value: total },
-        { label: 'Completed', value: count('done'), tone: 'green' },
-        { label: 'At risk', value: count('risk'), tone: 'red', sub: `${count('scheduled')} scheduled / upcoming` },
-      ]} />
-      <Panel title="Campaign activity calendar" actions={<div className="tm-legend"><span className="done">Completed</span><span className="scheduled">Scheduled</span><span className="risk">At risk</span></div>}>
-        <div className="wide-scroll">
-          <div className="tm-gantt">
-            <div className="tm-gantt-head"><span>Activity · owner</span>{[1, 2, 3, 4].map((w) => <span key={w}>Week {w}</span>)}</div>
-            {GANTT.map((row) => (
-              <div key={row.activity} className="tm-gantt-row">
-                <div className="tm-gantt-label"><b>{row.activity}</b><small>{row.units.length} unit{row.units.length > 1 ? 's' : ''} · {row.owner}</small></div>
-                {[1, 2, 3, 4].map((week) => (
-                  <div key={week} className="tm-gantt-cell">
-                    {row.units.filter((u) => u.week === week).map((u, index) => (
-                      <button key={index} type="button" className={cx('tm-unit', `tm-unit-${u.state}`)} title={u.note ?? u.state}
-                        onClick={() => go('tm.ex2')}>
-                        {u.state === 'risk' && <AlertTriangle size={11} />}{u.state === 'done' && <CheckCircle2 size={11} />}{u.village}
-                      </button>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-        <small className="tm-muted">Shows planned vs completed actions only — no attributed sales. Click any activity to open its workspace.</small>
-      </Panel>
-      <div className="tm-map-row tm-map-row-right">
-        <div className="pm-stack">
-        <Panel title="Execution exceptions" tone="warn">
-          <ul className="tm-exceptions">
-            <li><ShieldAlert size={15} /><div><b>Dhanora field demonstration · Week 2</b><span>Awaiting stock confirmation for the scheduled date. Stock has not arrived.</span></div><Btn small variant="primary" to="tm.ex2">Take Action</Btn></li>
-            <li><ShieldAlert size={15} /><div><b>Wadi Gaon farmer meeting · Week 2</b><span>Requires field confirmation of venue and attendance.</span></div><Btn small to="tm.ex2">View</Btn></li>
-          </ul>
-        </Panel>
-        <AiPanel title="AI Recommended Actions">
-          <ol className="tm-ai-list tm-ol">
-            <li>Confirm stock with the channel manager before the Dhanora demo.</li>
-            <li>Contact the assigned field owner (R. Jadhav).</li>
-            <li>Reschedule or escalate if stock cannot be confirmed in time.</li>
-          </ol>
-        </AiPanel>
-        </div>
-        <TmMap title="Execution status by village" label="Campaign activity status in Dhanora and Wadi Gaon" height={300} selected="v-dhanora"
-          markers={[
-            { id: 'v-dhanora', label: 'Dhanora · demo at risk', color: MAP_COLORS.red, info: <><b>Dhanora</b><br />2 done · 4 scheduled · 1 at risk (stock)</>, action: { label: 'Take action', run: () => go('tm.ex2') } },
-            { id: 'v-wadigaon', label: 'Wadi Gaon · meeting at risk', color: MAP_COLORS.amber, info: <><b>Wadi Gaon</b><br />1 done · 3 scheduled · 1 at risk (field confirmation)</> },
-            { id: 'v-ambad', label: 'Ambad HQ · digital wave', color: MAP_COLORS.grey, info: 'Opt-in digital advisory (Week 3) — scheduled' },
-          ]}
-          markerLegend={[{ label: 'Blocking risk', color: MAP_COLORS.red }, { label: 'Watch', color: MAP_COLORS.amber }, { label: 'Scheduled', color: MAP_COLORS.grey }]} />
-      </div>
-      <Footer back={{ label: 'Back to My Campaigns', to: 'tm.c3' }}
-        primary={{ label: 'View Activity & Take Action', to: 'tm.ex2' }} />
-    </TmPage>
-  );
+  const selected = useExecutionCampaign();
+  const summary = executionSummary(selected);
+  const stateCount = (stateName: GanttUnit['state']) => summary.units.filter((u) => u.state === stateName).length;
+  return <TmPage headerActions={<CampaignSwitcher />} code="TM.EX1" title="Activity Tracker" status={summary.campaign.stage}>
+    <Card title="Campaign activity calendar" context={summary.campaign.name.toUpperCase()} subtitle={summary.campaign.villages.join(' · ')} action={summary.campaign.stage === 'Completed' ? <StatusChip kind="ok">Completed</StatusChip> : undefined}>
+      <div className="wide-scroll"><div className="tm-gantt">
+        <div className="tm-gantt-head"><span>Activity · owner</span>{[1, 2, 3, 4].map((w) => <span key={w}>Week {w}</span>)}</div>
+        {EXECUTION[summary.campaign.id].activities.map((row) => <div key={row.activity} className="tm-gantt-row">
+          <div className="tm-gantt-label"><b>{row.activity}</b><small>{row.units.length} units · {row.owner}</small></div>
+          {[1, 2, 3, 4].map((week) => <div key={week} className="tm-gantt-cell">{row.units.filter((u) => u.week === week).map((unit, i) => <button key={i} type="button" disabled={summary.campaign.stage === 'Completed'} className={cx('tm-unit', `tm-unit-${unit.state}`)} title={unit.note ?? unit.state} onClick={() => go('tm.ex2')}>{unit.village}</button>)}</div>)}
+        </div>)}
+      </div></div>
+      <InsightStrip>{summary.completed} of {summary.totalUnits} activities are complete; {summary.atRisk} are at risk and {summary.scheduled} remain scheduled.</InsightStrip>
+    </Card>
+    <KpiStrip><Metric icon={ListChecks} label="Activities planned" value={summary.totalUnits} comparator="vs plan" /><Metric icon={CheckCircle2} label="Completed" value={summary.completed} comparator="vs plan" /><Metric icon={AlertOctagon} label="At risk" value={summary.atRisk} comparator="vs plan" /><Metric icon={CircleDollarSign} label="Budget spent" value={`${executionFmt(summary.spent)} / ${executionFmt(summary.budgetApproved)}`} /></KpiStrip>
+    <Card title="Execution status by activity"><RankedBars items={EXECUTION[summary.campaign.id].activities.map((row) => ({ label: row.activity, value: row.units.filter((u) => u.state === 'risk').length, note: `${row.owner} · ${row.units.length} units` }))} share={false} /><InsightStrip>{summary.campaign.name} has {stateCount('risk')} activities currently at risk.</InsightStrip></Card>
+    <NextSteps back={{ label: 'Execution overview', to: 'tm.ex0' }} primary={{ label: 'Open activity follow-up', to: 'tm.ex2' }} />
+  </TmPage>;
 }
 
 /* ------------------------------------------------------------------ TM.EX2 */
@@ -98,6 +128,9 @@ const ACTIONS = ['Request Stock Confirmation', 'Propose Reschedule', 'Reassign O
 
 export function TmEx2() {
   const { toast } = useNav();
+  const selectedCampaignId = useExecutionCampaign();
+  const summary = executionSummary(selectedCampaignId);
+  const exceptionActivity = summary.activities.find((activity) => activity.units.some((unit) => unit.state === 'risk')) ?? summary.activities[0];
   const [action, setAction] = useState(ACTIONS[0]);
   const [owner, setOwner] = useState('R. Jadhav');
   const [date, setDate] = useState('2026-11-28');
@@ -105,18 +138,17 @@ export function TmEx2() {
   const [saved, setSaved] = useState<string | null>(null);
   const [evidence, setEvidence] = useState<Record<string, string>>({});
   return (
-    <TmPage crumbs={[{ label: 'Campaign Execution', to: 'tm.ex1' }, { label: 'Activity Tracker', to: 'tm.ex1' }, { label: 'Dhanora Field Demonstration' }, { label: 'Activity Follow-up' }]}
-      code="TM.EX2" title="Activity Follow-up" status="At risk">
+    <TmPage headerActions={<CampaignSwitcher />} code="TM.EX2" title="Activity Follow-up" status={summary.campaign.stage}>
       <div className="pm-two">
         <div className="pm-stack">
-          <Panel title="Dhanora field demonstration">
+          <Panel title={exceptionActivity.activity} actions={summary.campaign.stage === 'Completed' ? <StatusChip kind="ok">Completed</StatusChip> : undefined}>
             <dl className="tm-facts tm-facts-4">
-              <div><dt>Campaign</dt><dd>{CAMPAIGN.name}</dd></div>
-              <div><dt>Assigned owner</dt><dd>R. Jadhav</dd></div>
-              <div><dt>Planned</dt><dd>Week 2 </dd></div>
-              <div><dt>Unit</dt><dd>1 of 4 demonstrations · 13 campaign activities</dd></div>
+              <div><dt>Campaign</dt><dd>{summary.campaign.name}</dd></div>
+              <div><dt>Assigned owner</dt><dd>{exceptionActivity.owner}</dd></div>
+              <div><dt>Planned</dt><dd>Week {exceptionActivity.units.find((unit) => unit.state === 'risk')?.week ?? exceptionActivity.units[0]?.week}</dd></div>
+              <div><dt>Unit</dt><dd>{exceptionActivity.units.length} planned · {summary.totalUnits} campaign activities</dd></div>
             </dl>
-            <div className="tm-blocker-box"><AlertTriangle size={15} /><span><b>Blocker:</b> stock availability confirmation pending. The activity is not completed.</span></div>
+            <div className="tm-blocker-box"><AlertTriangle size={15} /><span><b>{summary.campaign.stage === 'Completed' ? 'Status:' : 'Blocker:'}</b> {exceptionActivity.units.find((unit) => unit.state === 'risk')?.note ?? (summary.campaign.stage === 'Completed' ? 'All campaign activities are completed.' : 'Review activity readiness before the scheduled date.')}</span></div>
           </Panel>
           <div className="pm-two-even">
             <Panel title="Execution readiness">
@@ -130,8 +162,8 @@ export function TmEx2() {
             </Panel>
             <Panel title="Activity timeline">
               <ol className="tm-timeline">
-                <li className="done"><b>Scheduled for Week 2</b><small>Campaign approved · demo slot planned</small></li>
-                <li className="risk"><b>Risk identified</b><small>Stock confirmation pending for the scheduled date</small></li>
+                <li className="done"><b>Scheduled for Week {exceptionActivity.units.find((unit) => unit.state === 'risk')?.week ?? exceptionActivity.units[0]?.week}</b><small>{summary.campaign.name} · activity planned</small></li>
+                <li className="risk"><b>{summary.campaign.stage === 'Completed' ? 'Execution completed' : 'Risk identified'}</b><small>{exceptionActivity.units.find((unit) => unit.state === 'risk')?.note ?? `${exceptionActivity.activity} status recorded for ${summary.campaign.name}`}</small></li>
                 <li className="pending"><b>Awaiting resolution</b><small>{saved ? `${saved} — proposed, not yet approved` : 'No corrective action assigned yet'}</small></li>
               </ol>
             </Panel>
@@ -155,9 +187,9 @@ export function TmEx2() {
         <div className="pm-stack">
         <AiPanel title="AI Recommended Action">
             <ol className="tm-ai-list tm-ol">
-              <li>Confirm stock with the channel manager for the Week 2 date.</li>
-              <li>Contact R. Jadhav to check venue and farmer mobilisation.</li>
-              <li>If stock cannot be arranged, propose a reschedule or escalate.</li>
+              <li>Review readiness for {exceptionActivity.activity} in {summary.campaign.name}.</li>
+              <li>Contact {exceptionActivity.owner} to confirm the next field activity.</li>
+              <li>If the activity cannot proceed as planned, propose a reschedule or escalate.</li>
             </ol>
           </AiPanel>
           <Panel title="Corrective action workspace" tone="soft">
@@ -178,7 +210,7 @@ export function TmEx2() {
             <Btn variant="primary" onClick={() => { setSaved(action); toast(`${action} saved and assigned to ${owner} (proposed).`); }}>Save & Assign Corrective Action</Btn>
           </Panel>
           <Panel title="Related exception">
-            <p className="tm-muted"><b>Wadi Gaon farmer meeting (Week 2)</b> — field confirmation pending.</p>
+            <p className="tm-muted"><b>{summary.campaign.villages.join(' · ')}</b> — {summary.atRisk ? `${summary.atRisk} activity risks require review.` : `${summary.campaign.stage} campaign status.`}</p>
             <Btn small to="tm.ex1">Open in Activity Tracker</Btn>
           </Panel>
         </div>

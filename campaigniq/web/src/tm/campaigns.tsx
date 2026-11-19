@@ -536,12 +536,13 @@ export function TmC2() {
   const { toast } = useNav();
   const { total } = useCampaignDraft();
   const { stage } = useCampaignState();
-  const submitted = stage >= 1;
-  const approved = stage >= 3;
+  const live = PORTFOLIO.find((campaign) => campaign.id === 'ambad-onion-croptek')?.stage === 'Live';
+  const submitted = stage >= 1 || live;
+  const approved = stage >= 3 || live;
   const daysOpen = submitted ? [0, 1, 3, 4][stage] : 0;
   return (
     <TmPage crumbs={[{ label: 'My Campaigns', to: 'tm.c1' }, { label: CAMPAIGN.name, to: 'cw.4' }, { label: 'Review & Approval' }]}
-      code="TM.C2" title="Approval Status" status={submitted ? stageLabel(stage) : 'Not yet submitted'}
+      code="TM.C2" title="Approval Status" status={live ? 'Live · Approved 12 Nov 2026' : submitted ? stageLabel(stage) : 'Not yet submitted'}
       subtitle="Follow the campaign through content review and Marketing Head approval. Launch unlocks only after approval.">
       <Steps active={2} steps={JOURNEY} onStep />
       {!submitted && (
@@ -558,7 +559,7 @@ export function TmC2() {
             {stage >= 2 ? 'Marketing Head approval pending' : 'Showcase: complete content review'}
           </Btn>
         : undefined}>
-        <ApprovalPipeline current={submitted ? stage : 0} steps={APPROVAL_STEPS.map((s, i) => ({ ...s, skipped: i === 3 }))} />
+        <ApprovalPipeline current={live ? 3 : submitted ? stage : 0} steps={APPROVAL_STEPS.map((s, i) => ({ ...s, skipped: i === 3 }))} />
       </Panel>
       <div className="pm-two">
         <Panel title="Review comments & conditions" icon={<MessageSquare size={14} />}>
@@ -601,8 +602,8 @@ const STAGES = ['Not drafted', 'Draft', 'In approval', 'Approved', 'Live', 'Comp
 export function TmC3() {
   const { go } = useNav();
   const { stage } = useCampaignState();
-  const onionStage = stage >= 3 ? 'Approved' : stage >= 1 ? 'In approval' : 'Draft';
-  const campaigns = PORTFOLIO.map((c, i) => (i === 0 ? { ...c, stage: onionStage as typeof c.stage } : c));
+  const onionStage = PORTFOLIO.find((campaign) => campaign.id === 'ambad-onion-croptek')?.stage ?? 'Draft';
+  const campaigns = PORTFOLIO;
   const current = campaigns.filter((c) => c.season === 'Rabi 2025–26');
   const budgetSum = current.reduce((sum, c) => sum + (c.budget ?? 0), 0);
   const [selected, setSelected] = useState(campaigns[0].name);
@@ -613,8 +614,8 @@ export function TmC3() {
       code="TM.C3" title="Campaign Portfolio" subtitle="All campaigns supporting the approved Ambad plan this season, with last season's results for reference.">
       <Steps active={3} steps={JOURNEY} onStep />
       <IconTiles items={[
-        { icon: Target, value: current.length, label: 'Campaigns this season', note: `1 ${onionStage.toLowerCase()} · 1 draft · 1 idea`, tone: 'green' },
-        { icon: Wallet, value: lakh(budgetSum, 2), label: 'Campaign budget requested', note: 'Onion ₹3.00 L + Maize ₹2.20 L (draft)', tone: 'amber' },
+        { icon: Target, value: current.length, label: 'Campaigns this season', note: `${current.filter((campaign) => campaign.stage === 'Live').length} live · ${current.filter((campaign) => campaign.stage === 'Draft').length} draft · ${current.filter((campaign) => campaign.stage === 'Not drafted').length} idea`, tone: 'green' },
+        { icon: Wallet, value: lakh(budgetSum, 2), label: 'Campaign budget requested', note: `Across ${current.length} campaigns`, tone: 'amber' },
         { icon: Sprout, value: '₹40.00 L', label: 'Plan-linked growth covered', note: 'Onion ₹25.00 L + Maize ₹15.00 L objectives', tone: 'blue' },
         { icon: FlaskConical, value: '1.60×', label: 'Last-season campaign ROI', note: 'Kharif 2025 average (2 campaigns)' },
       ]} />
@@ -680,11 +681,12 @@ export function TmC3() {
             <div><dt>Plan-linked objective</dt><dd>{open.objective}</dd></div>
             <div><dt>Forecast / result</dt><dd>{open.result ?? open.forecast}</dd></div>
             <div><dt>Status</dt><dd><Status>{open.stage}</Status></dd></div>
+            {open.approvedAt && <div><dt>Approved</dt><dd>{open.approvedAt}</dd></div>}
           </dl>
           <div className="tm-row-actions">
             {open.name === CAMPAIGN.name && <>
               <Btn small onClick={() => go('tm.c2')}>Approval tracker</Btn>
-              <Btn small variant="primary" onClick={() => go(stage >= 3 ? 'tm.ex1' : 'cw.4')}>{stage >= 3 ? 'Open Activity Tracker' : 'Open in Wizard'}</Btn>
+              <Btn small variant="primary" onClick={() => go(open.stage === 'Live' || stage >= 3 ? 'tm.ex1' : 'cw.4')}>{open.stage === 'Live' || stage >= 3 ? 'Open Activity Tracker' : 'Open in Wizard'}</Btn>
             </>}
             {open.stage === 'Draft' && <Btn small onClick={() => go('tm.c1')}>Continue draft</Btn>}
             {open.stage === 'Not drafted' && <Btn small onClick={() => go('tm.c1')}>Create from priority</Btn>}
@@ -700,7 +702,7 @@ export function TmC3() {
         </AiPanel>
       </div>
       <Footer back={{ label: 'Back to Business Priorities', to: 'tm.c1' }}
-        primary={{ label: stage >= 3 ? 'Go to Campaign Execution' : 'Track Approval', to: stage >= 3 ? 'tm.ex1' : 'tm.c2' }} />
+        primary={{ label: onionStage === 'Live' || stage >= 3 ? 'Go to Campaign Execution' : 'Track Approval', to: onionStage === 'Live' || stage >= 3 ? 'tm.ex1' : 'tm.c2' }} />
     </TmPage>
   );
 }
