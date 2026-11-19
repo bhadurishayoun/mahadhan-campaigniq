@@ -30,6 +30,7 @@ export const DATASET_CATALOG: DatasetMeta[] = catalog.datasets;
 const KNOWN = new Set(DATASET_CATALOG.map((entry) => entry.name));
 
 export interface DatasetState<T> { name: string; rows: T[]; live: boolean; source?: string; uploadedAt?: string }
+export type DatasetScope = Partial<Record<'season' | 'state' | 'district' | 'taluka' | 'crop' | 'product' | 'campaign_type' | 'region' | 'theme' | 'period', string | undefined>>;
 
 let statusRequest: Promise<Set<string>> | null = null;
 const listeners = new Set<() => void>();
@@ -48,9 +49,18 @@ export function refreshDatasets() {
   listeners.forEach((listener) => listener());
 }
 
-export function useDataset<T>(name: string, demoRows: T[]): DatasetState<T> {
-  const { scope } = useNav();
-  const key = `${name}${query(scope as Record<string, string | undefined>)}`;
+export function useDataset<T>(name: string, demoRows: T[], scopeOverride?: DatasetScope): DatasetState<T> {
+  const { filters } = useNav();
+  const defaultScope: DatasetScope = {
+    season: filters.season,
+    state: filters.geography === 'India' ? undefined : filters.geography,
+    district: filters.district === 'All Districts' ? undefined : filters.district,
+    crop: filters.crop === 'All Crops' ? undefined : filters.crop,
+    product: filters.portfolio === 'All Products' ? undefined : filters.portfolio,
+    campaign_type: filters.campaignType === 'All' ? undefined : filters.campaignType,
+  };
+  const requestedScope = { ...defaultScope, ...scopeOverride };
+  const key = `${name}${query(requestedScope)}`;
   const [version, setVersion] = useState(0);
   const [live, setLive] = useState<{ key: string; rows: T[]; source?: string; uploadedAt?: string } | null>(null);
 
@@ -66,13 +76,13 @@ export function useDataset<T>(name: string, demoRows: T[]): DatasetState<T> {
     let cancelled = false;
     liveDatasetNames()
       .then((names) => (names.has(name)
-        ? api<{ rows: T[]; source?: string; uploaded_at?: string }>(`/datasets/${encodeURIComponent(name)}${query(scope as Record<string, string | undefined>)}`)
+        ? api<{ rows: T[]; source?: string; uploaded_at?: string }>(`/datasets/${encodeURIComponent(name)}${query(requestedScope)}`)
         : null))
       .then((result) => { if (!cancelled) setLive(result ? { key, rows: result.rows, source: result.source, uploadedAt: result.uploaded_at } : null); })
       .catch(() => { if (!cancelled) setLive(null); });
     return () => { cancelled = true; };
   }, [key, version]);
 
-  if (live && live.key === key && live.rows.length) return { name, rows: live.rows, live: true, source: live.source, uploadedAt: live.uploadedAt };
+  if (live && live.key === key) return { name, rows: live.rows, live: true, source: live.source, uploadedAt: live.uploadedAt };
   return { name, rows: demoRows, live: false };
 }

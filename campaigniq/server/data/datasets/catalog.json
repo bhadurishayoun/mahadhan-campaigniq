@@ -2,14 +2,18 @@
   "_comment": "Dataset catalog: one entry per screen table/chart that can be fed with real data. The web app (web/src/data/datasets.ts) and the API (server/campaign_api/datasets.py) both read this file. Add an entry here, then call useDataset('<name>', DEMO_ROWS) in the screen. Optional scope columns on every dataset: season, state, district, taluka, crop, product, campaign_type.",
   "datasets": [
     {
-      "name": "portfolio.campaigns", "title": "Campaign portfolio", "screen": "s1.2", "screens": ["s1.1", "s1.2", "s1.3"],
+      "name": "portfolio.campaigns", "title": "Campaign portfolio", "screen": "s1.2", "screens": ["s1.1", "s1.2", "s1.3", "bh.2"],
       "source_system": "Campaign planning DB / CRM", "refresh": "daily",
       "description": "One row per active campaign with budget, execution progress, trial-to-adoption, risk and ROI.",
       "columns": [
         { "name": "name", "type": "string" }, { "name": "objective", "type": "string" }, { "name": "crop", "type": "string" },
         { "name": "geography", "type": "string" }, { "name": "region", "type": "string" }, { "name": "budget", "type": "string", "description": "Display value, e.g. ₹0.80 Cr" },
         { "name": "stage", "type": "string", "description": "Execute | Deploy | Scale | Review" }, { "name": "progress", "type": "number", "description": "0-100" },
-        { "name": "trial", "type": "string" }, { "name": "risk", "type": "string", "description": "Low | Medium | High" }, { "name": "roi", "type": "string" }, { "name": "next", "type": "string" }
+        { "name": "trial", "type": "string" }, { "name": "risk", "type": "string", "description": "Low | Medium | High" }, { "name": "roi", "type": "string" }, { "name": "next", "type": "string" },
+        { "name": "product", "type": "string", "required": false }, { "name": "theme", "type": "string", "required": false },
+        { "name": "adopters", "type": "number", "required": false }, { "name": "investment", "type": "number", "required": false },
+        { "name": "planned", "type": "number", "required": false }, { "name": "observed", "type": "number", "required": false },
+        { "name": "quarter", "type": "number", "required": false }
       ]
     },
     {

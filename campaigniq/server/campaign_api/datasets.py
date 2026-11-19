@@ -29,7 +29,7 @@ from fastapi.responses import Response
 from . import db as database
 
 CATALOG_PATH = Path(os.environ.get("CAMPAIGNIQ_DATASET_CATALOG", Path(__file__).resolve().parents[1] / "data" / "datasets" / "catalog.json"))
-SCOPE_COLUMNS = ("season", "state", "district", "taluka", "crop", "product", "campaign_type")
+SCOPE_COLUMNS = ("season", "state", "district", "taluka", "crop", "product", "campaign_type", "region", "theme", "period")
 MAX_ROWS = 50_000
 
 router = APIRouter(prefix="/api/datasets", tags=["datasets"])
@@ -155,15 +155,16 @@ def get_dataset(
     crop: str | None = None,
     product: str | None = None,
     campaign_type: str | None = None,
+    region: str | None = None,
+    theme: str | None = None,
+    period: str | None = None,
 ) -> dict[str, Any]:
     with database.connect() as db:
         row = db.execute("SELECT rows_json, source, uploaded_at FROM dataset_upload WHERE name = ?", (name,)).fetchone()
     if row is None:
         raise HTTPException(status_code=404, detail=f"Dataset '{name}' has not been uploaded; the screen uses illustrative demo data.")
-    scope = {"season": season, "state": state, "district": district, "taluka": taluka, "crop": crop, "product": product, "campaign_type": campaign_type}
+    scope = {"season": season, "state": state, "district": district, "taluka": taluka, "crop": crop, "product": product, "campaign_type": campaign_type, "region": region, "theme": theme, "period": period}
     rows = filter_rows(json.loads(row["rows_json"]), scope)
-    if not rows:
-        raise HTTPException(status_code=404, detail=f"Dataset '{name}' has no rows for the selected scope.")
     return {"name": name, "rows": rows, "source": row["source"], "uploaded_at": row["uploaded_at"]}
 
 
