@@ -2,121 +2,3220 @@
   "_comment": "Dataset catalog: one entry per screen table/chart that can be fed with real data. The web app (web/src/data/datasets.ts) and the API (server/campaign_api/datasets.py) both read this file. Add an entry here, then call useDataset('<name>', DEMO_ROWS) in the screen. Optional scope columns on every dataset: season, state, district, taluka, crop, product, campaign_type.",
   "datasets": [
     {
-      "name": "portfolio.campaigns", "title": "Campaign portfolio", "screen": "s1.2", "screens": ["s1.1", "s1.2", "s1.3", "bh.2"],
-      "source_system": "Campaign planning DB / CRM", "refresh": "daily",
+      "name": "portfolio.campaigns",
+      "title": "Campaign portfolio",
+      "screen": "s1.1",
+      "screens": [
+        "bh.2",
+        "s1.1",
+        "s1.2",
+        "s1.3"
+      ],
+      "source_system": "Campaign planning DB / CRM",
+      "refresh": "daily",
       "description": "One row per active campaign with budget, execution progress, trial-to-adoption, risk and ROI.",
       "columns": [
-        { "name": "name", "type": "string" }, { "name": "objective", "type": "string" }, { "name": "crop", "type": "string" },
-        { "name": "geography", "type": "string" }, { "name": "region", "type": "string" }, { "name": "budget", "type": "string", "description": "Display value, e.g. ₹0.80 Cr" },
-        { "name": "stage", "type": "string", "description": "Execute | Deploy | Scale | Review" }, { "name": "progress", "type": "number", "description": "0-100" },
-        { "name": "trial", "type": "string" }, { "name": "risk", "type": "string", "description": "Low | Medium | High" }, { "name": "roi", "type": "string" }, { "name": "next", "type": "string" },
-        { "name": "product", "type": "string", "required": false }, { "name": "theme", "type": "string", "required": false },
-        { "name": "adopters", "type": "number", "required": false }, { "name": "investment", "type": "number", "required": false },
-        { "name": "planned", "type": "number", "required": false }, { "name": "observed", "type": "number", "required": false },
-        { "name": "quarter", "type": "number", "required": false }
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Name in portfolio.campaigns."
+        },
+        {
+          "name": "objective",
+          "type": "string",
+          "description": "Objective in portfolio.campaigns."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in portfolio.campaigns."
+        },
+        {
+          "name": "geography",
+          "type": "string",
+          "description": "Geography in portfolio.campaigns."
+        },
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in portfolio.campaigns."
+        },
+        {
+          "name": "budget",
+          "type": "string",
+          "description": "Budget in portfolio.campaigns."
+        },
+        {
+          "name": "stage",
+          "type": "string",
+          "description": "Stage in portfolio.campaigns."
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "description": "Progress in portfolio.campaigns."
+        },
+        {
+          "name": "trial",
+          "type": "string",
+          "description": "Trial in portfolio.campaigns."
+        },
+        {
+          "name": "risk",
+          "type": "string",
+          "description": "Risk in portfolio.campaigns."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in portfolio.campaigns."
+        },
+        {
+          "name": "next",
+          "type": "string",
+          "description": "Next in portfolio.campaigns."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in portfolio.campaigns."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in portfolio.campaigns."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in portfolio.campaigns."
+        },
+        {
+          "name": "investment",
+          "type": "number",
+          "description": "Investment in portfolio.campaigns."
+        },
+        {
+          "name": "planned",
+          "type": "number",
+          "description": "Planned in portfolio.campaigns."
+        },
+        {
+          "name": "observed",
+          "type": "number",
+          "description": "Observed in portfolio.campaigns."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in portfolio.campaigns."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in portfolio.campaigns."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in portfolio.campaigns."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in portfolio.campaigns."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in portfolio.campaigns."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in portfolio.campaigns."
+        },
+        {
+          "name": "trials",
+          "type": "number",
+          "description": "Trials in portfolio.campaigns."
+        },
+        {
+          "name": "trial_to_purchase_pct",
+          "type": "number",
+          "description": "Trial to purchase pct in portfolio.campaigns."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in portfolio.campaigns."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in portfolio.campaigns."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in portfolio.campaigns."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in portfolio.campaigns."
+        },
+        {
+          "name": "season",
+          "type": "string",
+          "description": "Season in portfolio.campaigns."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in portfolio.campaigns."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in portfolio.campaigns."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in portfolio.campaigns."
+        }
       ]
     },
     {
-      "name": "atlas.top_markets", "title": "Top opportunity markets", "screen": "s2.1", "screens": ["s2.1"],
-      "source_system": "Market sizing model (crop area × penetration)", "refresh": "seasonal",
+      "name": "atlas.top_markets",
+      "title": "Top opportunity markets",
+      "screen": "s2.1",
+      "screens": [
+        "s2.1"
+      ],
+      "source_system": "Market sizing model (crop area × penetration)",
+      "refresh": "seasonal",
       "description": "Ranked district × crop opportunities shown on the Opportunity Atlas.",
       "columns": [
-        { "name": "rank", "type": "number" }, { "name": "geo", "type": "string", "description": "District name" }, { "name": "crop", "type": "string" },
-        { "name": "score", "type": "number", "description": "Opportunity score 0-100" }, { "name": "potential", "type": "string" }, { "name": "gap", "type": "string" },
-        { "name": "readiness", "type": "string", "description": "High | Medium | Low" }
+        {
+          "name": "rank",
+          "type": "number",
+          "description": "Rank in atlas.top_markets."
+        },
+        {
+          "name": "geo",
+          "type": "string",
+          "description": "Geo in atlas.top_markets."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in atlas.top_markets."
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "description": "Score in atlas.top_markets."
+        },
+        {
+          "name": "potential",
+          "type": "string",
+          "description": "Potential in atlas.top_markets."
+        },
+        {
+          "name": "gap",
+          "type": "string",
+          "description": "Gap in atlas.top_markets."
+        },
+        {
+          "name": "readiness",
+          "type": "string",
+          "description": "Readiness in atlas.top_markets."
+        },
+        {
+          "name": "season",
+          "type": "string",
+          "description": "Season in atlas.top_markets."
+        }
       ]
     },
     {
-      "name": "atlas.taluka_ranking", "title": "Taluka opportunity ranking", "screen": "s2.2", "screens": ["s2.2"],
-      "source_system": "Market sizing model + retailer master", "refresh": "seasonal",
+      "name": "atlas.taluka_ranking",
+      "title": "Taluka opportunity ranking",
+      "screen": "s2.2",
+      "screens": [
+        "s2.2"
+      ],
+      "source_system": "Market sizing model + retailer master",
+      "refresh": "seasonal",
       "description": "Taluka-level ranking inside the selected district.",
       "columns": [
-        { "name": "rank", "type": "number" }, { "name": "taluka", "type": "string" }, { "name": "score", "type": "number" }, { "name": "potential", "type": "string" },
-        { "name": "gap", "type": "string" }, { "name": "retailers", "type": "number" }, { "name": "readiness", "type": "string" }
+        {
+          "name": "rank",
+          "type": "number",
+          "description": "Rank in atlas.taluka_ranking."
+        },
+        {
+          "name": "taluka",
+          "type": "string",
+          "description": "Taluka in atlas.taluka_ranking."
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "description": "Score in atlas.taluka_ranking."
+        },
+        {
+          "name": "potential",
+          "type": "string",
+          "description": "Potential in atlas.taluka_ranking."
+        },
+        {
+          "name": "gap",
+          "type": "string",
+          "description": "Gap in atlas.taluka_ranking."
+        },
+        {
+          "name": "retailers",
+          "type": "number",
+          "description": "Retailers in atlas.taluka_ranking."
+        },
+        {
+          "name": "readiness",
+          "type": "string",
+          "description": "Readiness in atlas.taluka_ranking."
+        },
+        {
+          "name": "season",
+          "type": "string",
+          "description": "Season in atlas.taluka_ranking."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in atlas.taluka_ranking."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in atlas.taluka_ranking."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in atlas.taluka_ranking."
+        }
       ]
     },
     {
-      "name": "nutrition.triggers", "title": "Campaign trigger queue", "screen": "s3.4", "screens": ["s3.4"],
-      "source_system": "Crop-stage calendar + weather feed + trigger rules", "refresh": "daily",
+      "name": "nutrition.triggers",
+      "title": "Campaign trigger queue",
+      "screen": "s3.4",
+      "screens": [
+        "s3.4"
+      ],
+      "source_system": "Crop-stage calendar + weather feed + trigger rules",
+      "refresh": "daily",
       "description": "Prioritised campaign triggers. `campaign` is the index of the recommended campaign card (0-2).",
       "columns": [
-        { "name": "n", "type": "number" }, { "name": "trigger", "type": "string" }, { "name": "geo", "type": "string" }, { "name": "audience", "type": "string" },
-        { "name": "intervention", "type": "string" }, { "name": "reach", "type": "string" }, { "name": "urgency", "type": "string", "description": "High | Medium | Conditional" },
-        { "name": "status", "type": "string" }, { "name": "campaign", "type": "number", "required": false }
+        {
+          "name": "n",
+          "type": "number",
+          "description": "N in nutrition.triggers."
+        },
+        {
+          "name": "trigger",
+          "type": "string",
+          "description": "Trigger in nutrition.triggers."
+        },
+        {
+          "name": "geo",
+          "type": "string",
+          "description": "Geo in nutrition.triggers."
+        },
+        {
+          "name": "audience",
+          "type": "string",
+          "description": "Audience in nutrition.triggers."
+        },
+        {
+          "name": "intervention",
+          "type": "string",
+          "description": "Intervention in nutrition.triggers."
+        },
+        {
+          "name": "reach",
+          "type": "string",
+          "description": "Reach in nutrition.triggers."
+        },
+        {
+          "name": "urgency",
+          "type": "string",
+          "description": "Urgency in nutrition.triggers."
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "description": "Status in nutrition.triggers."
+        },
+        {
+          "name": "campaign",
+          "type": "number",
+          "description": "Campaign in nutrition.triggers."
+        },
+        {
+          "name": "season",
+          "type": "string",
+          "description": "Season in nutrition.triggers."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in nutrition.triggers."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in nutrition.triggers."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in nutrition.triggers."
+        }
       ]
     },
     {
-      "name": "readiness.village_demand", "title": "Village demand projection", "screen": "s5.1", "screens": ["s5.1"],
-      "source_system": "Farmer registry + adoption forecast", "refresh": "weekly",
+      "name": "readiness.village_demand",
+      "title": "Village demand projection",
+      "screen": "s5.1",
+      "screens": [
+        "s5.1"
+      ],
+      "source_system": "Farmer registry + adoption forecast",
+      "refresh": "weekly",
       "description": "Baseline target farmers, adopters and demand (MT) per village; the screen scales it with the forecast assumptions.",
       "columns": [
-        { "name": "village", "type": "string" }, { "name": "farmers", "type": "number" }, { "name": "adopters", "type": "number" }, { "name": "demand", "type": "number", "description": "MT" },
-        { "name": "retailer", "type": "string" }, { "name": "visibility", "type": "string", "description": "Adequate | Limited | Unverified" }, { "name": "arrival", "type": "string" }
+        {
+          "name": "village",
+          "type": "string",
+          "description": "Village in readiness.village_demand."
+        },
+        {
+          "name": "farmers",
+          "type": "number",
+          "description": "Farmers in readiness.village_demand."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in readiness.village_demand."
+        },
+        {
+          "name": "demand",
+          "type": "number",
+          "description": "Demand in readiness.village_demand."
+        },
+        {
+          "name": "retailer",
+          "type": "string",
+          "description": "Retailer in readiness.village_demand."
+        },
+        {
+          "name": "visibility",
+          "type": "string",
+          "description": "Visibility in readiness.village_demand."
+        },
+        {
+          "name": "arrival",
+          "type": "string",
+          "description": "Arrival in readiness.village_demand."
+        },
+        {
+          "name": "season",
+          "type": "string",
+          "description": "Season in readiness.village_demand."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in readiness.village_demand."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in readiness.village_demand."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in readiness.village_demand."
+        }
       ]
     },
     {
-      "name": "readiness.stock_heatmap", "title": "Village stock coverage", "screen": "s5.2", "screens": ["s5.2"],
-      "source_system": "ERP stock + dealer secondary sales", "refresh": "daily",
+      "name": "readiness.stock_heatmap",
+      "title": "Village stock coverage",
+      "screen": "s5.2",
+      "screens": [
+        "s5.2"
+      ],
+      "source_system": "ERP stock + dealer secondary sales",
+      "refresh": "daily",
       "description": "Demand vs. supply coverage per village.",
       "columns": [
-        { "name": "village", "type": "string" }, { "name": "demand", "type": "number" }, { "name": "supply", "type": "number" }, { "name": "cov", "type": "number", "description": "Coverage %" },
-        { "name": "gap", "type": "number" }, { "name": "retailers", "type": "number" }, { "name": "vis", "type": "string" }, { "name": "risk", "type": "string" }
+        {
+          "name": "village",
+          "type": "string",
+          "description": "Village in readiness.stock_heatmap."
+        },
+        {
+          "name": "demand",
+          "type": "number",
+          "description": "Demand in readiness.stock_heatmap."
+        },
+        {
+          "name": "supply",
+          "type": "number",
+          "description": "Supply in readiness.stock_heatmap."
+        },
+        {
+          "name": "cov",
+          "type": "number",
+          "description": "Cov in readiness.stock_heatmap."
+        },
+        {
+          "name": "gap",
+          "type": "number",
+          "description": "Gap in readiness.stock_heatmap."
+        },
+        {
+          "name": "retailers",
+          "type": "number",
+          "description": "Retailers in readiness.stock_heatmap."
+        },
+        {
+          "name": "vis",
+          "type": "string",
+          "description": "Vis in readiness.stock_heatmap."
+        },
+        {
+          "name": "risk",
+          "type": "string",
+          "description": "Risk in readiness.stock_heatmap."
+        },
+        {
+          "name": "season",
+          "type": "string",
+          "description": "Season in readiness.stock_heatmap."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in readiness.stock_heatmap."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in readiness.stock_heatmap."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in readiness.stock_heatmap."
+        }
       ]
     },
     {
-      "name": "readiness.dealers", "title": "Dealer & retailer readiness", "screen": "s5.3", "screens": ["s5.3"],
-      "source_system": "Dealer master (DMS) + ERP + training records", "refresh": "daily",
+      "name": "readiness.dealers",
+      "title": "Dealer & retailer readiness",
+      "screen": "s5.3",
+      "screens": [
+        "s5.3"
+      ],
+      "source_system": "Dealer master (DMS) + ERP + training records",
+      "refresh": "daily",
       "description": "Dealer stock, demand gap, influence, licence, training and owner.",
       "columns": [
-        { "name": "name", "type": "string" }, { "name": "village", "type": "string" }, { "name": "mapped", "type": "number" }, { "name": "stock", "type": "string" },
-        { "name": "demand", "type": "number" }, { "name": "gap", "type": "number" }, { "name": "influence", "type": "string" }, { "name": "licence", "type": "string" },
-        { "name": "training", "type": "string" }, { "name": "data", "type": "string", "description": "ERP-confirmed | Reported | Estimated | Unverified" },
-        { "name": "owner", "type": "string" }, { "name": "deadline", "type": "string" }, { "name": "action", "type": "string" }
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Name in readiness.dealers."
+        },
+        {
+          "name": "village",
+          "type": "string",
+          "description": "Village in readiness.dealers."
+        },
+        {
+          "name": "mapped",
+          "type": "number",
+          "description": "Mapped in readiness.dealers."
+        },
+        {
+          "name": "stock",
+          "type": "string",
+          "description": "Stock in readiness.dealers."
+        },
+        {
+          "name": "demand",
+          "type": "number",
+          "description": "Demand in readiness.dealers."
+        },
+        {
+          "name": "gap",
+          "type": "number",
+          "description": "Gap in readiness.dealers."
+        },
+        {
+          "name": "influence",
+          "type": "string",
+          "description": "Influence in readiness.dealers."
+        },
+        {
+          "name": "licence",
+          "type": "string",
+          "description": "Licence in readiness.dealers."
+        },
+        {
+          "name": "training",
+          "type": "string",
+          "description": "Training in readiness.dealers."
+        },
+        {
+          "name": "data",
+          "type": "string",
+          "description": "Data in readiness.dealers."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in readiness.dealers."
+        },
+        {
+          "name": "deadline",
+          "type": "string",
+          "description": "Deadline in readiness.dealers."
+        },
+        {
+          "name": "action",
+          "type": "string",
+          "description": "Action in readiness.dealers."
+        },
+        {
+          "name": "season",
+          "type": "string",
+          "description": "Season in readiness.dealers."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in readiness.dealers."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in readiness.dealers."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in readiness.dealers."
+        }
       ]
     },
     {
-      "name": "readiness.cluster_supply", "title": "Cluster supply status", "screen": "s5.3", "screens": ["s5.3"],
-      "source_system": "ERP stock + demand projection", "refresh": "daily",
+      "name": "readiness.cluster_supply",
+      "title": "Cluster supply status",
+      "screen": "s5.3",
+      "screens": [
+        "s5.3"
+      ],
+      "source_system": "ERP stock + demand projection",
+      "refresh": "daily",
       "description": "Demand, supply and gap per village cluster.",
       "columns": [
-        { "name": "village", "type": "string" }, { "name": "demand", "type": "number" }, { "name": "supply", "type": "number" }, { "name": "gap", "type": "number" },
-        { "name": "retailers", "type": "number" }, { "name": "status", "type": "string", "description": "Ready | Moderate | High Risk" }
+        {
+          "name": "village",
+          "type": "string",
+          "description": "Village in readiness.cluster_supply."
+        },
+        {
+          "name": "demand",
+          "type": "number",
+          "description": "Demand in readiness.cluster_supply."
+        },
+        {
+          "name": "supply",
+          "type": "number",
+          "description": "Supply in readiness.cluster_supply."
+        },
+        {
+          "name": "gap",
+          "type": "number",
+          "description": "Gap in readiness.cluster_supply."
+        },
+        {
+          "name": "retailers",
+          "type": "number",
+          "description": "Retailers in readiness.cluster_supply."
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "description": "Status in readiness.cluster_supply."
+        },
+        {
+          "name": "season",
+          "type": "string",
+          "description": "Season in readiness.cluster_supply."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in readiness.cluster_supply."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in readiness.cluster_supply."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in readiness.cluster_supply."
+        }
       ]
     },
     {
-      "name": "orchestration.owners", "title": "Field owner workload", "screen": "s6.1", "screens": ["s6.1"],
-      "source_system": "Field force app / HRMS", "refresh": "hourly",
+      "name": "orchestration.owners",
+      "title": "Field owner workload",
+      "screen": "s6.1",
+      "screens": [
+        "s6.1"
+      ],
+      "source_system": "Field force app / HRMS",
+      "refresh": "hourly",
       "description": "Field owners, assigned cluster, current task, load and status.",
       "columns": [
-        { "name": "owner", "type": "string" }, { "name": "role", "type": "string" }, { "name": "cluster", "type": "string" }, { "name": "task", "type": "string" },
-        { "name": "load", "type": "string" }, { "name": "status", "type": "string", "description": "On Track | At Risk | Delayed" }
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in orchestration.owners."
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "description": "Role in orchestration.owners."
+        },
+        {
+          "name": "cluster",
+          "type": "string",
+          "description": "Cluster in orchestration.owners."
+        },
+        {
+          "name": "task",
+          "type": "string",
+          "description": "Task in orchestration.owners."
+        },
+        {
+          "name": "load",
+          "type": "string",
+          "description": "Load in orchestration.owners."
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "description": "Status in orchestration.owners."
+        },
+        {
+          "name": "season",
+          "type": "string",
+          "description": "Season in orchestration.owners."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in orchestration.owners."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in orchestration.owners."
+        }
       ]
     },
     {
-      "name": "impact.cluster_conversion", "title": "Cluster trial-to-adoption", "screen": "s7.1", "screens": ["s7.1", "ai.1"],
-      "source_system": "Farmer callbacks + sales attribution", "refresh": "weekly",
+      "name": "impact.cluster_conversion",
+      "title": "Cluster trial-to-adoption",
+      "screen": "s7.1",
+      "screens": [
+        "ai.1",
+        "s7.1"
+      ],
+      "source_system": "Farmer callbacks + sales attribution",
+      "refresh": "weekly",
       "description": "Trials, adopters and conversion rate per cluster.",
       "columns": [
-        { "name": "cluster", "type": "string" }, { "name": "trials", "type": "number" }, { "name": "rate", "type": "number", "description": "Conversion %" }, { "name": "adopters", "type": "number" },
-        { "name": "signal", "type": "string", "description": "ok | risk | moderate" }, { "name": "text", "type": "string" }
+        {
+          "name": "cluster",
+          "type": "string",
+          "description": "Cluster in impact.cluster_conversion."
+        },
+        {
+          "name": "trials",
+          "type": "number",
+          "description": "Trials in impact.cluster_conversion."
+        },
+        {
+          "name": "rate",
+          "type": "number",
+          "description": "Rate in impact.cluster_conversion."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in impact.cluster_conversion."
+        },
+        {
+          "name": "signal",
+          "type": "string",
+          "description": "Signal in impact.cluster_conversion."
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "description": "Text in impact.cluster_conversion."
+        },
+        {
+          "name": "season",
+          "type": "string",
+          "description": "Season in impact.cluster_conversion."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in impact.cluster_conversion."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in impact.cluster_conversion."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in impact.cluster_conversion."
+        }
       ]
     },
     {
-      "name": "impact.channel_effectiveness", "title": "Channel effectiveness", "screen": "s7.1", "screens": ["s7.1", "ai.1"],
-      "source_system": "Activity reports + callbacks", "refresh": "weekly",
+      "name": "impact.channel_effectiveness",
+      "title": "Channel effectiveness",
+      "screen": "s7.1",
+      "screens": [
+        "ai.1",
+        "s7.1"
+      ],
+      "source_system": "Activity reports + callbacks",
+      "refresh": "weekly",
       "description": "Farmers reached, trials, conversion and cost-effectiveness index by channel.",
       "columns": [
-        { "name": "channel", "type": "string" }, { "name": "reached", "type": "number" }, { "name": "trials", "type": "number" }, { "name": "conv", "type": "string" },
-        { "name": "cei", "type": "string" }, { "name": "rel", "type": "string", "description": "Highest | High | Medium" }
+        {
+          "name": "channel",
+          "type": "string",
+          "description": "Channel in impact.channel_effectiveness."
+        },
+        {
+          "name": "reached",
+          "type": "number",
+          "description": "Reached in impact.channel_effectiveness."
+        },
+        {
+          "name": "trials",
+          "type": "number",
+          "description": "Trials in impact.channel_effectiveness."
+        },
+        {
+          "name": "conv",
+          "type": "string",
+          "description": "Conv in impact.channel_effectiveness."
+        },
+        {
+          "name": "cei",
+          "type": "string",
+          "description": "Cei in impact.channel_effectiveness."
+        },
+        {
+          "name": "rel",
+          "type": "string",
+          "description": "Rel in impact.channel_effectiveness."
+        },
+        {
+          "name": "season",
+          "type": "string",
+          "description": "Season in impact.channel_effectiveness."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in impact.channel_effectiveness."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in impact.channel_effectiveness."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in impact.channel_effectiveness."
+        }
       ]
     },
     {
-      "name": "impact.geo_performance", "title": "Geography performance vs. average", "screen": "s7.2", "screens": ["s7.2", "ai.1"],
-      "source_system": "Farmer callbacks + sales attribution", "refresh": "weekly",
+      "name": "impact.geo_performance",
+      "title": "Geography performance vs. average",
+      "screen": "s7.2",
+      "screens": [
+        "ai.1",
+        "s7.2"
+      ],
+      "source_system": "Farmer callbacks + sales attribution",
+      "refresh": "weekly",
       "description": "Cluster conversion compared with the campaign average.",
       "columns": [
-        { "name": "cluster", "type": "string" }, { "name": "trials", "type": "number" }, { "name": "adopters", "type": "number" }, { "name": "conv", "type": "string" },
-        { "name": "vs", "type": "string" }, { "name": "dir", "type": "string", "description": "up | down | flat | none" }
+        {
+          "name": "cluster",
+          "type": "string",
+          "description": "Cluster in impact.geo_performance."
+        },
+        {
+          "name": "trials",
+          "type": "number",
+          "description": "Trials in impact.geo_performance."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in impact.geo_performance."
+        },
+        {
+          "name": "conv",
+          "type": "string",
+          "description": "Conv in impact.geo_performance."
+        },
+        {
+          "name": "vs",
+          "type": "string",
+          "description": "Vs in impact.geo_performance."
+        },
+        {
+          "name": "dir",
+          "type": "string",
+          "description": "Dir in impact.geo_performance."
+        },
+        {
+          "name": "season",
+          "type": "string",
+          "description": "Season in impact.geo_performance."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in impact.geo_performance."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in impact.geo_performance."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in impact.geo_performance."
+        }
+      ]
+    },
+    {
+      "name": "bh.region_performance",
+      "title": "Bh Region Performance",
+      "screen": "bh.3",
+      "screens": [
+        "bh.3",
+        "bh.3a"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Business Head regional performance and reconciled commercial measures.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in bh.region_performance."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in bh.region_performance."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in bh.region_performance."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in bh.region_performance."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in bh.region_performance."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in bh.region_performance."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in bh.region_performance."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in bh.region_performance."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in bh.region_performance."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in bh.region_performance."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in bh.region_performance."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in bh.region_performance."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in bh.region_performance."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in bh.region_performance."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in bh.region_performance."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in bh.region_performance."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in bh.region_performance."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in bh.region_performance."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in bh.region_performance."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in bh.region_performance."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in bh.region_performance."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in bh.region_performance."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in bh.region_performance."
+        }
+      ]
+    },
+    {
+      "name": "bh.investment_roi",
+      "title": "Bh Investment Roi",
+      "screen": "bh.5",
+      "screens": [
+        "bh.5",
+        "bh.5a"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Business Head investment and pending-attribution return metrics.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in bh.investment_roi."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in bh.investment_roi."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in bh.investment_roi."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in bh.investment_roi."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in bh.investment_roi."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in bh.investment_roi."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in bh.investment_roi."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in bh.investment_roi."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in bh.investment_roi."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in bh.investment_roi."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in bh.investment_roi."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in bh.investment_roi."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in bh.investment_roi."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in bh.investment_roi."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in bh.investment_roi."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in bh.investment_roi."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in bh.investment_roi."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in bh.investment_roi."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in bh.investment_roi."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in bh.investment_roi."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in bh.investment_roi."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in bh.investment_roi."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in bh.investment_roi."
+        }
+      ]
+    },
+    {
+      "name": "bh.theme_pipeline",
+      "title": "Bh Theme Pipeline",
+      "screen": "bh.7",
+      "screens": [
+        "bh.7",
+        "bh.7a"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Business Head strategic theme pipeline by market.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in bh.theme_pipeline."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in bh.theme_pipeline."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in bh.theme_pipeline."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in bh.theme_pipeline."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in bh.theme_pipeline."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in bh.theme_pipeline."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in bh.theme_pipeline."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in bh.theme_pipeline."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in bh.theme_pipeline."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in bh.theme_pipeline."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in bh.theme_pipeline."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in bh.theme_pipeline."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in bh.theme_pipeline."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in bh.theme_pipeline."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in bh.theme_pipeline."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in bh.theme_pipeline."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in bh.theme_pipeline."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in bh.theme_pipeline."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in bh.theme_pipeline."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in bh.theme_pipeline."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in bh.theme_pipeline."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in bh.theme_pipeline."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in bh.theme_pipeline."
+        }
+      ]
+    },
+    {
+      "name": "bh.interventions",
+      "title": "Bh Interventions",
+      "screen": "bh.9",
+      "screens": [
+        "bh.9"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Business Head intervention and activity status.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in bh.interventions."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in bh.interventions."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in bh.interventions."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in bh.interventions."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in bh.interventions."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in bh.interventions."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in bh.interventions."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in bh.interventions."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in bh.interventions."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in bh.interventions."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in bh.interventions."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in bh.interventions."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in bh.interventions."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in bh.interventions."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in bh.interventions."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in bh.interventions."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in bh.interventions."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in bh.interventions."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in bh.interventions."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in bh.interventions."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in bh.interventions."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in bh.interventions."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in bh.interventions."
+        }
+      ]
+    },
+    {
+      "name": "mh.regional_opportunity",
+      "title": "Mh Regional Opportunity",
+      "screen": "mh.1",
+      "screens": [
+        "mh.1",
+        "mh.2"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Marketing Head regional opportunity and penetration.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in mh.regional_opportunity."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in mh.regional_opportunity."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in mh.regional_opportunity."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in mh.regional_opportunity."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in mh.regional_opportunity."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in mh.regional_opportunity."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in mh.regional_opportunity."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in mh.regional_opportunity."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in mh.regional_opportunity."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in mh.regional_opportunity."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in mh.regional_opportunity."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in mh.regional_opportunity."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in mh.regional_opportunity."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in mh.regional_opportunity."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in mh.regional_opportunity."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in mh.regional_opportunity."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in mh.regional_opportunity."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in mh.regional_opportunity."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in mh.regional_opportunity."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in mh.regional_opportunity."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in mh.regional_opportunity."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in mh.regional_opportunity."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in mh.regional_opportunity."
+        }
+      ]
+    },
+    {
+      "name": "mh.plan_alignment",
+      "title": "Mh Plan Alignment",
+      "screen": "mh.3",
+      "screens": [
+        "mh.3"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Marketing Head alignment to business and crop plans.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in mh.plan_alignment."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in mh.plan_alignment."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in mh.plan_alignment."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in mh.plan_alignment."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in mh.plan_alignment."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in mh.plan_alignment."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in mh.plan_alignment."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in mh.plan_alignment."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in mh.plan_alignment."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in mh.plan_alignment."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in mh.plan_alignment."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in mh.plan_alignment."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in mh.plan_alignment."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in mh.plan_alignment."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in mh.plan_alignment."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in mh.plan_alignment."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in mh.plan_alignment."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in mh.plan_alignment."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in mh.plan_alignment."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in mh.plan_alignment."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in mh.plan_alignment."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in mh.plan_alignment."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in mh.plan_alignment."
+        }
+      ]
+    },
+    {
+      "name": "mh.campaign_mix_calendar",
+      "title": "Mh Campaign Mix Calendar",
+      "screen": "mh.6",
+      "screens": [
+        "mh.6"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Marketing Head campaign mix and seasonal calendar.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in mh.campaign_mix_calendar."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in mh.campaign_mix_calendar."
+        }
+      ]
+    },
+    {
+      "name": "mh.approvals",
+      "title": "Mh Approvals",
+      "screen": "mh.7",
+      "screens": [
+        "mh.7",
+        "mh.8"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Marketing Head campaign approval status.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in mh.approvals."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in mh.approvals."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in mh.approvals."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in mh.approvals."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in mh.approvals."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in mh.approvals."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in mh.approvals."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in mh.approvals."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in mh.approvals."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in mh.approvals."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in mh.approvals."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in mh.approvals."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in mh.approvals."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in mh.approvals."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in mh.approvals."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in mh.approvals."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in mh.approvals."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in mh.approvals."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in mh.approvals."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in mh.approvals."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in mh.approvals."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in mh.approvals."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in mh.approvals."
+        }
+      ]
+    },
+    {
+      "name": "pm.portfolio_abp",
+      "title": "Pm Portfolio Abp",
+      "screen": "pm.1",
+      "screens": [
+        "pm.1"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Zonal Manager portfolio ABP and sales plan.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in pm.portfolio_abp."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in pm.portfolio_abp."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in pm.portfolio_abp."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in pm.portfolio_abp."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in pm.portfolio_abp."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in pm.portfolio_abp."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in pm.portfolio_abp."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in pm.portfolio_abp."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in pm.portfolio_abp."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in pm.portfolio_abp."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in pm.portfolio_abp."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in pm.portfolio_abp."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in pm.portfolio_abp."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in pm.portfolio_abp."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in pm.portfolio_abp."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in pm.portfolio_abp."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in pm.portfolio_abp."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in pm.portfolio_abp."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in pm.portfolio_abp."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in pm.portfolio_abp."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in pm.portfolio_abp."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in pm.portfolio_abp."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in pm.portfolio_abp."
+        }
+      ]
+    },
+    {
+      "name": "pm.territory_plans",
+      "title": "Pm Territory Plans",
+      "screen": "pm.2",
+      "screens": [
+        "pm.2",
+        "pm.3"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Zonal Manager territory plan summary.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in pm.territory_plans."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in pm.territory_plans."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in pm.territory_plans."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in pm.territory_plans."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in pm.territory_plans."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in pm.territory_plans."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in pm.territory_plans."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in pm.territory_plans."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in pm.territory_plans."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in pm.territory_plans."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in pm.territory_plans."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in pm.territory_plans."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in pm.territory_plans."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in pm.territory_plans."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in pm.territory_plans."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in pm.territory_plans."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in pm.territory_plans."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in pm.territory_plans."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in pm.territory_plans."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in pm.territory_plans."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in pm.territory_plans."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in pm.territory_plans."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in pm.territory_plans."
+        }
+      ]
+    },
+    {
+      "name": "pm.activity_approvals",
+      "title": "Pm Activity Approvals",
+      "screen": "pm.7",
+      "screens": [
+        "pm.7"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Zonal Manager activity approval queue.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in pm.activity_approvals."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in pm.activity_approvals."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in pm.activity_approvals."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in pm.activity_approvals."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in pm.activity_approvals."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in pm.activity_approvals."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in pm.activity_approvals."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in pm.activity_approvals."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in pm.activity_approvals."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in pm.activity_approvals."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in pm.activity_approvals."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in pm.activity_approvals."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in pm.activity_approvals."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in pm.activity_approvals."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in pm.activity_approvals."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in pm.activity_approvals."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in pm.activity_approvals."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in pm.activity_approvals."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in pm.activity_approvals."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in pm.activity_approvals."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in pm.activity_approvals."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in pm.activity_approvals."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in pm.activity_approvals."
+        }
+      ]
+    },
+    {
+      "name": "pm.impact_uplift",
+      "title": "Pm Impact Uplift",
+      "screen": "pm.9",
+      "screens": [
+        "pm.9"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Zonal Manager measured campaign impact and attribution status.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in pm.impact_uplift."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in pm.impact_uplift."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in pm.impact_uplift."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in pm.impact_uplift."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in pm.impact_uplift."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in pm.impact_uplift."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in pm.impact_uplift."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in pm.impact_uplift."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in pm.impact_uplift."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in pm.impact_uplift."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in pm.impact_uplift."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in pm.impact_uplift."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in pm.impact_uplift."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in pm.impact_uplift."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in pm.impact_uplift."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in pm.impact_uplift."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in pm.impact_uplift."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in pm.impact_uplift."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in pm.impact_uplift."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in pm.impact_uplift."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in pm.impact_uplift."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in pm.impact_uplift."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in pm.impact_uplift."
+        }
+      ]
+    },
+    {
+      "name": "tm.territory_plan",
+      "title": "Tm Territory Plan",
+      "screen": "tm.1",
+      "screens": [
+        "tm.1"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Field Sales Manager territory plan and targets.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in tm.territory_plan."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in tm.territory_plan."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in tm.territory_plan."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in tm.territory_plan."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in tm.territory_plan."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in tm.territory_plan."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in tm.territory_plan."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in tm.territory_plan."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in tm.territory_plan."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in tm.territory_plan."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in tm.territory_plan."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in tm.territory_plan."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in tm.territory_plan."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in tm.territory_plan."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in tm.territory_plan."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in tm.territory_plan."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in tm.territory_plan."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in tm.territory_plan."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in tm.territory_plan."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in tm.territory_plan."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in tm.territory_plan."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in tm.territory_plan."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in tm.territory_plan."
+        }
+      ]
+    },
+    {
+      "name": "tm.outlets",
+      "title": "Tm Outlets",
+      "screen": "tm.2",
+      "screens": [
+        "tm.2"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Territory retailer and dealer coverage.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in tm.outlets."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in tm.outlets."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in tm.outlets."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in tm.outlets."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in tm.outlets."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in tm.outlets."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in tm.outlets."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in tm.outlets."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in tm.outlets."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in tm.outlets."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in tm.outlets."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in tm.outlets."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in tm.outlets."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in tm.outlets."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in tm.outlets."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in tm.outlets."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in tm.outlets."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in tm.outlets."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in tm.outlets."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in tm.outlets."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in tm.outlets."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in tm.outlets."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in tm.outlets."
+        }
+      ]
+    },
+    {
+      "name": "tm.village_coverage",
+      "title": "Tm Village Coverage",
+      "screen": "tm.4",
+      "screens": [
+        "tm.4"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Field Sales Manager village coverage and adoption.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in tm.village_coverage."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in tm.village_coverage."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in tm.village_coverage."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in tm.village_coverage."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in tm.village_coverage."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in tm.village_coverage."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in tm.village_coverage."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in tm.village_coverage."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in tm.village_coverage."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in tm.village_coverage."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in tm.village_coverage."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in tm.village_coverage."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in tm.village_coverage."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in tm.village_coverage."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in tm.village_coverage."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in tm.village_coverage."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in tm.village_coverage."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in tm.village_coverage."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in tm.village_coverage."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in tm.village_coverage."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in tm.village_coverage."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in tm.village_coverage."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in tm.village_coverage."
+        }
+      ]
+    },
+    {
+      "name": "tm.campaign_activities",
+      "title": "Tm Campaign Activities",
+      "screen": "cw.2",
+      "screens": [
+        "cw.2"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Editable activity lines for campaign budget calculations.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in tm.campaign_activities."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in tm.campaign_activities."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in tm.campaign_activities."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in tm.campaign_activities."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in tm.campaign_activities."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in tm.campaign_activities."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in tm.campaign_activities."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in tm.campaign_activities."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in tm.campaign_activities."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in tm.campaign_activities."
+        },
+        {
+          "name": "activity",
+          "type": "string",
+          "description": "Activity in tm.campaign_activities."
+        },
+        {
+          "name": "units",
+          "type": "number",
+          "description": "Units in tm.campaign_activities."
+        },
+        {
+          "name": "unit_label",
+          "type": "string",
+          "description": "Unit label in tm.campaign_activities."
+        },
+        {
+          "name": "village_channel",
+          "type": "string",
+          "description": "Village channel in tm.campaign_activities."
+        },
+        {
+          "name": "timing",
+          "type": "string",
+          "description": "Timing in tm.campaign_activities."
+        },
+        {
+          "name": "assigned_owner",
+          "type": "string",
+          "description": "Assigned owner in tm.campaign_activities."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in tm.campaign_activities."
+        }
+      ]
+    },
+    {
+      "name": "tm.execution_weekly",
+      "title": "Tm Execution Weekly",
+      "screen": "tm.ex1",
+      "screens": [
+        "tm.ex1"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Weekly campaign execution tracking.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in tm.execution_weekly."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in tm.execution_weekly."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in tm.execution_weekly."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in tm.execution_weekly."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in tm.execution_weekly."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in tm.execution_weekly."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in tm.execution_weekly."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in tm.execution_weekly."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in tm.execution_weekly."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in tm.execution_weekly."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in tm.execution_weekly."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in tm.execution_weekly."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in tm.execution_weekly."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in tm.execution_weekly."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in tm.execution_weekly."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in tm.execution_weekly."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in tm.execution_weekly."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in tm.execution_weekly."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in tm.execution_weekly."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in tm.execution_weekly."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in tm.execution_weekly."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in tm.execution_weekly."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in tm.execution_weekly."
+        }
+      ]
+    },
+    {
+      "name": "tm.impact",
+      "title": "Tm Impact",
+      "screen": "tm.ex2",
+      "screens": [
+        "tm.ex2"
+      ],
+      "source_system": "CampaignIQ canonical synthetic workbook",
+      "refresh": "daily",
+      "description": "Territory campaign impact and adoption results.",
+      "columns": [
+        {
+          "name": "region",
+          "type": "string",
+          "description": "Region in tm.impact."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "description": "State in tm.impact."
+        },
+        {
+          "name": "district",
+          "type": "string",
+          "description": "District in tm.impact."
+        },
+        {
+          "name": "crop",
+          "type": "string",
+          "description": "Crop in tm.impact."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "description": "Product in tm.impact."
+        },
+        {
+          "name": "product_category",
+          "type": "string",
+          "description": "Product category in tm.impact."
+        },
+        {
+          "name": "theme",
+          "type": "string",
+          "description": "Theme in tm.impact."
+        },
+        {
+          "name": "campaign_type",
+          "type": "string",
+          "description": "Campaign type in tm.impact."
+        },
+        {
+          "name": "period",
+          "type": "string",
+          "description": "Period in tm.impact."
+        },
+        {
+          "name": "fy",
+          "type": "string",
+          "description": "Fy in tm.impact."
+        },
+        {
+          "name": "quarter",
+          "type": "number",
+          "description": "Quarter in tm.impact."
+        },
+        {
+          "name": "investment_lakh",
+          "type": "number",
+          "description": "Investment lakh in tm.impact."
+        },
+        {
+          "name": "adopters",
+          "type": "number",
+          "description": "Adopters in tm.impact."
+        },
+        {
+          "name": "planned_pct",
+          "type": "number",
+          "description": "Planned pct in tm.impact."
+        },
+        {
+          "name": "observed_pct",
+          "type": "number",
+          "description": "Observed pct in tm.impact."
+        },
+        {
+          "name": "actual_sales_lakh",
+          "type": "number",
+          "description": "Actual sales lakh in tm.impact."
+        },
+        {
+          "name": "abp_lakh",
+          "type": "number",
+          "description": "Abp lakh in tm.impact."
+        },
+        {
+          "name": "achievement_pct",
+          "type": "number",
+          "description": "Achievement pct in tm.impact."
+        },
+        {
+          "name": "campaign",
+          "type": "string",
+          "description": "Campaign in tm.impact."
+        },
+        {
+          "name": "roi",
+          "type": "number",
+          "description": "Roi in tm.impact."
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "description": "Owner in tm.impact."
+        },
+        {
+          "name": "campaign_count",
+          "type": "number",
+          "description": "Campaign count in tm.impact."
+        },
+        {
+          "name": "territory",
+          "type": "string",
+          "description": "Territory in tm.impact."
+        }
       ]
     }
   ]

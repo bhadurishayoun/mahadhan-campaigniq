@@ -44,17 +44,19 @@
   ],
   "seasons": [
     {
-      "id": "late-rabi-2026-27",
-      "name": "Late Rabi 2026-27",
-      "current": true
+      "id": "rabi-2025-26",
+      "name": "Rabi 2025-26",
+      "current": false
     },
     {
       "id": "kharif-2026",
-      "name": "Kharif 2026"
+      "name": "Kharif 2026",
+      "current": false
     },
     {
-      "id": "rabi-2025-26",
-      "name": "Rabi 2025-26"
+      "id": "late-rabi-2026-27",
+      "name": "Late Rabi 2026-27",
+      "current": true
     }
   ],
   "campaign_types": [
@@ -73,6 +75,1875 @@
     {
       "id": "channel",
       "name": "Channel"
+    }
+  ],
+  "financial_years": [
+    {
+      "id": "fy-2024-25",
+      "name": "FY 2024-25"
+    },
+    {
+      "id": "fy-2025-26",
+      "name": "FY 2025-26"
+    },
+    {
+      "id": "fy-2026-27",
+      "name": "FY 2026-27"
+    }
+  ],
+  "crop_seasons": [
+    {
+      "id": "kharif",
+      "name": "Kharif"
+    },
+    {
+      "id": "rabi",
+      "name": "Rabi"
+    },
+    {
+      "id": "late-rabi",
+      "name": "Late Rabi"
+    }
+  ],
+  "themes": [
+    {
+      "id": "conversion-adoption",
+      "name": "Conversion & Adoption"
+    },
+    {
+      "id": "retailer-enablement",
+      "name": "Retailer Enablement"
+    },
+    {
+      "id": "trial-follow-up",
+      "name": "Trial & Follow-up"
+    },
+    {
+      "id": "crop-nutrition-awareness",
+      "name": "Crop Nutrition Awareness"
+    }
+  ],
+  "campaign_objectives": [
+    {
+      "id": "channel-readiness",
+      "name": "Channel readiness",
+      "theme": "Retailer Enablement"
+    },
+    {
+      "id": "competitive-conversion",
+      "name": "Competitive conversion",
+      "theme": "Conversion & Adoption"
+    },
+    {
+      "id": "loyalty-&-visibility",
+      "name": "Loyalty & visibility",
+      "theme": "Retailer Enablement"
+    },
+    {
+      "id": "new-market-adoption",
+      "name": "New-market adoption",
+      "theme": "Conversion & Adoption"
+    },
+    {
+      "id": "repeat-adoption",
+      "name": "Repeat adoption",
+      "theme": "Conversion & Adoption"
+    },
+    {
+      "id": "stage-based-education",
+      "name": "Stage-based education",
+      "theme": "Crop Nutrition Awareness"
+    },
+    {
+      "id": "underperforming-territories",
+      "name": "Underperforming territories",
+      "theme": "Trial & Follow-up"
+    }
+  ],
+  "activity_costs": [
+    {
+      "activity": "demonstration",
+      "base_cost_lakh_per_unit": 1.1
+    },
+    {
+      "activity": "retailer activation",
+      "base_cost_lakh_per_unit": 0.25
+    },
+    {
+      "activity": "farmer meeting",
+      "base_cost_lakh_per_unit": 0.2
+    },
+    {
+      "activity": "digital advisory",
+      "base_cost_lakh_per_unit": 0.3
+    },
+    {
+      "activity": "follow-up",
+      "base_cost_lakh_per_unit": 0.15
+    },
+    {
+      "activity": "default",
+      "base_cost_lakh_per_unit": 0.2
+    }
+  ],
+  "people": [
+    {
+      "id": "1",
+      "name": "Kailas More",
+      "role": "Zonal Manager",
+      "region": null,
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "2",
+      "name": "Nitin Salunkhe",
+      "role": "Regional Manager",
+      "region": "North Maharashtra",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "3",
+      "name": "Balasaheb Chavan",
+      "role": "Field Sales Manager",
+      "region": "North Maharashtra",
+      "territory": "Nashik",
+      "mu_id": null
+    },
+    {
+      "id": "4",
+      "name": "Vitthal Gaikwad",
+      "role": "Regional Manager",
+      "region": "Marathwada",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "5",
+      "name": "Dattatray Aher",
+      "role": "Field Sales Manager",
+      "region": "Marathwada",
+      "territory": "Jalna",
+      "mu_id": null
+    },
+    {
+      "id": "6",
+      "name": "Sunita Patil",
+      "role": "Field Sales Manager",
+      "region": "North Maharashtra",
+      "territory": "Dhule",
+      "mu_id": null
+    },
+    {
+      "id": "7",
+      "name": "Nitin More",
+      "role": "Field Sales Manager",
+      "region": "North Maharashtra",
+      "territory": "Jalgaon",
+      "mu_id": null
+    },
+    {
+      "id": "8",
+      "name": "Prakash Thorat",
+      "role": "Regional Manager",
+      "region": "Western Maharashtra",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "9",
+      "name": "Kailas Wagh",
+      "role": "Field Sales Manager",
+      "region": "Western Maharashtra",
+      "territory": "Ahilyanagar",
+      "mu_id": null
+    },
+    {
+      "id": "10",
+      "name": "Suresh Thorat",
+      "role": "Field Sales Manager",
+      "region": "Western Maharashtra",
+      "territory": "Pune",
+      "mu_id": null
+    },
+    {
+      "id": "11",
+      "name": "Sanjay Kulkarni",
+      "role": "Field Sales Manager",
+      "region": "Western Maharashtra",
+      "territory": "Solapur",
+      "mu_id": null
+    },
+    {
+      "id": "12",
+      "name": "Yogesh Kadam",
+      "role": "Field Sales Manager",
+      "region": "Western Maharashtra",
+      "territory": "Sangli",
+      "mu_id": null
+    },
+    {
+      "id": "13",
+      "name": "Vitthal Jadhav",
+      "role": "Field Sales Manager",
+      "region": "Western Maharashtra",
+      "territory": "Kolhapur",
+      "mu_id": null
+    },
+    {
+      "id": "14",
+      "name": "Suresh Chavan",
+      "role": "Field Sales Manager",
+      "region": "Western Maharashtra",
+      "territory": "Satara",
+      "mu_id": null
+    },
+    {
+      "id": "15",
+      "name": "Lata Aher",
+      "role": "Field Sales Manager",
+      "region": "Marathwada",
+      "territory": "Chh. Sambhajinagar",
+      "mu_id": null
+    },
+    {
+      "id": "16",
+      "name": "Nitin Aher",
+      "role": "Field Sales Manager",
+      "region": "Marathwada",
+      "territory": "Beed",
+      "mu_id": null
+    },
+    {
+      "id": "17",
+      "name": "Sanjay Sangle",
+      "role": "Field Sales Manager",
+      "region": "Marathwada",
+      "territory": "Latur",
+      "mu_id": null
+    },
+    {
+      "id": "18",
+      "name": "Sunil Kulkarni",
+      "role": "Zonal Manager",
+      "region": null,
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "19",
+      "name": "Shobha Pujari",
+      "role": "Regional Manager",
+      "region": "North Karnataka",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "20",
+      "name": "Mahantesh Hosamani",
+      "role": "Field Sales Manager",
+      "region": "North Karnataka",
+      "territory": "Belagavi",
+      "mu_id": null
+    },
+    {
+      "id": "21",
+      "name": "Shankar Hosamani",
+      "role": "Field Sales Manager",
+      "region": "North Karnataka",
+      "territory": "Vijayapura",
+      "mu_id": null
+    },
+    {
+      "id": "22",
+      "name": "Girish Hosamani",
+      "role": "Field Sales Manager",
+      "region": "North Karnataka",
+      "territory": "Bagalkot",
+      "mu_id": null
+    },
+    {
+      "id": "23",
+      "name": "Shobha Gowda",
+      "role": "Regional Manager",
+      "region": "South Karnataka",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "24",
+      "name": "Mallikarjun Naik",
+      "role": "Field Sales Manager",
+      "region": "South Karnataka",
+      "territory": "Mandya",
+      "mu_id": null
+    },
+    {
+      "id": "25",
+      "name": "Srinivas Goud",
+      "role": "Regional Manager",
+      "region": "Telangana",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "26",
+      "name": "Raju Goud",
+      "role": "Field Sales Manager",
+      "region": "Telangana",
+      "territory": "Adilabad",
+      "mu_id": null
+    },
+    {
+      "id": "27",
+      "name": "Suresh Rao",
+      "role": "Regional Manager",
+      "region": "Rayalaseema",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "28",
+      "name": "Venkatesh Yadav",
+      "role": "Field Sales Manager",
+      "region": "Rayalaseema",
+      "territory": "Anantapur",
+      "mu_id": null
+    },
+    {
+      "id": "29",
+      "name": "Vallabhbhai Makwana",
+      "role": "Regional Manager",
+      "region": "Saurashtra",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "30",
+      "name": "Mahesh Solanki",
+      "role": "Field Sales Manager",
+      "region": "Saurashtra",
+      "territory": "Bhavnagar",
+      "mu_id": null
+    },
+    {
+      "id": "31",
+      "name": "Nitin Bhosale",
+      "role": "Regional Manager",
+      "region": "Malwa",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "32",
+      "name": "Pandurang Sonawane",
+      "role": "Field Sales Manager",
+      "region": "Malwa",
+      "territory": "Indore",
+      "mu_id": null
+    },
+    {
+      "id": "33",
+      "name": "Sachin Chavan",
+      "role": "Regional Manager",
+      "region": "Jaipur Division",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "34",
+      "name": "Sanjay Patil",
+      "role": "Field Sales Manager",
+      "region": "Jaipur Division",
+      "territory": "Jaipur",
+      "mu_id": null
+    },
+    {
+      "id": "35",
+      "name": "Srinivas Rao",
+      "role": "Regional Manager",
+      "region": "Kongu Nadu",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "36",
+      "name": "Anjaneyulu Yadav",
+      "role": "Field Sales Manager",
+      "region": "Kongu Nadu",
+      "territory": "Coimbatore",
+      "mu_id": null
+    },
+    {
+      "id": "37",
+      "name": "Sachin Deshmukh",
+      "role": "Zonal Manager",
+      "region": null,
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "38",
+      "name": "Santosh Salunkhe",
+      "role": "Regional Manager",
+      "region": "Awadh",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "39",
+      "name": "Anil Darade",
+      "role": "Field Sales Manager",
+      "region": "Awadh",
+      "territory": "Lucknow",
+      "mu_id": null
+    },
+    {
+      "id": "40",
+      "name": "Ramesh More",
+      "role": "Regional Manager",
+      "region": "Central Punjab",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "41",
+      "name": "Vitthal Aher",
+      "role": "Field Sales Manager",
+      "region": "Central Punjab",
+      "territory": "Ludhiana",
+      "mu_id": null
+    },
+    {
+      "id": "42",
+      "name": "Nitin Gite",
+      "role": "Regional Manager",
+      "region": "Haryana",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "43",
+      "name": "Sunita Kulkarni",
+      "role": "Field Sales Manager",
+      "region": "Haryana",
+      "territory": "Karnal",
+      "mu_id": null
+    },
+    {
+      "id": "44",
+      "name": "Sharad Bhosale",
+      "role": "Zonal Manager",
+      "region": null,
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "45",
+      "name": "Santosh Pawar",
+      "role": "Regional Manager",
+      "region": "Coastal Odisha",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "46",
+      "name": "Dilip Chavan",
+      "role": "Field Sales Manager",
+      "region": "Coastal Odisha",
+      "territory": "Cuttack",
+      "mu_id": null
+    },
+    {
+      "id": "47",
+      "name": "Ganesh More",
+      "role": "Regional Manager",
+      "region": "Burdwan Division",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "48",
+      "name": "Sangita Kadam",
+      "role": "Field Sales Manager",
+      "region": "Burdwan Division",
+      "territory": "Hooghly",
+      "mu_id": null
+    },
+    {
+      "id": "49",
+      "name": "Suresh Gaikwad",
+      "role": "Regional Manager",
+      "region": "Patna Division",
+      "territory": null,
+      "mu_id": null
+    },
+    {
+      "id": "50",
+      "name": "Lata Bhosale",
+      "role": "Field Sales Manager",
+      "region": "Patna Division",
+      "territory": "Patna",
+      "mu_id": null
+    },
+    {
+      "id": "51",
+      "name": "Lata Thorat",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Nashik",
+      "mu_id": 1
+    },
+    {
+      "id": "52",
+      "name": "Sopan Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Nashik",
+      "mu_id": 2
+    },
+    {
+      "id": "53",
+      "name": "Sangita Gaikwad",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Nashik",
+      "mu_id": 3
+    },
+    {
+      "id": "54",
+      "name": "Kailas Kale",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Nashik",
+      "mu_id": 4
+    },
+    {
+      "id": "55",
+      "name": "Tukaram Kulkarni",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Nashik",
+      "mu_id": 5
+    },
+    {
+      "id": "56",
+      "name": "Kailas Jadhav",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Nashik",
+      "mu_id": 6
+    },
+    {
+      "id": "57",
+      "name": "Laxman Kulkarni",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Nashik",
+      "mu_id": 7
+    },
+    {
+      "id": "58",
+      "name": "Sopan Sangle",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Dhule",
+      "mu_id": 8
+    },
+    {
+      "id": "59",
+      "name": "Yogesh Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Jalgaon",
+      "mu_id": 9
+    },
+    {
+      "id": "60",
+      "name": "Dilip Gaikwad",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Nashik",
+      "mu_id": 10
+    },
+    {
+      "id": "61",
+      "name": "Tukaram Deshmukh",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Nashik",
+      "mu_id": 11
+    },
+    {
+      "id": "62",
+      "name": "Lata Sangle",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Jalna",
+      "mu_id": 12
+    },
+    {
+      "id": "63",
+      "name": "Laxman Darade",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Jalna",
+      "mu_id": 13
+    },
+    {
+      "id": "64",
+      "name": "Pandurang Thorat",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Jalna",
+      "mu_id": 14
+    },
+    {
+      "id": "65",
+      "name": "Kailas Jadhav",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Jalna",
+      "mu_id": 15
+    },
+    {
+      "id": "66",
+      "name": "Prakash Pawar",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Jalna",
+      "mu_id": 16
+    },
+    {
+      "id": "67",
+      "name": "Manisha Jadhav",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Jalna",
+      "mu_id": 16
+    },
+    {
+      "id": "68",
+      "name": "Kailas Bhosale",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Jalna",
+      "mu_id": 17
+    },
+    {
+      "id": "69",
+      "name": "Sanjay Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Jalna",
+      "mu_id": 18
+    },
+    {
+      "id": "70",
+      "name": "Dnyaneshwar Bhosale",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Jalna",
+      "mu_id": 18
+    },
+    {
+      "id": "71",
+      "name": "Rajendra Kulkarni",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Jalna",
+      "mu_id": 19
+    },
+    {
+      "id": "72",
+      "name": "Dnyaneshwar Shinde",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Jalna",
+      "mu_id": 19
+    },
+    {
+      "id": "73",
+      "name": "Sangita Kadam",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Dhule",
+      "mu_id": 20
+    },
+    {
+      "id": "74",
+      "name": "Dattatray Darade",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Dhule",
+      "mu_id": 21
+    },
+    {
+      "id": "75",
+      "name": "Madhukar Darade",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Dhule",
+      "mu_id": 22
+    },
+    {
+      "id": "76",
+      "name": "Anil Gite",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Jalgaon",
+      "mu_id": 23
+    },
+    {
+      "id": "77",
+      "name": "Nitin Gite",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Jalgaon",
+      "mu_id": 24
+    },
+    {
+      "id": "78",
+      "name": "Shivaji Gaikwad",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Jalgaon",
+      "mu_id": 24
+    },
+    {
+      "id": "79",
+      "name": "Sharad Aher",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Jalgaon",
+      "mu_id": 25
+    },
+    {
+      "id": "80",
+      "name": "Laxman Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Maharashtra",
+      "territory": "Jalgaon",
+      "mu_id": 26
+    },
+    {
+      "id": "81",
+      "name": "Tukaram More",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Ahilyanagar",
+      "mu_id": 27
+    },
+    {
+      "id": "82",
+      "name": "Sunil Salunkhe",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Ahilyanagar",
+      "mu_id": 28
+    },
+    {
+      "id": "83",
+      "name": "Dattatray Kale",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Ahilyanagar",
+      "mu_id": 29
+    },
+    {
+      "id": "84",
+      "name": "Dnyaneshwar Gite",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Ahilyanagar",
+      "mu_id": 30
+    },
+    {
+      "id": "85",
+      "name": "Sunita Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Ahilyanagar",
+      "mu_id": 31
+    },
+    {
+      "id": "86",
+      "name": "Anil Salunkhe",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Ahilyanagar",
+      "mu_id": 32
+    },
+    {
+      "id": "87",
+      "name": "Dilip Aher",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Ahilyanagar",
+      "mu_id": 32
+    },
+    {
+      "id": "88",
+      "name": "Sanjay Chavan",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Pune",
+      "mu_id": 33
+    },
+    {
+      "id": "89",
+      "name": "Rajendra Sangle",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Pune",
+      "mu_id": 33
+    },
+    {
+      "id": "90",
+      "name": "Madhukar Sonawane",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Pune",
+      "mu_id": 34
+    },
+    {
+      "id": "91",
+      "name": "Madhukar Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Pune",
+      "mu_id": 35
+    },
+    {
+      "id": "92",
+      "name": "Dnyaneshwar Salunkhe",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Pune",
+      "mu_id": 35
+    },
+    {
+      "id": "93",
+      "name": "Shivaji Pawar",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Pune",
+      "mu_id": 36
+    },
+    {
+      "id": "94",
+      "name": "Sopan More",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Pune",
+      "mu_id": 37
+    },
+    {
+      "id": "95",
+      "name": "Dnyaneshwar Darade",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Pune",
+      "mu_id": 38
+    },
+    {
+      "id": "96",
+      "name": "Sunita Shinde",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Pune",
+      "mu_id": 38
+    },
+    {
+      "id": "97",
+      "name": "Dattatray Shinde",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Solapur",
+      "mu_id": 39
+    },
+    {
+      "id": "98",
+      "name": "Laxman Shinde",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Solapur",
+      "mu_id": 40
+    },
+    {
+      "id": "99",
+      "name": "Mangesh Jadhav",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Solapur",
+      "mu_id": 41
+    },
+    {
+      "id": "100",
+      "name": "Yogesh Chavan",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Solapur",
+      "mu_id": 41
+    },
+    {
+      "id": "101",
+      "name": "Sunita Thorat",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Solapur",
+      "mu_id": 42
+    },
+    {
+      "id": "102",
+      "name": "Dnyaneshwar Sonawane",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Solapur",
+      "mu_id": 42
+    },
+    {
+      "id": "103",
+      "name": "Laxman Salunkhe",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Solapur",
+      "mu_id": 43
+    },
+    {
+      "id": "104",
+      "name": "Pandurang Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Sangli",
+      "mu_id": 44
+    },
+    {
+      "id": "105",
+      "name": "Laxman Thorat",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Sangli",
+      "mu_id": 45
+    },
+    {
+      "id": "106",
+      "name": "Yogesh Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Sangli",
+      "mu_id": 45
+    },
+    {
+      "id": "107",
+      "name": "Balasaheb Wagh",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Sangli",
+      "mu_id": 46
+    },
+    {
+      "id": "108",
+      "name": "Sanjay Salunkhe",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Sangli",
+      "mu_id": 47
+    },
+    {
+      "id": "109",
+      "name": "Dattatray Jadhav",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Sangli",
+      "mu_id": 47
+    },
+    {
+      "id": "110",
+      "name": "Rahul Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Sangli",
+      "mu_id": 48
+    },
+    {
+      "id": "111",
+      "name": "Bhausaheb Jadhav",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Kolhapur",
+      "mu_id": 49
+    },
+    {
+      "id": "112",
+      "name": "Prakash Salunkhe",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Kolhapur",
+      "mu_id": 49
+    },
+    {
+      "id": "113",
+      "name": "Lata Pawar",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Kolhapur",
+      "mu_id": 50
+    },
+    {
+      "id": "114",
+      "name": "Santosh Sonawane",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Kolhapur",
+      "mu_id": 51
+    },
+    {
+      "id": "115",
+      "name": "Shivaji More",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Kolhapur",
+      "mu_id": 51
+    },
+    {
+      "id": "116",
+      "name": "Rekha Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Kolhapur",
+      "mu_id": 52
+    },
+    {
+      "id": "117",
+      "name": "Ramesh Bhosale",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Kolhapur",
+      "mu_id": 52
+    },
+    {
+      "id": "118",
+      "name": "Kavita Chavan",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Satara",
+      "mu_id": 53
+    },
+    {
+      "id": "119",
+      "name": "Ashok Chavan",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Satara",
+      "mu_id": 54
+    },
+    {
+      "id": "120",
+      "name": "Dnyaneshwar Chavan",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Satara",
+      "mu_id": 55
+    },
+    {
+      "id": "121",
+      "name": "Kavita Bhosale",
+      "role": "MDO (Market Development Officer)",
+      "region": "Western Maharashtra",
+      "territory": "Satara",
+      "mu_id": 56
+    },
+    {
+      "id": "122",
+      "name": "Nitin Kale",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Chh. Sambhajinagar",
+      "mu_id": 57
+    },
+    {
+      "id": "123",
+      "name": "Tukaram Pawar",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Chh. Sambhajinagar",
+      "mu_id": 58
+    },
+    {
+      "id": "124",
+      "name": "Sanjay Darade",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Chh. Sambhajinagar",
+      "mu_id": 58
+    },
+    {
+      "id": "125",
+      "name": "Sopan Kadam",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Chh. Sambhajinagar",
+      "mu_id": 59
+    },
+    {
+      "id": "126",
+      "name": "Rekha Kulkarni",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Chh. Sambhajinagar",
+      "mu_id": 59
+    },
+    {
+      "id": "127",
+      "name": "Madhukar Kale",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Chh. Sambhajinagar",
+      "mu_id": 60
+    },
+    {
+      "id": "128",
+      "name": "Sopan Wagh",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Chh. Sambhajinagar",
+      "mu_id": 60
+    },
+    {
+      "id": "129",
+      "name": "Sharad Sangle",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Chh. Sambhajinagar",
+      "mu_id": 61
+    },
+    {
+      "id": "130",
+      "name": "Sanjay Shinde",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Beed",
+      "mu_id": 62
+    },
+    {
+      "id": "131",
+      "name": "Rekha Thorat",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Beed",
+      "mu_id": 62
+    },
+    {
+      "id": "132",
+      "name": "Pandurang Aher",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Beed",
+      "mu_id": 63
+    },
+    {
+      "id": "133",
+      "name": "Dattatray Gaikwad",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Beed",
+      "mu_id": 64
+    },
+    {
+      "id": "134",
+      "name": "Prakash Kadam",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Beed",
+      "mu_id": 65
+    },
+    {
+      "id": "135",
+      "name": "Vijay Darade",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Beed",
+      "mu_id": 66
+    },
+    {
+      "id": "136",
+      "name": "Suresh Salunkhe",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Latur",
+      "mu_id": 67
+    },
+    {
+      "id": "137",
+      "name": "Sangita Chavan",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Latur",
+      "mu_id": 67
+    },
+    {
+      "id": "138",
+      "name": "Kailas Thorat",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Latur",
+      "mu_id": 68
+    },
+    {
+      "id": "139",
+      "name": "Yogesh Thorat",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Latur",
+      "mu_id": 69
+    },
+    {
+      "id": "140",
+      "name": "Kavita Kadam",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Latur",
+      "mu_id": 69
+    },
+    {
+      "id": "141",
+      "name": "Bhausaheb Sangle",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Latur",
+      "mu_id": 70
+    },
+    {
+      "id": "142",
+      "name": "Ganesh Darade",
+      "role": "MDO (Market Development Officer)",
+      "region": "Marathwada",
+      "territory": "Latur",
+      "mu_id": 70
+    },
+    {
+      "id": "143",
+      "name": "Prakash Gowda",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Belagavi",
+      "mu_id": 71
+    },
+    {
+      "id": "144",
+      "name": "Channappa Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Belagavi",
+      "mu_id": 72
+    },
+    {
+      "id": "145",
+      "name": "Prakash Naik",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Belagavi",
+      "mu_id": 72
+    },
+    {
+      "id": "146",
+      "name": "Shankar Pujari",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Belagavi",
+      "mu_id": 73
+    },
+    {
+      "id": "147",
+      "name": "Shobha Pujari",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Belagavi",
+      "mu_id": 74
+    },
+    {
+      "id": "148",
+      "name": "Siddappa Hosamani",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Belagavi",
+      "mu_id": 75
+    },
+    {
+      "id": "149",
+      "name": "Shobha Hiremath",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Belagavi",
+      "mu_id": 75
+    },
+    {
+      "id": "150",
+      "name": "Shivanand Hosamani",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Vijayapura",
+      "mu_id": 76
+    },
+    {
+      "id": "151",
+      "name": "Prakash Gowda",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Vijayapura",
+      "mu_id": 77
+    },
+    {
+      "id": "152",
+      "name": "Savitri Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Vijayapura",
+      "mu_id": 77
+    },
+    {
+      "id": "153",
+      "name": "Prakash Biradar",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Vijayapura",
+      "mu_id": 78
+    },
+    {
+      "id": "154",
+      "name": "Mahantesh Biradar",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Vijayapura",
+      "mu_id": 78
+    },
+    {
+      "id": "155",
+      "name": "Shobha Naik",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Vijayapura",
+      "mu_id": 79
+    },
+    {
+      "id": "156",
+      "name": "Ramappa Desai",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Vijayapura",
+      "mu_id": 79
+    },
+    {
+      "id": "157",
+      "name": "Mahantesh Gowda",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Bagalkot",
+      "mu_id": 80
+    },
+    {
+      "id": "158",
+      "name": "Shivanand Naik",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Bagalkot",
+      "mu_id": 80
+    },
+    {
+      "id": "159",
+      "name": "Girish Desai",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Bagalkot",
+      "mu_id": 81
+    },
+    {
+      "id": "160",
+      "name": "Ramappa Hiremath",
+      "role": "MDO (Market Development Officer)",
+      "region": "North Karnataka",
+      "territory": "Bagalkot",
+      "mu_id": 82
+    },
+    {
+      "id": "161",
+      "name": "Siddappa Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "South Karnataka",
+      "territory": "Mandya",
+      "mu_id": 83
+    },
+    {
+      "id": "162",
+      "name": "Mahantesh Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "South Karnataka",
+      "territory": "Mandya",
+      "mu_id": 83
+    },
+    {
+      "id": "163",
+      "name": "Shobha Naik",
+      "role": "MDO (Market Development Officer)",
+      "region": "South Karnataka",
+      "territory": "Mandya",
+      "mu_id": 84
+    },
+    {
+      "id": "164",
+      "name": "Channappa Biradar",
+      "role": "MDO (Market Development Officer)",
+      "region": "South Karnataka",
+      "territory": "Mandya",
+      "mu_id": 85
+    },
+    {
+      "id": "165",
+      "name": "Mallikarjun Pujari",
+      "role": "MDO (Market Development Officer)",
+      "region": "South Karnataka",
+      "territory": "Mandya",
+      "mu_id": 85
+    },
+    {
+      "id": "166",
+      "name": "Ravi Chowdary",
+      "role": "MDO (Market Development Officer)",
+      "region": "Telangana",
+      "territory": "Adilabad",
+      "mu_id": 86
+    },
+    {
+      "id": "167",
+      "name": "Suresh Naidu",
+      "role": "MDO (Market Development Officer)",
+      "region": "Telangana",
+      "territory": "Adilabad",
+      "mu_id": 87
+    },
+    {
+      "id": "168",
+      "name": "Suresh Reddy",
+      "role": "MDO (Market Development Officer)",
+      "region": "Telangana",
+      "territory": "Adilabad",
+      "mu_id": 88
+    },
+    {
+      "id": "169",
+      "name": "Padma Chowdary",
+      "role": "MDO (Market Development Officer)",
+      "region": "Rayalaseema",
+      "territory": "Anantapur",
+      "mu_id": 89
+    },
+    {
+      "id": "170",
+      "name": "Anjaneyulu Reddy",
+      "role": "MDO (Market Development Officer)",
+      "region": "Rayalaseema",
+      "territory": "Anantapur",
+      "mu_id": 90
+    },
+    {
+      "id": "171",
+      "name": "Suresh Reddy",
+      "role": "MDO (Market Development Officer)",
+      "region": "Rayalaseema",
+      "territory": "Anantapur",
+      "mu_id": 91
+    },
+    {
+      "id": "172",
+      "name": "Anjaneyulu Yadav",
+      "role": "MDO (Market Development Officer)",
+      "region": "Rayalaseema",
+      "territory": "Anantapur",
+      "mu_id": 91
+    },
+    {
+      "id": "173",
+      "name": "Suresh Chowdary",
+      "role": "MDO (Market Development Officer)",
+      "region": "Rayalaseema",
+      "territory": "Anantapur",
+      "mu_id": 92
+    },
+    {
+      "id": "174",
+      "name": "Ramesh Gohil",
+      "role": "MDO (Market Development Officer)",
+      "region": "Saurashtra",
+      "territory": "Bhavnagar",
+      "mu_id": 93
+    },
+    {
+      "id": "175",
+      "name": "Ramesh Solanki",
+      "role": "MDO (Market Development Officer)",
+      "region": "Saurashtra",
+      "territory": "Bhavnagar",
+      "mu_id": 93
+    },
+    {
+      "id": "176",
+      "name": "Kantibhai Parmar",
+      "role": "MDO (Market Development Officer)",
+      "region": "Saurashtra",
+      "territory": "Bhavnagar",
+      "mu_id": 94
+    },
+    {
+      "id": "177",
+      "name": "Vallabhbhai Gohil",
+      "role": "MDO (Market Development Officer)",
+      "region": "Saurashtra",
+      "territory": "Bhavnagar",
+      "mu_id": 94
+    },
+    {
+      "id": "178",
+      "name": "Bhavesh Chauhan",
+      "role": "MDO (Market Development Officer)",
+      "region": "Saurashtra",
+      "territory": "Bhavnagar",
+      "mu_id": 95
+    },
+    {
+      "id": "179",
+      "name": "Jagdish Vaghela",
+      "role": "MDO (Market Development Officer)",
+      "region": "Saurashtra",
+      "territory": "Bhavnagar",
+      "mu_id": 95
+    },
+    {
+      "id": "180",
+      "name": "Dnyaneshwar Kulkarni",
+      "role": "MDO (Market Development Officer)",
+      "region": "Malwa",
+      "territory": "Indore",
+      "mu_id": 96
+    },
+    {
+      "id": "181",
+      "name": "Ganesh Gite",
+      "role": "MDO (Market Development Officer)",
+      "region": "Malwa",
+      "territory": "Indore",
+      "mu_id": 97
+    },
+    {
+      "id": "182",
+      "name": "Ramesh Chavan",
+      "role": "MDO (Market Development Officer)",
+      "region": "Malwa",
+      "territory": "Indore",
+      "mu_id": 98
+    },
+    {
+      "id": "183",
+      "name": "Bhausaheb Thorat",
+      "role": "MDO (Market Development Officer)",
+      "region": "Malwa",
+      "territory": "Indore",
+      "mu_id": 98
+    },
+    {
+      "id": "184",
+      "name": "Sunil Darade",
+      "role": "MDO (Market Development Officer)",
+      "region": "Jaipur Division",
+      "territory": "Jaipur",
+      "mu_id": 99
+    },
+    {
+      "id": "185",
+      "name": "Mangesh Pawar",
+      "role": "MDO (Market Development Officer)",
+      "region": "Jaipur Division",
+      "territory": "Jaipur",
+      "mu_id": 100
+    },
+    {
+      "id": "186",
+      "name": "Rajendra Jadhav",
+      "role": "MDO (Market Development Officer)",
+      "region": "Jaipur Division",
+      "territory": "Jaipur",
+      "mu_id": 101
+    },
+    {
+      "id": "187",
+      "name": "Dnyaneshwar Deshmukh",
+      "role": "MDO (Market Development Officer)",
+      "region": "Jaipur Division",
+      "territory": "Jaipur",
+      "mu_id": 101
+    },
+    {
+      "id": "188",
+      "name": "Suresh Goud",
+      "role": "MDO (Market Development Officer)",
+      "region": "Kongu Nadu",
+      "territory": "Coimbatore",
+      "mu_id": 102
+    },
+    {
+      "id": "189",
+      "name": "Suresh Goud",
+      "role": "MDO (Market Development Officer)",
+      "region": "Kongu Nadu",
+      "territory": "Coimbatore",
+      "mu_id": 103
+    },
+    {
+      "id": "190",
+      "name": "Raju Yadav",
+      "role": "MDO (Market Development Officer)",
+      "region": "Kongu Nadu",
+      "territory": "Coimbatore",
+      "mu_id": 103
+    },
+    {
+      "id": "191",
+      "name": "Ramesh Reddy",
+      "role": "MDO (Market Development Officer)",
+      "region": "Kongu Nadu",
+      "territory": "Coimbatore",
+      "mu_id": 104
+    },
+    {
+      "id": "192",
+      "name": "Tukaram Thorat",
+      "role": "MDO (Market Development Officer)",
+      "region": "Awadh",
+      "territory": "Lucknow",
+      "mu_id": 105
+    },
+    {
+      "id": "193",
+      "name": "Lata Aher",
+      "role": "MDO (Market Development Officer)",
+      "region": "Awadh",
+      "territory": "Lucknow",
+      "mu_id": 106
+    },
+    {
+      "id": "194",
+      "name": "Balasaheb Kulkarni",
+      "role": "MDO (Market Development Officer)",
+      "region": "Awadh",
+      "territory": "Lucknow",
+      "mu_id": 107
+    },
+    {
+      "id": "195",
+      "name": "Santosh Thorat",
+      "role": "MDO (Market Development Officer)",
+      "region": "Central Punjab",
+      "territory": "Ludhiana",
+      "mu_id": 108
+    },
+    {
+      "id": "196",
+      "name": "Ashok Patil",
+      "role": "MDO (Market Development Officer)",
+      "region": "Central Punjab",
+      "territory": "Ludhiana",
+      "mu_id": 108
+    },
+    {
+      "id": "197",
+      "name": "Dnyaneshwar Gaikwad",
+      "role": "MDO (Market Development Officer)",
+      "region": "Central Punjab",
+      "territory": "Ludhiana",
+      "mu_id": 109
+    },
+    {
+      "id": "198",
+      "name": "Santosh Salunkhe",
+      "role": "MDO (Market Development Officer)",
+      "region": "Central Punjab",
+      "territory": "Ludhiana",
+      "mu_id": 109
+    },
+    {
+      "id": "199",
+      "name": "Suresh Sangle",
+      "role": "MDO (Market Development Officer)",
+      "region": "Central Punjab",
+      "territory": "Ludhiana",
+      "mu_id": 110
+    },
+    {
+      "id": "200",
+      "name": "Rahul Shinde",
+      "role": "MDO (Market Development Officer)",
+      "region": "Haryana",
+      "territory": "Karnal",
+      "mu_id": 111
+    },
+    {
+      "id": "201",
+      "name": "Dattatray Aher",
+      "role": "MDO (Market Development Officer)",
+      "region": "Haryana",
+      "territory": "Karnal",
+      "mu_id": 112
+    },
+    {
+      "id": "202",
+      "name": "Rajendra Pawar",
+      "role": "MDO (Market Development Officer)",
+      "region": "Haryana",
+      "territory": "Karnal",
+      "mu_id": 112
+    },
+    {
+      "id": "203",
+      "name": "Vijay Sangle",
+      "role": "MDO (Market Development Officer)",
+      "region": "Haryana",
+      "territory": "Karnal",
+      "mu_id": 113
+    },
+    {
+      "id": "204",
+      "name": "Sanjay Kadam",
+      "role": "MDO (Market Development Officer)",
+      "region": "Coastal Odisha",
+      "territory": "Cuttack",
+      "mu_id": 114
+    },
+    {
+      "id": "205",
+      "name": "Pandurang Thorat",
+      "role": "MDO (Market Development Officer)",
+      "region": "Coastal Odisha",
+      "territory": "Cuttack",
+      "mu_id": 115
+    },
+    {
+      "id": "206",
+      "name": "Rahul Darade",
+      "role": "MDO (Market Development Officer)",
+      "region": "Coastal Odisha",
+      "territory": "Cuttack",
+      "mu_id": 116
+    },
+    {
+      "id": "207",
+      "name": "Dilip Jadhav",
+      "role": "MDO (Market Development Officer)",
+      "region": "Burdwan Division",
+      "territory": "Hooghly",
+      "mu_id": 117
+    },
+    {
+      "id": "208",
+      "name": "Sunil Aher",
+      "role": "MDO (Market Development Officer)",
+      "region": "Burdwan Division",
+      "territory": "Hooghly",
+      "mu_id": 117
+    },
+    {
+      "id": "209",
+      "name": "Madhukar More",
+      "role": "MDO (Market Development Officer)",
+      "region": "Burdwan Division",
+      "territory": "Hooghly",
+      "mu_id": 118
+    },
+    {
+      "id": "210",
+      "name": "Yogesh Wagh",
+      "role": "MDO (Market Development Officer)",
+      "region": "Burdwan Division",
+      "territory": "Hooghly",
+      "mu_id": 118
+    },
+    {
+      "id": "211",
+      "name": "Ganesh Kulkarni",
+      "role": "MDO (Market Development Officer)",
+      "region": "Burdwan Division",
+      "territory": "Hooghly",
+      "mu_id": 119
+    },
+    {
+      "id": "212",
+      "name": "Dilip Darade",
+      "role": "MDO (Market Development Officer)",
+      "region": "Patna Division",
+      "territory": "Patna",
+      "mu_id": 120
+    },
+    {
+      "id": "213",
+      "name": "Rajendra Gaikwad",
+      "role": "MDO (Market Development Officer)",
+      "region": "Patna Division",
+      "territory": "Patna",
+      "mu_id": 121
+    },
+    {
+      "id": "214",
+      "name": "Balasaheb Darade",
+      "role": "MDO (Market Development Officer)",
+      "region": "Patna Division",
+      "territory": "Patna",
+      "mu_id": 121
+    },
+    {
+      "id": "215",
+      "name": "Sopan Aher",
+      "role": "MDO (Market Development Officer)",
+      "region": "Patna Division",
+      "territory": "Patna",
+      "mu_id": 122
+    },
+    {
+      "id": "216",
+      "name": "Sachin Kale",
+      "role": "MDO (Market Development Officer)",
+      "region": "Patna Division",
+      "territory": "Patna",
+      "mu_id": 122
+    },
+    {
+      "id": "screen-217",
+      "name": "Sayak Patil",
+      "role": "Business Head",
+      "region": null
+    },
+    {
+      "id": "screen-218",
+      "name": "R. Jadhav",
+      "role": "Marketing Head",
+      "region": "West"
+    },
+    {
+      "id": "screen-219",
+      "name": "S. Patil",
+      "role": "Marketing Head",
+      "region": "South"
+    },
+    {
+      "id": "screen-220",
+      "name": "V. Shinde",
+      "role": "Marketing Head",
+      "region": "North"
+    },
+    {
+      "id": "screen-221",
+      "name": "P. Kale",
+      "role": "Marketing Head",
+      "region": "East"
     }
   ]
 }

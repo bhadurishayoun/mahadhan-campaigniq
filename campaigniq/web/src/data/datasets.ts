@@ -28,9 +28,19 @@ export interface DatasetStatus extends DatasetMeta { status: 'live' | 'demo'; ro
 
 export const DATASET_CATALOG: DatasetMeta[] = catalog.datasets;
 const KNOWN = new Set(DATASET_CATALOG.map((entry) => entry.name));
+const SNAPSHOTS = import.meta.glob<{ default: unknown[] }>('./snapshot/*.json');
 
 export interface DatasetState<T> { name: string; rows: T[]; live: boolean; source?: string; uploadedAt?: string }
 export type DatasetScope = Partial<Record<'season' | 'state' | 'district' | 'taluka' | 'crop' | 'product' | 'campaign_type' | 'region' | 'theme' | 'period', string | undefined>>;
+
+function snapshotFor<T>(rows: unknown[], scope: DatasetScope): T[] {
+  const filters = Object.entries(scope).filter((entry): entry is [string, string] => Boolean(entry[1]));
+  return (rows as Record<string, unknown>[]).filter((row) => filters.every(([key, value]) => {
+    const actual = row[key];
+    if (actual === undefined || actual === null || actual === '') return true;
+    return String(actual).trim().toLocaleLowerCase() === value.trim().toLocaleLowerCase();
+  })) as T[];
+}
 
 let statusRequest: Promise<Set<string>> | null = null;
 const listeners = new Set<() => void>();
@@ -63,6 +73,7 @@ export function useDataset<T>(name: string, demoRows: T[], scopeOverride?: Datas
   const key = `${name}${query(requestedScope)}`;
   const [version, setVersion] = useState(0);
   const [live, setLive] = useState<{ key: string; rows: T[]; source?: string; uploadedAt?: string } | null>(null);
+  const [bundled, setBundled] = useState<{ key: string; rows: T[] } | null>(null);
 
   if (!KNOWN.has(name)) console.warn(`useDataset: '${name}' is not declared in server/data/datasets/catalog.json`);
 
@@ -83,6 +94,18 @@ export function useDataset<T>(name: string, demoRows: T[], scopeOverride?: Datas
     return () => { cancelled = true; };
   }, [key, version]);
 
+  useEffect(() => {
+    let cancelled = false;
+    const path = `./snapshot/${name.replaceAll('.', '__')}.json`;
+    const loader = SNAPSHOTS[path];
+    if (!loader) { setBundled(null); return () => { cancelled = true; }; }
+    loader().then(({ default: rows }) => {
+      if (!cancelled) setBundled({ key, rows: snapshotFor<T>(rows, requestedScope) });
+    }).catch(() => { if (!cancelled) setBundled(null); });
+    return () => { cancelled = true; };
+  }, [key]);
+
   if (live && live.key === key) return { name, rows: live.rows, live: true, source: live.source, uploadedAt: live.uploadedAt };
+  if (bundled && bundled.key === key) return { name, rows: bundled.rows, live: false, source: 'bundled snapshot' };
   return { name, rows: demoRows, live: false };
 }

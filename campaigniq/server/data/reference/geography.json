@@ -1,10 +1,51 @@
 {
-  "_comment": "Geography master. Add states / districts / talukas here (or upload via PUT /api/reference/geography). `id` values are the filter keys used in datasets (columns `state`, `district`, `taluka`). `has_data` = the synthetic data workbook has rows for the district. Written by server/scripts/generate_synthetic_workbook.py.",
+  "_comment": "Canonical hierarchy: region -> state -> district -> taluka/territory -> marketing unit -> village. Existing state/district/taluka filter fields remain stable.",
   "country": "India",
+  "regions": [
+    {
+      "id": "west",
+      "name": "West",
+      "states": [
+        "maharashtra",
+        "gujarat",
+        "madhya-pradesh",
+        "rajasthan"
+      ]
+    },
+    {
+      "id": "south",
+      "name": "South",
+      "states": [
+        "karnataka",
+        "telangana",
+        "andhra-pradesh",
+        "tamil-nadu"
+      ]
+    },
+    {
+      "id": "north",
+      "name": "North",
+      "states": [
+        "uttar-pradesh",
+        "punjab",
+        "haryana"
+      ]
+    },
+    {
+      "id": "east",
+      "name": "East",
+      "states": [
+        "odisha",
+        "west-bengal",
+        "bihar"
+      ]
+    }
+  ],
   "states": [
     {
       "id": "maharashtra",
       "name": "Maharashtra",
+      "region": "West",
       "districts": [
         {
           "id": "nashik",
@@ -19,7 +60,93 @@
             "Dindori",
             "Kalwan"
           ],
-          "has_data": true
+          "territories": [
+            "Niphad",
+            "Yeola",
+            "Sinnar",
+            "Chandwad",
+            "Malegaon",
+            "Baglan",
+            "Dindori",
+            "Kalwan"
+          ],
+          "villages": [
+            "Pimpalgaon Baswant",
+            "Lasalgaon",
+            "Ozar",
+            "Vinchur"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "1",
+              "name": "Niphad West",
+              "taluka": "Niphad",
+              "village_count": 10,
+              "villages": [
+                "Pimpalgaon Baswant",
+                "Lasalgaon",
+                "Ozar",
+                "Vinchur"
+              ]
+            },
+            {
+              "id": "2",
+              "name": "Yeola North",
+              "taluka": "Yeola",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "3",
+              "name": "Niphad East",
+              "taluka": "Niphad",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "4",
+              "name": "Sinnar East",
+              "taluka": "Sinnar",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "5",
+              "name": "Chandwad",
+              "taluka": "Chandwad",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "6",
+              "name": "Malegaon",
+              "taluka": "Malegaon",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "7",
+              "name": "Baglan",
+              "taluka": "Baglan",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "10",
+              "name": "Dindori",
+              "taluka": "Dindori",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "11",
+              "name": "Kalwan",
+              "taluka": "Kalwan",
+              "village_count": 12,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "jalna",
@@ -34,7 +161,81 @@
             "Jafrabad",
             "Ghansawangi"
           ],
-          "has_data": true
+          "territories": [
+            "Ambad",
+            "Partur",
+            "Badnapur",
+            "Jalna",
+            "Mantha",
+            "Bhokardan",
+            "Jafrabad",
+            "Ghansawangi"
+          ],
+          "villages": [
+            "Wadi Gaon",
+            "Dhanora",
+            "Ambad HQ",
+            "Pimpalgaon"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "12",
+              "name": "Ambad",
+              "taluka": "Ambad",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "13",
+              "name": "Partur",
+              "taluka": "Partur",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "14",
+              "name": "Badnapur",
+              "taluka": "Badnapur",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "15",
+              "name": "Jalna",
+              "taluka": "Jalna",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "16",
+              "name": "Mantha",
+              "taluka": "Mantha",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "17",
+              "name": "Bhokardan",
+              "taluka": "Bhokardan",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "18",
+              "name": "Jafrabad",
+              "taluka": "Jafrabad",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "19",
+              "name": "Ghansawangi",
+              "taluka": "Ghansawangi",
+              "village_count": 13,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "dhule",
@@ -45,7 +246,49 @@
             "Shirpur",
             "Shindkheda"
           ],
-          "has_data": true
+          "territories": [
+            "Dhule",
+            "Sakri",
+            "Shirpur",
+            "Shindkheda"
+          ],
+          "villages": [
+            "Kusumba",
+            "Songir",
+            "Nagaon",
+            "Arvi"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "8",
+              "name": "Dhule Central",
+              "taluka": "Dhule",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "20",
+              "name": "Sakri",
+              "taluka": "Sakri",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "21",
+              "name": "Shirpur",
+              "taluka": "Shirpur",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "22",
+              "name": "Shindkheda",
+              "taluka": "Shindkheda",
+              "village_count": 10,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "jalgaon",
@@ -57,7 +300,57 @@
             "Chopda",
             "Pachora"
           ],
-          "has_data": true
+          "territories": [
+            "Jalgaon",
+            "Raver",
+            "Yawal",
+            "Chopda",
+            "Pachora"
+          ],
+          "villages": [
+            "Savda",
+            "Faizpur",
+            "Nhavi",
+            "Raver HQ"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "9",
+              "name": "Jalgaon East",
+              "taluka": "Jalgaon",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "23",
+              "name": "Raver",
+              "taluka": "Raver",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "24",
+              "name": "Yawal",
+              "taluka": "Yawal",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "25",
+              "name": "Chopda",
+              "taluka": "Chopda",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "26",
+              "name": "Pachora",
+              "taluka": "Pachora",
+              "village_count": 12,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "ahmednagar",
@@ -70,7 +363,65 @@
             "Parner",
             "Nevasa"
           ],
-          "has_data": true
+          "territories": [
+            "Rahuri",
+            "Sangamner",
+            "Shrirampur",
+            "Kopargaon",
+            "Parner",
+            "Nevasa"
+          ],
+          "villages": [
+            "Rahuri HQ",
+            "Deolali Pravara",
+            "Sonai",
+            "Vambori"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "27",
+              "name": "Rahuri",
+              "taluka": "Rahuri",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "28",
+              "name": "Sangamner",
+              "taluka": "Sangamner",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "29",
+              "name": "Shrirampur",
+              "taluka": "Shrirampur",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "30",
+              "name": "Kopargaon",
+              "taluka": "Kopargaon",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "31",
+              "name": "Parner",
+              "taluka": "Parner",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "32",
+              "name": "Nevasa",
+              "taluka": "Nevasa",
+              "village_count": 14,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "pune",
@@ -83,7 +434,65 @@
             "Baramati",
             "Indapur"
           ],
-          "has_data": true
+          "territories": [
+            "Junnar",
+            "Ambegaon",
+            "Khed",
+            "Shirur",
+            "Baramati",
+            "Indapur"
+          ],
+          "villages": [
+            "Narayangaon",
+            "Otur",
+            "Manchar",
+            "Alephata"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "33",
+              "name": "Junnar",
+              "taluka": "Junnar",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "34",
+              "name": "Ambegaon",
+              "taluka": "Ambegaon",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "35",
+              "name": "Khed",
+              "taluka": "Khed",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "36",
+              "name": "Shirur",
+              "taluka": "Shirur",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "37",
+              "name": "Baramati",
+              "taluka": "Baramati",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "38",
+              "name": "Indapur",
+              "taluka": "Indapur",
+              "village_count": 14,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "solapur",
@@ -95,7 +504,57 @@
             "Mohol",
             "Malshiras"
           ],
-          "has_data": true
+          "territories": [
+            "Pandharpur",
+            "Sangola",
+            "Mangalwedha",
+            "Mohol",
+            "Malshiras"
+          ],
+          "villages": [
+            "Sangola HQ",
+            "Mahud",
+            "Kasegaon",
+            "Jawala"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "39",
+              "name": "Pandharpur",
+              "taluka": "Pandharpur",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "40",
+              "name": "Sangola",
+              "taluka": "Sangola",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "41",
+              "name": "Mangalwedha",
+              "taluka": "Mangalwedha",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "42",
+              "name": "Mohol",
+              "taluka": "Mohol",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "43",
+              "name": "Malshiras",
+              "taluka": "Malshiras",
+              "village_count": 11,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "sangli",
@@ -107,7 +566,57 @@
             "Jat",
             "Palus"
           ],
-          "has_data": true
+          "territories": [
+            "Miraj",
+            "Tasgaon",
+            "Walwa",
+            "Jat",
+            "Palus"
+          ],
+          "villages": [
+            "Tasgaon HQ",
+            "Manjarde",
+            "Savlaj",
+            "Kavathe Ekand"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "44",
+              "name": "Miraj",
+              "taluka": "Miraj",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "45",
+              "name": "Tasgaon",
+              "taluka": "Tasgaon",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "46",
+              "name": "Walwa",
+              "taluka": "Walwa",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "47",
+              "name": "Jat",
+              "taluka": "Jat",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "48",
+              "name": "Palus",
+              "taluka": "Palus",
+              "village_count": 12,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "kolhapur",
@@ -118,7 +627,49 @@
             "Shirol",
             "Kagal"
           ],
-          "has_data": true
+          "territories": [
+            "Karveer",
+            "Hatkanangale",
+            "Shirol",
+            "Kagal"
+          ],
+          "villages": [
+            "Hupari",
+            "Kurundwad",
+            "Shirol HQ",
+            "Jaysingpur"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "49",
+              "name": "Karveer",
+              "taluka": "Karveer",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "50",
+              "name": "Hatkanangale",
+              "taluka": "Hatkanangale",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "51",
+              "name": "Shirol",
+              "taluka": "Shirol",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "52",
+              "name": "Kagal",
+              "taluka": "Kagal",
+              "village_count": 13,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "satara",
@@ -129,7 +680,49 @@
             "Phaltan",
             "Khatav"
           ],
-          "has_data": true
+          "territories": [
+            "Karad",
+            "Koregaon",
+            "Phaltan",
+            "Khatav"
+          ],
+          "villages": [
+            "Karad HQ",
+            "Umbraj",
+            "Masur",
+            "Rahimatpur"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "53",
+              "name": "Karad",
+              "taluka": "Karad",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "54",
+              "name": "Koregaon",
+              "taluka": "Koregaon",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "55",
+              "name": "Phaltan",
+              "taluka": "Phaltan",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "56",
+              "name": "Khatav",
+              "taluka": "Khatav",
+              "village_count": 12,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "chh-sambhajinagar",
@@ -141,7 +734,57 @@
             "Kannad",
             "Sillod"
           ],
-          "has_data": true
+          "territories": [
+            "Paithan",
+            "Vaijapur",
+            "Gangapur",
+            "Kannad",
+            "Sillod"
+          ],
+          "villages": [
+            "Paithan HQ",
+            "Bidkin",
+            "Pachod",
+            "Vihamandva"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "57",
+              "name": "Paithan",
+              "taluka": "Paithan",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "58",
+              "name": "Vaijapur",
+              "taluka": "Vaijapur",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "59",
+              "name": "Gangapur",
+              "taluka": "Gangapur",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "60",
+              "name": "Kannad",
+              "taluka": "Kannad",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "61",
+              "name": "Sillod",
+              "taluka": "Sillod",
+              "village_count": 11,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "beed",
@@ -153,7 +796,57 @@
             "Ambajogai",
             "Kaij"
           ],
-          "has_data": true
+          "territories": [
+            "Beed",
+            "Georai",
+            "Majalgaon",
+            "Ambajogai",
+            "Kaij"
+          ],
+          "villages": [
+            "Georai HQ",
+            "Talwada",
+            "Umapur",
+            "Chakalamba"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "62",
+              "name": "Beed",
+              "taluka": "Beed",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "63",
+              "name": "Georai",
+              "taluka": "Georai",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "64",
+              "name": "Majalgaon",
+              "taluka": "Majalgaon",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "65",
+              "name": "Ambajogai",
+              "taluka": "Ambajogai",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "66",
+              "name": "Kaij",
+              "taluka": "Kaij",
+              "village_count": 11,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "latur",
@@ -164,13 +857,56 @@
             "Nilanga",
             "Udgir"
           ],
-          "has_data": true
+          "territories": [
+            "Latur",
+            "Ausa",
+            "Nilanga",
+            "Udgir"
+          ],
+          "villages": [
+            "Ausa HQ",
+            "Killari",
+            "Lamjana",
+            "Matola"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "67",
+              "name": "Latur",
+              "taluka": "Latur",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "68",
+              "name": "Ausa",
+              "taluka": "Ausa",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "69",
+              "name": "Nilanga",
+              "taluka": "Nilanga",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "70",
+              "name": "Udgir",
+              "taluka": "Udgir",
+              "village_count": 13,
+              "villages": []
+            }
+          ]
         }
       ]
     },
     {
       "id": "karnataka",
       "name": "Karnataka",
+      "region": "South",
       "districts": [
         {
           "id": "belagavi",
@@ -182,7 +918,57 @@
             "Raibag",
             "Belagavi"
           ],
-          "has_data": true
+          "territories": [
+            "Athani",
+            "Gokak",
+            "Chikkodi",
+            "Raibag",
+            "Belagavi"
+          ],
+          "villages": [
+            "Athani HQ",
+            "Ugar",
+            "Kagwad",
+            "Telsang"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "71",
+              "name": "Athani",
+              "taluka": "Athani",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "72",
+              "name": "Gokak",
+              "taluka": "Gokak",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "73",
+              "name": "Chikkodi",
+              "taluka": "Chikkodi",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "74",
+              "name": "Raibag",
+              "taluka": "Raibag",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "75",
+              "name": "Belagavi",
+              "taluka": "Belagavi",
+              "village_count": 14,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "vijayapura",
@@ -193,7 +979,49 @@
             "Sindagi",
             "Basavana Bagewadi"
           ],
-          "has_data": true
+          "territories": [
+            "Vijayapura",
+            "Indi",
+            "Sindagi",
+            "Basavana Bagewadi"
+          ],
+          "villages": [
+            "Tikota",
+            "Babaleshwar",
+            "Indi HQ",
+            "Horti"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "76",
+              "name": "Vijayapura",
+              "taluka": "Vijayapura",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "77",
+              "name": "Indi",
+              "taluka": "Indi",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "78",
+              "name": "Sindagi",
+              "taluka": "Sindagi",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "79",
+              "name": "Basavana Bagewadi",
+              "taluka": "Basavana Bagewadi",
+              "village_count": 13,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "bagalkot",
@@ -203,7 +1031,41 @@
             "Mudhol",
             "Bilagi"
           ],
-          "has_data": true
+          "territories": [
+            "Jamkhandi",
+            "Mudhol",
+            "Bilagi"
+          ],
+          "villages": [
+            "Jamkhandi HQ",
+            "Savalagi",
+            "Terdal",
+            "Rabkavi"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "80",
+              "name": "Jamkhandi",
+              "taluka": "Jamkhandi",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "81",
+              "name": "Mudhol",
+              "taluka": "Mudhol",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "82",
+              "name": "Bilagi",
+              "taluka": "Bilagi",
+              "village_count": 12,
+              "villages": []
+            }
+          ]
         },
         {
           "id": "mandya",
@@ -213,13 +1075,48 @@
             "Maddur",
             "Pandavapura"
           ],
-          "has_data": true
+          "territories": [
+            "Mandya",
+            "Maddur",
+            "Pandavapura"
+          ],
+          "villages": [
+            "Maddur HQ",
+            "Besagarahalli",
+            "Koppa",
+            "Pandavapura HQ"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "83",
+              "name": "Mandya",
+              "taluka": "Mandya",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "84",
+              "name": "Maddur",
+              "taluka": "Maddur",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "85",
+              "name": "Pandavapura",
+              "taluka": "Pandavapura",
+              "village_count": 14,
+              "villages": []
+            }
+          ]
         }
       ]
     },
     {
       "id": "telangana",
       "name": "Telangana",
+      "region": "South",
       "districts": [
         {
           "id": "adilabad",
@@ -229,13 +1126,48 @@
             "Boath",
             "Utnoor"
           ],
-          "has_data": true
+          "territories": [
+            "Adilabad",
+            "Boath",
+            "Utnoor"
+          ],
+          "villages": [
+            "Boath HQ",
+            "Ichoda",
+            "Neradigonda",
+            "Utnoor HQ"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "86",
+              "name": "Adilabad",
+              "taluka": "Adilabad",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "87",
+              "name": "Boath",
+              "taluka": "Boath",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "88",
+              "name": "Utnoor",
+              "taluka": "Utnoor",
+              "village_count": 12,
+              "villages": []
+            }
+          ]
         }
       ]
     },
     {
       "id": "andhra-pradesh",
       "name": "Andhra Pradesh",
+      "region": "South",
       "districts": [
         {
           "id": "anantapur",
@@ -246,13 +1178,56 @@
             "Kadiri",
             "Kalyandurg"
           ],
-          "has_data": true
+          "territories": [
+            "Anantapur",
+            "Dharmavaram",
+            "Kadiri",
+            "Kalyandurg"
+          ],
+          "villages": [
+            "Kalyandurg HQ",
+            "Kambadur",
+            "Beluguppa",
+            "Settur"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "89",
+              "name": "Anantapur",
+              "taluka": "Anantapur",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "90",
+              "name": "Dharmavaram",
+              "taluka": "Dharmavaram",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "91",
+              "name": "Kadiri",
+              "taluka": "Kadiri",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "92",
+              "name": "Kalyandurg",
+              "taluka": "Kalyandurg",
+              "village_count": 12,
+              "villages": []
+            }
+          ]
         }
       ]
     },
     {
       "id": "gujarat",
       "name": "Gujarat",
+      "region": "West",
       "districts": [
         {
           "id": "bhavnagar",
@@ -262,7 +1237,500 @@
             "Talaja",
             "Palitana"
           ],
-          "has_data": true
+          "territories": [
+            "Mahuva",
+            "Talaja",
+            "Palitana"
+          ],
+          "villages": [
+            "Mahuva HQ",
+            "Talaja HQ",
+            "Bagdana",
+            "Kalsar"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "93",
+              "name": "Mahuva",
+              "taluka": "Mahuva",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "94",
+              "name": "Talaja",
+              "taluka": "Talaja",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "95",
+              "name": "Palitana",
+              "taluka": "Palitana",
+              "village_count": 13,
+              "villages": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "madhya-pradesh",
+      "name": "Madhya Pradesh",
+      "region": "West",
+      "districts": [
+        {
+          "id": "indore",
+          "name": "Indore",
+          "talukas": [
+            "Indore",
+            "Depalpur",
+            "Sanwer"
+          ],
+          "territories": [
+            "Indore",
+            "Depalpur",
+            "Sanwer"
+          ],
+          "villages": [
+            "Depalpur",
+            "Sanwer",
+            "Mhow",
+            "Rau"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "96",
+              "name": "Indore",
+              "taluka": "Indore",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "97",
+              "name": "Depalpur",
+              "taluka": "Depalpur",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "98",
+              "name": "Sanwer",
+              "taluka": "Sanwer",
+              "village_count": 13,
+              "villages": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rajasthan",
+      "name": "Rajasthan",
+      "region": "West",
+      "districts": [
+        {
+          "id": "jaipur",
+          "name": "Jaipur",
+          "talukas": [
+            "Jaipur",
+            "Chomu",
+            "Sanganer"
+          ],
+          "territories": [
+            "Jaipur",
+            "Chomu",
+            "Sanganer"
+          ],
+          "villages": [
+            "Chomu",
+            "Sanganer",
+            "Amber",
+            "Phagi"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "99",
+              "name": "Jaipur",
+              "taluka": "Jaipur",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "100",
+              "name": "Chomu",
+              "taluka": "Chomu",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "101",
+              "name": "Sanganer",
+              "taluka": "Sanganer",
+              "village_count": 14,
+              "villages": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tamil-nadu",
+      "name": "Tamil Nadu",
+      "region": "South",
+      "districts": [
+        {
+          "id": "coimbatore",
+          "name": "Coimbatore",
+          "talukas": [
+            "Coimbatore",
+            "Pollachi",
+            "Sulur"
+          ],
+          "territories": [
+            "Coimbatore",
+            "Pollachi",
+            "Sulur"
+          ],
+          "villages": [
+            "Pollachi",
+            "Mettupalayam",
+            "Sulur",
+            "Annur"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "102",
+              "name": "Coimbatore",
+              "taluka": "Coimbatore",
+              "village_count": 10,
+              "villages": []
+            },
+            {
+              "id": "103",
+              "name": "Pollachi",
+              "taluka": "Pollachi",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "104",
+              "name": "Sulur",
+              "taluka": "Sulur",
+              "village_count": 10,
+              "villages": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "uttar-pradesh",
+      "name": "Uttar Pradesh",
+      "region": "North",
+      "districts": [
+        {
+          "id": "lucknow",
+          "name": "Lucknow",
+          "talukas": [
+            "Lucknow",
+            "Malihabad",
+            "Mohanlalganj"
+          ],
+          "territories": [
+            "Lucknow",
+            "Malihabad",
+            "Mohanlalganj"
+          ],
+          "villages": [
+            "Malihabad",
+            "Bakshi Ka Talab",
+            "Mohanlalganj",
+            "Sarojini Nagar"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "105",
+              "name": "Lucknow",
+              "taluka": "Lucknow",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "106",
+              "name": "Malihabad",
+              "taluka": "Malihabad",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "107",
+              "name": "Mohanlalganj",
+              "taluka": "Mohanlalganj",
+              "village_count": 11,
+              "villages": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "punjab",
+      "name": "Punjab",
+      "region": "North",
+      "districts": [
+        {
+          "id": "ludhiana",
+          "name": "Ludhiana",
+          "talukas": [
+            "Ludhiana",
+            "Jagraon",
+            "Samrala"
+          ],
+          "territories": [
+            "Ludhiana",
+            "Jagraon",
+            "Samrala"
+          ],
+          "villages": [
+            "Jagraon",
+            "Samrala",
+            "Payal",
+            "Khanna"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "108",
+              "name": "Ludhiana",
+              "taluka": "Ludhiana",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "109",
+              "name": "Jagraon",
+              "taluka": "Jagraon",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "110",
+              "name": "Samrala",
+              "taluka": "Samrala",
+              "village_count": 11,
+              "villages": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "haryana",
+      "name": "Haryana",
+      "region": "North",
+      "districts": [
+        {
+          "id": "karnal",
+          "name": "Karnal",
+          "talukas": [
+            "Karnal",
+            "Indri",
+            "Assandh"
+          ],
+          "territories": [
+            "Karnal",
+            "Indri",
+            "Assandh"
+          ],
+          "villages": [
+            "Indri",
+            "Assandh",
+            "Gharaunda",
+            "Nilokheri"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "111",
+              "name": "Karnal",
+              "taluka": "Karnal",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "112",
+              "name": "Indri",
+              "taluka": "Indri",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "113",
+              "name": "Assandh",
+              "taluka": "Assandh",
+              "village_count": 12,
+              "villages": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "odisha",
+      "name": "Odisha",
+      "region": "East",
+      "districts": [
+        {
+          "id": "cuttack",
+          "name": "Cuttack",
+          "talukas": [
+            "Cuttack",
+            "Niali",
+            "Salipur"
+          ],
+          "territories": [
+            "Cuttack",
+            "Niali",
+            "Salipur"
+          ],
+          "villages": [
+            "Niali",
+            "Salipur",
+            "Tangi",
+            "Banki"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "114",
+              "name": "Cuttack",
+              "taluka": "Cuttack",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "115",
+              "name": "Niali",
+              "taluka": "Niali",
+              "village_count": 11,
+              "villages": []
+            },
+            {
+              "id": "116",
+              "name": "Salipur",
+              "taluka": "Salipur",
+              "village_count": 12,
+              "villages": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "west-bengal",
+      "name": "West Bengal",
+      "region": "East",
+      "districts": [
+        {
+          "id": "hooghly",
+          "name": "Hooghly",
+          "talukas": [
+            "Chinsurah",
+            "Arambagh",
+            "Serampore"
+          ],
+          "territories": [
+            "Chinsurah",
+            "Arambagh",
+            "Serampore"
+          ],
+          "villages": [
+            "Chinsurah",
+            "Arambagh",
+            "Serampore",
+            "Tarakeswar"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "117",
+              "name": "Chinsurah",
+              "taluka": "Chinsurah",
+              "village_count": 13,
+              "villages": []
+            },
+            {
+              "id": "118",
+              "name": "Arambagh",
+              "taluka": "Arambagh",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "119",
+              "name": "Serampore",
+              "taluka": "Serampore",
+              "village_count": 10,
+              "villages": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bihar",
+      "name": "Bihar",
+      "region": "East",
+      "districts": [
+        {
+          "id": "patna",
+          "name": "Patna",
+          "talukas": [
+            "Patna",
+            "Barh",
+            "Paliganj"
+          ],
+          "territories": [
+            "Patna",
+            "Barh",
+            "Paliganj"
+          ],
+          "villages": [
+            "Barh",
+            "Paliganj",
+            "Bikram",
+            "Daniawan"
+          ],
+          "has_data": true,
+          "marketing_units": [
+            {
+              "id": "120",
+              "name": "Patna",
+              "taluka": "Patna",
+              "village_count": 12,
+              "villages": []
+            },
+            {
+              "id": "121",
+              "name": "Barh",
+              "taluka": "Barh",
+              "village_count": 14,
+              "villages": []
+            },
+            {
+              "id": "122",
+              "name": "Paliganj",
+              "taluka": "Paliganj",
+              "village_count": 14,
+              "villages": []
+            }
+          ]
         }
       ]
     }

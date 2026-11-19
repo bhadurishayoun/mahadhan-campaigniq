@@ -8,6 +8,7 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
+  glob<T = unknown>(pattern: string): Record<string, () => Promise<T>>;
 }
 
 /** Vite `?raw` imports (e.g. the copilot prompt files shared with the backend). */

@@ -30,6 +30,14 @@ from openpyxl.styles import Alignment, Font, PatternFill  # noqa: E402
 from openpyxl.utils import get_column_letter  # noqa: E402
 
 from campaign_api.engine import DEFAULT_CONFIG, SEGMENT_RULES, calculate_plan  # noqa: E402
+from synthetic_extensions import (  # noqa: E402
+    ACTIVITY_LINES, CROPS as SCREEN_CROPS, FY_VALUES, OBJECTIVE_THEME, PERIOD_VALUES, PRODUCT_CATEGORY,
+    REGIONS, THEMES, build_campaign_rows, build_role_datasets,
+)
+from synthetic_extensions import (  # noqa: E402
+    ACTIVITY_LINES, CROPS as SCREEN_CROPS, FY_VALUES, OBJECTIVE_THEME, PERIOD_VALUES, PRODUCT_CATEGORY,
+    REGIONS, THEMES, build_campaign_rows, build_role_datasets,
+)
 
 OUTPUT = SERVER_DIR / "data" / "seed" / "mahadhan_synthetic_data.xlsx"
 REFERENCE_DATE = date(2026, 11, 18)
@@ -47,6 +55,15 @@ STATES = {
     "telangana": ("Telangana", "South", "te"),
     "andhra-pradesh": ("Andhra Pradesh", "South", "te"),
     "gujarat": ("Gujarat", "West", "gu"),
+    "madhya-pradesh": ("Madhya Pradesh", "West", "hi"),
+    "rajasthan": ("Rajasthan", "West", "hi"),
+    "tamil-nadu": ("Tamil Nadu", "South", "ta"),
+    "uttar-pradesh": ("Uttar Pradesh", "North", "hi"),
+    "punjab": ("Punjab", "North", "pa"),
+    "haryana": ("Haryana", "North", "hi"),
+    "odisha": ("Odisha", "East", "or"),
+    "west-bengal": ("West Bengal", "East", "bn"),
+    "bihar": ("Bihar", "East", "hi"),
 }
 
 # id, name, state, region, (lat, lng), talukas, crop area in hectares (approx. district statistics),
@@ -133,6 +150,17 @@ DISTRICTS = [
      {"Onion": 35000, "Groundnut": 80000, "Cotton": 250000},
      ["Mahuva HQ", "Talaja HQ", "Bagdana", "Kalsar"], 0.12),
 ]
+DISTRICTS.extend([
+    ("indore", "Indore", "madhya-pradesh", "Malwa", (22.72, 75.86), ["Indore", "Depalpur", "Sanwer"], {"Onion": 18000, "Soybean": 100000, "Maize": 50000}, ["Depalpur", "Sanwer", "Mhow", "Rau"], .35),
+    ("jaipur", "Jaipur", "rajasthan", "Jaipur Division", (26.91, 75.79), ["Jaipur", "Chomu", "Sanganer"], {"Onion": 22000, "Maize": 60000, "Cotton": 30000}, ["Chomu", "Sanganer", "Amber", "Phagi"], .30),
+    ("coimbatore", "Coimbatore", "tamil-nadu", "Kongu Nadu", (11.02, 76.96), ["Coimbatore", "Pollachi", "Sulur"], {"Banana": 30000, "Cotton": 45000, "Sugarcane": 35000}, ["Pollachi", "Mettupalayam", "Sulur", "Annur"], .38),
+    ("lucknow", "Lucknow", "uttar-pradesh", "Awadh", (26.85, 80.95), ["Lucknow", "Malihabad", "Mohanlalganj"], {"Onion": 16000, "Maize": 40000, "Soybean": 25000}, ["Malihabad", "Bakshi Ka Talab", "Mohanlalganj", "Sarojini Nagar"], .27),
+    ("ludhiana", "Ludhiana", "punjab", "Central Punjab", (30.90, 75.85), ["Ludhiana", "Jagraon", "Samrala"], {"Onion": 12000, "Maize": 45000, "Cotton": 18000}, ["Jagraon", "Samrala", "Payal", "Khanna"], .33),
+    ("karnal", "Karnal", "haryana", "Haryana", (29.69, 76.99), ["Karnal", "Indri", "Assandh"], {"Onion": 14000, "Maize": 40000, "Cotton": 18000}, ["Indri", "Assandh", "Gharaunda", "Nilokheri"], .31),
+    ("cuttack", "Cuttack", "odisha", "Coastal Odisha", (20.46, 85.88), ["Cuttack", "Niali", "Salipur"], {"Onion": 11000, "Groundnut": 35000, "Maize": 22000}, ["Niali", "Salipur", "Tangi", "Banki"], .24),
+    ("hooghly", "Hooghly", "west-bengal", "Burdwan Division", (22.90, 88.40), ["Chinsurah", "Arambagh", "Serampore"], {"Onion": 9000, "Tomato": 14000, "Maize": 21000}, ["Chinsurah", "Arambagh", "Serampore", "Tarakeswar"], .22),
+    ("patna", "Patna", "bihar", "Patna Division", (25.61, 85.14), ["Patna", "Barh", "Paliganj"], {"Onion": 10000, "Maize": 26000, "Soybean": 18000}, ["Barh", "Paliganj", "Bikram", "Daniawan"], .21),
+])
 DISTRICT_BY_ID = {d[0]: d for d in DISTRICTS}
 
 # The nine marketing units of the original seed keep their names and onion figures (golden test case).
@@ -291,6 +319,7 @@ def lang_of(state_id: str) -> str:
 
 
 def person(lang: str, initial: bool = False) -> str:
+    lang = lang if lang in FIRST_NAMES else {"hi": "mr", "pa": "mr", "or": "mr", "bn": "mr", "ta": "te"}.get(lang, "mr")
     first = rng.choice(FIRST_NAMES[lang])
     last = rng.choice(SURNAMES[lang])
     return f"{first[0]}. {last}" if initial else f"{first} {last}"
@@ -412,7 +441,7 @@ for s in SEASONS:
     T["season"].append(dict(id=s[0], name=s[1], start_date=s[3], end_date=s[4], budget_lock_date=s[5], filter_id=s[7]))
 
 for p in PRODUCTS:
-    T["product"].append(dict(id=p[0], name=p[1], category=p[2], filter_id=p[3], pack_kg=p[4], price_per_pack=p[5], placeholder=1))
+    T["product"].append(dict(id=p[0], name=p[1], category=PRODUCT_CATEGORY.get(p[2], p[2]), filter_id=p[3], pack_kg=p[4], price_per_pack=p[5], placeholder=1))
     for crop, (dose, stage_index) in p[6].items():
         stages = STAGE_IDS[crop]
         T["crop_product_dose"].append(dict(crop_id=CROP_ID[crop], product_id=p[0], stage_id=stages[min(stage_index, len(stages) - 1)],
@@ -1032,7 +1061,8 @@ for d in DISTRICTS:
             DS["readiness.cluster_supply"].append(dict(village=c["village"], demand=round(in_season), supply=round(supply),
                                                        gap=round(in_season - supply), retailers=c["retailers"],
                                                        status="Ready" if cov_pct >= 85 else "Moderate" if cov_pct >= 70 else "High Risk", **sc))
-        dealer_pool = rng.sample(DEALER_NAMES[lang], min(6, len(DEALER_NAMES[lang])))
+        dealer_lang = lang if lang in DEALER_NAMES else {"hi": "mr", "pa": "mr", "or": "mr", "bn": "mr", "ta": "te"}.get(lang, "mr")
+        dealer_pool = rng.sample(DEALER_NAMES[dealer_lang], min(6, len(DEALER_NAMES[dealer_lang])))
         for index, base in enumerate(dealer_pool):
             village = (villages + ["Other Villages"])[index % 5]
             demand = round(rng.uniform(4, 16), 1)
@@ -1090,7 +1120,7 @@ for d in DISTRICTS:
                 row["rel"] = "Highest" if position == 0 else "High" if position <= 2 else "Medium"
                 DS["impact.channel_effectiveness"].append({**row, **sc})
 # portfolio.campaigns: 5 storyline campaigns + campaigns aggregated from district x crop plans
-state_short = {"maharashtra": "MH", "karnataka": "KA", "telangana": "TS", "andhra-pradesh": "AP", "gujarat": "GJ"}
+state_short = {"maharashtra": "MH", "karnataka": "KA", "telangana": "TS", "andhra-pradesh": "AP", "gujarat": "GJ", "madhya-pradesh": "MP", "rajasthan": "RJ", "tamil-nadu": "TN", "uttar-pradesh": "UP", "punjab": "PB", "haryana": "HR", "odisha": "OD", "west-bengal": "WB", "bihar": "BR"}
 for season in SEASONS:
     groups = defaultdict(list)
     for p in PLANS:
@@ -1132,6 +1162,13 @@ for season in SEASONS:
     for row in rows:
         DS["portfolio.campaigns"].append({**row, "season": season[7]})
 
+# Replace display-shaped rows with one canonical, fully filterable campaign dataset.
+STATE_REGIONS = {name: values[1] for values in STATES.values() for name in [values[0]]}
+STATE_DISTRICTS = {STATES[d[2]][0]: d[1] for d in DISTRICTS}
+DS["portfolio.campaigns"] = build_campaign_rows(STATE_REGIONS, STATE_DISTRICTS)
+for dataset_name, dataset_rows in build_role_datasets(DS["portfolio.campaigns"]).items():
+    DS[dataset_name] = dataset_rows
+
 # --------------------------------------------------------------------------------------------------
 # Write workbook
 # --------------------------------------------------------------------------------------------------
@@ -1172,6 +1209,26 @@ DS_DOCS = {
     "orchestration.owners": "Field owner workload.", "impact.cluster_conversion": "Cluster trial-to-adoption.",
     "impact.channel_effectiveness": "Channel effectiveness.", "impact.geo_performance": "Geography performance vs average.",
 }
+DS_DOCS.update({
+    "bh.region_performance": "Business Head regional performance and reconciled commercial measures.",
+    "bh.investment_roi": "Business Head investment and pending-attribution return metrics.",
+    "bh.theme_pipeline": "Business Head strategic theme pipeline by market.",
+    "bh.interventions": "Business Head intervention and activity status.",
+    "mh.regional_opportunity": "Marketing Head regional opportunity and penetration.",
+    "mh.plan_alignment": "Marketing Head alignment to business and crop plans.",
+    "mh.campaign_mix_calendar": "Marketing Head campaign mix and seasonal calendar.",
+    "mh.approvals": "Marketing Head campaign approval status.",
+    "pm.portfolio_abp": "Zonal Manager portfolio ABP and sales plan.",
+    "pm.territory_plans": "Zonal Manager territory plan summary.",
+    "pm.activity_approvals": "Zonal Manager activity approval queue.",
+    "pm.impact_uplift": "Zonal Manager measured campaign impact and attribution status.",
+    "tm.territory_plan": "Field Sales Manager territory plan and targets.",
+    "tm.outlets": "Territory retailer and dealer coverage.",
+    "tm.village_coverage": "Field Sales Manager village coverage and adoption.",
+    "tm.campaign_activities": "Editable activity lines for campaign budget calculations.",
+    "tm.execution_weekly": "Weekly campaign execution tracking.",
+    "tm.impact": "Territory campaign impact and adoption results.",
+})
 PCT_COLUMNS = {"amp_pct", "current_treated_pct", "target_treated_pct", "spend_cap_pct", "min_pen", "max_pen", "share_pct",
                "k_default", "phase_split_pre", "phase_split_on", "phase_split_post", "spend_ratio"}
 INFO_COLUMNS = {"mu_name", "district", "district_name", "crop_name", "season_name", "product_name", "activity_name", "segment",
@@ -1237,12 +1294,27 @@ for name in DS_ORDER:
     write_sheet(f"ds.{name}", DS[name])
 write_sheet("_meta", meta_rows)
 
+# Column-level data dictionary for all retained tables and screen datasets.
+dictionary_rows = []
+unit_by_column = {"investment_lakh": "INR lakh", "actual_sales_lakh": "INR lakh", "abp_lakh": "INR lakh", "trial_to_purchase_pct": "%", "planned_pct": "%", "observed_pct": "%", "adopters": "farmers", "trials": "farmers", "roi": "x", "quarter": "quarter number", "units": "activity units"}
+allowed_by_column = {"region": list(REGIONS), "state": list(STATE_REGIONS), "crop": SCREEN_CROPS, "theme": THEMES, "product": list(PRODUCT_CATEGORY), "product_category": sorted(set(PRODUCT_CATEGORY.values())), "period": PERIOD_VALUES, "fy": FY_VALUES}
+def dictionary_type(value):
+    if isinstance(value, bool): return "boolean"
+    if isinstance(value, (int, float)): return "number"
+    return "string"
+for sheet_name, records in [(name, strip(T[name])) for name in TABLE_ORDER] + [(f"ds.{name}", DS[name]) for name in DS_ORDER]:
+    for column in (records[0].keys() if records else []):
+        value = next((record.get(column) for record in records if record.get(column) is not None), None)
+        dictionary_rows.append({"sheet": sheet_name, "column": column, "type": dictionary_type(value), "unit": unit_by_column.get(column, ""), "description": f"{column.replace('_', ' ').capitalize()} in {sheet_name}.", "allowed_values": ", ".join(allowed_by_column.get(column, []))})
+write_sheet("Data dictionary", dictionary_rows)
+
 # README ---------------------------------------------------------------------------------------------
 lines = [
     ("Mahadhan CampaignIQ — Synthetic Data Workbook", "title"),
     (f"Version {WORKBOOK_VERSION} · reference date {REFERENCE_DATE:%d %b %Y} · generated by server/scripts/generate_synthetic_workbook.py", "sub"),
     ("", None),
     ("What this is", "h"),
+    ("Status: synthetic, illustrative. No workbook values represent actual Mahadhan transactions.", None),
     ("All data in this workbook is SYNTHETIC. It is calibrated to public, approximate figures so the portal behaves like a real season, but it is NOT Mahadhan's actual sales, farmer or field data.", None),
     ("The backend loads this file into its database on first start-up; every sheet named ds.* becomes a live dataset behind the matching screen panel.", None),
     ("", None),
@@ -1297,6 +1369,10 @@ for name in DS_ORDER:
     readme.cell(row=row_no, column=2, value=f"Screen dataset → GET /api/datasets/{name}. {DS_DOCS[name]} Scope columns (season, state, district, crop …) drive the filter bar.")
     readme.cell(row=row_no, column=3, value=f"=COUNTA('ds.{name}'!A:A)-1")
     row_no += 1
+readme.cell(row=row_no, column=1, value="Data dictionary")
+readme.cell(row=row_no, column=2, value="Column types, units, descriptions and allowed values.")
+readme.cell(row=row_no, column=3, value=f"=COUNTA('Data dictionary'!A:A)-1")
+row_no += 1
 readme.cell(row=row_no, column=1, value="_meta")
 readme.cell(row=row_no, column=2, value="Loader settings: reference date, date shifting, version, source label.")
 for r in readme.iter_rows(min_row=1, max_row=row_no, max_col=2):
@@ -1360,12 +1436,19 @@ wb.save(OUTPUT)
 # Filter-bar masters (server/data/reference/*.json) are written from the same lists so every generated
 # district / crop / product can be selected in the web app.
 REFERENCE_DIR = SERVER_DIR / "data" / "reference"
+state_names = {state_id: info[0] for state_id, info in STATES.items()}
+region_members = {region: [state_id for state_id, info in STATES.items() if info[1] == region] for region in REGIONS}
 geography = {
-    "_comment": "Geography master. Add states / districts / talukas here (or upload via PUT /api/reference/geography). `id` values are the filter keys used in datasets (columns `state`, `district`, `taluka`). `has_data` = the synthetic data workbook has rows for the district. Written by server/scripts/generate_synthetic_workbook.py.",
+    "_comment": "Canonical hierarchy: region -> state -> district -> taluka/territory -> marketing unit -> village. Existing state/district/taluka filter fields remain stable.",
     "country": "India",
+    "regions": [{"id": region.lower(), "name": region, "states": ids} for region, ids in region_members.items()],
     "states": [
-        {"id": state_id, "name": STATES[state_id][0], "districts": [
-            {"id": d[0], "name": d[1], "talukas": d[5], "has_data": True} for d in DISTRICTS if d[2] == state_id]}
+        {"id": state_id, "name": state_names[state_id], "region": STATES[state_id][1], "districts": [
+            {"id": d[0], "name": d[1], "talukas": d[5], "territories": d[5], "villages": d[7], "has_data": True,
+             "marketing_units": [{"id": str(mu["id"]), "name": mu["name"], "taluka": mu["taluka"],
+                                 "village_count": mu["villages"], "villages": d[7] if idx == 0 else []}
+                                 for idx, mu in enumerate(MUS) if mu["district"] == d[0]]}
+            for d in DISTRICTS if d[2] == state_id]}
         for state_id in STATES
     ],
 }
@@ -1373,21 +1456,87 @@ families = {"croptek": ("Croptek", "Speciality nutrition", [50, 25]), "smartek":
             "solutek": ("Solutek", "Water-soluble fertiliser", [25, 1]), "bensulf": ("Bensulf", "Sulphur nutrition", [10, 3]),
             "mahadhan-24-24-0": ("Mahadhan 24:24:0", "Complex fertiliser", [50])}
 product_master = {
-    "_comment": "Product master. Add Mahadhan products here (or PUT /api/reference/products). `id` is the filter key used in dataset rows (column `product`). Doses and prices are NOT stored here - agronomy-approved values belong in the backend product / crop_product_dose tables. Written by server/scripts/generate_synthetic_workbook.py.",
+    "_comment": "Canonical product master with screen category names. Product references use the exact names below.",
     "products": [
-        {"id": key, "name": name, "family": family, "pack_sizes_kg": packs,
+        {"id": key, "name": name, "family": family, "category": PRODUCT_CATEGORY[name], "pack_sizes_kg": packs,
          "crops": sorted({crop.lower() for p in PRODUCTS if p[3] == key for crop in p[6]}), "active": True}
         for key, (name, family, packs) in families.items()
     ],
 }
 reference_masters = json.loads((REFERENCE_DIR / "masters.json").read_text(encoding="utf-8"))
-reference_masters["crops"] = [{"id": name.lower(), "name": name} for name in
-                              ["Onion", "Sugarcane", "Grapes", "Cotton", "Maize", "Soybean", "Pomegranate", "Tomato", "Banana", "Groundnut"]]
+reference_masters["crops"] = [{"id": name.lower(), "name": name} for name in SCREEN_CROPS]
+reference_masters["seasons"] = [{"id": item[7], "name": item[1], "current": item[0] == CURRENT_SEASON} for item in SEASONS]
+
+reference_masters["financial_years"] = [{"id": fy.lower().replace(" ", "-"), "name": fy} for fy in FY_VALUES]
+reference_masters["crop_seasons"] = [{"id": name.lower().replace(" ", "-"), "name": name} for name in ("Kharif", "Rabi", "Late Rabi")]
+reference_masters["themes"] = [{"id": name.lower().replace(" & ", "-").replace(" ", "-"), "name": name} for name in THEMES]
+objective_names = set(OBJECTIVE_THEME)
+objective_names.update(row.get("objective", "") for row in CAMPAIGN_PIN)
+reference_masters["campaign_objectives"] = [{"id": name.lower().replace(" ", "-"), "name": name, "theme": OBJECTIVE_THEME.get(name, THEMES[0])} for name in sorted(objective_names) if name]
+reference_masters["activity_costs"] = [
+    {"activity": "demonstration", "base_cost_lakh_per_unit": 1.10},
+    {"activity": "retailer activation", "base_cost_lakh_per_unit": 0.25},
+    {"activity": "farmer meeting", "base_cost_lakh_per_unit": 0.20},
+    {"activity": "digital advisory", "base_cost_lakh_per_unit": 0.30},
+    {"activity": "follow-up", "base_cost_lakh_per_unit": 0.15},
+    {"activity": "default", "base_cost_lakh_per_unit": 0.20},
+]
+people = [{"id": str(person_row["id"]), "name": person_row["name"], "role": person_row["role"], "region": person_row.get("region"), "territory": person_row.get("territory"), "mu_id": person_row.get("mu_id")} for person_row in T["field_staff"]]
+for name, role, region in [("Sayak Patil", "Business Head", None), ("R. Jadhav", "Marketing Head", "West"), ("S. Patil", "Marketing Head", "South"), ("V. Shinde", "Marketing Head", "North"), ("P. Kale", "Marketing Head", "East")]:
+    if not any(person_row["name"] == name and person_row["role"] == role for person_row in people):
+        people.append({"id": f"screen-{len(people)+1}", "name": name, "role": role, "region": region})
+reference_masters["people"] = people
 for path, payload in (("geography.json", geography), ("products.json", product_master), ("masters.json", reference_masters)):
     (REFERENCE_DIR / path).write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+# Register every generated dataset with the shared web/API catalog and export static snapshots.
+CATALOG_PATH = SERVER_DIR / "data" / "datasets" / "catalog.json"
+catalog_data = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+SCREEN_MAP = {
+    "portfolio.campaigns": ["s1.1", "s1.2", "s1.3", "bh.2"],
+    "bh.region_performance": ["bh.3", "bh.3a"], "bh.investment_roi": ["bh.5", "bh.5a"],
+    "bh.theme_pipeline": ["bh.7", "bh.7a"], "bh.interventions": ["bh.9"],
+    "mh.regional_opportunity": ["mh.1", "mh.2"], "mh.plan_alignment": ["mh.3"],
+    "mh.campaign_mix_calendar": ["mh.6"], "mh.approvals": ["mh.7", "mh.8"],
+    "pm.portfolio_abp": ["pm.1"], "pm.territory_plans": ["pm.2", "pm.3"],
+    "pm.activity_approvals": ["pm.7"], "pm.impact_uplift": ["pm.9"],
+    "tm.territory_plan": ["tm.1"], "tm.outlets": ["tm.2"], "tm.village_coverage": ["tm.4"],
+    "tm.campaign_activities": ["cw.2"], "tm.execution_weekly": ["tm.ex1"], "tm.impact": ["tm.ex2"],
+}
+entries = catalog_data.setdefault("datasets", [])
+by_name = {entry["name"]: entry for entry in entries}
+for name in DS_ORDER:
+    records = DS[name]
+    columns = []
+    for key in (records[0].keys() if records else []):
+        value = next((row.get(key) for row in records if row.get(key) is not None), None)
+        typ = "boolean" if isinstance(value, bool) else "number" if isinstance(value, (int, float)) else "string"
+        columns.append({"name": key, "type": typ, "description": f"{key.replace('_', ' ').capitalize()} in {name}."})
+    existing = by_name.get(name)
+    if existing:
+        old = {column["name"]: column for column in existing.get("columns", [])}
+        old.update({column["name"]: column for column in columns})
+        existing["columns"] = list(old.values())
+        existing["screens"] = sorted(set(existing.get("screens", []) + SCREEN_MAP.get(name, [])))
+        existing["screen"] = SCREEN_MAP.get(name, [existing.get("screen", "")])[0]
+    else:
+        entry = {"name": name, "title": name.replace(".", " ").replace("_", " ").title(), "screen": SCREEN_MAP[name][0],
+                 "screens": SCREEN_MAP[name], "source_system": "CampaignIQ canonical synthetic workbook", "refresh": "daily",
+                 "description": DS_DOCS[name], "columns": columns}
+        entries.append(entry)
+        by_name[name] = entry
+CATALOG_PATH.write_text(json.dumps(catalog_data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+SNAPSHOT_DIR = SERVER_DIR.parent / "web" / "src" / "data" / "snapshot"
+SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
+for name in DS_ORDER:
+    payload = json.loads(json.dumps(DS[name], ensure_ascii=False, default=lambda value: value.isoformat() if hasattr(value, "isoformat") else str(value)))
+    (SNAPSHOT_DIR / f"{name.replace('.', '__')}.json").write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
 
 counts = {name: len(T[name]) for name in TABLE_ORDER}
 counts.update({f"ds.{name}": len(DS[name]) for name in DS_ORDER})
 print(f"Wrote {OUTPUT}")
-for name, count in counts.items():
+for name, count in list(counts.items())[:12]:
     print(f"  {name:34s} {count:>7,}")
+if len(counts) > 12:
+    print(f"  ... {len(counts) - 12} additional sheets; total rows {sum(counts.values()):,}")
+print(f"  canonical ds datasets: {len(DS_ORDER)}; snapshots: {len(DS_ORDER)}")

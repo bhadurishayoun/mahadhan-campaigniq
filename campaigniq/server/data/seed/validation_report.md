@@ -1,0 +1,43 @@
+# Workbook validation report
+
+Result: PASS
+
+- [PASS] Workbook sheets: 56 sheets
+- [PASS] Dataset portfolio.campaigns: 5040 rows
+- [PASS] Dataset atlas.top_markets: 86 rows
+- [PASS] Dataset atlas.taluka_ranking: 371 rows
+- [PASS] Dataset nutrition.triggers: 340 rows
+- [PASS] Dataset readiness.village_demand: 425 rows
+- [PASS] Dataset readiness.stock_heatmap: 425 rows
+- [PASS] Dataset readiness.dealers: 480 rows
+- [PASS] Dataset readiness.cluster_supply: 425 rows
+- [PASS] Dataset orchestration.owners: 145 rows
+- [PASS] Dataset impact.cluster_conversion: 1275 rows
+- [PASS] Dataset impact.channel_effectiveness: 1275 rows
+- [PASS] Dataset impact.geo_performance: 1275 rows
+- [PASS] Dataset bh.region_performance: 144 rows
+- [PASS] Dataset bh.investment_roi: 144 rows
+- [PASS] Dataset bh.theme_pipeline: 144 rows
+- [PASS] Dataset bh.interventions: 144 rows
+- [PASS] Dataset mh.regional_opportunity: 145 rows
+- [PASS] Dataset mh.plan_alignment: 144 rows
+- [PASS] Dataset mh.campaign_mix_calendar: 144 rows
+- [PASS] Dataset mh.approvals: 144 rows
+- [PASS] Dataset pm.portfolio_abp: 145 rows
+- [PASS] Dataset pm.territory_plans: 144 rows
+- [PASS] Dataset pm.activity_approvals: 144 rows
+- [PASS] Dataset pm.impact_uplift: 144 rows
+- [PASS] Dataset tm.territory_plan: 145 rows
+- [PASS] Dataset tm.outlets: 144 rows
+- [PASS] Dataset tm.village_coverage: 146 rows
+- [PASS] Dataset tm.campaign_activities: 5 rows
+- [PASS] Dataset tm.execution_weekly: 144 rows
+- [PASS] Dataset tm.impact: 144 rows
+- [PASS] Campaign filter coverage: each region/state/crop/product/theme/period/FY has rows
+- [PASS] Campaign master foreign keys: state/product/crop/region/theme
+- [PASS] Numeric and percentage ranges: nonnegative finite; percentages 0–100
+- [PASS] Achievement and region/state roll-ups: achievement = actual/target; regional and state sums reconcile
+- [PASS] Story anchors: Onion campaign ₹3.00 L; 54/150; 36%; activity budget ₹3.00 L
+- [PASS] PM ABP anchor: ₹6.00 Cr
+- [PASS] Ambad / Jalna anchors: Ambad ₹4.20 Cr; Jalna cluster ₹10.00 Cr
+- [PASS] Catalog dataset screens: 30 datasets registered

@@ -1,10 +1,11 @@
 {
-  "_comment": "Product master. Add Mahadhan products here (or PUT /api/reference/products). `id` is the filter key used in dataset rows (column `product`). Doses and prices are NOT stored here - agronomy-approved values belong in the backend product / crop_product_dose tables. Written by server/scripts/generate_synthetic_workbook.py.",
+  "_comment": "Canonical product master with screen category names. Product references use the exact names below.",
   "products": [
     {
       "id": "croptek",
       "name": "Croptek",
       "family": "Speciality nutrition",
+      "category": "Croptek",
       "pack_sizes_kg": [
         50,
         25
@@ -27,6 +28,7 @@
       "id": "smartek",
       "name": "Smartek",
       "family": "Speciality nutrition",
+      "category": "Specialty Nutrition",
       "pack_sizes_kg": [
         50,
         25
@@ -45,6 +47,7 @@
       "id": "solutek",
       "name": "Solutek",
       "family": "Water-soluble fertiliser",
+      "category": "Water Soluble",
       "pack_sizes_kg": [
         25,
         1
@@ -62,6 +65,7 @@
       "id": "bensulf",
       "name": "Bensulf",
       "family": "Sulphur nutrition",
+      "category": "Specialty Nutrition",
       "pack_sizes_kg": [
         10,
         3
@@ -80,6 +84,7 @@
       "id": "mahadhan-24-24-0",
       "name": "Mahadhan 24:24:0",
       "family": "Complex fertiliser",
+      "category": "Primary Nutrition",
       "pack_sizes_kg": [
         50
       ],
