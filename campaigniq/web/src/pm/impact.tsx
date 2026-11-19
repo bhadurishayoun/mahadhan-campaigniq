@@ -26,7 +26,7 @@ export function Pm10() {
         <Select options={['Onion', 'All Crops']} /><Select options={['Croptek', 'All Products']} /><Select options={['West Region', 'Maharashtra']} /><Select options={[C1.name, 'All Campaigns']} /><Select options={['Jan–Feb 2027', 'FY 2026–27']} />
       </div>}
     >
-      <Source>Later illustrative interim checkpoint after Marketing Head authorization, local TM approvals and execution progress. approval checks are not portrayed as approved without that transition.</Source>
+      <Source>Later interim checkpoint after Marketing Head authorization, local TM approvals and execution progress. approval checks are not portrayed as approved without that transition.</Source>
       <Strip items={[
         { label: 'Product Portfolio ABP', value: '₹6.00 Cr' },
         { label: 'Campaign rollout progress', value: <>{IMPACT.activities} activities <Muted>(Ambad, source-linked)</Muted></> },
@@ -80,7 +80,7 @@ export function Pm10a() {
       code="PM.10A"
       title="Crop × Product × Geography Performance Detail"
     >
-      <Source><b>View Performance</b> on Onion × Croptek × Ambad. Future illustrative checkpoint; no real Mahadhan performance.</Source>
+      <Source><b>View Performance</b>  on Onion × Croptek × Ambad. Future checkpoint; no real Mahadhan performance.</Source>
       <Strip items={[{ label: 'Crop', value: 'Onion' }, { label: 'Product', value: 'Croptek' }, { label: 'Geography', value: 'Ambad / Jalna' }, { label: 'Campaign', value: C1.name }]} />
       <div className="pm-two">
         <div className="pm-stack">
@@ -196,7 +196,7 @@ export function Pm10c() {
           ['Verified eligible exposed cohort', <P />], ['Valid comparable baseline / control', <Status>Missing Baseline</Status>], ['Incremental purchases above baseline', <P />],
           ['Validated incremental net sales', <P />], ['Contribution margin', <P>Finance verification</P>], ['Eligible campaign investment', <>{INVESTMENT} regional envelope · local ₹3 L <Status>To reconcile</Status></>],
         ]} />
-        <Muted>{IMPACT.linkedSales} linked sales are not treated as incremental benefit; the 36% illustrative historical conversion is not causal lift.</Muted>
+        <Muted>{IMPACT.linkedSales}Linked sales are not treated as incremental benefit; the 36% historical conversion is not causal lift.</Muted>
       </Box>
       <Box title="Data quality & sources" tone="soft">
         <Sources label="" items={[{ label: 'TM.IM1' }, { label: 'TM.IM2' }, { label: 'PM.10A', to: 'pm.10a' }, { label: 'CRM / Farmer Master' }, { label: 'ERP / DMS sales' }, { label: 'Forecast assumptions', to: 'pm.8' }]} />
@@ -216,7 +216,7 @@ export function Pm11() {
       code="PM.11"
       title="What Worked & Next Season"
     >
-      <Source>Selected Onion / Croptek / Ambad campaign impact. Future illustrative interim reporting, not real Mahadhan results.</Source>
+      <Source>Selected Onion / Croptek / Ambad campaign impact. Future interim reporting, not real Mahadhan results.</Source>
       <Strip items={[
         { label: 'Reached', value: IMPACT.reached }, { label: 'Trials', value: IMPACT.trials }, { label: 'Recorded adopters', value: IMPACT.adopters },
         { label: 'Activities complete', value: IMPACT.activities }, { label: 'Provisional campaign-linked sales', value: IMPACT.linkedSales },
@@ -359,7 +359,7 @@ export function Pm11c() {
   const [selected, setSelected] = useState(0);
   const asset = COLLATERALS[selected];
   return (
-    <Drawer title="Campaign Collateral & Creative Effectiveness" status="Evidence Analysis — Pending" width="50%" back="pm.11" subtitle={`${C1.name} · Croptek / Onion · Ambad / Jalna · future illustrative interim reporting`}
+    <Drawer title="Campaign Collateral & Creative Effectiveness" status="Evidence Analysis — Pending" width="50%" back="pm.11" subtitle={`${C1.name} · Croptek / Onion · Ambad / Jalna · future interim reporting`}
       footer={<>
         <Btn to="pm.11">Back to What Worked & Why</Btn>
         <Act message="Authorized asset record opened (registry match pending)">View Authorized Asset Record</Act>
@@ -374,7 +374,7 @@ export function Pm11c() {
         onRow={setSelected}
       />
       <div className="pm-two-even">
-        <Creative kind={asset.kind} lang={asset.kind === 'whatsapp' || asset.kind === 'poster' ? 'Marathi' : 'English'} size="md" label="Illustrative preview" version={asset.version} />
+        <Creative kind={asset.kind} lang={asset.kind === 'whatsapp' || asset.kind === 'poster' ? 'Marathi' : 'English'} size="md" label="Preview" version={asset.version} />
         <Facts rows={[
           ['Authorized version check', <P>Registry match pending</P>], ['Target retailers / farmers', <P />], ['Distribution record validation', <P />],
           ['Actual field use verification', <P />], ['Exposure / engagement linkage', <P />], ['Linked purchase attribution', <Status>Not Established</Status>],
@@ -410,7 +410,7 @@ export function Pm11d() {
       title="Next-Season Changes"
       status="Draft Recommendations / Not Submitted"
     >
-      <Source><b>Consolidate Next-Season Learnings</b>, after village diagnostics and intervention effectiveness. Future illustrative interim learning checkpoint, not season-end impact.</Source>
+      <Source><b>Consolidate Next-Season Learnings</b>, after village diagnostics and intervention effectiveness. Future interim learning checkpoint, not season-end impact.</Source>
       <div className="pm-kpi-row">
         <div className="pm-kpi"><span>Recorded adopters</span><strong>{IMPACT.adopters}</strong><small>Ambad local, recorded</small></div>
         <div className="pm-kpi"><span>Local activity progress</span><strong>{IMPACT.activities}</strong><small>{ACTIVITY_TOTAL.completion} complete</small></div>
@@ -458,7 +458,7 @@ const QUESTIONS = ['Which intervention worked?', 'Where is growth lagging?', 'Wh
 
 /** Zonal Manager figures handed to the live LLM as grounding context. */
 const PM_FACTS = [
-  `Persona: ${PM_ROLE}. All figures illustrative.`,
+  `Persona: ${PM_ROLE}. `,
   `Portfolio ABP (Rs Cr): ${PORTFOLIO.map((p) => `${p.product} ${p.ly} last year -> ${p.abp}`).join('; ')}; total ${PORTFOLIO_TOTAL.ly} -> ${PORTFOLIO_TOTAL.abp}.`,
   `Territory submission ${AMBAD.territory}: ABP ${AMBAD.abp}, submitted ${AMBAD.submitted}, gap ${AMBAD.gap}. Crop plan: ${CROP_PLAN.map((c) => `${c.crop} ${c.business} (${c.growth})`).join('; ')}.`,
   `Dhanora onion: history ${DHANORA.histRev} / ${DHANORA.histVol}, target ${DHANORA.tgtRev} / ${DHANORA.tgtVol}, area ${DHANORA.prevAcres} -> ${DHANORA.reqAcres} at ${DHANORA.rate}, realisation ${DHANORA.realPrev} -> ${DHANORA.realNew}.`,

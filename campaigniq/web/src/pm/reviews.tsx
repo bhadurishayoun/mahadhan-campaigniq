@@ -33,7 +33,6 @@ export function Pm1() {
             total={['Total portfolio', cr(PORTFOLIO_TOTAL.ly), cr(PORTFOLIO_TOTAL.abp), '+25.0%', cr(1.2), '100%']}
             highlight={0}
           />
-          <Muted>All financials illustrative. Growth required = (ABP − previous-year sales) ÷ previous-year sales.</Muted>
         </Box>
         <div className="pm-stack">
           <Box title="Portfolio contribution & growth">
@@ -46,9 +45,9 @@ export function Pm1() {
           </Box>
           <Box title="Previous-year campaign indicators" tone="soft">
             <Facts cols={3} rows={[
-              ['Target attainment FY 2024–25', <>94% <Status>Illustrative</Status></>],
-              ['Campaign-linked sales FY 2024–25', <>₹0.62 Cr <Status>Illustrative</Status></>],
-              ['Campaigns closed with learning', <>3 of 4 <Status>Illustrative</Status></>],
+              ['Target attainment FY 2024–25', <>94%</>],
+              ['Campaign-linked sales FY 2024–25', <>₹0.62 Cr</>],
+              ['Campaigns closed with learning', <>3 of 4</>],
             ]} />
           </Box>
         </div>
@@ -284,7 +283,7 @@ export function Pm3() {
               <Facts cols={2} rows={[
                 ['Historical', `${DHANORA.histRev} · ${DHANORA.histVol}`],
                 ['Target', `${DHANORA.tgtRev} · ${DHANORA.tgtVol}`],
-                ['Effective coverage (illustrative)', <>{DHANORA.prevAcres} → {DHANORA.reqAcres} <Status>Unvalidated</Status></>],
+                ['Effective coverage ', <>{DHANORA.prevAcres} → {DHANORA.reqAcres} <Status>Unvalidated</Status></>],
                 ['Application rate assumption', <>{DHANORA.rate} <Status>Unvalidated</Status></>],
                 ['Product realization', <>{DHANORA.realPrev} → {DHANORA.realNew} <span style={{ color: '#a42e2a' }}>(−20%)</span></>],
                 ['Volume growth', '+50%'],

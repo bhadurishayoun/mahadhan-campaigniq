@@ -24,7 +24,7 @@ export function Tm1() {
         { label: 'Current-year ABP target', value: crore(TOTAL_ABP, 1), sub: 'Assigned annual business plan' },
         { label: 'Required growth', value: pct(growth(TOTAL_LY, TOTAL_ABP), 0), sub: '+₹2.0 Cr over last year', tone: 'amber' },
       ]} />
-      <Panel title="Territory planning table" actions={<span className="tm-muted">₹ Cr · illustrative</span>}>
+      <Panel title="Territory planning table" actions={<span className="tm-muted">₹ Cr ·</span>}>
         <div className="table-wrap">
           <table className="dt pm-table tm-table">
             <thead><tr><th>Territory</th><th className="r">Last Year Liquidation</th><th className="r">Current-year ABP target</th><th className="r">Required growth</th><th className="r">Absolute uplift</th><th>Plan status</th><th /></tr></thead>
@@ -102,7 +102,7 @@ export function Tm2() {
         { label: 'Last Year Liquidation', value: '₹3.2 Cr' },
         { label: 'Current-year ABP target', value: '₹4.2 Cr' },
         { label: 'Required growth', value: '+31.3%' },
-        { label: 'Network (illustrative)', value: '8 dealers · 74 retailers' },
+        { label: 'Network ', value: '8 dealers · 74 retailers' },
       ]} />
       <div className="tm-explorer">
         <Panel title="Geography → channel explorer" className="tm-tree-panel">
@@ -132,7 +132,7 @@ export function Tm2() {
           markerLegend={[{ label: 'Network mapped', color: MAP_COLORS.green }, { label: 'Mapping issues', color: MAP_COLORS.amber }]} />
       </div>
       <div className="tm-explorer-table">
-        <Panel title={`${village} — mapped outlets`} actions={<Btn small icon={<RefreshCw size={12} />} onClick={() => toast('Master-data refresh requested from the dealer/retailer Excel master (illustrative).')}>Refresh master data</Btn>}>
+        <Panel title={`${village} — mapped outlets`} actions={<Btn small icon={<RefreshCw size={12} />} onClick={() => toast('Master-data refresh requested from the dealer/retailer Excel master.')}>Refresh master data</Btn>}>
           <div className="tm-village-summary">
             <span><b>{selected.dealers}</b> dealer{selected.dealers > 1 ? 's' : ''}</span>
             <span><b>{selected.retailers}</b> linked retailers</span>
@@ -150,7 +150,7 @@ export function Tm2() {
                     <td>{o.village}</td>
                     <td className={cx(/No sales/.test(o.prev) && 'tm-muted')}>{o.prev}</td>
                     <td><Status>{o.status}</Status></td>
-                    <td className="r"><Btn small onClick={() => toast(`${o.name}: outlet profile (illustrative)`)}>View</Btn></td>
+                    <td className="r"><Btn small onClick={() => toast(`${o.name}: outlet profile `)}>View</Btn></td>
                   </tr>
                 ))}
               </tbody>
@@ -185,8 +185,8 @@ export function Tm3() {
     <TmPage crumbs={[{ label: 'My Plan', to: 'tm.1' }, { label: 'Territory Network', to: 'tm.2' }, { label: 'Ambad' }, { label: 'Outlet Planning' }]}
       code="TM.3" title="Outlet Targets" subtitle="Allocate Ambad's ABP across dealers. Retailer demand is shown for context only."
       actions={<>
-        <Btn icon={<Upload size={13} />} onClick={() => toast('Import Excel Plan: choose a filled template (illustrative).')}>Import Excel Plan</Btn>
-        <Btn icon={<Download size={13} />} onClick={() => toast('Template downloaded: Ambad_outlet_plan_template.xlsx (illustrative)')}>Download Template</Btn>
+        <Btn icon={<Upload size={13} />} onClick={() => toast('Import Excel Plan: choose a filled template.')}>Import Excel Plan</Btn>
+        <Btn icon={<Download size={13} />} onClick={() => toast('Template downloaded: Ambad_outlet_plan_template.xlsx ')}>Download Template</Btn>
         <Btn icon={<Save size={13} />} onClick={() => toast('Outlet plan saved as draft.')}>Save Draft</Btn>
       </>}>
       <PlanTabs active="tm.3" />
@@ -353,7 +353,7 @@ export function Tm4() {
           <AiPanel title="AI Feasibility Insight">
             <ul className="tm-ai-list">
               <li><b>Realisation drops 20%:</b> ₹{PREVIOUS_REALISATION}/kg last year vs ₹{PLANNED_REALISATION}/kg planned. Validate pricing or product mix.</li>
-              <li><b>Coverage:</b> {Math.round(calc.effective)} of ~{ELIGIBLE_ACRES_DHANORA.toLocaleString('en-IN')} eligible onion acres in Dhanora = {((calc.effective / ELIGIBLE_ACRES_DHANORA) * 100).toFixed(1)}% (illustrative village area).</li>
+              <li><b>Coverage:</b> {Math.round(calc.effective)} of ~{ELIGIBLE_ACRES_DHANORA.toLocaleString('en-IN')} eligible onion acres in Dhanora = {((calc.effective / ELIGIBLE_ACRES_DHANORA) * 100).toFixed(1)}% ( village area).</li>
             </ul>
           </AiPanel>
         </div>

@@ -180,8 +180,8 @@ export function ImpactDashboard() {
           </div>
           <p className="muted small" style={{ marginTop: 10 }}>
             ⓘ Net ROI = (Projected Incremental Contribution − Campaign Spend) / Campaign Spend.<br />
-            Note: This is a <b>forecast</b> at completion, not a realized or final return. All financials are illustrative.
-          </p>
+            Note: This is a <b>forecast</b> at completion, not a realized or final return.
+ </p>
         </Panel>
 
         <Panel icon={<Network size={16} />} title="Action" info className="ai-panel">
@@ -359,7 +359,7 @@ export function DiagnosticsStudio() {
             <div><span><IndianRupee size={14} color="var(--amber)" />Potential revenue at risk (est.)</span><b>~₹5.5 Lakh</b></div>
             <div><span><BarChart3 size={14} color="var(--green)" />Potential contribution at risk (est.)</span><b>~₹1.4 Lakh</b></div>
           </div>
-          <p className="muted small" style={{ marginTop: 10 }}>All financials are illustrative.</p>
+          <p className="muted small" style={{ marginTop: 10 }}></p>
         </Panel>
       </Grid>
 

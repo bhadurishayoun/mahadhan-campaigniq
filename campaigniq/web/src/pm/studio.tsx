@@ -96,7 +96,7 @@ export function Pm5a() {
   return (
     <Drawer title="Build a Concept" status="Draft / Not Submitted" width="50%" back="pm.5" subtitle={`${THEME.name} (acknowledged) · priority Maharashtra Onion · West Region conditional`}
       footer={<>
-        <Act message="AI alternative concept drafted (illustrative)" icon={<Sparkles size={13} />}>Generate AI Alternative</Act>
+        <Act message="AI alternative concept drafted " icon={<Sparkles size={13} />}>Generate AI Alternative</Act>
         <Btn to="pm.5b">View Concept Rationale</Btn>
         <Act message="Draft concept saved (not submitted)">Save Draft Concept</Act>
         <Btn to="pm.5">Cancel</Btn>
@@ -119,7 +119,7 @@ export function Pm5a() {
         <Field label="Supporting evidence"><Input value={`Penetration ${EVIDENCE.penetration} · Q1–Q4 secondary sales ${EVIDENCE.quarterly.join(' → ')} · pilot ${EVIDENCE.trialToPurchase}`} /></Field>
         <Field label="Open validations"><Input value="Retailer influence · benchmark · audience overlap · stock / channel" /></Field>
       </div>
-      <AiBox title="AI Concept Guidance" items={[{ text: `Indicative penetration ${EVIDENCE.penetration}, a positive illustrative quarterly secondary-sales trend and a hypothetical ${EVIDENCE.trialToPurchase} trial-to-purchase rate support exploring this concept. None of it claims underperformance or causation; audience overlap and stock / channel validation are unresolved.` }]} />
+      <AiBox title="AI Concept Guidance" items={[{ text: `Indicative penetration ${EVIDENCE.penetration}, a positive quarterly secondary-sales trend and a hypothetical ${EVIDENCE.trialToPurchase} trial-to-purchase rate support exploring this concept. None of it claims underperformance or causation; audience overlap and stock / channel validation are unresolved.` }]} />
       <Sources items={[{ label: 'Strategic Brief', to: 'pm.4a' }, { label: 'Investigation' }, { label: 'Evidence Review', to: 'pm.4a' }]} />
       <Muted>Save creates an editable draft only. Not a submission or Marketing approval.</Muted>
     </Drawer>
@@ -144,7 +144,7 @@ export function Pm5b() {
         rows={[
           [<b>Market attractiveness</b>, '', '', ''],
           ['Croptek penetration, Maharashtra Onion', EVIDENCE.penetration, 'MH.2', <Status>Indicative</Status>],
-          ['Historical secondary sales Q1–Q4', EVIDENCE.quarterly.join(' → '), 'Market Opportunities by Region (illustrative)', <Status>Observed / Indicative</Status>],
+          ['Historical secondary sales Q1–Q4', EVIDENCE.quarterly.join(' → '), 'Market Opportunities by Region ', <Status>Observed / Indicative</Status>],
           [<b>Intervention suitability</b>, '', '', ''],
           ['Pilot trial-to-purchase', `${EVIDENCE.trials} trials / ${EVIDENCE.purchases} purchases = ${EVIDENCE.trialToPurchase}`, 'Conversion Barriers: Updated Findings (hypothetical)', <Status>No benchmark</Status>],
           ['Historical comparable benchmark', 'Unavailable', '—', <Status>Required Validation</Status>],

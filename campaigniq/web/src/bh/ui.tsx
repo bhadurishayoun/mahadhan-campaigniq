@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { ChevronRight, Home } from 'lucide-react';
 import { useNav, type ScreenId } from '../nav';
-import { cx, Pill, type Tone } from '../ui';
+import { cx, type Tone } from '../ui';
 import { bhMeta, type BhScreenId } from './nav';
 import { KpiCard } from '../ui/index';
 import { ClipboardCheck, IndianRupee, Megaphone, Target, Users, Wallet } from '../icons';
@@ -41,7 +41,7 @@ export function BhPage({ screen, children, subtitle, actions, className }: {
         <span className="crumb crumb-current"><ChevronRight size={12} />{meta.title}</span>
       </nav>
       <header className="bh-page-head">
-        <div><div className="bh-title-row"><h1>{meta.title}</h1><Pill tone="amber">Illustrative data</Pill></div>{subtitle && <p className="page-subtitle">{subtitle}</p>}</div>
+        <div><div className="bh-title-row"><h1>{meta.title}</h1></div>{subtitle && <p className="page-subtitle">{subtitle}</p>}</div>
         {actions && <div className="page-actions">{actions}</div>}
       </header>
       {children}

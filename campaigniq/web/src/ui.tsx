@@ -190,7 +190,7 @@ export function DataBadge({ data }: { data: { name: string; live: boolean; sourc
   const { go } = useNav();
   const title = data.live
     ? `Live data · ${data.name}${data.source ? ` · ${data.source}` : ''}${data.uploadedAt ? ` · ${data.uploadedAt}` : ''}`
-    : `Illustrative demo data. Upload dataset "${data.name}" in Data Sources to replace it.`;
+    : ` demo data. Upload dataset "${data.name}" in Data Sources to replace it.`;
   return (
     <button type="button" className={cx('data-badge', data.live ? 'data-live' : 'data-demo')} title={title} onClick={() => go('admin.1')}>
       {data.live ? 'Live' : 'Demo'}

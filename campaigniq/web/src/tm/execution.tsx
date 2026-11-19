@@ -31,7 +31,7 @@ export function TmEx1() {
   return (
     <TmPage crumbs={[{ label: 'Campaign Execution' }, { label: 'Approved Campaigns' }, { label: CAMPAIGN.name }, { label: 'Activity Tracker' }]}
       code="TM.EX1" title="Activity Tracker" status="In progress"
-      banner={<Note>Future illustrative scenario: the campaign has cleared its approvals and mandatory launch checks after CW.4.</Note>}
+      banner={<Note>Future scenario: the campaign has cleared its approvals and mandatory launch checks after CW.4.</Note>}
       actions={<span className="tm-sync"><Clock size={12} /> Last synced 18 Nov 2026, 09:40 · field app (not a live ERP feed)</span>}>
       <CampaignStrip />
       <Metrics items={[
@@ -112,7 +112,7 @@ export function TmEx2() {
             <dl className="tm-facts tm-facts-4">
               <div><dt>Campaign</dt><dd>{CAMPAIGN.name}</dd></div>
               <div><dt>Assigned owner</dt><dd>R. Jadhav</dd></div>
-              <div><dt>Planned</dt><dd>Week 2 (illustrative)</dd></div>
+              <div><dt>Planned</dt><dd>Week 2 </dd></div>
               <div><dt>Unit</dt><dd>1 of 4 demonstrations · 13 campaign activities</dd></div>
             </dl>
             <div className="tm-blocker-box"><AlertTriangle size={15} /><span><b>Blocker:</b> stock availability confirmation pending. The activity is not completed.</span></div>
@@ -199,7 +199,7 @@ export function TmIm1() {
   return (
     <TmPage crumbs={[{ label: 'Impact & Learning' }, { label: CAMPAIGN.name }, { label: 'Campaign Performance' }]}
       code="TM.IM1" title="Campaign Results" status="Interim checkpoint"
-      banner={<Note>Later illustrative checkpoint, after more field activity and data updates — not the same moment as the Activity Tracker view.</Note>}>
+      banner={<Note>Later checkpoint, after more field activity and data updates — not the same moment as the Activity Tracker view.</Note>}>
       <CampaignStrip />
       <Metrics items={[
         { label: 'Base-case forecast campaign sales', value: '₹12.0 L', sub: 'Planning forecast (CW.3)' },
@@ -208,7 +208,7 @@ export function TmIm1() {
         { label: 'Recorded adopters', value: adopters, tone: 'green' },
       ]} />
       <div className="pm-two">
-        <Panel title="Farmer conversion funnel" actions={<span className="tm-muted">Illustrative · evidence-dependent</span>}>
+        <Panel title="Farmer conversion funnel" actions={<span className="tm-muted"> · evidence-dependent</span>}>
           <FunnelBars stages={[{ label: 'Farmers reached', value: reached }, { label: 'Trials', value: trials }, { label: 'Adopters', value: adopters }]} />
           <div className="tm-rates"><span>Reach → trial <b>{((trials / reached) * 100).toFixed(0)}%</b></span><span>Trial → adoption <b>{conversion(adopters, trials).toFixed(0)}%</b></span></div>
         </Panel>
@@ -270,7 +270,7 @@ export function TmIm2() {
   return (
     <TmPage crumbs={[{ label: 'Impact & Learning', to: 'tm.im1' }, { label: CAMPAIGN.name }, { label: 'Campaign Performance', to: 'tm.im1' }, { label: 'Diagnostics & Learning' }]}
       code="TM.IM2" title="What Worked & Why" status="Interim · causes unverified"
-      banner={<Note>Illustrative interim checkpoint of an approved campaign — not a claim of actual Mahadhan results.</Note>}>
+      banner={<Note> interim checkpoint of an approved campaign — not a claim of actual Mahadhan results.</Note>}>
       <div className="pm-two">
         <Panel title="Village-wise conversion diagnostic">
           <HBars rows={[
@@ -338,7 +338,7 @@ export function TmIm2() {
 /* ------------------------------------------------------------------ TM.AI1 */
 /** Everything the Field Sales Manager screens show, handed to the live LLM as grounding context. */
 const TM_FACTS = [
-  'Persona: Field Sales Manager, Jalna Cluster, FY 2025-26. All figures illustrative.',
+  'Persona: Field Sales Manager, Jalna Cluster, FY 2025-26. ',
   'Territories: Ambad Rs 3.2 Cr last year -> Rs 4.2 Cr ABP (+31.3%), Ghansawangi 2.8 -> 3.4 (+21.4%), Badnapur 2.0 -> 2.4 (+20%); cluster 8.0 -> 10.0 Cr (+25%).',
   'Last year: incentive achievement 92%, campaign ROI 1.6x, 3-year target attainment 94%.',
   'Ambad network: 8 dealers, 74 retailers. Dhanora 1 dealer/12 retailers (Sai Krushi Bhandar unmapped, Kisan Seva Kendra inactive); Wadi Gaon 1/14; Ambad HQ 3/22; Pimpalgaon 1/10; other villages 2/16.',

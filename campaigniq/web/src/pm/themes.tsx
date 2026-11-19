@@ -24,7 +24,7 @@ export function Pm4() {
       code="PM.4"
       title="Assigned Themes"
     >
-      <Source>Later illustrative workflow after Marketing Head strategic theme assignment and development tracking. Separate from the planning review.</Source>
+      <Source>Later workflow after Marketing Head strategic theme assignment and development tracking. Separate from the planning review.</Source>
 
       <Box title="Assigned Marketing Themes" icon={<Inbox size={15} />}>
         <Table
@@ -44,7 +44,7 @@ export function Pm4() {
             ['Strategic objective', THEME.objective],
             ['Strategic scope', 'Maharashtra Onion initially; other West Region markets subject to validation'],
             ['Opportunity rationale', `Indicative penetration headroom (${EVIDENCE.penetration}) and positive historical secondary-sales momentum`],
-            ['Matched trial-to-purchase evidence', <>{EVIDENCE.trialToPurchase} ({EVIDENCE.purchases} / {EVIDENCE.trials}) <Status>Illustrative</Status> — not proof of poor conversion without a benchmark</>],
+            ['Matched trial-to-purchase evidence', <>{EVIDENCE.trialToPurchase} ({EVIDENCE.purchases} / {EVIDENCE.trials}) — not proof of poor conversion without a benchmark</>],
           ]} />
         </Box>
         <Box title="Zonal Manager deliverables" icon={<ListChecks size={15} />}>
@@ -83,14 +83,14 @@ export function Pm4a() {
           head={['Evidence', 'Value', 'Source scope', 'Status']}
           rows={[
             [<b>Croptek product penetration</b>, EVIDENCE.penetration, 'Market Insights · Maharashtra Onion', <Status>Provisional</Status>],
-            [<b>Quarterly Maharashtra secondary sales</b>, EVIDENCE.quarterly.join(' → '), 'Market Opportunities by Region · illustrative Q1–Q4', <Status>Illustrative</Status>],
+            [<b>Quarterly Maharashtra secondary sales</b>, EVIDENCE.quarterly.join(' → '), 'Market Opportunities by Region · Q1–Q4', 'Available'],
             [<b>Farmer investigation trial-to-purchase</b>, `${EVIDENCE.trials} documented trials / ${EVIDENCE.purchases} matched purchases = ${EVIDENCE.trialToPurchase}`, 'Investigation', <Status>No benchmark</Status>],
           ]}
         />
         <Muted>Different source scopes; provisional evidence. 36% is not shown as poor without a comparator.</Muted>
       </Box>
       <Box title="Business-plan linkage" tone="soft">
-        <p className="small">Illustrative Ambad Onion growth objective of ₹25 L is already <b>included</b> within the approved all-product Ambad ABP of ₹4.20 Cr. It is not additive to the target and not Croptek-specific committed revenue.</p>
+        <p className="small"> Ambad Onion growth objective of ₹25 L is already <b>included</b> within the approved all-product Ambad ABP of ₹4.20 Cr. It is not additive to the target and not Croptek-specific committed revenue.</p>
       </Box>
       <Facts cols={2} rows={[
         ['Objective', THEME.objective],

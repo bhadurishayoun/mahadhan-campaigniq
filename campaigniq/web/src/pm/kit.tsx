@@ -81,7 +81,6 @@ function DrawerSummary({ title, status, back }: { title: string; status?: string
       <div className="iq-chip-row">
         {status && <StatusChip kind={kind}>{status}</StatusChip>}
         <StatusChip kind="info">Returns to {back.toUpperCase()}</StatusChip>
-        <StatusChip kind="pending">Illustrative data</StatusChip>
       </div>
     </section>
   );

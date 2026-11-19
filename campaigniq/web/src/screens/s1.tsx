@@ -21,7 +21,6 @@ function FootNote({ role = true }: { role?: boolean }) {
   return (
     <div className="s1-foot-note">
       <span><Info size={12} /> Data last refreshed 2 hours ago</span>
-      <span>All financials are illustrative</span>
       {role && <span><UserCheck size={12} /> Role: National Campaign Head</span>}
     </div>
   );
@@ -509,7 +508,7 @@ export function PortfolioDashboard() {
               { label: 'Market development', value: 2, color: COLORS.yellow, note: '2' },
             ]} />
         </Panel>
-        <Panel title="Estimated Return on Campaign Spend" actions={<span className="small muted">Illustrative campaign sample</span>}>
+        <Panel title="Estimated Return on Campaign Spend">
           <HBars max={3.2} rows={[
             { label: 'Smartek Sugarcane', value: 3.0, display: '3.0x', tone: 'dark' },
             { label: 'Solutek Grape', value: 2.8, display: '2.8x', tone: 'dark' },
@@ -557,7 +556,7 @@ export function PortfolioDashboard() {
           onRowClick={(r) => (r.name === 'Croptek Onion Adoption' ? go('s1.3') : toast(`${r.name}: ${r.stage} stage, ${r.progress}% executed, ROI ${r.roi}`))} />
         {rows.length === 0 && <p className="small muted" style={{ textAlign: 'center' }}>No campaigns match “{query}”.</p>}
         <div className="row-between small muted" style={{ marginTop: 8 }}>
-          <span>* Campaign-specific conversion values are illustrative | ROI shown as estimated return on campaign spend</span>
+          <span>Campaign-specific conversion values; ROI is shown as estimated return on campaign spend.</span>
           <span>Showing {rows.length} of 28 campaigns{showAll ? ' · sample view' : ''}</span>
         </div>
         <div className="row" style={{ justifyContent: 'flex-end', marginTop: 6 }}>

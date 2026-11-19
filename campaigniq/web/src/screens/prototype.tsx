@@ -321,7 +321,7 @@ export function PrototypeOverview() {
             </div>
           ))}
         </div>
-        <p className="note">Screens marked “Interactive UI · API ready” show the approved mockup design with illustrative data; their backend endpoints exist and are demonstrated live on P.2 and P.3. Connecting each panel is a configuration step (see Data Sources & Integrations).</p>
+        <p className="note">Screens marked “Interactive UI · API ready” show the approved mockup design with data; their backend endpoints exist and are demonstrated live on P.2 and P.3. Connecting each panel is a configuration step (see Data Sources & Integrations).</p>
       </Panel>
     </div>
   );

@@ -30,7 +30,7 @@ export function Pm8() {
               head={['', ...SCENARIOS.map((item, index) => <span className={cx(index === scenario && 'pm-selected-col')}>{item.name}{index === scenario ? ' · SELECTED' : ''}</span>)]}
               align={['l', 'r', 'r', 'r']}
               rows={[
-                [<b>Regional investment (illustrative)</b>, INVESTMENT, INVESTMENT, INVESTMENT],
+                [<b>Regional investment </b>, INVESTMENT, INVESTMENT, INVESTMENT],
                 [<b>Forecast incremental sales</b>, ...SCENARIOS.map((item) => item.sales)],
                 [<b>Contribution at {MARGIN}</b>, ...SCENARIOS.map((item) => item.contribution)],
                 [<b>Forecast net ROI</b>, ...SCENARIOS.map((item) => <b>{item.roi}</b>)],
@@ -55,7 +55,7 @@ export function Pm8() {
         </div>
         <div className="pm-stack">
           <AiBox title="AI Business Case Assessment" items={[
-            { text: 'Unvalidated 36% illustrative historical pilot trial-to-purchase benchmark.', tone: 'amber' },
+            { text: 'Unvalidated 36% historical pilot trial-to-purchase benchmark.', tone: 'amber' },
             { text: 'Retailer influence / stock evidence pending.', tone: 'amber' },
             { text: 'Financial margin and product realization require confirmation.', tone: 'amber' },
             { text: `Potential audience and benefit overlap with the separate ${C2.name} concept.`, tone: 'red' },
@@ -234,7 +234,7 @@ export function Pm8c() {
                 [<b>Forecast net ROI</b>, ...SCENARIOS.map((item) => <b>{item.roi}</b>)],
               ]}
             />
-            <Muted>ROI = (contribution − investment) ÷ investment. Illustrative PM forecasts, not actual or validated.</Muted>
+            <Muted>ROI = (contribution − investment) ÷ investment. PM forecasts, not actual or validated.</Muted>
           </Box>
           <Box title="Forecast contribution vs proposed investment">
             <Bars

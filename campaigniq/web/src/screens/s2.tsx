@@ -894,7 +894,7 @@ export function MicroMarketSegmentation() {
         ]}
         next={{ label: 'Competition & Dealers', to: 's2.4' }}
       />
-      <p className="s2-footnote">Illustrative concept data connected user journey</p>
+      <p className="s2-footnote">Campaign concepts connected to the user journey.</p>
     </div>
   );
 }
@@ -1266,7 +1266,7 @@ export function CampaignRecommendations() {
               <HBars rows={SWITCHING_BARRIERS.map((b) => ({ ...b, display: `${b.value}%` }))} max={45} />
             </Panel>
             <Panel title="Campaign Budget & Intervention Mix" actions={<Pill tone="amber" solid>₹8.0 Lakh</Pill>}>
-              <p className="small muted" style={{ margin: '0 0 6px' }}>Proposed Campaign Budget (Illustrative)</p>
+              <p className="small muted" style={{ margin: '0 0 6px' }}>Proposed Campaign Budget </p>
               <Donut
                 size={140}
                 thickness={28}
@@ -1316,7 +1316,6 @@ export function CampaignRecommendations() {
                 { key: 'roi', label: 'Campaign ROI', align: 'right', render: (row) => <strong>{row.roi}</strong> },
               ]}
             />
-            <p className="s2-footnote" style={{ marginTop: 6 }}>All financials are illustrative.</p>
           </Panel>
         </div>
 

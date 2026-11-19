@@ -280,7 +280,7 @@ export function Pm7d() {
       title="Collateral Technical, Brand & Language Approval Tracker"
       status="Submitted — Technical Review Pending"
     >
-      <Source><b>Submit Current Version for Technical Review</b> (v0.3 English). Later illustrative state after submission, not an actual approval.</Source>
+      <Source><b>Submit Current Version for Technical Review</b>  (v0.3 English). Later state after submission, not an actual approval.</Source>
       <div className="pm-two">
         <Box title="Claim-wise & content-wise review tracker">
           <Table

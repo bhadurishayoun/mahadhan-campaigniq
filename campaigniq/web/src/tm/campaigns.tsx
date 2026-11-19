@@ -171,7 +171,7 @@ export function Cw1() {
             </label>
           </div>
           <div className="pm-field"><span>Suggested crop-stage focus (onion, days from transplanting)</span>
-            <StageTimeline focus={[1, 2]} caption="Illustrative planning guidance; agronomy validation required."
+            <StageTimeline focus={[1, 2]} caption=" planning guidance; agronomy validation required."
               stages={[{ label: 'Establishment', days: '0–20' }, { label: 'Vegetative', days: '21–45' }, { label: 'Bulb initiation', days: '46–70' }, { label: 'Bulb development', days: '71–100' }, { label: 'Maturity', days: '101–125' }]} />
           </div>
         </Panel>

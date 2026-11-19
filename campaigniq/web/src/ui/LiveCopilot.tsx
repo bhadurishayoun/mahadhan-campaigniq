@@ -106,7 +106,7 @@ export function LiveCopilot({ persona, screen, pageContext, suggestions, intro, 
           onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') ask(draft); }} />
         <button type="button" aria-label="Send" disabled={busy || !draft.trim()} onClick={() => ask(draft)}><Send size={15} /></button>
       </div>
-      <small className="lc-foot">Illustrative data. Questions and on-screen figures are sent to a free third-party LLM service; do not enter personal or confidential information.</small>
+      <small className="lc-foot">Questions and on-screen figures are sent to a free third-party LLM service; do not enter personal or confidential information.</small>
     </section>
   );
 }

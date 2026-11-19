@@ -32,11 +32,11 @@ const Pm2 = () => (
 );
 
 const Pm2a = () => (
-  <ChartCard icon={BarChart3} title="How does the TM submission reconcile to the ABP?" hint="₹ Cr, Ambad (illustrative bridge)"><Waterfall fmt={crL} steps={[{ label: 'TM submitted', value: 3.8, total: true }, { label: 'Crop revalidation', value: 0.15 }, { label: 'Outlet adjustment', value: 0.25 }, { label: 'ABP', value: 4.2, total: true }]} /></ChartCard>
+  <ChartCard icon={BarChart3} title="How does the TM submission reconcile to the ABP?" hint="₹ Cr, Ambad ( bridge)"><Waterfall fmt={crL} steps={[{ label: 'TM submitted', value: 3.8, total: true }, { label: 'Crop revalidation', value: 0.15 }, { label: 'Outlet adjustment', value: 0.25 }, { label: 'ABP', value: 4.2, total: true }]} /></ChartCard>
 );
 
 const PmCompare = () => (
-  <ChartCard icon={BarChart3} title="How does the submission compare with what is required?" hint="Submitted vs required by crop, ₹ Cr (illustrative)"><ColumnBars x="c" height={200} fmt={crL} series={[{ key: 'sub', name: 'Submitted' }, { key: 'req', name: 'Required' }]} data={[{ c: 'Onion', sub: 1.65, req: 1.8 }, { c: 'Maize', sub: 1.1, req: 1.3 }, { c: 'Soybean', sub: 1.05, req: 1.1 }]} /></ChartCard>
+  <ChartCard icon={BarChart3} title="How does the submission compare with what is required?" hint="Submitted vs required by crop, ₹ Cr "><ColumnBars x="c" height={200} fmt={crL} series={[{ key: 'sub', name: 'Submitted' }, { key: 'req', name: 'Required' }]} data={[{ c: 'Onion', sub: 1.65, req: 1.8 }, { c: 'Maize', sub: 1.1, req: 1.3 }, { c: 'Soybean', sub: 1.05, req: 1.1 }]} /></ChartCard>
 );
 
 const Pm4 = () => (
@@ -105,6 +105,6 @@ export const PM_PULSE: Record<string, PulseItem[]> = {
 /* Charts shown inside drawers, keyed by drawer title */
 export const PM_DRAWER_CHARTS: Record<string, ReactNode> = {
   'Retailer Enablement — Intervention Configuration': (
-    <ChartCard icon={Target} title="Are the intervention KPIs on track?" hint="Planned vs target (illustrative)"><Bullets rows={[{ label: 'Retailers trained', actual: 18, target: 24, }, { label: 'Farmer trials', actual: 140, target: 160 }, { label: 'Adoption rate', actual: 42, target: 45 }]} unit="" /></ChartCard>
+    <ChartCard icon={Target} title="Are the intervention KPIs on track?" hint="Planned vs target "><Bullets rows={[{ label: 'Retailers trained', actual: 18, target: 24, }, { label: 'Farmer trials', actual: 140, target: 160 }, { label: 'Adoption rate', actual: 42, target: 45 }]} unit="" /></ChartCard>
   ),
 };

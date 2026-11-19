@@ -264,7 +264,7 @@ export function Pm9e() {
         <span className="pm-foot-right"><Cta locked="Disabled until mandatory checks pass or valid authorized exceptions are recorded">Approve Consolidated Local Campaign Plan</Cta></span>
       </>}
     >
-      <p className="pm-note">Future illustrative pre-approval checkpoint after approved the parent campaign and published the recommendation. Local approval and launch have <b>not</b> occurred. Local budget ₹3.00 L is allocated <b>within</b> the regional ₹12.00 L envelope, never added to it.</p>
+      <p className="pm-note">Future pre-approval checkpoint after approved the parent campaign and published the recommendation. Local approval and launch have <b>not</b> occurred. Local budget ₹3.00 L is allocated <b>within</b> the regional ₹12.00 L envelope, never added to it.</p>
       <div className="pm-two">
         <Table
           compact

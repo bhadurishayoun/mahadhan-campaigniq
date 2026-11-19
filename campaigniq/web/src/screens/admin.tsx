@@ -57,7 +57,7 @@ export function DataSources() {
     setBusy(name);
     try {
       await api(`/datasets/${encodeURIComponent(name)}`, { method: 'DELETE' });
-      toast(`${name}: reverted to illustrative demo data`);
+      toast(`${name}: reverted to demo data`);
       refreshDatasets();
       load();
     } catch (error) {
@@ -77,7 +77,7 @@ export function DataSources() {
       <PageHeader
         code="ADM"
         title="Data Sources & Integrations"
-        subtitle="Replace illustrative screen data with real feeds, manage geography and product masters, and connect the AI Copilot to an LLM."
+        subtitle="Replace screen data with real feeds, manage geography and product masters, and connect the AI Copilot to an LLM."
       />
       {apiDown && <Note>{API_BASE ? <>The API is not reachable at {API_BASE}. {import.meta.env.DEV ? <>Start it with <code>npm run dev</code></> : 'The free backend may still be waking up (up to a minute) - reload shortly'} to upload data; screens keep showing demo data meanwhile.</> : 'No backend is connected to this published demo, so uploads are disabled; every screen shows its built-in demo data.'}</Note>}
 
@@ -102,7 +102,7 @@ export function DataSources() {
         ))}
       </div>
 
-      <Panel title="Screen Datasets" icon={<Database size={16} />} subtitle="Each row is a table or chart that currently shows illustrative data. Download the CSV template, fill it from the source system and upload it. Optional scope columns (season, state, district, taluka, crop, product, campaign_type) let one file cover many states, districts and products - the filter bar picks the matching rows.">
+      <Panel title="Screen Datasets" icon={<Database size={16} />} subtitle="Each row is a table or chart that currently shows data. Download the CSV template, fill it from the source system and upload it. Optional scope columns (season, state, district, taluka, crop, product, campaign_type) let one file cover many states, districts and products - the filter bar picks the matching rows.">
         <input ref={fileInput} className="adm-file" type="file" accept=".csv,.json" onChange={(event) => { const file = event.target.files?.[0]; if (file) void upload(file); }} />
         <div className="table-wrap">
           <table className="dt dt-compact adm-table">
@@ -167,9 +167,9 @@ export function DataSources() {
 
         <Panel title="AI Copilot (LLM)" icon={<Bot size={16} />} actions={<Pill tone={copilot?.mode === 'llm' ? 'green' : 'amber'}>{copilot?.mode === 'llm' ? 'LLM connected' : 'Demo answers'}</Pill>}>
           <p className="small" style={{ marginTop: 0 }}>
-            The copilot sends the question, the filter scope and matching rows from uploaded datasets to the configured LLM and renders the JSON answer.
-            Without an LLM it shows the built-in illustrative answers.
-          </p>
+ The copilot sends the question, the filter scope and matching rows from uploaded datasets to the configured LLM and renders the JSON answer.
+ Without an LLM it shows the built-in answers.
+ </p>
           <p className="small"><b>Provider:</b> {copilot?.provider ?? 'unknown'} {copilot?.model && <>· <b>Model:</b> {copilot.model}</>}</p>
           <p className="small" style={{ marginBottom: 0 }}>Set these in <code>server/.env</code> (see <code>.env.example</code>) and restart the API:</p>
           <pre className="adm-code">{`COPILOT_PROVIDER=openai        # or azure_openai | demo

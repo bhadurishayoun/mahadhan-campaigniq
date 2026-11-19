@@ -218,7 +218,7 @@ export function TemplateLibrary() {
           <Btn variant="primary" icon={<Plus size={14} />} to="s4.2">Create New Campaign</Btn>
         </>}
       />
-      <SourceBar right="recommendations can also open directly · Illustrative workspace">✓ Source: Campaign Planning → Campaign Portfolio &amp; Templates</SourceBar>
+      <SourceBar right="recommendations can also open directly · workspace">✓ Source: Campaign Planning → Campaign Portfolio &amp; Templates</SourceBar>
       <KpiRow className="s4-kpi-big">
         <Kpi icon={<LayoutList size={18} />} label="Campaigns in Portfolio" value="04" sub="Across selected crop, region and season" />
         <Kpi icon={<CheckCircle2 size={18} />} label="Approved Campaign" value="01" sub="Croptek Onion Conversion — Ambad" />
@@ -298,7 +298,7 @@ export function TemplateLibrary() {
         />
         {rows.length === 0 && <Note>No campaigns match the current search / filter.</Note>}
       </Panel>
-      <Note>* Illustrative records and dates; approval controls remain.</Note>
+      <Note>Campaign records and dates are planning inputs; approval controls remain.</Note>
       <FlowFooter
         label="Navigation:"
         steps={[{ label: 'Campaign Planning' }, { label: 'Portfolio & Templates (Current)', current: true }, { label: 'Create a Campaign', to: 's4.2' }]}
@@ -756,7 +756,7 @@ export function ScenarioSimulator() {
                 compact
                 columns={[
                   { key: 'p', label: 'Parameter', render: (r) => <span className="s4-act">{r.icon}{r.p}</span> },
-                  { key: 'v', label: `${SCENARIO_LABEL[s.scenario]} (Illustrative)`, align: 'right', render: (r) => <strong>{r.v}</strong> },
+                  { key: 'v', label: `${SCENARIO_LABEL[s.scenario]} `, align: 'right', render: (r) => <strong>{r.v}</strong> },
                 ]}
                 rows={[
                   { p: 'Incremental Product Demand', v: `${inr(sel.demand)} MT`, icon: <Package size={14} /> },
@@ -940,7 +940,7 @@ export function ApprovalReview() {
             <Panel title="ROI Methodology" icon={<FileBarChart size={15} />} info>
               <Check status="done">Adoption denominator = target farmers (1,832).</Check>
               <Check status="done">Net ROI based on incremental contribution, not revenue.</Check>
-              <Check status="done">Margin assumption / contribution basis is an illustrative planning assumption.</Check>
+              <Check status="done">Margin assumption / contribution basis is an planning assumption.</Check>
               <Check status="done">Result shown as forecast, not realized performance.</Check>
               <div className="s4-formula">
                 Net ROI = (Incremental contribution − campaign spend) / campaign spend<br />

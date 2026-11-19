@@ -185,7 +185,7 @@ export function DemandProjection() {
             rows={skuRows}
             total={{ sku: 'Total', pack: '–', qty: '–', demand: <strong>{fmt(result.demand)}</strong>, bags: <strong>{int(totalBags)}</strong> }}
           />
-          <Note>*Illustrative pack mix; to be validated with Mahadhan's approved SKU master.</Note>
+          <Note>* pack mix; to be validated with Mahadhan's approved SKU master.</Note>
         </Panel>
 
         <Panel title={<>Demand Phasing by Crop Stage <span className="muted small">(Total: {fmt(result.demand, 0)} MT)</span></>} icon={<Leaf size={15} />}>
@@ -552,7 +552,7 @@ export function StockReadiness() {
           </div>
           <Note>8 MT (20–26 Jan) arrives after the Bulb Development peak — flagged late.</Note>
         </Panel>
-        <Panel title={<>Exposed Business Impact <span className="muted small">(Illustrative)</span></>} icon={<Coins size={15} />}>
+        <Panel title={<>Exposed Business Impact <span className="muted small"></span></>} icon={<Coins size={15} />}>
           <div className="s5-impact">
             <Users size={28} color={COLORS.green} />
             <div><span className="small muted">Expected Adopters at Risk</span><strong>~378 farmers</strong><span className="small muted">(≈ 43 MT gap ÷ 0.114 MT/farmer)</span></div>
@@ -883,7 +883,7 @@ export function DealerReadiness() {
         </Panel>
       </Grid>
 
-      <div className="warn-box small"><AlertTriangle size={13} /> <strong>Note:</strong> Retailer stock figures are illustrative and unverified until confirmed through field validation or dealer ERP update.</div>
+      <div className="warn-box small"><AlertTriangle size={13} /> <strong>Note:</strong> Retailer stock figures remain unverified until confirmed through field validation or dealer ERP update.</div>
 
       <FlowFooter label="Source:" steps={[
         { label: 'Campaign Stock & Supply Gaps', to: 's5.2' },
@@ -1082,7 +1082,7 @@ export function SupplyRiskPlanner() {
         { label: 'Dealer & Retailer Readiness', to: 's5.3' },
         { label: 'Current: Stock Replenishment Plan', current: true },
       ]} next={{ label: 'Unified Campaign Orchestration Calendar', to: 's6.1' }} />
-      <Note>ⓘ All figures are illustrative and for planning purposes only.</Note>
+      <Note>ⓘ and for planning purposes only.</Note>
     </div>
   );
 }

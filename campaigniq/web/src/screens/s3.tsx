@@ -174,7 +174,7 @@ export function NutritionCalendar() {
       <div className="s3-kpi-grid">
         <Kpi icon={<Sprout size={20} />} label="Current Stage Coverage (Ambad/Jalna)" value="56%" sub="in Vegetative Growth" />
         <Kpi icon={<CalendarDays size={20} />} label="Clusters Approaching Next Window" value="3 of 5" sub="(in 6–9 days)" />
-        <Kpi icon={<Target size={20} />} label="Timing Confidence" value="~85%" sub="(illustrative estimate)" />
+        <Kpi icon={<Target size={20} />} label="Timing Confidence" value="~85%" sub="Planning estimate" />
         <div className="s3-kpi-cta">
           <Btn variant="primary" to="s3.2" icon={<ArrowRight size={14} />}>Explore Stage-wise Nutrition Needs</Btn>
         </div>
@@ -184,7 +184,7 @@ export function NutritionCalendar() {
         title="Onion Crop-Stage Timeline — Late Rabi 2026–27 (Ambad/Jalna)"
         icon={<Droplet size={16} />}
         info
-        actions={<Pill tone="grey">All stage dates are illustrative estimates for the Late Rabi cycle</Pill>}
+        actions={<Pill tone="grey">All stage dates are estimates for the Late Rabi cycle</Pill>}
       >
         <div className="wide-scroll">
         <div className="s3-timeline">
@@ -212,7 +212,7 @@ export function NutritionCalendar() {
               {item.name}
             </button>
           ))}
-          <span className="s3-tl-sub">Illustrative<br />Stage Window</span>
+          <span className="s3-tl-sub"><br />Stage Window</span>
           {STAGES.map((item) => (
             <span key={item.name} className="s3-tl-date">{item.window}</span>
           ))}
@@ -220,7 +220,7 @@ export function NutritionCalendar() {
         </div>
         <div className="s3-tl-detail highlight-box">
           <strong>{selected.name}</strong>
-          <span className="muted">Window: {selected.window} (illustrative)</span>
+          <span className="muted">Window: {selected.window}  </span>
           <Pill tone={stage === CURRENT_STAGE ? 'green' : stage < CURRENT_STAGE ? 'grey' : stage === 2 ? 'red' : 'amber'}>{selected.status}</Pill>
           {stage >= 2 && stage <= 3 && (
             <Btn small variant="outline" to="s3.2" icon={<ArrowRight size={12} />}>View stage-wise needs</Btn>
@@ -233,7 +233,7 @@ export function NutritionCalendar() {
           title="Growth-Stage Distribution — Ambad/Jalna Clusters"
           icon={<MapPin size={16} />}
           info
-          subtitle="Estimated share of onion acreage by current stage (illustrative)"
+          subtitle="Estimated share of onion acreage by current stage "
         >
           <div className="s3-stack-legend">
             <span><i style={{ background: COLORS.green }} />Vegetative Growth</span>
@@ -263,7 +263,7 @@ export function NutritionCalendar() {
           )}
         </Panel>
 
-        <Panel title="Anticipated Stage Transitions" icon={<ChevronRight size={16} />} info subtitle="Expected stage shifts for Ambad/Jalna (illustrative agronomic estimates).">
+        <Panel title="Anticipated Stage Transitions" icon={<ChevronRight size={16} />} info subtitle="Expected agronomic stage shifts for Ambad/Jalna.">
           <div className="s3-trans">
             <span><strong>Vegetative Growth</strong>→ Bulb Initiation</span>
             <span className="s3-trans-when"><CalendarDays size={15} /><span><strong>in 6–9 days</strong><span className="muted">(~ Feb 21 – Feb 24)</span></span></span>
@@ -281,7 +281,7 @@ export function NutritionCalendar() {
             compact
             columns={[
               { key: 'stage', label: 'Stage / Window', render: (row) => <span><strong>{row.stage}</strong><br /><span className="muted small">(Nutrition Window)</span></span> },
-              { key: 'timing', label: 'Illustrative Timing' },
+              { key: 'timing', label: ' Timing' },
               { key: 'urgency', label: 'Urgency', render: (row) => <Pill tone={row.urgency === 'High' ? 'red' : 'amber'}>{row.urgency}</Pill> },
             ]}
             rows={[
@@ -368,7 +368,7 @@ export function StageNutrition() {
           <div>
             <h2>ONION / BULB INITIATION</h2>
             <div className="s3-crop-meta">Ambad, Jalna &nbsp;•&nbsp; Estimated window: 21 Feb – 04 Mar 2027</div>
-            <div className="small muted">Crop-stage timing is illustrative; field confirmation is required.</div>
+            <div className="small muted">Confirm crop-stage timing in the field.</div>
           </div>
           <div className="s3-crop-status"><Pill tone="amber">Programme status: Under review</Pill></div>
         </div>
@@ -754,7 +754,7 @@ export function TriggerEngine() {
         items={[
           { icon: <OnionArt size={34} />, label: 'Selected Programme', value: 'Croptek Onion Nutrition Programme' },
           { icon: <MapPin size={18} />, label: 'Crop & Geography', value: 'Onion | Ambad/Jalna' },
-          { icon: <Sprout size={18} />, label: 'Current Stage Window', value: 'Bulb Initiation | 21 Feb – 4 Mar 2027', sub: '(Illustrative)' },
+          { icon: <Sprout size={18} />, label: 'Current Stage Window', value: 'Bulb Initiation | 21 Feb – 4 Mar 2027' },
           { icon: <Zap size={18} />, label: 'Trigger Status', value: <Pill tone="green">Recommendations Generated</Pill> },
           { icon: <Shield size={18} />, label: 'Programme Approval', value: <Pill tone="amber">Pending Agronomy Validation</Pill> },
         ]}

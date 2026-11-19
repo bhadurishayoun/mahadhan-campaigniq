@@ -16,7 +16,7 @@ export const TOTAL_ABP = 10.0;
 
 export const ACHIEVEMENT = [
   { label: 'Incentive achievement (FY 2024–25)', value: '92%', note: 'of incentive target earned' },
-  { label: 'Campaign ROI (FY 2024–25)', value: '1.6×', note: 'contribution ÷ campaign spend, illustrative' },
+  { label: 'Campaign ROI (FY 2024–25)', value: '1.6×', note: 'contribution ÷ campaign spend,' },
   { label: 'Historical target attainment', value: '94%', note: '3-year average vs ABP' },
 ];
 
