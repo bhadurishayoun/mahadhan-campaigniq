@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { IndiaDistrictMap } from '../map/IndiaDistrictMap';
 import { useNav, type ScreenId } from '../nav';
 import { BarChart3, MapPin, Target } from '../icons';
-import { ChartCard, ColumnBars, MapCard, ScatterPlot, Bullets } from '../ui/index';
+import { ChartCard, ColumnBars, MapCard, ScatterPlot, Bullets, EmptyState } from '../ui/index';
 import { BhAction, BhBars, BhCard, BhMetric, BhPage, BhWorkflow } from './ui';
 import type { BhScreenId } from './nav';
 import { LiveCopilot } from '../ui/LiveCopilot';
@@ -89,7 +89,7 @@ function BhCommand() {
 type CampaignPerfSource = {
   name?: string; campaign?: string; objective?: string; theme?: string; region?: string; geography?: string; state?: string;
   crop?: string; product?: string; campaign_type?: string; quarter?: number | string; period?: string;
-  investment?: number | string; budget?: number | string; adopters?: number | string; planned?: number | string;
+  investment?: number | string; budget?: number | string; adopters?: number | string; recorded_adopters?: number | string; farmers_converted?: number | string; planned?: number | string;
   observed?: number | string; progress?: number | string; roi?: string;
 };
 
@@ -97,39 +97,39 @@ function BhPortfolio() {
   const [view,setView]=useState('Theme-wise');
   const [region,setRegion]=useState('All Regions'),[crop,setCrop]=useState('All Crops'),[product,setProduct]=useState('All Products'),[theme,setTheme]=useState('All Themes'),[period,setPeriod]=useState('YTD');
   const base: CampaignPerfSource[]=[{name:'Retailer-Led Croptek Conversion',theme:'Conversion & Adoption',region:'West Region',crop:'Onion',product:'Croptek',quarter:4,investment:9,adopters:180,planned:80,observed:72},{name:'Product Adoption Drive',theme:'Conversion & Adoption',region:'West Region',crop:'Maize',product:'Saarthi',quarter:3,investment:23,adopters:260,planned:84,observed:80},{name:'Retailer Enablement',theme:'Retailer Enablement',region:'West Region',crop:'Onion',product:'Croptek',quarter:4,investment:22,adopters:180,planned:82,observed:76},{name:'Trial & Follow-up',theme:'Trial & Follow-up',region:'West Region',crop:'Onion',product:'Croptek',quarter:2,investment:18,adopters:140,planned:82,observed:76},{name:'Conversion Field Drive',theme:'Conversion & Adoption',region:'South Region',crop:'Onion',product:'Saarthi',quarter:4,investment:18,adopters:180,planned:78,observed:71},{name:'Retailer Network Drive',theme:'Retailer Enablement',region:'South Region',crop:'Maize',product:'Croptek',quarter:1,investment:16,adopters:150,planned:78,observed:71},{name:'Crop Awareness',theme:'Crop Nutrition Awareness',region:'South Region',crop:'Onion',product:'Croptek',quarter:4,investment:14,adopters:160,planned:78,observed:71},{name:'Adoption Trial',theme:'Conversion & Adoption',region:'North Region',crop:'Maize',product:'Croptek',quarter:2,investment:14,adopters:180,planned:74,observed:68},{name:'Farmer Trial',theme:'Trial & Follow-up',region:'North Region',crop:'Onion',product:'Saarthi',quarter:4,investment:16,adopters:90,planned:74,observed:68},{name:'Nutrition Awareness',theme:'Crop Nutrition Awareness',region:'North Region',crop:'Maize',product:'Croptek',quarter:1,investment:14,adopters:100,planned:74,observed:68},{name:'Retailer Activation',theme:'Retailer Enablement',region:'East Region',crop:'Onion',product:'Saarthi',quarter:4,investment:10,adopters:100,planned:68,observed:66},{name:'East Trial Drive',theme:'Trial & Follow-up',region:'East Region',crop:'Maize',product:'Croptek',quarter:3,investment:16,adopters:140,planned:70,observed:66}];
-  const dataset = useDataset<CampaignPerfSource>('portfolio.campaigns', base, {
-    region: region==='All Regions'?undefined:region, crop: crop==='All Crops'?undefined:crop,
-    product: product==='All Products'?undefined:product, theme: theme==='All Themes'?undefined:theme,
-    period: period==='YTD'?undefined:period,
-  });
+  const dataset = useDataset<CampaignPerfSource>('portfolio.campaigns', base, {});
   const numberValue=(value: unknown) => Number(String(value ?? 0).replace(/[^0-9.-]/g,'')) || 0;
   const moneyInLakhs=(value: unknown) => {
     if (typeof value === 'number') return value;
     const amount=numberValue(value);
     return /\bcr\b/i.test(String(value)) ? amount*100 : amount;
   };
-  const rows: CampaignPerfSource[] = dataset.live ? dataset.rows : base;
-  const campaigns = rows.map(c=>({
-    name:String(c.name??c.campaign??'Campaign'), theme:String(c.theme??c.objective??c.campaign_type??'Unclassified'),
-    region:String(c.region??c.geography??c.state??'Unassigned'), crop:String(c.crop??''), product:String(c.product??''),
+  const normalizeRegion=(value: unknown) => { const v=String(value??'').toLowerCase(); if(/west|maharashtra|gujarat|madhya pradesh|\bmp\b|rajasthan/.test(v)) return 'West Region'; if(/south|karnataka|andhra|telangana|tamil nadu/.test(v)) return 'South Region'; if(/north|uttar pradesh|\bup\b|punjab|haryana/.test(v)) return 'North Region'; if(/east|odisha|west bengal|\bwb\b|bihar/.test(v)) return 'East Region'; return /region/i.test(String(value??''))?String(value):'Unassigned'; };
+  const normalizeTheme=(value: unknown) => { const v=String(value??'').toLowerCase(); if(/conversion|adoption/.test(v)) return 'Conversion & Adoption'; if(/retail/.test(v)) return 'Retailer Enablement'; if(/trial|follow.?up/.test(v)) return 'Trial & Follow-up'; if(/awareness|nutrition/.test(v)) return 'Crop Nutrition Awareness'; return themes.find(t=>t.name.toLowerCase()===v)?.name??''; };
+  const normalize=(source: CampaignPerfSource[]) => source.map(c=>({
+    name:String(c.name??c.campaign??'Campaign'), theme:normalizeTheme(c.theme??c.objective??c.campaign_type),
+    region:normalizeRegion(c.region??c.geography??c.state), crop:String(c.crop??''), product:String(c.product??''),
     quarter:numberValue(c.quarter), period:c.period, investment:moneyInLakhs(c.investment??c.budget),
-    adopters:numberValue(c.adopters), planned:numberValue(c.planned??c.progress), observed:numberValue(c.observed??c.progress),
+    adopters:numberValue(c.adopters??c.recorded_adopters??c.farmers_converted), planned:numberValue(c.planned??c.progress), observed:numberValue(c.observed??c.progress),
     roi:String(c.roi??'Pending attribution'),
-  }));
+  })).filter(c=>c.theme && c.region!=='Unassigned');
+  const liveRows=dataset.live?normalize(dataset.rows):[];
+  const campaigns=liveRows.length?liveRows:normalize(base);
   const filtered=campaigns.filter(c=>(region==='All Regions'||c.region===region)&&(crop==='All Crops'||c.crop===crop)&&(product==='All Products'||c.product===product)&&(theme==='All Themes'||c.theme===theme)&&(period==='YTD'||(c.period ? c.period===period : period==='QTD'?c.quarter>=3:c.quarter===4)));
   const options=(key:'region'|'crop'|'product'|'theme',fallback:string[])=>Array.from(new Set([...fallback,...campaigns.map(c=>c[key]).filter(Boolean)])).sort();
   const regionOptions=options('region',regions.map(r=>r.name)),cropOptions=options('crop',['Onion','Maize']),productOptions=options('product',['Croptek','Saarthi']),themeOptions=options('theme',themes.map(t=>t.name));
   const investment=filtered.reduce((s,c)=>s+c.investment,0),adopters=filtered.reduce((s,c)=>s+c.adopters,0),execution=filtered.length?Math.round(filtered.reduce((s,c)=>s+c.observed,0)/filtered.length):0;
   const groups:Record<string,typeof filtered>={};filtered.forEach(c=>{const key=view==='Theme-wise'?c.theme:view==='Crop-wise'?c.crop:view==='Product-wise'?c.product:c.region;(groups[key]??=[]).push(c)});
   const groupedRows=Object.entries(groups).map(([name,items])=>[name,items.length,`₹${items.reduce((s,c)=>s+c.investment,0)} L`,items.reduce((s,c)=>s+c.adopters,0).toLocaleString(),'Pending attribution',items.every(c=>c.roi==='Pending attribution')?'Pending attribution':items.map(c=>c.roi).join(', ')] as (string|number)[]);
-  const regionRows=['West Region','South Region','North Region','East Region'].map(r=>{const items=filtered.filter(c=>c.region===r);return [r.replace(' Region',''),...themes.map(t=>items.filter(c=>c.theme===t.name).length),items.length] as (string|number)[]}).filter(r=>Number(r.at(-1))>0);
+  const regionRows=['West Region','South Region','North Region','East Region'].map(r=>{const items=filtered.filter(c=>c.region===r);return [r,...themes.map(t=>items.filter(c=>c.theme===t.name).length),items.length] as (string|number)[]});
+  const colTotals=themes.map((_,i)=>regionRows.reduce((sum,row)=>sum+Number(row[i+1]),0));
   const adopterBars=Object.entries(groups).map(([label,items])=>({label,value:items.reduce((s,c)=>s+c.adopters,0),note:items.reduce((s,c)=>s+c.adopters,0).toLocaleString()}));
   return <BhPage screen="bh.2" subtitle="Compare campaign performance across themes, crops, products and geographies. Financial outcomes remain provisional until attribution is validated.">
     <div className="bh-filterbar"><label>Region<select value={region} onChange={e=>setRegion(e.target.value)}><option>All Regions</option>{regionOptions.map(v=><option key={v}>{v}</option>)}</select></label><label>Crop<select value={crop} onChange={e=>setCrop(e.target.value)}><option>All Crops</option>{cropOptions.map(v=><option key={v}>{v}</option>)}</select></label><label>Product<select value={product} onChange={e=>setProduct(e.target.value)}><option>All Products</option>{productOptions.map(v=><option key={v}>{v}</option>)}</select></label><label>Theme<select value={theme} onChange={e=>setTheme(e.target.value)}><option>All Themes</option>{themeOptions.map(v=><option key={v}>{v}</option>)}</select></label><label>Period<select value={period} onChange={e=>setPeriod(e.target.value)}><option>YTD</option><option>QTD</option><option>Monthly</option></select></label></div>
     <div className="bh-tabs" role="tablist">{['Theme-wise','Crop-wise','Product-wise','Geography-wise'].map(t=><button role="tab" aria-selected={view===t} className={view===t?'active':''} key={t} onClick={()=>setView(t)}>{t}</button>)}</div>
     <div className="bh-metrics four"><BhMetric label="Active campaigns" value={String(filtered.length)} note={`Across ${new Set(filtered.map(c=>c.region)).size} regions`}/><BhMetric label="Actual marketing investment" value={`₹${(investment/100).toFixed(2)} Cr`} note={`${investment} L selected`}/><BhMetric label="Recorded adopters" value={adopters.toLocaleString()}/><BhMetric label="Average regional execution" value={`${execution}%`} note="Observed progress" tone="amber"/></div>
-    <BhCard title={`Campaign performance (${view.toLowerCase()})`}>{filtered.length?<Table headers={[view==='Theme-wise'?'Theme':view==='Geography-wise'?'Region':'Segment','Active campaigns','Marketing investment','Recorded adopters','Incremental sales','Net ROI']} rows={groupedRows}/>:<p className="bh-copy">No campaigns match the selected filters.</p>}</BhCard>
-    <div className="bh-grid two"><BhCard title="Region × theme · active campaign count"><Table headers={['Region','Conversion','Retailer','Trial','Awareness','Total']} rows={regionRows}/></BhCard><BhCard title={`Recorded adopters by ${view.replace('-wise','').toLowerCase()}`}><BhBars items={adopterBars}/></BhCard></div>
+    {filtered.length?<><BhCard title={`Campaign performance (${view.toLowerCase()})`}><Table headers={[view==='Theme-wise'?'Theme':view==='Geography-wise'?'Region':'Segment','Active campaigns','Marketing investment','Recorded adopters','Incremental sales','Net ROI']} rows={groupedRows}/></BhCard>
+    <div className="bh-grid two"><BhCard title="Region by theme: active campaign count"><div className="bh-heatmap-wrap"><table className="bh-heatmap"><thead><tr><th>Region</th>{themes.map(t=><th key={t.name}>{t.name.replace(' & Adoption','').replace(' Enablement','').replace('Crop Nutrition ','')}</th>)}<th>Total</th></tr></thead><tbody>{regionRows.map(row=><tr key={String(row[0])}><th>{String(row[0]).replace(' Region','')}</th>{themes.map((t,ti)=>{const n=Number(row[ti+1]);const top=Math.max(1,...colTotals);const group=filtered.filter(c=>c.region===row[0]&&c.theme===t.name);return <td key={t.name}><button title={`${row[0]} - ${t.name}: ${n} campaigns - ${group.reduce((s,c)=>s+c.investment,0)} L investment - ${group.reduce((s,c)=>s+c.adopters,0)} adopters`} style={{background:`color-mix(in srgb, var(--brand-700) ${Math.round(n/top*75)}%, var(--brand-50))`,color:n/top>.55?'white':'var(--ink-900)'}} onClick={()=>{setRegion(String(row[0]));setTheme(t.name)}}>{n}</button></td>})}<td><b>{row.at(-1)}</b></td></tr>)}<tr><th>Total</th>{colTotals.map((n,i)=><td key={i}><b>{n}</b></td>)}<td><b>{filtered.length}</b></td></tr></tbody></table></div></BhCard><BhCard title={`Recorded adopters by ${view.replace('-wise','').toLowerCase()}`}><BhBars items={adopterBars}/></BhCard></div></>:<EmptyState title="No campaigns for this filter"/>}
     <div className="bh-actions"><LinkRow label="Explore regional performance" to="bh.3"/><LinkRow label="Campaign effectiveness" to="bh.4"/><LinkRow label="Marketing spend & ROI" to="bh.5"/></div>
   </BhPage>;
 }

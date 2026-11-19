@@ -11,6 +11,7 @@ import { useNav, type ScreenId } from '../nav';
 import { api } from '../api';
 import { Btn, cx } from '../ui';
 import { ColumnBars } from '../ui/index';
+import { RankedBarChart } from '../ui/charts';
 import { useDraftEdits } from '../ui/useDraftEdits';
 import {
   APPROVED, CAMPAIGN, CAMPAIGN_RETAILERS, PORTFOLIO, PORTFOLIO_MONTHS, PRIORITIES, SELECTED_RETAILERS,
@@ -292,7 +293,7 @@ export function Cw2() {
         </div>
         <aside className="cw2-side">
           <Panel title="Budget Mix (Draft & Editable)" className="cw2-budget-panel">
-            {lines.map((line, index) => <div className="cw2-budget-row" key={index}><span>{line.activity}</span><div className="cw2-budget-track"><i style={{ width: `${total > 0 ? Math.max(0, line.budget / total * 100) : 0}%`, background: MIX_COLORS[index % MIX_COLORS.length] }} /></div><b>{total > 0 ? Math.round(line.budget / total * 100) : 0}%</b></div>)}
+            <RankedBarChart items={lines.map(line=>({label:line.activity,value:total>0?Math.round(line.budget/total*100):0}))} format={v=>`${v}%`} />
             <div className="cw2-budget-total"><b>Total</b><b>{total > 0 ? Math.round(lines.reduce((sum, line) => sum + (total ? line.budget / total * 100 : 0), 0)) : 0}%</b></div>
             <div className="cw2-budget-sum">Total draft budget <strong>{lakh(total, 2)}</strong></div>
           </Panel>

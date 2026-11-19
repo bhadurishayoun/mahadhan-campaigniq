@@ -1,9 +1,22 @@
 import type { ReactNode } from 'react';
-import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, ReferenceLine, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, Legend, Line, LineChart, ReferenceLine, ResponsiveContainer, Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis } from 'recharts';
 import { SERIES, axisStyle, gridStyle, tooltipStyle } from '../chartTheme';
 
 type Row = Record<string, string | number>;
 export interface Series { key: string; name?: string; color?: string }
+
+/** Compact, consistent single-series ranking chart for persona dashboards. */
+export function RankedBarChart({ items, height, format = (v:number)=>String(v), onSelect }: { items: { label:string; value:number; previous?:number; target?:number }[]; height?:number; format?:(v:number)=>string; onSelect?:(label:string)=>void }) {
+  const sorted=[...items].filter(x=>Number.isFinite(x.value)&&x.value>0).sort((a,b)=>b.value-a.value);
+  if(!sorted.length) return <div className="iq-empty"><span>No data for this selection</span></div>;
+  const visible=sorted.length>6?[...sorted.slice(0,6),{label:'Others',value:sorted.slice(6).reduce((s,x)=>s+x.value,0)}]:sorted;
+  const total=visible.reduce((s,x)=>s+x.value,0); const chartHeight=height??Math.max(130,visible.length*34+24);
+  const data=visible.map(x=>({...x,share:total?x.value/total*100:0,delta:x.previous===undefined?undefined:x.value-x.previous}));
+  return <div className="iq-fill" style={{minHeight:chartHeight}}><ResponsiveContainer width="100%" height="100%" minHeight={chartHeight}><BarChart data={data} layout="vertical" barCategoryGap="35%" margin={{top:2,right:42,bottom:2,left:4}}>
+    <CartesianGrid {...gridStyle} horizontal={false}/><XAxis type="number" tick={axisStyle} tickLine={false} axisLine={false} tickFormatter={format}/><YAxis type="category" dataKey="label" tick={axisStyle} tickLine={false} axisLine={false} width={118}/><Tooltip {...tooltipStyle} formatter={(v:number,_n:string,p:any)=>[`${format(v)} · ${p.payload.share.toFixed(0)}%${p.payload.delta===undefined?'':` · Δ ${format(p.payload.delta)}`}`,'Value']}/>
+    <Bar dataKey="value" name="Value" fill="var(--brand-700)" maxBarSize={16} radius={[0,4,4,0]} onClick={(entry:any)=>onSelect?.(entry.label)} cursor={onSelect?'pointer':'default'}><LabelList dataKey="share" position="right" formatter={(v:number)=>`${v.toFixed(0)}%`} style={{fontSize:11,fill:'var(--ink-600)'}}/></Bar>
+  </BarChart></ResponsiveContainer></div>;
+}
 const color = (s: Series, i: number) => {
   if (s.color) return s.color;
   const label = `${s.key} ${s.name ?? ''}`.toLowerCase();

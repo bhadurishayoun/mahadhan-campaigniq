@@ -6,6 +6,7 @@ import { bhMeta, type BhScreenId } from './nav';
 import { KpiCard } from '../ui/index';
 import { CheckCircle2, ClipboardCheck, Clock, IndianRupee, ListChecks, Megaphone, Target, Users, Wallet } from '../icons';
 import { FileText, MessageSquare } from 'lucide-react';
+import { RankedBarChart } from '../ui/charts';
 
 export function BhPage({ screen, children, subtitle, actions, className }: {
   screen: BhScreenId; children: ReactNode; subtitle?: string; actions?: ReactNode; className?: string;
@@ -61,8 +62,7 @@ export function BhMetric({ label, value, note, tone = 'green' }: { label: string
 }
 
 export function BhBars({ title, items, max }: { title?: string; items: { label: string; value: number; note?: string; tone?: 'green' | 'amber' | 'muted' }[]; max?: number }) {
-  const ceiling = max ?? Math.max(...items.map((x) => x.value), 1);
-  return <div className="bh-bars">{title && <h3>{title}</h3>}{items.map((item) => <div className="bh-bar-row" key={item.label}><span>{item.label}</span><div className="bh-bar-track"><i className={`bh-bar-fill ${item.tone ?? 'green'}`} style={{ width: `${Math.max(2, Math.min(100, item.value / ceiling * 100))}%` }} /></div><b>{item.note ?? item.value}</b></div>)}</div>;
+  return <div className="bh-bars">{title && <h3>{title}</h3>}<RankedBarChart items={items} format={(v)=>max?`${v}`:v.toLocaleString()}/></div>;
 }
 
 export function BhWorkflow({ steps, active = 0 }: { steps: string[]; active?: number }) {

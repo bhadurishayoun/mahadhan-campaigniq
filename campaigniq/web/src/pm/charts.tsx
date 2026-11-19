@@ -41,9 +41,9 @@ const PmCompare = () => (
 
 const Pm4 = () => (
   <KpiGrid cols={3}>
-    <KpiCard icon={Sparkles} label="Conversion & Adoption" value="Fit 86" tone="green" />
-    <KpiCard icon={Sparkles} label="Retailer Enablement" value="Fit 78" tone="blue" />
-    <KpiCard icon={Sparkles} label="Trial & Follow-up" value="Fit 71" tone="amber" />
+    <KpiCard icon={Target} label="Conversion & adoption" value="86 / 100" note={<><span>Strong fit</span><i className="pm-theme-fit-meter"><b style={{width:'86%'}}/></i></>} tone="green" />
+    <KpiCard icon={Target} label="Retailer enablement" value="78 / 100" note={<><span>Moderate fit</span><i className="pm-theme-fit-meter"><b style={{width:'78%'}}/></i></>} tone="green" />
+    <KpiCard icon={Target} label="Trial & follow-up" value="71 / 100" note={<><span>Moderate fit</span><i className="pm-theme-fit-meter"><b style={{width:'71%'}}/></i></>} tone="green" />
   </KpiGrid>
 );
 
