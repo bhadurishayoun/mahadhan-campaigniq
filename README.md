@@ -9,6 +9,12 @@ sign in with `MASTER001` / `Mahadhan@2026`
 
 All data in the tool is illustrative (mockup figures and a synthetic data workbook), not Mahadhan's actual data.
 
+> **CampaignIQ v3 (rebuild in progress, persona by persona):** `campaigniq-v3/` rebuilds the tool from the
+> client-approved mockups (Google Drive "Mahadhan_Mockups", copied to `campaigniq-v3/docs/mockups/`). Business Head
+> comes first, following `business-head-prompt.md`; it is published at `/v3/` next to the current site
+> (`…/mahadhan-campaigniq/v3/#/bh/command-centre`, same `MASTER001` sign-in page). Status and next steps:
+> [campaigniq-v3/README.md](campaigniq-v3/README.md).
+
 > **New developer? Start with [Project status & next steps](campaigniq/README.md#0-project-status--next-steps-start-here)**:
 > what is done, what is still illustrative, known limitations and the prioritised to-do list.
 
@@ -21,6 +27,7 @@ All data in the tool is illustrative (mockup figures and a synthetic data workbo
 | `campaigniq/server/` | Python (FastAPI) backend for the live planning engine, data uploads and AI co-pilot |
 | `campaigniq/server/data/seed/mahadhan_synthetic_data.xlsx` | Synthetic data workbook the backend loads on start ([how it works](campaigniq/README.md#53-replace-demo-data-with-real-data)) |
 | `campaigniq/README.md` | Detailed technical documentation of the app |
+| `campaigniq-v3/` | v3 rebuild from the approved mockups (React + TypeScript + Vite), published at `/v3/`; rules in `campaigniq-v3/CLAUDE.md` |
 | `.github/workflows/deploy.yml` | Builds the web app and publishes it to GitHub Pages on every push to `main` |
 | `render.yaml` | One-click setup of the backend on Render's free tier |
 | `*.docx`, `*.pptx`, `*.md`, `ui-mockups/` | Product briefs, analysis and UI mockups (`ui-mockups/V2-persona-mockup-specs.md` holds the V2 persona-wise screen specs) |

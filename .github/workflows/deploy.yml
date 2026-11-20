@@ -34,7 +34,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: campaigniq/package-lock.json
+          cache-dependency-path: |
+            campaigniq/package-lock.json
+            campaigniq-v3/package-lock.json
 
       - name: Install web app dependencies
         run: npm ci --workspace web
@@ -52,6 +54,24 @@ jobs:
           echo "Backend: ${VITE_API_URL:-none (static demo)}"
         env:
           VITE_API_URL: ${{ vars.VITE_API_URL || 'https://mahadhan-campaigniq-api.onrender.com/api' }}
+
+      # CampaignIQ v3 (Business Head first) is served at /v3/ next to the existing app at /.
+      - name: Install v3 dependencies
+        run: npm ci
+        working-directory: campaigniq-v3
+
+      - name: Test, check and build v3
+        run: |
+          npm test
+          npm run hygiene
+          npm run build
+        working-directory: campaigniq-v3
+
+      - name: Add v3 to the site under /v3/
+        run: |
+          mkdir -p web/dist/v3
+          cp -r ../campaigniq-v3/dist/. web/dist/v3/
+          test -s web/dist/v3/index.html
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
