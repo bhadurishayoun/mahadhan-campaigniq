@@ -10,6 +10,9 @@ import { Portfolio } from './screens/Portfolio';
 import { RegionalPerformance } from './screens/RegionalPerformance';
 import { TerritoryPerformance } from './screens/TerritoryPerformance';
 import { Effectiveness } from './screens/Effectiveness';
+import { CampaignInvestment, CommercialReturns, InvestmentRoi, Reallocation } from './screens/Investment';
+import { MarketOpportunity, SuggestTheme, ThemeInbox, ThemeReview } from './screens/Themes';
+import { ActionTracker, DecisionAssistant, PortfolioLearning } from './screens/Interventions';
 
 /** A session opens the Business Head workspace when it is the master login or a Business Head login. */
 const canOpen = (s: Session | null) => !!s && (s.master || isBuilt(s.persona));
@@ -57,6 +60,17 @@ function buildRouter(userName: string, signOut: () => void) {
         { path: 'bh/portfolio/region/:region', element: <RegionalPerformance /> },
         { path: 'bh/portfolio/region/:region/effectiveness', element: <Effectiveness /> },
         { path: 'bh/portfolio/territory/:territory', element: <TerritoryPerformance /> },
+        { path: 'bh/investment', element: <InvestmentRoi /> },
+        { path: 'bh/investment/region/:region', element: <CampaignInvestment /> },
+        { path: 'bh/investment/region/:region/returns', element: <CommercialReturns /> },
+        { path: 'bh/investment/region/:region/reallocation', element: <Reallocation /> },
+        { path: 'bh/themes/opportunity', element: <MarketOpportunity /> },
+        { path: 'bh/themes/inbox', element: <ThemeInbox /> },
+        { path: 'bh/themes/suggest', element: <SuggestTheme /> },
+        { path: 'bh/themes/:themeId/review', element: <ThemeReview /> },
+        { path: 'bh/interventions', element: <ActionTracker /> },
+        { path: 'bh/interventions/learning', element: <PortfolioLearning /> },
+        { path: 'bh/assistant', element: <DecisionAssistant /> },
         { path: '*', element: <Navigate to="/bh/command-centre" replace /> },
       ],
     },

@@ -323,6 +323,8 @@ export interface Intervention {
   statusLabel: string;
   campaign?: CampaignId;
   deliverable: string;
+  due?: string;
+  notes?: string;
 }
 
 export const initialInterventions = (): Intervention[] => {
@@ -344,3 +346,75 @@ export const SCOPES: { id: RegionId | 'national'; label: string }[] = [
   { id: 'national', label: 'National portfolio' },
   ...REGIONS.map((r) => ({ id: r.id, label: `${r.name} region` })),
 ];
+
+// ---------------------------------------------------------------- theme review content
+export const READINESS_ITEMS = ['ABP alignment', 'Market evidence', 'Prior campaign outcomes', 'Commercial attribution', 'Scope (crop / product / geography)'] as const;
+export const READINESS_STATUS: Record<(typeof READINESS_ITEMS)[number], { label: string; tone: 'warn' | 'neutral' }> = {
+  'ABP alignment': { label: 'Review required', tone: 'warn' },
+  'Market evidence': { label: 'Validate', tone: 'warn' },
+  'Prior campaign outcomes': { label: 'Review', tone: 'warn' },
+  'Commercial attribution': { label: 'Pending', tone: 'neutral' },
+  'Scope (crop / product / geography)': { label: 'Review required', tone: 'warn' },
+};
+
+/** Evidence tiles for a proposed theme, computed from the records behind it. */
+export const themeEvidence = (themeId: string): { value: string; label: string }[] => {
+  const a = ambadMetrics();
+  if (themeId === 'croptek-next') {
+    return [
+      { value: MARKET.penetration, label: `${MARKET.state} penetration` },
+      { value: `${a.trialToAdoptionPct.toFixed(0)}%`, label: 'Trial-to-adoption (Ambad)' },
+      { value: `${a.villageGap.toFixed(1)} pp`, label: 'Village gap (Dhanora vs Wadi Gaon)' },
+      { value: `${a.activityPct.toFixed(1)}%`, label: 'Activity completion' },
+      { value: `${a.followUpPct.toFixed(1)}%`, label: 'Follow-up completion' },
+      { value: `${a.retailerActivationPct.toFixed(1)}%`, label: 'Retailer activation' },
+    ];
+  }
+  if (themeId === 'retailer-advocacy') {
+    const t = THEMES.find((x) => x.id === 'retailer')!;
+    return [
+      { value: String(themeCampaigns('retailer')), label: 'Retailer enablement campaigns' },
+      { value: `₹${t.investment} L`, label: 'Retailer enablement investment' },
+      { value: t.adopters.toLocaleString('en-IN'), label: 'Recorded adopters' },
+      { value: `${a.retailerActivationPct.toFixed(1)}%`, label: 'Retailer activation (Ambad)' },
+      { value: String(REGIONS.filter((r) => r.themeMix.retailer > 0).length), label: 'Regions running the theme' },
+      { value: 'Pending', label: 'Retailer-level attribution' },
+    ];
+  }
+  const n = regionById('north');
+  return [
+    { value: `₹${((n.abp - n.achieved) / 100).toFixed(1)} Cr`, label: 'North business gap' },
+    { value: `${n.observedExec}%`, label: 'Observed execution' },
+    { value: n.adopters.toLocaleString('en-IN'), label: 'Recorded adopters' },
+    { value: String(n.themeMix.awareness), label: 'Awareness campaigns running' },
+    { value: 'Pending', label: 'Adoption source validation' },
+    { value: 'Pending', label: 'Crop and product scope' },
+  ];
+};
+
+/** Business Head recommended direction per proposal parameter (decision modal). */
+export const themeDirections = (t: ThemeProposal) => [
+  { parameter: 'Geography', proposal: t.state, direction: 'Retain' },
+  { parameter: 'Crop', proposal: t.crop ?? 'Pending', direction: t.crop ? 'Retain' : 'Define crop scope' },
+  { parameter: 'Product', proposal: t.product ?? 'Pending', direction: t.product ? 'Retain' : 'Define product scope' },
+  { parameter: 'Strategic objective', proposal: t.objective, direction: 'Retain' },
+  { parameter: 'Target cohort', proposal: t.cohort, direction: 'Validate eligibility' },
+  { parameter: 'Strategic focus', proposal: t.focus, direction: t.id === 'croptek-next' ? 'Evaluate structured farmer follow-up' : 'Retain' },
+];
+
+// ---------------------------------------------------------------- next-year priorities (learning)
+export const nextYearPriorities = () => {
+  const biggestGap = [...REGIONS].sort((x, y) => (y.abp - y.achieved) - (x.abp - x.achieved))[0];
+  const c = campaignMetrics(campaignById('croptek'));
+  const a = ambadMetrics();
+  return [
+    { id: 'gap', geography: `${biggestGap.name} region`, indicator: `₹${((biggestGap.abp - biggestGap.achieved) / 100).toFixed(1)} Cr business gap`, direction: 'Opportunity assessment', tone: 'ok' as const },
+    { id: 'croptek', geography: 'West Croptek conversion', indicator: `${c.adoptionPct.toFixed(0)}% adoption target achievement`, direction: 'Refine theme', tone: 'ok' as const },
+    { id: 'ambad-gap', geography: 'Ambad', indicator: `${a.villageGap.toFixed(1)} pp village conversion gap`, direction: 'Investigate', tone: 'warn' as const },
+    { id: 'ambad-follow', geography: 'Ambad farmer follow-up', indicator: `${a.followUpPct.toFixed(0)}% completion`, direction: 'Review intervention design', tone: 'neutral' as const },
+    { id: 'attribution', geography: 'National commercial attribution', indicator: 'Pending', direction: 'Strengthen measurement', tone: 'ok' as const },
+  ];
+};
+
+export const INTERVENTION_DELIVERABLES = ['Campaign performance diagnosis', 'Territory-wise recovery opportunities', 'Revised strategic intervention plan', 'Updated outcome and investment forecast'];
+export const THEME_DELIVERABLES = ['Market opportunity validation', 'Existing theme overlap assessment', 'Target KPI recommendations', 'Refined strategic theme brief'];

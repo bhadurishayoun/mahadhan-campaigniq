@@ -36,11 +36,14 @@ npx vite preview --port 4174 & node scripts/shots.mjs [filter] [width] [height] 
 |---|---|---|
 | A | Foundation: app, sign-in, shell, data module + tests, store, UI kit, hygiene and screenshot scripts, deploy step | Done |
 | B | Screens 1–6: Command centre, Portfolio, Regional (new), Territory (Ambad), Effectiveness, Diagnostics drawer | Done |
-| C | Screens 7–10: Investment & ROI, Campaign investment, Commercial returns, Reallocation simulator | To do |
-| D | Screens 11–16: Market opportunity, Theme inbox, Theme review, Decision modal, Suggest theme, Submit drawer | To do |
-| E | Screens 17–20: Action tracker, Intervention drawer, Portfolio learning, Decision Assistant | To do |
-| F | Click-through of the navigation map, 1440×900 and 1366×768 checks, side-by-side with mockups, deploy | To do |
+| C | Screens 7–10: Investment & ROI, Campaign investment, Commercial returns, Reallocation simulator (interactive) | Done |
+| D | Screens 11–16: Market opportunity, Theme inbox, Theme review, Decision modal, Suggest theme, Submit drawer | Done |
+| E | Screens 17–20: Action tracker, Intervention drawer, Portfolio learning, Decision Assistant | Done |
+| F | All 20 routes checked at 1440×900 and 1366×768 (no console errors, no horizontal scroll, no clipped text). Still to do: a scripted click-through of every navigation-map row | Partly done |
 
-Known gaps until C–E land: buttons that target screens 7–20 fall back to the command centre.
+Actions persist in the browser (localStorage): theme decisions update the inbox, command centre and notifications;
+submitted recommendations, reallocation reviews, intervention requests and next-year priorities appear in the tracker.
+The Decision Assistant answers four prepared questions from the data module (no external model); typed questions are
+matched to the closest of the four.
 Crop-wise and product-wise portfolio views use breakdowns defined in `bh.ts` (they reconcile to the national totals;
 the mockups show only the theme view).

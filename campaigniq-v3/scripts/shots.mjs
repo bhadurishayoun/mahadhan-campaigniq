@@ -20,6 +20,20 @@ const ROUTES = [
   ['04-territory-ambad', '/bh/portfolio/territory/ambad'],
   ['05-effectiveness-west', '/bh/portfolio/region/west/effectiveness'],
   ['06-diagnostics-drawer', '/bh/portfolio/region/west/effectiveness?campaign=croptek&drawer=diagnostics'],
+  ['07-investment', '/bh/investment'],
+  ['08-campaign-investment', '/bh/investment/region/west'],
+  ['09-returns', '/bh/investment/region/west/returns'],
+  ['10-reallocation', '/bh/investment/region/west/reallocation'],
+  ['11-opportunity', '/bh/themes/opportunity'],
+  ['12-inbox', '/bh/themes/inbox'],
+  ['13-review', '/bh/themes/croptek-next/review'],
+  ['14-decision-modal', '/bh/themes/croptek-next/review?modal=decision'],
+  ['15-suggest', '/bh/themes/suggest'],
+  ['16-submit-drawer', '/bh/themes/suggest?drawer=submit'],
+  ['17-tracker', '/bh/interventions'],
+  ['18-intervention-drawer', '/bh/interventions?drawer=croptek-review'],
+  ['19-learning', '/bh/interventions/learning'],
+  ['20-assistant', '/bh/assistant'],
 ].filter(([n]) => n.includes(filter));
 
 const PORT = 9600 + Math.floor(Math.random() * 300);
