@@ -1,8 +1,8 @@
 /** Screen 2 — Campaign Portfolio Performance (mockup BH.2.png). */
 import { ChartColumn, Coins, ExternalLink, Gauge, Layers, Megaphone, Table2, Users } from 'lucide-react';
 import { useState } from 'react';
-import { ATTRIBUTION_STATUS, CROP_MIX, PRODUCT_MIX, REGIONS, THEMES, themeCampaigns, type MixRow, type RegionId, type ThemeId } from '../data/bh';
-import { crore, lakh, num, sum } from '../data/format';
+import { CROP_MIX, netRoi, PRODUCT_MIX, REGIONS, THEMES, themeCampaigns, type MixRow, type RegionId, type ThemeId } from '../data/bh';
+import { crore, lakh, num, sum, times } from '../data/format';
 import { R } from '../routes';
 import { SERIES } from '../theme';
 import { HBars, HeatGrid } from '../ui/charts';
@@ -33,8 +33,8 @@ export function Portfolio() {
 
   const mixRows: MixRow[] = view === 'crop' ? CROP_MIX.filter((m) => crop === ALL || m.name === crop)
     : view === 'product' ? PRODUCT_MIX.filter((m) => product === ALL || m.name === product)
-    : view === 'geography' ? regions.map((r) => ({ id: r.id, name: `${r.name} region`, campaigns: r.campaigns, investment: r.actual, adopters: r.adopters }))
-    : themes.map((t) => ({ id: t.id, name: t.name, campaigns: themeCampaigns(t.id), investment: t.investment, adopters: t.adopters }));
+    : view === 'geography' ? regions.map((r) => ({ id: r.id, name: `${r.name} region`, campaigns: r.campaigns, investment: r.actual, adopters: r.adopters, sales: r.sales }))
+    : themes.map((t) => ({ id: t.id, name: t.name, campaigns: themeCampaigns(t.id), investment: t.investment, adopters: t.adopters, sales: t.sales }));
   const drillFor = (m: MixRow): string => (view === 'geography' ? R.region(m.id as RegionId) : view === 'theme' ? R.region(topRegionFor(m.id as ThemeId)) : R.region(drill));
   const groupLabel = { theme: 'Theme', crop: 'Crop', product: 'Product', geography: 'Region' }[view];
 
@@ -52,10 +52,10 @@ export function Portfolio() {
         { value: 'theme', label: 'Theme-wise' }, { value: 'crop', label: 'Crop-wise' }, { value: 'product', label: 'Product-wise' }, { value: 'geography', label: 'Geography-wise' },
       ]} />
       <div className="kpis">
-        <KpiCard icon={Megaphone} label="Active campaigns" value={num(kpi.campaigns)} />
-        <KpiCard icon={Coins} label="Actual marketing investment" value={crore(kpi.investment)} />
-        <KpiCard icon={Users} label="Recorded adopters" value={num(kpi.adopters)} />
-        <KpiCard attention icon={Gauge} label="Average regional execution" value={`${avgExec}%`} sub="Observed" />
+        <KpiCard icon={Megaphone} label="Active campaigns" value={num(kpi.campaigns)} sub={`across ${regions.length} region${regions.length > 1 ? 's' : ''}`} />
+        <KpiCard icon={Coins} label="Actual marketing investment" value={crore(kpi.investment)} sub={`on ${num(kpi.adopters)} adopters`} />
+        <KpiCard icon={Users} label="Recorded adopters" value={num(kpi.adopters)} sub="farmers" />
+        <KpiCard icon={Gauge} label="Average regional execution" value={`${avgExec}%`} sub={`observed vs ${Math.round(sum(regions, (r) => r.plannedExec) / regions.length)}% planned`} ratio={avgExec} />
       </div>
 
       <Card title={`${groupLabel}-wise campaign performance`} icon={Layers} flush>
@@ -68,11 +68,11 @@ export function Portfolio() {
             { key: 'camp', header: 'Active campaigns', align: 'right', render: (m) => m.campaigns },
             { key: 'inv', header: 'Marketing investment', align: 'right', render: (m) => lakh(m.investment) },
             { key: 'adopt', header: 'Recorded adopters', align: 'right', render: (m) => num(m.adopters) },
-            { key: 'sales', header: 'Incremental sales', align: 'center', render: () => <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip> },
-            { key: 'roi', header: 'Net ROI', align: 'center', render: () => <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip> },
+            { key: 'sales', header: 'Incremental sales', align: 'right', render: (m) => lakh(m.sales) },
+            { key: 'roi', header: 'Net ROI', align: 'center', render: (m) => <StatusChip tone="ok">{times(netRoi(m.sales, m.investment))}</StatusChip> },
             { key: 'view', header: 'View', align: 'center', render: (m) => <Button small icon={ExternalLink} onClick={() => go(drillFor(m))}>View</Button> },
           ]}
-          total={{ name: 'Total', camp: num(sum(mixRows, (m) => m.campaigns)), inv: lakh(sum(mixRows, (m) => m.investment)), adopt: num(sum(mixRows, (m) => m.adopters)), sales: <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip>, roi: <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip> }}
+          total={{ name: 'Total', camp: num(sum(mixRows, (m) => m.campaigns)), inv: lakh(sum(mixRows, (m) => m.investment)), adopt: num(sum(mixRows, (m) => m.adopters)), sales: lakh(sum(mixRows, (m) => m.sales)), roi: <StatusChip tone="ok">{times(netRoi(sum(mixRows, (m) => m.sales), sum(mixRows, (m) => m.investment)))}</StatusChip> }}
         />
       </Card>
 

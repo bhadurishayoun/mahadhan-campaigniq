@@ -1,8 +1,8 @@
 /** Screen 4 — Territory Performance, Ambad (mockup BH.3.png). */
 import { CalendarCheck, ChartColumnBig, Coins, Lightbulb, MapPin, Plus, Target, TrendingUp, Users } from 'lucide-react';
 import { Navigate, useParams } from 'react-router-dom';
-import { AMBAD, ambadMetrics, ATTRIBUTION_STATUS, territoryById } from '../data/bh';
-import { crore, lakh, num, pct, ratio } from '../data/format';
+import { AMBAD, ambadMetrics, campaignById, netRoi, territoryById } from '../data/bh';
+import { crore, lakh, num, pct, ratio, times } from '../data/format';
 import { R } from '../routes';
 import { useBhStore } from '../store/bhStore';
 import { Bar, Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
@@ -22,7 +22,7 @@ export function TerritoryPerformance() {
     { id: 'gap', parameter: 'Conversion gap (village)', current: `${a.villageGap.toFixed(1)} pp`, action: 'Review coverage and engagement' },
     { id: 'follow', parameter: 'Follow-up completion', current: pct(a.followUpPct), action: 'Strengthen farmer follow-ups' },
     { id: 'retail', parameter: 'Retailer activation', current: pct(a.retailerActivationPct), action: 'Review activation depth and support' },
-    { id: 'stock', parameter: 'Stock and attribution evidence', current: 'Pending', action: 'Confirm stock and sales attribution' },
+    { id: 'roi', parameter: 'Croptek conversion net ROI', current: times(netRoi(campaignById('croptek').sales, campaignById('croptek').actual)), action: 'Extend to Dhanora village' },
   ];
   const suggestUrl = `${R.suggest}?region=${t.region}&territory=${t.id}&crop=${AMBAD.crop}&product=${AMBAD.product}`;
 
@@ -31,10 +31,10 @@ export function TerritoryPerformance() {
       <Breadcrumb items={[{ label: 'Campaign portfolio performance', onClick: () => go(R.portfolio) }, { label: 'West region', onClick: () => go(R.region(t.region)) }, { label: 'Ambad' }]} />
       <PageHeader title={`${t.name} Territory Performance`} />
       <div className="kpis">
-        <KpiCard icon={ChartColumnBig} label="Territory all-product ABP" value={crore(t.abp)} />
-        <KpiCard icon={CalendarCheck} label="Activities completed" value={`${a.activitiesDone} / ${a.activitiesPlanned}`} sub={pct(a.activityPct)} />
-        <KpiCard icon={Users} label="Recorded adopters" value={num(a.adopters)} />
-        <KpiCard icon={Target} label="Trial-to-adoption" value={pct(a.trialToAdoptionPct)} sub={`${num(a.adopters)} of ${num(a.trials)} trials`} />
+        <KpiCard icon={ChartColumnBig} label="Territory all-product ABP" value={crore(t.abp)} sub={`all crops, ${crore(t.ytdSales)} sold YTD`} />
+        <KpiCard icon={CalendarCheck} label="Activities completed" value={`${a.activitiesDone} / ${a.activitiesPlanned}`} sub={pct(a.activityPct)} ratio={a.activityPct} />
+        <KpiCard icon={Users} label="Recorded adopters" value={num(a.adopters)} sub="farmers" />
+        <KpiCard icon={Target} label="Trial-to-adoption" value={pct(a.trialToAdoptionPct)} sub={`${num(a.adopters)} of ${num(a.trials)} trials`} ratio={a.trialToAdoptionPct} />
       </div>
 
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 300px' }}>
@@ -56,7 +56,7 @@ export function TerritoryPerformance() {
         </Card>
         <Card title="Campaign outcome" icon={Coins}>
           <div className="list-row"><Coins size={18} color="var(--amber)" /><div><div className="muted">Campaign-linked sales</div><div className="row"><b className="kpi-value">{lakh(AMBAD.campaignLinkedSales)}</b><StatusChip tone="warn">Provisional</StatusChip></div></div></div>
-          <div className="list-row"><TrendingUp size={18} color="var(--amber)" /><div><div className="muted">Incremental uplift</div><StatusChip tone="neutral">{ATTRIBUTION_STATUS}</StatusChip></div></div>
+          <div className="list-row"><TrendingUp size={18} color="var(--amber)" /><div><div className="muted">Croptek campaign net ROI</div><b className="kpi-value" style={{ fontSize: 18 }}>{times(netRoi(campaignById('croptek').sales, campaignById('croptek').actual))}</b></div></div>
         </Card>
       </div>
 

@@ -53,15 +53,16 @@ export function FilterBar({ filters }: { filters: FilterDef[] }) {
 }
 
 // ---------------------------------------------------------------- KPI
-export function KpiCard({ icon: Icon, label, value, sub, attention, children, text }: { icon: LucideIcon; label: string; value: ReactNode; sub?: ReactNode; attention?: boolean; children?: ReactNode; text?: boolean }) {
+/** One KPI layout everywhere: icon box | label (2 lines) · value · sub-line · 6px bar (ratio cards) or spacer. */
+export function KpiCard({ icon: Icon, label, value, sub, ratio }: { icon: LucideIcon; label: string; value: ReactNode; sub: ReactNode; ratio?: number }) {
   return (
-    <div className={`kpi${attention ? ' attention' : ''}`}>
-      <span className="kpi-tile"><Icon size={19} /></span>
-      <div style={{ flex: 1, minWidth: 0 }}>
+    <div className="kpi">
+      <span className="kpi-tile"><Icon size={20} /></span>
+      <div className="kpi-body">
         <div className="kpi-label">{label}</div>
-        <div className={`kpi-value${text ? ' text' : ''}`}>{value}</div>
-        {sub && <div className="kpi-sub">{sub}</div>}
-        {children}
+        <div className="kpi-value">{value}</div>
+        <div className="kpi-sub">{sub}</div>
+        {ratio !== undefined ? <span className="kpi-bar"><i style={{ width: `${Math.max(0, Math.min(100, ratio))}%` }} /></span> : <span className="kpi-bar spacer" />}
       </div>
     </div>
   );

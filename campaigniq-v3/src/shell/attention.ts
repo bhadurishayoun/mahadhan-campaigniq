@@ -1,5 +1,5 @@
 /** Management attention items, computed from data + store (shown on the command centre and in notifications). */
-import { ATTRIBUTION_STATUS, CAMPAIGNS, REGIONS, regionMetrics } from '../data/bh';
+import { CAMPAIGNS, nationalReturns, REGIONS, regionMetrics, THEMES, netRoi } from '../data/bh';
 import { R } from '../routes';
 import type { ThemeStatus } from '../data/bh';
 
@@ -14,6 +14,7 @@ export function attentionItems(themeStatus: Record<string, ThemeStatus>): Attent
   REGIONS.filter((r) => !r.adoptionSourceValidated).forEach((r) => items.push({ id: `src-${r.id}`, text: `${r.name} adoption source validation pending`, to: R.region(r.id) }));
   const awaiting = Object.values(themeStatus).filter((s) => s === 'review_pending').length;
   if (awaiting > 0) items.push({ id: 'themes', text: `${awaiting} strategic theme${awaiting > 1 ? 's' : ''} awaiting decision`, to: R.inbox });
-  items.push({ id: 'roi', text: `Portfolio ROI ${ATTRIBUTION_STATUS.toLowerCase()}`, to: R.returns('west', 'croptek') });
+  const low = [...THEMES].sort((a, b) => netRoi(a.sales, a.investment) - netRoi(b.sales, b.investment))[0];
+  items.push({ id: 'roi', text: `Portfolio net ROI +${nationalReturns().roi.toFixed(2)}×; ${low.name.toLowerCase()} lowest at +${netRoi(low.sales, low.investment).toFixed(2)}×`, to: R.learning });
   return items;
 }

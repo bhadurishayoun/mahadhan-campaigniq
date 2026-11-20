@@ -5,7 +5,7 @@ import { crore, num, pct, pp, ratio, sum } from '../data/format';
 import { R } from '../routes';
 import { SERIES } from '../theme';
 import { GroupedBars, HBars } from '../ui/charts';
-import { Bar, Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
+import { Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { useGo, useRouteRegion } from './common';
 
@@ -24,10 +24,10 @@ export function RegionalPerformance() {
       <Breadcrumb items={[{ label: 'Campaign portfolio performance', onClick: () => go(R.portfolio) }, { label: `${r.name} region` }]} />
       <PageHeader title={`${r.name} Region Performance`} />
       <div className="kpis">
-        <KpiCard icon={Target} label="Region achievement vs YTD ABP" value={<>{crore(r.achieved, 1)} <span className="muted" style={{ fontSize: 13, fontWeight: 500 }}>/ {crore(r.abp, 1)}</span></>} sub={<StatusChip tone="ok">{pct(m.achievementPct)}</StatusChip>}><div className="row" style={{ marginTop: 6 }}><Bar value={m.achievementPct} /></div></KpiCard>
-        <KpiCard icon={Megaphone} label="Active campaigns" value={r.campaigns} />
-        <KpiCard attention={m.execVariance < 0} icon={Gauge} label="Planned / observed execution" value={`${r.plannedExec}% / ${r.observedExec}%`} sub={<StatusChip tone="warn">{pp(m.execVariance)}</StatusChip>} />
-        <KpiCard icon={Users} label="Recorded adopters" value={num(r.adopters)} />
+        <KpiCard icon={Target} label="Region achievement vs YTD ABP" value={crore(r.achieved, 1)} sub={<>of {crore(r.abp, 1)}<StatusChip tone="ok">{pct(m.achievementPct)}</StatusChip></>} ratio={m.achievementPct} />
+        <KpiCard icon={Megaphone} label="Active campaigns" value={r.campaigns} sub={`across ${terrs.length} territories`} />
+        <KpiCard icon={Gauge} label="Observed execution" value={`${r.observedExec}%`} sub={<>vs {r.plannedExec}% planned<StatusChip tone="warn">{pp(m.execVariance)}</StatusChip></>} ratio={r.observedExec} />
+        <KpiCard icon={Users} label="Recorded adopters" value={num(r.adopters)} sub="farmers" />
       </div>
 
       <Card title="Territory performance" icon={MapPin} flush>

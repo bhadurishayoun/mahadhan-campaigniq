@@ -82,7 +82,7 @@ export function Waterfall({ steps, height = 210 }: { steps: { label: string; val
     <ResponsiveContainer width="100%" height={height}>
       <BarChart data={data} margin={{ top: 22, right: 8, left: -14, bottom: 0 }}>
         <CartesianGrid vertical={false} stroke={C.line} strokeDasharray="3 3" />
-        <XAxis dataKey="label" tick={AXIS} axisLine={{ stroke: C.line }} tickLine={false} interval={0} />
+        <XAxis dataKey="label" tick={<WrapTick />} height={38} axisLine={{ stroke: C.line }} tickLine={false} interval={0} />
         <YAxis tick={AXIS} axisLine={false} tickLine={false} />
         <Bar dataKey="base" stackId="w" fill="transparent" isAnimationActive={false} />
         <Bar dataKey="size" stackId="w" isAnimationActive={false} maxBarSize={56}>

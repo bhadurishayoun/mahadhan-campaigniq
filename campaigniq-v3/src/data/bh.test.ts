@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { sum } from './format';
 import {
-  AMBAD, ambadMetrics, businessCase, CAMPAIGNS, CROP_MIX, PRODUCT_MIX, campaignMetrics, campaignTotals, initialInterventions, NATIONAL,
+  AMBAD, ambadMetrics, businessCase, CAMPAIGNS, CONTRIBUTION_MARGIN, CROP_MIX, nationalReturns, netRoi, PRODUCT_MIX, regionRoi, campaignMetrics, campaignTotals, initialInterventions, NATIONAL,
   NATIONAL_METRICS, REGIONS, regionMetrics, territoriesOf, THEMES, themeCampaigns, themeShares,
 } from './bh';
 
@@ -45,6 +45,7 @@ describe('themes reconcile', () => {
       expect(sum(mix, (m) => m.campaigns)).toBe(NATIONAL.campaigns);
       expect(sum(mix, (m) => m.investment)).toBe(NATIONAL.actual);
       expect(sum(mix, (m) => m.adopters)).toBe(NATIONAL.adopters);
+      expect(sum(mix, (m) => m.sales)).toBe(706);
     });
   });
   it('shares match the learning chart', () => {
@@ -71,10 +72,10 @@ describe('West campaigns reconcile to West', () => {
     expect(CAMPAIGNS.map((c) => campaignMetrics(c).perAdopter)).toEqual([5000, 8846, 12222, 12857]);
   });
   it('Croptek business case', () => {
-    const bc = businessCase('croptek')!;
+    const bc = businessCase("croptek");
     expect([bc.variableCosts, bc.contribution, bc.netReturn]).toEqual([31.2, 16.8, 4.8].map((x) => expect.closeTo(x, 5)));
     expect(bc.netRoi).toBeCloseTo(0.4, 5);
-    expect(businessCase('trial')).toBeNull();
+
   });
 });
 
@@ -98,5 +99,24 @@ describe('territories and Ambad', () => {
     expect(list.filter((i) => i.status === 'draft').length).toBe(2);
     expect(list.filter((i) => i.status === 'awaiting_response').length).toBe(2);
     expect(list[0].trigger).toBe('–8 pp execution variance');
+  });
+});
+
+describe('attributed returns reconcile', () => {
+  const r2 = (n: number) => Number(n.toFixed(2));
+  it('sales sum to national and ROI follows the rule', () => {
+    const n = nationalReturns();
+    expect(n.sales).toBe(706);
+    expect(r2(n.roi)).toBe(0.3);
+    expect(sum(THEMES, (t) => t.sales)).toBe(n.sales);
+    expect(sum(CAMPAIGNS, (c) => c.sales)).toBe(REGIONS[0].sales);
+    expect(REGIONS.map((r) => r2(regionRoi(r)))).toEqual([0.4, 0.24, 0.24, 0.23]);
+    expect(CAMPAIGNS.map((c) => r2(netRoi(c.sales, c.actual)))).toEqual([0.56, 0.4, 0.34, 0.4]);
+    expect(THEMES.map((t) => r2(netRoi(t.sales, t.investment)))).toEqual([0.4, 0.4, 0.19, 0.1]);
+    REGIONS.forEach((r) => expect(netRoi(r.sales, r.actual)).toBeCloseTo((r.sales * CONTRIBUTION_MARGIN - r.actual) / r.actual, 10));
+  });
+  it('forecasts', () => {
+    expect(CAMPAIGNS.map((c) => businessCase(c.id).forecastSales)).toEqual([48, 112, 107, 88]);
+    expect(businessCase('croptek').netRoi).toBeCloseTo(0.4, 5);
   });
 });

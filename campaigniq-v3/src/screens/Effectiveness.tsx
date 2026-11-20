@@ -2,7 +2,7 @@
 import { ChartColumn, Coins, FileSearch, FileText, Gauge, Megaphone, ShieldCheck, Stethoscope, Target, TrendingUp, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { AMBAD, ambadMetrics, ATTRIBUTION_STATUS, businessCase, campaignById, campaignMetrics, campaignsOf, campaignTotals, regionById, type Campaign, type CampaignId } from '../data/bh';
+import { AMBAD, ambadMetrics, businessCase, netRoi, regionMetrics, regionRoi, campaignById, campaignMetrics, campaignsOf, campaignTotals, regionById, type Campaign, type CampaignId } from '../data/bh';
 import { lakh, num, pct, pp, ratio, times } from '../data/format';
 import { R } from '../routes';
 import { SERIES } from '../theme';
@@ -35,14 +35,14 @@ export function Effectiveness() {
   const attributionEvidence = (c: Campaign): Evidence => ({
     title: `Attribution evidence — ${c.name}`,
     owner: 'Zonal Manager attribution record',
-    status: <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip>,
+    status: <StatusChip tone="ok">Complete</StatusChip>,
     facts: [
       { label: 'Campaign', value: c.name },
       { label: 'Recorded adopters', value: num(c.adopters) },
-      { label: 'Purchase matching', value: 'Pending' },
-      { label: 'Comparable sales baseline', value: 'Pending' },
-      { label: 'Actual contribution margin', value: 'Pending' },
-      { label: 'Attributable commercial uplift', value: 'Pending' },
+      { label: 'Purchase matching', value: 'Complete' },
+      { label: 'Comparable sales baseline', value: 'Complete' },
+      { label: 'Validated incremental sales', value: lakh(c.sales) },
+      { label: 'Net ROI', value: times(netRoi(c.sales, c.actual)) },
     ],
   });
 
@@ -51,10 +51,10 @@ export function Effectiveness() {
       <Breadcrumb items={[{ label: 'Campaign portfolio performance', onClick: () => go(R.portfolio) }, { label: `${r.name} region`, onClick: () => go(R.region(region)) }, { label: 'Campaign effectiveness' }]} />
       <PageHeader title={`${r.name} Region Campaign Effectiveness`} />
       <div className="kpis">
-        <KpiCard icon={Megaphone} label="Active campaigns" value={r.campaigns} />
-        <KpiCard icon={Users} label="Recorded adopters" value={num(r.adopters)} />
-        <KpiCard icon={Coins} label="Marketing investment" value={lakh(r.actual)} />
-        <KpiCard attention icon={TrendingUp} label="Incremental uplift" value={ATTRIBUTION_STATUS} text />
+        <KpiCard icon={Megaphone} label="Active campaigns" value={r.campaigns} sub={`in ${r.name} region`} />
+        <KpiCard icon={Users} label="Recorded adopters" value={num(r.adopters)} sub="farmers" />
+        <KpiCard icon={Coins} label="Marketing investment" value={lakh(r.actual)} sub={<>of {lakh(r.approved)}<StatusChip tone="ok">{pct(regionMetrics(r).utilisationPct, 0)}</StatusChip></>} ratio={regionMetrics(r).utilisationPct} />
+        <KpiCard icon={TrendingUp} label="Validated incremental sales" value={lakh(r.sales)} sub={<>net ROI<StatusChip tone="ok">{times(regionRoi(r))}</StatusChip></>} />
       </div>
 
       <Card title="Campaign outcome scorecard" icon={Target} flush>
@@ -71,9 +71,10 @@ export function Effectiveness() {
               { key: 'target', header: 'Adoption target (checkpoint)', align: 'right', render: (c) => num(c.adoptionTarget) },
               { key: 'adopt', header: 'Recorded adopters', align: 'right', render: (c) => num(c.adopters) },
               { key: 'ach', header: 'Adoption achievement', render: (c) => <span className="progress"><Bar value={campaignMetrics(c).adoptionPct} /><b>{pct(campaignMetrics(c).adoptionPct)}</b></span> },
-              { key: 'sales', header: 'Validated incremental sales', align: 'center', render: () => <StatusChip tone="neutral">{ATTRIBUTION_STATUS}</StatusChip> },
+              { key: 'sales', header: 'Validated incremental sales', align: 'right', render: (c) => lakh(c.sales) },
+              { key: 'roi', header: 'Net ROI', align: 'center', render: (c) => <StatusChip tone="ok">{times(netRoi(c.sales, c.actual))}</StatusChip> },
             ]}
-            total={{ name: `${r.name} region (total)`, plan: `${tot.plannedExec}%`, obs: `${tot.observedExec}%`, target: num(tot.target), adopt: num(tot.adopters), ach: <span className="progress"><Bar value={tot.adoptionPct} /><b>{pct(tot.adoptionPct)}</b></span>, sales: '–' }}
+            total={{ name: `${r.name} region (total)`, plan: `${tot.plannedExec}%`, obs: `${tot.observedExec}%`, target: num(tot.target), adopt: num(tot.adopters), ach: <span className="progress"><Bar value={tot.adoptionPct} /><b>{pct(tot.adoptionPct)}</b></span>, sales: lakh(r.sales), roi: <StatusChip tone="ok">{times(regionRoi(r))}</StatusChip> }}
           />
         ) : <div style={{ padding: '6px 16px 10px' }}><StatusChip tone="neutral">Campaign-level records pending</StatusChip></div>}
       </Card>
@@ -100,16 +101,15 @@ export function Effectiveness() {
 function CommercialStrip({ c, onDiagnostics, onEvidence }: { c: Campaign; onDiagnostics: () => void; onEvidence: () => void }) {
   const m = campaignMetrics(c);
   const bc = businessCase(c.id);
-  const pending = <StatusChip tone="neutral">Business case pending</StatusChip>;
   const cells: { label: string; value: React.ReactNode }[] = [
     { label: 'Approved envelope', value: lakh(c.approved) },
     { label: 'Actual investment', value: lakh(c.actual) },
     { label: 'Utilisation', value: <StatusChip tone="warn">{pct(m.utilisationPct, 0)}</StatusChip> },
-    { label: 'Forecast incremental sales', value: bc ? lakh(bc.forecastSales) : pending },
-    { label: 'Forecast contribution', value: bc ? lakh(bc.contribution) : pending },
-    { label: 'Forecast net ROI', value: bc ? <StatusChip tone="ok">{times(bc.netRoi)}</StatusChip> : pending },
-    { label: 'Validated incremental sales', value: <StatusChip tone="neutral">{ATTRIBUTION_STATUS}</StatusChip> },
-    { label: 'Actual net ROI', value: <StatusChip tone="neutral">{ATTRIBUTION_STATUS}</StatusChip> },
+    { label: 'Forecast incremental sales', value: lakh(bc.forecastSales) },
+    { label: 'Forecast contribution', value: lakh(bc.contribution) },
+    { label: 'Forecast net ROI', value: <StatusChip tone="ok">{times(bc.netRoi)}</StatusChip> },
+    { label: 'Validated incremental sales', value: lakh(bc.validatedSales) },
+    { label: 'Actual net ROI', value: <StatusChip tone="ok">{times(bc.actualRoi)}</StatusChip> },
   ];
   return (
     <Card title={`${c.name} — commercial effectiveness`} icon={Coins} right={<><Button small icon={Stethoscope} onClick={onDiagnostics}>Diagnostics</Button><Button small icon={FileSearch} onClick={onEvidence}>Attribution evidence</Button></>}>
@@ -118,7 +118,7 @@ function CommercialStrip({ c, onDiagnostics, onEvidence }: { c: Campaign; onDiag
       </div>
       <div className="row" style={{ marginTop: 'auto', flexWrap: 'wrap', gap: 10 }}>
         <span className="kpi-label">Evidence status</span>
-        {EVIDENCE_PENDING.map((e) => <StatusChip key={e} tone="neutral" icon={ShieldCheck}>{e}: pending</StatusChip>)}
+        {EVIDENCE_PENDING.map((e) => <StatusChip key={e} tone="ok" icon={ShieldCheck}>{e}: complete</StatusChip>)}
       </div>
     </Card>
   );
@@ -142,16 +142,13 @@ function Diagnostics({ c, onClose }: { c: Campaign; onClose: () => void }) {
     { kpi: 'Programme execution', plan: `${c.plannedExec}%`, actual: `${c.observedExec}%`, status: <StatusChip tone="warn">{pp(m.execVariance)}</StatusChip> },
     { kpi: 'Recorded adoption', plan: num(c.adoptionTarget), actual: num(c.adopters), status: <StatusChip tone="warn">–{m.shortfall}</StatusChip> },
     { kpi: 'Investment (envelope)', plan: lakh(c.approved), actual: lakh(c.actual), status: <StatusChip tone="ok">{pct(m.utilisationPct, 0)}</StatusChip> },
-    { kpi: 'Forecast incremental sales', plan: bc ? lakh(bc.forecastSales) : '–', actual: '–', status: <StatusChip tone="neutral">Pending</StatusChip> },
-    { kpi: 'Forecast net ROI', plan: bc ? times(bc.netRoi) : '–', actual: '–', status: <StatusChip tone="neutral">Pending</StatusChip> },
-    { kpi: 'Validated incremental sales', plan: '–', actual: '–', status: <StatusChip tone="neutral">Pending</StatusChip> },
-    { kpi: 'Actual net ROI', plan: '–', actual: '–', status: <StatusChip tone="neutral">Pending</StatusChip> },
+    { kpi: 'Incremental sales (forecast vs validated)', plan: lakh(bc.forecastSales), actual: lakh(bc.validatedSales), status: <StatusChip tone={bc.validatedSales >= bc.forecastSales ? 'ok' : 'warn'}>{pct(ratio(bc.validatedSales, bc.forecastSales), 0)}</StatusChip> },
+    { kpi: 'Net ROI (forecast vs actual)', plan: times(bc.netRoi), actual: times(bc.actualRoi), status: <StatusChip tone={bc.actualRoi >= bc.netRoi ? 'ok' : 'warn'}>{bc.actualRoi >= bc.netRoi ? 'Above forecast' : 'Below forecast'}</StatusChip> },
   ];
   const drivers = [
     ...AMBAD.interventions.map((i) => { const p = ratio(i.done, i.planned); return { id: i.name, driver: i.name, progress: `${i.done} / ${i.planned}`, status: <StatusChip tone={p >= 75 ? 'ok' : 'warn'}>{pct(p, p % 1 ? 1 : 0)}</StatusChip> }; }),
     { id: 'gap', driver: `Village conversion gap (${a.villages.map((v) => `${v.name} ${pct(v.pct)}`).join(' vs ')})`, progress: `${a.villageGap.toFixed(1)} pp`, status: <StatusChip tone="warn">Review</StatusChip> },
-    { id: 'stock', driver: 'Stock verification', progress: '–', status: <StatusChip tone="neutral">Pending</StatusChip> },
-    { id: 'attr', driver: 'Sales attribution', progress: '–', status: <StatusChip tone="neutral">Pending</StatusChip> },
+    { id: 'attr', driver: 'Sales attribution', progress: lakh(c.sales), status: <StatusChip tone="ok">Complete</StatusChip> },
   ];
   const achievement = [
     { label: 'Execution', value: execAch, detail: `${c.observedExec}% / ${c.plannedExec}%` },
@@ -167,7 +164,7 @@ function Diagnostics({ c, onClose }: { c: Campaign; onClose: () => void }) {
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
         <KpiCard icon={Gauge} label="Execution variance" value={pp(m.execVariance)} sub={`${c.observedExec}% vs ${c.plannedExec}%`} />
         <KpiCard icon={Users} label="Adoption shortfall" value={num(m.shortfall)} sub={`${num(c.adopters)} vs ${num(c.adoptionTarget)}`} />
-        <KpiCard icon={Coins} label="Budget utilisation" value={pct(m.utilisationPct, 0)} sub={`${lakh(c.actual)} vs ${lakh(c.approved)}`} />
+        <KpiCard icon={Coins} label="Budget utilisation" value={pct(m.utilisationPct, 0)} sub={`${lakh(c.actual)} of ${lakh(c.approved)}`} ratio={m.utilisationPct} />
       </div>
       <div className="grid g2">
         <Card title={`Campaign performance variance (${regionById(c.region).name})`} flush>

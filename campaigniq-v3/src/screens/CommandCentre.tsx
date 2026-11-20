@@ -1,14 +1,14 @@
 /** Screen 1 — National Command Centre (mockup BH.1.png). */
 import { AlertCircle, BadgeIndianRupee, ChartColumn, ChartColumnIncreasing, ClipboardCheck, Coins, ExternalLink, Layers, Megaphone, Target, TriangleAlert, Users } from 'lucide-react';
 import { useState } from 'react';
-import { ATTRIBUTION_STATUS, CAMPAIGNS, REGIONS, regionMetrics, THEME_QUEUE, THEME_STATUS, type ThemeId } from '../data/bh';
-import { crore, num, pct, ratio, sum } from '../data/format';
+import { CAMPAIGNS, netRoi, REGIONS, regionMetrics, regionRoi, THEME_QUEUE, THEME_STATUS, type ThemeId } from '../data/bh';
+import { crore, num, pct, ratio, sum, times } from '../data/format';
 import { R } from '../routes';
 import { attentionItems } from '../shell/attention';
 import { useBhStore } from '../store/bhStore';
 import { SERIES } from '../theme';
 import { GroupedBars } from '../ui/charts';
-import { Bar, Button, Card, DualBar, FilterBar, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
+import { Button, Card, DualBar, FilterBar, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { ALL, CAMPAIGN_OPTIONS, CROP_OPTIONS, PRODUCT_OPTIONS, REGION_OPTIONS, THEME_OPTIONS, useGo, useScopeFilter } from './common';
 
@@ -36,6 +36,7 @@ export function CommandCentre() {
     const c = CAMPAIGNS.find((x) => x.id === campaign)!;
     Object.assign(t, { approved: c.approved, actual: c.actual, adopters: c.adopters, planned: c.plannedExec, observed: c.observedExec });
   }
+  const sales = campaign !== ALL ? CAMPAIGNS.find((x) => x.id === campaign)!.sales : sum(rows, (r) => r.sales);
   const achPct = ratio(t.achieved, t.abp);
   const utilPct = ratio(t.actual, t.approved);
   const scopeName = filtered ? (rows.length === 1 ? `${rows[0].name} region` : 'Selection') : 'Total (national)';
@@ -51,13 +52,13 @@ export function CommandCentre() {
         { key: 'campaign', label: 'Campaign', value: campaign, options: CAMPAIGN_OPTIONS, onChange: setCampaign },
       ]} />
 
-      <div className="kpis" style={{ gridTemplateColumns: '1.3fr 1.3fr 1fr 1fr 1.15fr 1.15fr' }}>
-        <KpiCard icon={Target} label="Business achievement vs YTD ABP" value={crore(t.achieved, 1)} sub={<>of {crore(t.abp, 1)}<StatusChip tone="ok">{pct(achPct)}</StatusChip></>}><div className="row" style={{ marginTop: 6 }}><Bar value={achPct} /></div></KpiCard>
-        <KpiCard icon={Coins} label="Marketing investment vs approved" value={crore(t.actual)} sub={<>of {crore(t.approved)}<StatusChip tone="ok">{pct(utilPct, 0)}</StatusChip></>}><div className="row" style={{ marginTop: 6 }}><Bar value={utilPct} /></div></KpiCard>
-        <KpiCard icon={Megaphone} label="Active campaigns" value={num(t.campaigns)} />
-        <KpiCard icon={Users} label="Recorded farmer adoption" value={num(t.adopters)} />
-        <KpiCard attention icon={ChartColumnIncreasing} label="Validated incremental sales" value={ATTRIBUTION_STATUS} text />
-        <KpiCard attention icon={BadgeIndianRupee} label="Portfolio net ROI" value={ATTRIBUTION_STATUS} text />
+      <div className="kpis" style={{ gridTemplateColumns: 'repeat(6, minmax(0, 1fr))' }}>
+        <KpiCard icon={Target} label="Achievement vs YTD ABP" value={crore(t.achieved, 1)} sub={<>of {crore(t.abp, 1)}<StatusChip tone="ok">{pct(achPct)}</StatusChip></>} ratio={achPct} />
+        <KpiCard icon={Coins} label="Investment vs approved" value={crore(t.actual)} sub={<>of {crore(t.approved)}<StatusChip tone="ok">{pct(utilPct, 0)}</StatusChip></>} ratio={utilPct} />
+        <KpiCard icon={Megaphone} label="Active campaigns" value={num(t.campaigns)} sub={`${rows.length} region${rows.length > 1 ? 's' : ''}`} />
+        <KpiCard icon={Users} label="Farmer adoption" value={num(t.adopters)} sub="farmers" />
+        <KpiCard icon={ChartColumnIncreasing} label="Incremental sales" value={crore(sales)} sub="validated" />
+        <KpiCard icon={BadgeIndianRupee} label="Portfolio net ROI" value={times(netRoi(sales, t.actual))} sub="35% margin" />
       </div>
 
       <Card title="National campaign portfolio performance (region-wise)" icon={Layers} flush>
@@ -72,8 +73,8 @@ export function CommandCentre() {
             { key: 'exec', header: 'Planned vs observed execution', render: (r) => <span className="row nw">{r.plannedExec}% / {r.observedExec}%<DualBar planned={r.plannedExec} observed={r.observedExec} /></span> },
             { key: 'inv', header: 'Marketing investment', align: 'right', render: (r) => crore(r.actual) },
             { key: 'adopt', header: 'Recorded adoption', align: 'right', render: (r) => num(r.adopters) },
-            { key: 'sales', header: 'Attributed incremental sales', align: 'center', render: () => <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip> },
-            { key: 'roi', header: 'Net ROI', align: 'center', render: () => <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip> },
+            { key: 'sales', header: 'Attributed incremental sales', align: 'right', render: (r) => crore(r.sales) },
+            { key: 'roi', header: 'Net ROI', align: 'center', render: (r) => <StatusChip tone="ok">{times(regionRoi(r))}</StatusChip> },
             { key: 'view', header: 'Drilldown', align: 'center', render: (r) => <Button small icon={ExternalLink} onClick={() => go(R.region(r.id))}>View</Button> },
           ]}
           total={{
@@ -83,8 +84,8 @@ export function CommandCentre() {
             exec: <span className="row nw">{t.planned}% / {t.observed}%<DualBar planned={t.planned} observed={t.observed} /></span>,
             inv: crore(t.actual),
             adopt: num(t.adopters),
-            sales: <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip>,
-            roi: <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip>,
+            sales: crore(sales),
+            roi: <StatusChip tone="ok">{times(netRoi(sales, t.actual))}</StatusChip>,
           }}
         />
       </Card>

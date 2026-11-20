@@ -26,14 +26,16 @@ export interface Region {
   adopters: number;
   /** campaign count by theme */
   themeMix: Record<ThemeId, number>;
+  /** validated incremental sales, lakh */
+  sales: number;
   adoptionSourceValidated: boolean;
 }
 
 export const REGIONS: Region[] = [
-  { id: 'west', name: 'West', abp: 1600, achieved: 1420, campaigns: 4, plannedExec: 82, observedExec: 76, approved: 90, actual: 72, adopters: 760, themeMix: { conversion: 2, retailer: 1, trial: 1, awareness: 0 }, adoptionSourceValidated: true },
-  { id: 'south', name: 'South', abp: 1400, achieved: 1180, campaigns: 3, plannedExec: 78, observedExec: 71, approved: 70, actual: 54, adopters: 490, themeMix: { conversion: 1, retailer: 1, trial: 0, awareness: 1 }, adoptionSourceValidated: true },
-  { id: 'north', name: 'North', abp: 1100, achieved: 910, campaigns: 3, plannedExec: 74, observedExec: 68, approved: 55, actual: 39, adopters: 370, themeMix: { conversion: 1, retailer: 0, trial: 1, awareness: 1 }, adoptionSourceValidated: false },
-  { id: 'east', name: 'East', abp: 900, achieved: 770, campaigns: 2, plannedExec: 70, observedExec: 66, approved: 35, actual: 25, adopters: 240, themeMix: { conversion: 0, retailer: 1, trial: 1, awareness: 0 }, adoptionSourceValidated: true },
+  { id: 'west', name: 'West', abp: 1600, achieved: 1420, campaigns: 4, plannedExec: 82, observedExec: 76, approved: 90, actual: 72, adopters: 760, sales: 288, themeMix: { conversion: 2, retailer: 1, trial: 1, awareness: 0 }, adoptionSourceValidated: true },
+  { id: 'south', name: 'South', abp: 1400, achieved: 1180, campaigns: 3, plannedExec: 78, observedExec: 71, approved: 70, actual: 54, adopters: 490, sales: 192, themeMix: { conversion: 1, retailer: 1, trial: 0, awareness: 1 }, adoptionSourceValidated: true },
+  { id: 'north', name: 'North', abp: 1100, achieved: 910, campaigns: 3, plannedExec: 74, observedExec: 68, approved: 55, actual: 39, adopters: 370, sales: 138, themeMix: { conversion: 1, retailer: 0, trial: 1, awareness: 1 }, adoptionSourceValidated: false },
+  { id: 'east', name: 'East', abp: 900, achieved: 770, campaigns: 2, plannedExec: 70, observedExec: 66, approved: 35, actual: 25, adopters: 240, sales: 88, themeMix: { conversion: 0, retailer: 1, trial: 1, awareness: 0 }, adoptionSourceValidated: true },
 ];
 
 export const regionById = (id: RegionId) => REGIONS.find((r) => r.id === id)!;
@@ -68,8 +70,13 @@ export const NATIONAL_METRICS = {
   perAdopter: Math.round((NATIONAL.actual * 100000) / NATIONAL.adopters),
 };
 
-/** Attribution has not closed for any campaign yet: incremental sales and net ROI read "Pending attribution". */
-export const ATTRIBUTION_STATUS = 'Pending attribution';
+/** Contribution margin used for every ROI: net ROI = (incremental sales × 35% − investment) / investment. */
+export const CONTRIBUTION_MARGIN = 0.35;
+export const netRoi = (sales: number, investment: number) => (sales * CONTRIBUTION_MARGIN - investment) / investment;
+
+/** National validated incremental sales and net ROI (sum of regions). */
+export const nationalReturns = () => { const s = sum(REGIONS, (r) => r.sales); return { sales: s, roi: netRoi(s, sum(REGIONS, (r) => r.actual)) }; };
+export const regionRoi = (r: Region) => netRoi(r.sales, r.actual);
 
 // ---------------------------------------------------------------- themes
 export interface Theme {
@@ -78,14 +85,16 @@ export interface Theme {
   short: string;
   investment: number; // lakh
   adopters: number;
+  /** validated incremental sales, lakh */
+  sales: number;
   direction: 'Refine' | 'Validate' | 'Redesign' | 'Assess';
 }
 
 export const THEMES: Theme[] = [
-  { id: 'conversion', name: 'Conversion & adoption', short: 'Conversion', investment: 64, adopters: 720, direction: 'Refine' },
-  { id: 'retailer', name: 'Retailer enablement', short: 'Retailer', investment: 48, adopters: 460, direction: 'Validate' },
-  { id: 'trial', name: 'Trial & follow-up', short: 'Trial', investment: 50, adopters: 420, direction: 'Redesign' },
-  { id: 'awareness', name: 'Crop nutrition awareness', short: 'Awareness', investment: 28, adopters: 260, direction: 'Assess' },
+  { id: 'conversion', name: 'Conversion & adoption', short: 'Conversion', investment: 64, adopters: 720, sales: 256, direction: 'Refine' },
+  { id: 'retailer', name: 'Retailer enablement', short: 'Retailer', investment: 48, adopters: 460, sales: 192, direction: 'Validate' },
+  { id: 'trial', name: 'Trial & follow-up', short: 'Trial', investment: 50, adopters: 420, sales: 170, direction: 'Redesign' },
+  { id: 'awareness', name: 'Crop nutrition awareness', short: 'Awareness', investment: 28, adopters: 260, sales: 88, direction: 'Assess' },
 ];
 
 export const themeCampaigns = (t: ThemeId) => sum(REGIONS, (r) => r.themeMix[t]);
@@ -95,17 +104,17 @@ export const themeShares = (t: Theme) => ({
 });
 
 /** Portfolio views by crop and by product (same national totals: 12 campaigns, ₹190 L, 1,860 adopters). */
-export interface MixRow { id: string; name: string; campaigns: number; investment: number; adopters: number }
+export interface MixRow { id: string; name: string; campaigns: number; investment: number; adopters: number; sales: number }
 export const CROP_MIX: MixRow[] = [
-  { id: 'onion', name: 'Onion', campaigns: 4, investment: 62, adopters: 640 },
-  { id: 'cotton', name: 'Cotton', campaigns: 3, investment: 52, adopters: 470 },
-  { id: 'soybean', name: 'Soybean', campaigns: 3, investment: 46, adopters: 450 },
-  { id: 'maize', name: 'Maize', campaigns: 2, investment: 30, adopters: 300 },
+  { id: 'onion', name: 'Onion', campaigns: 4, investment: 62, adopters: 640, sales: 240 },
+  { id: 'cotton', name: 'Cotton', campaigns: 3, investment: 52, adopters: 470, sales: 196 },
+  { id: 'soybean', name: 'Soybean', campaigns: 3, investment: 46, adopters: 450, sales: 172 },
+  { id: 'maize', name: 'Maize', campaigns: 2, investment: 30, adopters: 300, sales: 98 },
 ];
 export const PRODUCT_MIX: MixRow[] = [
-  { id: 'croptek', name: 'Croptek', campaigns: 5, investment: 80, adopters: 820 },
-  { id: 'npk', name: 'Mahadhan 19:19:19', campaigns: 4, investment: 66, adopters: 600 },
-  { id: 'bensulf', name: 'Mahadhan Bensulf', campaigns: 3, investment: 44, adopters: 440 },
+  { id: 'croptek', name: 'Croptek', campaigns: 5, investment: 80, adopters: 820, sales: 300 },
+  { id: 'npk', name: 'Mahadhan 19:19:19', campaigns: 4, investment: 66, adopters: 600, sales: 240 },
+  { id: 'bensulf', name: 'Mahadhan Bensulf', campaigns: 3, investment: 44, adopters: 440, sales: 166 },
 ];
 
 // ---------------------------------------------------------------- theme status labels
@@ -132,13 +141,15 @@ export interface Campaign {
   adopters: number;
   approved: number; // lakh
   actual: number; // lakh
+  /** validated incremental sales, lakh */
+  sales: number;
 }
 
 export const CAMPAIGNS: Campaign[] = [
-  { id: 'croptek', region: 'west', name: 'Retailer-led Croptek conversion', short: 'Croptek conversion', theme: 'conversion', plannedExec: 80, observedExec: 72, adoptionTarget: 250, adopters: 180, approved: 12, actual: 9 },
-  { id: 'adoption', region: 'west', name: 'Product adoption drive', short: 'Product adoption drive', theme: 'conversion', plannedExec: 84, observedExec: 80, adoptionTarget: 300, adopters: 260, approved: 28, actual: 23 },
-  { id: 'enablement', region: 'west', name: 'Retailer enablement', short: 'Retailer enablement', theme: 'retailer', plannedExec: 82, observedExec: 76, adoptionTarget: 250, adopters: 180, approved: 28, actual: 22 },
-  { id: 'trial', region: 'west', name: 'Trial & follow-up', short: 'Trial & follow-up', theme: 'trial', plannedExec: 82, observedExec: 76, adoptionTarget: 200, adopters: 140, approved: 22, actual: 18 },
+  { id: 'croptek', region: 'west', name: 'Retailer-led Croptek conversion', short: 'Croptek conversion', theme: 'conversion', plannedExec: 80, observedExec: 72, adoptionTarget: 250, adopters: 180, approved: 12, actual: 9, sales: 40 },
+  { id: 'adoption', region: 'west', name: 'Product adoption drive', short: 'Product adoption drive', theme: 'conversion', plannedExec: 84, observedExec: 80, adoptionTarget: 300, adopters: 260, approved: 28, actual: 23, sales: 92 },
+  { id: 'enablement', region: 'west', name: 'Retailer enablement', short: 'Retailer enablement', theme: 'retailer', plannedExec: 82, observedExec: 76, adoptionTarget: 250, adopters: 180, approved: 28, actual: 22, sales: 84 },
+  { id: 'trial', region: 'west', name: 'Trial & follow-up', short: 'Trial & follow-up', theme: 'trial', plannedExec: 82, observedExec: 76, adoptionTarget: 200, adopters: 140, approved: 22, actual: 18, sales: 72 },
 ];
 
 export const campaignById = (id: CampaignId) => CAMPAIGNS.find((c) => c.id === id)!;
@@ -171,18 +182,22 @@ export const campaignTotals = (region: RegionId) => {
 };
 
 // ---------------------------------------------------------------- business case (Croptek)
-export const BUSINESS_CASE: Partial<Record<CampaignId, { forecastSales: number; variableCostPct: number }>> = {
-  croptek: { forecastSales: 48, variableCostPct: 65 },
+/** Croptek has its own approved business case; other campaigns forecast = validated × approved / actual (to ₹1 L). */
+export const BUSINESS_CASE: Partial<Record<CampaignId, { forecastSales: number }>> = {
+  croptek: { forecastSales: 48 },
 };
 
 export const businessCase = (id: CampaignId) => {
-  const bc = BUSINESS_CASE[id];
-  if (!bc) return null;
   const c = campaignById(id);
+  const forecastSales = BUSINESS_CASE[id]?.forecastSales ?? Math.round((c.sales * c.approved) / c.actual);
+  const variableCostPct = Math.round((1 - CONTRIBUTION_MARGIN) * 100);
+  const bc = { forecastSales, variableCostPct };
   const variableCosts = (bc.forecastSales * bc.variableCostPct) / 100;
   const contribution = bc.forecastSales - variableCosts;
   const netReturn = contribution - c.approved;
   return {
+    validatedSales: c.sales,
+    actualRoi: netRoi(c.sales, c.actual),
     forecastSales: bc.forecastSales,
     variableCostPct: bc.variableCostPct,
     contributionPct: 100 - bc.variableCostPct,
@@ -349,11 +364,11 @@ export const SCOPES: { id: RegionId | 'national'; label: string }[] = [
 
 // ---------------------------------------------------------------- theme review content
 export const READINESS_ITEMS = ['ABP alignment', 'Market evidence', 'Prior campaign outcomes', 'Commercial attribution', 'Scope (crop / product / geography)'] as const;
-export const READINESS_STATUS: Record<(typeof READINESS_ITEMS)[number], { label: string; tone: 'warn' | 'neutral' }> = {
+export const READINESS_STATUS: Record<(typeof READINESS_ITEMS)[number], { label: string; tone: 'warn' | 'neutral' | 'ok' }> = {
   'ABP alignment': { label: 'Review required', tone: 'warn' },
   'Market evidence': { label: 'Validate', tone: 'warn' },
   'Prior campaign outcomes': { label: 'Review', tone: 'warn' },
-  'Commercial attribution': { label: 'Pending', tone: 'neutral' },
+  'Commercial attribution': { label: 'Complete', tone: 'ok' },
   'Scope (crop / product / geography)': { label: 'Review required', tone: 'warn' },
 };
 
@@ -378,7 +393,7 @@ export const themeEvidence = (themeId: string): { value: string; label: string }
       { value: t.adopters.toLocaleString('en-IN'), label: 'Recorded adopters' },
       { value: `${a.retailerActivationPct.toFixed(1)}%`, label: 'Retailer activation (Ambad)' },
       { value: String(REGIONS.filter((r) => r.themeMix.retailer > 0).length), label: 'Regions running the theme' },
-      { value: 'Pending', label: 'Retailer-level attribution' },
+      { value: `+${netRoi(t.sales, t.investment).toFixed(2)}×`, label: 'Retailer enablement net ROI' },
     ];
   }
   const n = regionById('north');
@@ -387,8 +402,8 @@ export const themeEvidence = (themeId: string): { value: string; label: string }
     { value: `${n.observedExec}%`, label: 'Observed execution' },
     { value: n.adopters.toLocaleString('en-IN'), label: 'Recorded adopters' },
     { value: String(n.themeMix.awareness), label: 'Awareness campaigns running' },
-    { value: 'Pending', label: 'Adoption source validation' },
-    { value: 'Pending', label: 'Crop and product scope' },
+    { value: `₹${(n.sales / 100).toFixed(2)} Cr`, label: 'Validated incremental sales' },
+    { value: `+${netRoi(n.sales, n.actual).toFixed(2)}×`, label: 'North net ROI' },
   ];
 };
 
@@ -412,7 +427,7 @@ export const nextYearPriorities = () => {
     { id: 'croptek', geography: 'West Croptek conversion', indicator: `${c.adoptionPct.toFixed(0)}% adoption target achievement`, direction: 'Refine theme', tone: 'ok' as const },
     { id: 'ambad-gap', geography: 'Ambad', indicator: `${a.villageGap.toFixed(1)} pp village conversion gap`, direction: 'Investigate', tone: 'warn' as const },
     { id: 'ambad-follow', geography: 'Ambad farmer follow-up', indicator: `${a.followUpPct.toFixed(0)}% completion`, direction: 'Review intervention design', tone: 'neutral' as const },
-    { id: 'attribution', geography: 'National commercial attribution', indicator: 'Pending', direction: 'Strengthen measurement', tone: 'ok' as const },
+    { id: 'attribution', geography: 'Crop nutrition awareness', indicator: `+${netRoi(THEMES[3].sales, THEMES[3].investment).toFixed(2)}× net ROI (lowest theme)`, direction: 'Review investment level', tone: 'ok' as const },
   ];
 };
 

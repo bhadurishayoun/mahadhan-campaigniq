@@ -6,10 +6,10 @@ import { ArrowRight, CircleCheck, ClipboardList, Coins, Eye, FileSearch, FileTex
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  ambadMetrics, ATTRIBUTION_STATUS, campaignById, campaignMetrics, CAMPAIGNS, FY, INTERVENTION_DELIVERABLES, NATIONAL, NEXT_FY, nextYearPriorities, PERIOD,
+  ambadMetrics, businessCase, campaignById, nationalReturns, netRoi, campaignMetrics, CAMPAIGNS, FY, INTERVENTION_DELIVERABLES, NATIONAL, NEXT_FY, nextYearPriorities, PERIOD,
   REGIONS, regionMetrics, THEMES, themeCampaigns, themeShares, type Intervention, type InterventionCategory, type Priority,
 } from '../data/bh';
-import { crore, lakh, num, pct, pp } from '../data/format';
+import { crore, lakh, num, pct, pp, times } from '../data/format';
 import { R } from '../routes';
 import { useBhStore } from '../store/bhStore';
 import { C, SERIES } from '../theme';
@@ -43,10 +43,10 @@ export function ActionTracker() {
       <Breadcrumb items={[{ label: 'Strategic interventions' }, { label: 'Management action tracker' }]} />
       <PageHeader title="Strategic Intervention & Management Decision Tracker" />
       <div className="kpis">
-        <KpiCard icon={ClipboardList} label="Total actions" value={counts.total} />
-        <KpiCard attention icon={FileText} label="Drafts" value={counts.draft} />
-        <KpiCard icon={Repeat} label="Awaiting response" value={counts.awaiting} />
-        <KpiCard icon={CircleCheck} label="Closed" value={counts.closed} />
+        <KpiCard icon={ClipboardList} label="Total actions" value={counts.total} sub="in the register" />
+        <KpiCard icon={FileText} label="Drafts" value={counts.draft} sub="not yet sent" />
+        <KpiCard icon={Repeat} label="Awaiting response" value={counts.awaiting} sub="with Marketing Head" />
+        <KpiCard icon={CircleCheck} label="Closed" value={counts.closed} sub="resolved" />
       </div>
       <SegmentedControl<'all' | InterventionCategory> value={cat} onChange={setCat} options={[
         { value: 'all', label: 'All actions' }, { value: 'Performance', label: 'Performance' }, { value: 'Investment', label: 'Investment' }, { value: 'Strategic theme', label: 'Strategic themes' }, { value: 'Theme clarification', label: 'Clarifications' },
@@ -83,7 +83,7 @@ export function ActionTracker() {
                   <span>Execution variance</span><b className="ok-text">{pp(cm.execVariance)}</b>
                   <span>Adoption shortfall</span><b className="ok-text">{cm.shortfall} ({camp.adopters}/{camp.adoptionTarget})</b>
                   <span>Budget utilisation</span><b className="ok-text">{pct(cm.utilisationPct, 0)} ({lakh(camp.actual)}/{lakh(camp.approved)})</b>
-                  <span>Actual financial attribution</span><b><StatusChip tone="warn">Pending</StatusChip></b>
+                  <span>Actual net ROI</span><b><StatusChip tone="ok">{times(netRoi(camp.sales, camp.actual))}</StatusChip></b>
                 </> : <>
                   <span>Business trigger</span><b>{sel.trigger}</b>
                   <span>Category</span><b>{sel.category}</b>
@@ -132,8 +132,8 @@ function InterventionDrawer({ item, onClose }: { item: Intervention; onClose: ()
             { k: 'Regional execution', p: `${camp.plannedExec}%`, o: `${camp.observedExec}%`, v: <StatusChip tone="warn">{pp(cm.execVariance)}</StatusChip> },
             { k: 'Adoption', p: `${num(camp.adoptionTarget)} checkpoint target`, o: `${num(camp.adopters)} recorded`, v: <StatusChip tone="warn">–{cm.shortfall}</StatusChip> },
             { k: 'Full-campaign investment envelope', p: lakh(camp.approved), o: `${lakh(camp.actual)} actual`, v: <StatusChip tone="ok">{pct(cm.utilisationPct, 0)} utilised</StatusChip> },
-            { k: 'Actual incremental sales', p: <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip>, o: '—', v: '—' },
-            { k: 'Actual net ROI', p: <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip>, o: '—', v: '—' },
+            { k: 'Incremental sales', p: lakh(businessCase(camp.id).forecastSales), o: `${lakh(camp.sales)} validated`, v: <StatusChip tone="warn">–{lakh(businessCase(camp.id).forecastSales - camp.sales)}</StatusChip> },
+            { k: 'Net ROI', p: times(businessCase(camp.id).netRoi), o: times(netRoi(camp.sales, camp.actual)), v: <StatusChip tone="ok">On track</StatusChip> },
           ]} rowKey={(r) => r.k} columns={[
             { key: 'k', header: 'KPI', render: (r) => r.k }, { key: 'p', header: 'Plan', render: (r) => r.p }, { key: 'o', header: 'Observed', render: (r) => r.o }, { key: 'v', header: 'Variance', align: 'center', render: (r) => r.v },
           ]} />
@@ -180,10 +180,10 @@ export function PortfolioLearning() {
       <Breadcrumb items={[{ label: 'Strategic interventions', onClick: () => go(R.tracker) }, { label: 'Portfolio learning' }, { label: 'Next-year priorities' }]} />
       <PageHeader title="National Campaign Portfolio Learning & Next-Year Strategic Priorities" right={<StatusChip tone={store.learningSubmitted ? 'ok' : 'warn'}>{store.learningSubmitted ? 'Submitted for assessment' : 'Draft priorities'}</StatusChip>} />
       <div className="kpis">
-        <KpiCard icon={Layers} label="Active campaigns" value={NATIONAL.campaigns} />
-        <KpiCard icon={Coins} label="Actual investment" value={crore(NATIONAL.actual)} />
-        <KpiCard icon={Users} label="Recorded adopters" value={num(NATIONAL.adopters)} />
-        <KpiCard attention icon={RefreshCw} label="Actual ROI" value={ATTRIBUTION_STATUS} text />
+        <KpiCard icon={Layers} label="Active campaigns" value={NATIONAL.campaigns} sub="national portfolio" />
+        <KpiCard icon={Coins} label="Actual investment" value={crore(NATIONAL.actual)} sub={<>of {crore(NATIONAL.approved)}<StatusChip tone="ok">{pct((NATIONAL.actual / NATIONAL.approved) * 100, 0)}</StatusChip></>} ratio={(NATIONAL.actual / NATIONAL.approved) * 100} />
+        <KpiCard icon={Users} label="Recorded adopters" value={num(NATIONAL.adopters)} sub="farmers" />
+        <KpiCard icon={RefreshCw} label="Actual net ROI" value={times(nationalReturns().roi)} sub={`on ${crore(nationalReturns().sales)} incremental sales`} />
       </div>
       <Card title="National strategic theme performance and learning" icon={Layers} flush>
         <DataTable rows={THEMES} rowKey={(t) => t.id} selected={themesSel[0]} onRowClick={(t) => toggle(themesSel, setThemesSel, t.id)}
@@ -192,7 +192,7 @@ export function PortfolioLearning() {
             { key: 'c', header: 'Campaigns', align: 'right', render: (t) => themeCampaigns(t.id) },
             { key: 'i', header: 'Actual investment', align: 'right', render: (t) => lakh(t.investment) },
             { key: 'a', header: 'Recorded adopters', align: 'right', render: (t) => num(t.adopters) },
-            { key: 'r', header: 'Actual ROI', align: 'center', render: () => <StatusChip tone="warn">Pending</StatusChip> },
+            { key: 'r', header: 'Actual net ROI', align: 'center', render: (t) => <StatusChip tone={netRoi(t.sales, t.investment) >= 0.3 ? 'ok' : 'warn'}>{times(netRoi(t.sales, t.investment))}</StatusChip> },
             { key: 'd', header: 'Proposed review direction', align: 'center', render: (t) => <StatusChip tone={t.direction === 'Redesign' ? 'warn' : t.direction === 'Assess' ? 'neutral' : 'ok'}>{t.direction}</StatusChip> },
             { key: 's', header: 'Select', align: 'center', render: (t) => checkbox(themesSel.includes(t.id)) },
           ]}
@@ -316,14 +316,14 @@ export function DecisionAssistant() {
             <div className="list-row"><Layers size={15} /><b>{NATIONAL.campaigns}</b>&nbsp;active campaigns</div>
             <div className="list-row"><Coins size={15} /><b>{crore(NATIONAL.actual)}</b>&nbsp;actual marketing investment</div>
             <div className="list-row"><Users size={15} /><b>{num(NATIONAL.adopters)}</b>&nbsp;recorded adopters</div>
-            <div className="list-row"><RefreshCw size={15} />Actual net ROI<span className="right"><StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip></span></div>
+            <div className="list-row"><RefreshCw size={15} />Actual net ROI<span className="right"><StatusChip tone="ok">{times(nationalReturns().roi)}</StatusChip></span></div>
           </Card>
           <Card title="Next steps" icon={ArrowRight} right={
           <Button small icon={FileSearch} onClick={() => setEvidence({ title: 'Source evidence', owner: 'Business Head workspace records', facts: [
             { label: 'Business gap by region', value: REGIONS.map((r) => `${r.name} ${crore(regionMetrics(r).gap, 1)}`).join(' · ') },
             { label: 'Croptek adoption', value: `${croptek.adopters} / ${croptek.adoptionTarget}` },
             { label: 'Ambad village gap', value: `${a.villageGap.toFixed(1)} pp` },
-            { label: 'Attribution', value: ATTRIBUTION_STATUS },
+            { label: 'Portfolio net ROI', value: times(nationalReturns().roi) },
           ] })}>Source evidence</Button>
           }>
             <button type="button" className="list-row" style={{ width: '100%' }} onClick={() => go(R.opportunity)}><ArrowRight size={15} />Explore {gapRegion.name} region market gap<span className="right"><StatusChip tone="ok">Market opportunity</StatusChip></span></button>
