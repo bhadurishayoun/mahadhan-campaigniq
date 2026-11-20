@@ -93,7 +93,7 @@ export function CommandCentre() {
       <div className="grid" style={{ gridTemplateColumns: '1fr 1.3fr 1fr' }}>
         <Card title="Regional execution comparison (planned vs observed)" icon={ChartColumn}>
           <GroupedBars
-            data={rows.map((r) => ({ region: r.name, planned: r.plannedExec, observed: r.observedExec }))}
+            data={REGIONS.map((r) => ({ region: r.name, planned: r.plannedExec, observed: r.observedExec }))} highlight={region === ALL ? undefined : REGIONS.find((r) => r.id === region)?.name}
             x="region" unit="%" max={100}
             series={[{ key: 'planned', label: 'Planned execution', color: SERIES.planned }, { key: 'observed', label: 'Observed execution', color: SERIES.observed }]}
           />

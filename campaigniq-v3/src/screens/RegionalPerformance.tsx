@@ -1,6 +1,6 @@
 /** Screen 3 — Regional Performance (no mockup; same anatomy as the territory screen). */
 import { ChartColumn, Gauge, MapPin, Megaphone, Target, Users } from 'lucide-react';
-import { campaignsOf, regionById, regionMetrics, territoriesOf } from '../data/bh';
+import { campaignsOf, REGIONS, regionById, regionMetrics, territoriesOf } from '../data/bh';
 import { crore, num, pct, pp, ratio, sum } from '../data/format';
 import { R } from '../routes';
 import { SERIES } from '../theme';
@@ -52,12 +52,12 @@ export function RegionalPerformance() {
       </Card>
 
       <div className="grid g2">
-        <Card title="Planned vs observed execution by campaign" icon={ChartColumn}>
+        <Card title={`Planned vs observed execution by ${camps.length ? 'campaign' : 'region'}`} icon={ChartColumn}>
           {camps.length ? (
             <GroupedBars data={camps.map((c) => ({ name: c.short, planned: c.plannedExec, observed: c.observedExec }))} x="name" unit="%" max={100}
               series={[{ key: 'planned', label: 'Planned execution', color: SERIES.planned }, { key: 'observed', label: 'Observed execution', color: SERIES.observed }]} />
           ) : (
-            <GroupedBars data={[{ name: `${r.name} region`, planned: r.plannedExec, observed: r.observedExec }]} x="name" unit="%" max={100}
+            <GroupedBars data={REGIONS.map((x) => ({ name: x.name, planned: x.plannedExec, observed: x.observedExec }))} x="name" unit="%" max={100} highlight={r.name}
               series={[{ key: 'planned', label: 'Planned execution', color: SERIES.planned }, { key: 'observed', label: 'Observed execution', color: SERIES.observed }]} />
           )}
         </Card>

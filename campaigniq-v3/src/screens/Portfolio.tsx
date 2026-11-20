@@ -79,7 +79,8 @@ export function Portfolio() {
       <div className="grid g2">
         <Card title="Region × theme: active campaign count" icon={Table2}>
           <HeatGrid
-            rows={regions.map((r) => ({ key: r.id, label: r.name }))}
+            rows={REGIONS.map((r) => ({ key: r.id, label: r.name }))}
+            highlight={region === ALL ? undefined : region}
             cols={themes.map((t) => ({ key: t.id, label: t.short }))}
             value={(r, t) => REGIONS.find((x) => x.id === r)!.themeMix[t as ThemeId]}
             onCell={(r) => go(R.region(r as RegionId))}

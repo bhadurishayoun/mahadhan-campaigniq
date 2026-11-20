@@ -5,11 +5,11 @@ import { C } from '../theme';
 const AXIS = { fontSize: 12, fill: C.inkSoft };
 
 /** X-axis tick that wraps long category names onto two lines. */
-function WrapTick({ x, y, payload }: { x?: number; y?: number; payload?: { value: string } }) {
+function WrapTick({ x, y, payload, bold }: { x?: number; y?: number; payload?: { value: string }; bold?: string }) {
   const words = String(payload?.value ?? '').split(' ');
   const lines = words.length > 1 ? [words.slice(0, Math.ceil(words.length / 2)).join(' '), words.slice(Math.ceil(words.length / 2)).join(' ')] : words;
   return (
-    <text x={x} y={y} textAnchor="middle" fontSize={12} fill={C.inkSoft}>
+    <text x={x} y={y} textAnchor="middle" fontSize={12} fill={bold && payload?.value === bold ? C.ink : C.inkSoft} fontWeight={bold && payload?.value === bold ? 700 : 400}>
       {lines.map((l, i) => <tspan key={l} x={x} dy={i === 0 ? 14 : 14}>{l}</tspan>)}
     </text>
   );
@@ -18,16 +18,18 @@ function WrapTick({ x, y, payload }: { x?: number; y?: number; payload?: { value
 export interface Series { key: string; label: string; color: string }
 
 /** Vertical grouped columns with value labels on top. */
-export function GroupedBars<T extends Record<string, unknown>>({ data, x, series, height = 200, unit = '', max }: { data: T[]; x: keyof T & string; series: Series[]; height?: number; unit?: string; max?: number }) {
+/** `highlight` = x value of the selected category: bold label, other categories faded. */
+export function GroupedBars<T extends Record<string, unknown>>({ data, x, series, height = 200, unit = '', max, highlight }: { data: T[]; x: keyof T & string; series: Series[]; height?: number; unit?: string; max?: number; highlight?: string }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       <ResponsiveContainer width="100%" height={height}>
         <BarChart data={data} margin={{ top: 20, right: 8, left: -14, bottom: 0 }} barGap={4}>
           <CartesianGrid vertical={false} stroke={C.line} strokeDasharray="3 3" />
-          <XAxis dataKey={x} tick={<WrapTick />} height={38} axisLine={{ stroke: C.line }} tickLine={false} interval={0} />
+          <XAxis dataKey={x} tick={<WrapTick bold={highlight} />} height={38} axisLine={{ stroke: C.line }} tickLine={false} interval={0} />
           <YAxis tick={AXIS} axisLine={false} tickLine={false} domain={[0, max ?? 'auto']} tickFormatter={(v) => `${v}${unit}`} />
           {series.map((s) => (
             <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.color} radius={[3, 3, 0, 0]} maxBarSize={34} isAnimationActive={false}>
+              {data.map((d) => <Cell key={String(d[x])} fill={s.color} fillOpacity={highlight && d[x] !== highlight ? 0.35 : 1} />)}
               <LabelList dataKey={s.key} position="top" style={{ fontSize: 12, fontWeight: 600, fill: C.ink }} formatter={(v: number) => `${v}${unit}`} />
             </Bar>
           ))}
@@ -113,7 +115,8 @@ export function Donut({ parts, center, sub, size = 150 }: { parts: { label: stri
 }
 
 /** Count grid with tint intensity by value. */
-export function HeatGrid({ rows, cols, value, onCell, total }: {
+export function HeatGrid({ rows, cols, value, onCell, total, highlight }: {
+  highlight?: string;
   rows: { key: string; label: string }[];
   cols: { key: string; label: string }[];
   value: (r: string, c: string) => number;
@@ -129,7 +132,7 @@ export function HeatGrid({ rows, cols, value, onCell, total }: {
       <tbody>
         {rows.map((r) => (
           <tr key={r.key}>
-            <td className="lab">{r.label}</td>
+            <td className="lab" style={highlight ? { fontWeight: r.key === highlight ? 800 : 400, color: r.key === highlight ? C.dark : C.inkSoft } : undefined}>{r.label}{r.key === highlight ? ' ●' : ''}</td>
             {cols.map((c) => {
               const v = value(r.key, c.key);
               return <td key={c.key} className={onCell ? 'click' : undefined} style={{ background: bg(v) }} onClick={onCell ? () => onCell(r.key, c.key) : undefined}>{v}</td>;

@@ -4,7 +4,6 @@
  */
 import { ArrowLeftRight, Calculator, CalendarClock, CalendarDays, ChartColumn, ChartColumnBig, Coins, FileSearch, Percent, RotateCcw, Save, Scale, ShieldCheck, ShoppingCart, Target, TrendingUp, Users, Wallet } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
-import { Bar as RBar, BarChart, Cell, LabelList, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { useSearchParams } from 'react-router-dom';
 import {
   businessCase, CAMPAIGNS, nationalReturns, netRoi, regionRoi, campaignById, campaignMetrics, campaignsOf, campaignTotals, CROP_MIX, DEFAULT_REALLOCATION, NATIONAL, NATIONAL_METRICS,
@@ -13,7 +12,8 @@ import {
 import { crore, lakh, num, pct, rupees, sum, times } from '../data/format';
 import { R } from '../routes';
 import { useBhStore } from '../store/bhStore';
-import { C, SERIES } from '../theme';
+import { RegionBarsCard } from './RegionBars';
+import { SERIES } from '../theme';
 import { GroupedBars, HBars, Legend, Waterfall } from '../ui/charts';
 import { Bar, Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, SegmentedControl, Select, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
@@ -27,36 +27,12 @@ function StatusList({ items }: { items: { icon: typeof Coins; label: string; val
 }
 
 // ================================================================ shared card: investment per recorded adopter
-/** All four regions, highest first; the scope region in amber with a bold label; dashed national average line. */
 function PerAdopterCard({ scope }: { scope: RegionId | null }) {
-  const rows = [...REGIONS].sort((a, b) => regionMetrics(b).perAdopter - regionMetrics(a).perAdopter)
-    .map((r) => ({ id: r.id, name: r.name, value: regionMetrics(r).perAdopter, actual: r.actual, adopters: r.adopters }));
-  const avg = NATIONAL_METRICS.perAdopter;
-  const max = Math.ceil((rows[0].value * 1.08) / 1000) * 1000;
-  const Tick = ({ x, y, payload }: { x?: number; y?: number; payload?: { value: string } }) => (
-    <text x={x} y={y} dy={4} textAnchor="end" fontSize={13} fill={C.ink} fontWeight={rows.find((r) => r.name === payload?.value)?.id === scope ? 700 : 400}>{payload?.value}</text>
-  );
   return (
-    <Card title="Investment per recorded adopter" icon={Users}>
-      <div className="muted" style={{ fontSize: 12, marginTop: -6 }}>Actual investment ÷ recorded adopters, YTD</div>
-      <div style={{ flex: 1, minHeight: 180 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={rows} layout="vertical" margin={{ top: 18, right: 64, left: 4, bottom: 0 }} barCategoryGap="28%">
-            <XAxis type="number" hide domain={[0, max]} />
-            <YAxis type="category" dataKey="name" width={56} tick={<Tick />} axisLine={false} tickLine={false} />
-            <Tooltip cursor={{ fill: C.canvas }} content={({ active, payload }) => {
-              const p = active && payload?.[0]?.payload as (typeof rows)[number] | undefined;
-              return p ? <div className="toast" style={{ background: C.card, color: C.ink, border: `1px solid ${C.line}` }}>Investment {lakh(p.actual)} · Adopters {num(p.adopters)} · {rupees(p.value)} per adopter</div> : null;
-            }} />
-            <ReferenceLine x={avg} stroke={C.inkSoft} strokeDasharray="4 4" label={{ value: `National avg ${rupees(avg)}`, position: 'top', fontSize: 12, fill: C.inkSoft }} />
-            <RBar dataKey="value" barSize={16} radius={[0, 3, 3, 0]} isAnimationActive={false}>
-              {rows.map((r) => <Cell key={r.id} fill={r.id === scope ? C.amber : C.brand} />)}
-              <LabelList dataKey="value" position="right" formatter={(v: number) => rupees(v)} style={{ fontSize: 12, fontWeight: 600, fill: C.ink }} />
-            </RBar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </Card>
+    <RegionBarsCard title="Investment per recorded adopter" icon={Users} sub="Actual investment ÷ recorded adopters, YTD" scope={scope}
+      value={(r) => regionMetrics(r).perAdopter} format={rupees}
+      reference={{ value: NATIONAL_METRICS.perAdopter, label: `National avg ${rupees(NATIONAL_METRICS.perAdopter)}` }}
+      tooltip={(r) => `Investment ${lakh(r.actual)} · Adopters ${num(r.adopters)} · ${rupees(regionMetrics(r).perAdopter)} per adopter`} />
   );
 }
 
@@ -136,7 +112,7 @@ export function InvestmentRoi() {
 
       <div className="grid" style={{ gridTemplateColumns: '1.15fr 1fr .8fr' }}>
         <Card title="Approved vs actual marketing investment" note="₹ lakh" icon={ChartColumn}>
-          <GroupedBars data={regions.map((r) => ({ region: r.name, approved: r.approved, actual: r.actual }))} x="region"
+          <GroupedBars data={REGIONS.map((r) => ({ region: r.name, approved: r.approved, actual: r.actual }))} x="region" highlight={region === ALL ? undefined : regionById(region as RegionId).name}
             series={[{ key: 'approved', label: 'Approved', color: SERIES.planned }, { key: 'actual', label: 'Actual', color: SERIES.observed }]} />
         </Card>
         <PerAdopterCard scope={region === ALL ? null : (region as RegionId)} />

@@ -13,6 +13,7 @@ import {
 import { crore, lakh, num, pct, times } from '../data/format';
 import { R } from '../routes';
 import { useBhStore, type ThemeDecision } from '../store/bhStore';
+import { RegionBarsCard } from './RegionBars';
 import { SERIES } from '../theme';
 import { HBars, Legend } from '../ui/charts';
 import { Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, PanelFooter, SegmentedControl, Select, StatusChip, STEPS, WorkflowStepper } from '../ui/core';
@@ -55,7 +56,6 @@ export function MarketOpportunity() {
       { icon: Layers, label: 'Active campaigns', value: String(selRegion.campaigns) },
       { icon: Sprout, label: 'Crop and product records', value: 'Pending' },
     ];
-  const gapRows = [...regions].sort((x, y) => regionMetrics(y).gap - regionMetrics(x).gap);
 
   return (
     <div className="page">
@@ -88,9 +88,10 @@ export function MarketOpportunity() {
         />
       </Card>
       <div className="grid" style={{ gridTemplateColumns: '.9fr 1fr 1.25fr' }}>
-        <Card title="Regional business gaps" note="₹ Cr" icon={ChartColumn}>
-          <HBars labelWidth={60} rows={gapRows.map((r) => ({ label: r.name, values: [regionMetrics(r).gap / 100] }))} series={[{ key: 'g', label: 'Business gap', color: SERIES.planned }]} max={Math.max(...gapRows.map((r) => regionMetrics(r).gap / 100))} format={(v) => `₹${v.toFixed(1)} Cr`} />
-        </Card>
+        <RegionBarsCard title="Regional business gaps" icon={ChartColumn} sub={`YTD ABP − actual sales · total ${crore(NATIONAL_METRICS.gap, 1)}`} scope={region === ALL ? null : (region as RegionId)}
+          value={(r) => regionMetrics(r).gap} format={(v) => crore(v, 1)}
+          reference={{ value: NATIONAL_METRICS.gap / REGIONS.length, label: `Avg ${crore(NATIONAL_METRICS.gap / REGIONS.length, 1)}` }}
+          tooltip={(r) => `ABP ${crore(r.abp, 1)} · Actual ${crore(r.achieved, 1)} · Gap ${crore(regionMetrics(r).gap, 1)} (${pct((regionMetrics(r).gap / r.abp) * 100)})`} />
         <Card title="Crop × product × geography opportunity" icon={MapPin}>
           <div className="row" style={{ flexWrap: 'wrap' }}>
             {selRegion.id === 'west'
