@@ -1,5 +1,5 @@
 /** Screen 3 — Regional Performance (no mockup; same anatomy as the territory screen). */
-import { ArrowLeft, ChartColumn, Gauge, MapPin, Megaphone, Target, Users } from 'lucide-react';
+import { ChartColumn, Gauge, MapPin, Megaphone, Target, Users } from 'lucide-react';
 import { campaignsOf, regionById, regionMetrics, territoriesOf } from '../data/bh';
 import { crore, num, pct, pp, ratio, sum } from '../data/format';
 import { R } from '../routes';
@@ -70,11 +70,7 @@ export function RegionalPerformance() {
         </Card>
       </div>
 
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.portfolio)}>Back</Button>}
-        secondary={firstDetail && <Button icon={MapPin} onClick={() => go(R.territory(firstDetail.id))}>Territory performance</Button>}
-        primary={<Button primary icon={Target} onClick={() => go(R.effectiveness(id))}>Campaign effectiveness</Button>}
-      />
+      <FooterBar onBack={() => go(R.portfolio)} onNext={() => go(firstDetail ? R.territory(firstDetail.id) : R.effectiveness(id))} />
     </div>
   );
 }

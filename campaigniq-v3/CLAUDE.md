@@ -32,7 +32,8 @@ and `../business-head-prompt.md`. Open each mockup once before building its scre
 - Shell: 60px top bar (logo, persona selector — others disabled, FY, scope, period, help, notifications, avatar);
   232px sidebar (6 items; active = tint + 3px brand inset bar).
 - Page anatomy: breadcrumb → title row (+ status chip) → FilterBar → KPI row → cards → FooterBar
-  (Back left · secondary middle · one primary right).
+  (ONLY Back left and Next right — Next follows the screen order; other actions live in card headers).
+  Drawers and modals: PanelFooter = Back left + the panel's one action right.
 - Components only from `src/ui/`: KpiCard, Card, DataTable, StatusChip, ProgressCell, SegmentedControl, FilterBar,
   WorkflowStepper, Drawer (right, 900px), Modal, FooterBar, EvidenceDrawer, charts (GroupedBars, HBars, Waterfall,
   Donut, HeatGrid).

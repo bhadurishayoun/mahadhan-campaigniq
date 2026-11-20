@@ -2,7 +2,7 @@
  * Screens 11–16 — Market Opportunity (BH.4.png), Theme Approval Inbox (BH.4b.png), Theme Detailed Review (BH.4c.png),
  * Theme Decision modal (BH.4d.png), Suggest Strategic Theme (BH.4e.png), Recommendation Review & Submit drawer (BH.4f.png).
  */
-import { AlertTriangle, ArrowLeft, Box, ChartColumn, CircleCheck, Clock, Eye, FileSearch, FileText, Layers, Link2, MapPin, MessageCircle, Plus, Save, Send, Sprout, Store, Target, Trophy, Users } from 'lucide-react';
+import { AlertTriangle, Box, ChartColumn, CircleCheck, Clock, Eye, FileSearch, FileText, Layers, Link2, MapPin, MessageCircle, Plus, Save, Send, Sprout, Store, Target, Trophy, Users } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
@@ -15,7 +15,7 @@ import { R } from '../routes';
 import { useBhStore, type ThemeDecision } from '../store/bhStore';
 import { SERIES } from '../theme';
 import { HBars, Legend } from '../ui/charts';
-import { Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, SegmentedControl, Select, StatusChip, STEPS, WorkflowStepper } from '../ui/core';
+import { Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, PanelFooter, SegmentedControl, Select, StatusChip, STEPS, WorkflowStepper } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { Drawer, EvidenceDrawer, Modal, type Evidence } from '../ui/overlay';
 import { ALL, CROP_OPTIONS, opt, PRODUCT_OPTIONS, REGION_OPTIONS, useGo, useScopeFilter } from './common';
@@ -117,14 +117,7 @@ export function MarketOpportunity() {
             ]} />
         </Card>
       </div>
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.command)}>Back</Button>}
-        secondary={<>
-          <Button icon={MapPin} onClick={() => go(R.territory(AMBAD.territoryId))}>Territory performance</Button>
-          <Button icon={FileText} onClick={() => go(R.inbox)}>Theme approval inbox</Button>
-        </>}
-        primary={<Button primary icon={Plus} onClick={() => go(R.suggest)}>Suggest strategic theme</Button>}
-      />
+      <FooterBar onBack={() => go(R.command)} onNext={() => go(R.inbox)} />
     </div>
   );
 }
@@ -160,7 +153,7 @@ export function ThemeInbox() {
         { key: 'product', label: 'Product', value: product, options: PRODUCT_OPTIONS, onChange: setProduct },
         { key: 'status', label: 'Status', value: status, options: [opt(ALL, 'All statuses'), ...Object.entries(THEME_STATUS).map(([k, v]) => opt(k, v.bh === '—' ? v.mh : v.bh))], onChange: setStatus },
       ]} />
-      <Card title="Strategic theme approval queue" icon={FileText} flush>
+      <Card title="Strategic theme approval queue" icon={FileText} flush right={<Button small icon={Plus} onClick={() => go(R.suggest)}>Suggest new theme</Button>}>
         {queue.length ? (
           <DataTable rows={queue} rowKey={(t) => t.id} selected={sel?.id} onRowClick={(t) => setSelId(t.id)}
             columns={[
@@ -194,11 +187,7 @@ export function ThemeInbox() {
         </div>
       )}
       {sel && <Card><WorkflowStepper steps={STEPS.themeReview} current={stepOf(store.themeStatus[sel.id])} /></Card>}
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.opportunity)}>Back</Button>}
-        secondary={<Button icon={Plus} onClick={() => go(R.suggest)}>Suggest new theme</Button>}
-        primary={<Button primary icon={Eye} onClick={sel ? () => go(R.review(sel.id)) : undefined}>Review selected theme</Button>}
-      />
+      <FooterBar onBack={() => go(R.opportunity)} onNext={sel ? () => go(R.review(sel.id)) : undefined} />
     </div>
   );
 }
@@ -257,7 +246,7 @@ export function ThemeReview() {
           </Card>
         </div>
         <div className="stack">
-          <Card title="Strategic theme review" icon={FileText}>
+          <Card title="Strategic theme review" icon={FileText} right={<><Button small icon={FileSearch} onClick={() => showEvidence(`Source evidence — ${t.name}`, themeEvidence(t.id).map((e) => ({ label: e.label, value: e.value })))}>Source evidence</Button><Button small primary onClick={() => setParams({ modal: 'decision' })}>Theme decision</Button></>}>
             <div className="kv">
               <span>Strategic objective</span><b>{t.objective}</b>
               <span>Priority geography</span><b>{t.state}</b>
@@ -272,11 +261,7 @@ export function ThemeReview() {
           </Card>
         </div>
       </div>
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.inbox)}>Back</Button>}
-        secondary={<Button icon={FileSearch} onClick={() => showEvidence(`Source evidence — ${t.name}`, themeEvidence(t.id).map((e) => ({ label: e.label, value: e.value })))}>Source evidence</Button>}
-        primary={<Button primary onClick={() => setParams({ modal: 'decision' })}>Theme decision</Button>}
-      />
+      <FooterBar onBack={() => go(R.inbox)} onNext={() => go(R.suggest)} />
       {params.get('modal') === 'decision' && <DecisionModal t={t} onClose={() => setParams({})} onShowOriginal={() => showEvidence(`Original proposal — ${t.name}`, [
         { label: 'Proposed by', value: t.proposedBy }, { label: 'Geography', value: t.geography }, { label: 'Crop / product', value: t.cropProduct },
         { label: 'Objective', value: t.objective }, { label: 'Target cohort', value: t.cohort }, { label: 'Priority', value: t.priority },
@@ -305,18 +290,13 @@ function DecisionModal({ t, onClose, onShowOriginal }: { t: ThemeProposal; onClo
 
   return (
     <Modal title="Strategic theme decision" onClose={onClose} status={<StatusChip tone={decided ? 'ok' : 'warn'}>{decided ? 'Decision recorded' : 'Decision pending'}</StatusChip>}
-      footer={<>
-        <Button icon={ArrowLeft} onClick={onClose}>Back</Button>
-        <Button icon={Eye} onClick={onShowOriginal}>View original</Button>
-        <Button icon={Save} onClick={() => { record(true); store.toast('Draft decision saved'); }}>Save draft</Button>
-        <span className="sp" />
-        <Button primary icon={Send} onClick={() => { record(false); store.toast(c.toast); nav(R.inbox); }}>{c.action}</Button>
-      </>}>
+      footer={<PanelFooter onBack={onClose} action={<Button primary icon={Send} onClick={() => { record(false); store.toast(c.toast); nav(R.inbox); }}>{c.action}</Button>} />}>
       <div className="row" style={{ gap: 20, flexWrap: 'wrap' }}>
         <span className="row"><Layers size={18} color="var(--amber)" /><b className="strong">{t.name}</b></span>
         <span className="row"><MapPin size={16} color="var(--brand)" />{t.state} {t.cropProduct}</span>
         <span className="row"><Users size={16} color="var(--brand)" />Proposed by {t.proposedBy}</span>
         <StatusChip tone="ok" icon={Sprout}>New next-season theme proposal</StatusChip>
+        <span style={{ marginLeft: 'auto' }} className="row"><Button small icon={Eye} onClick={onShowOriginal}>View original</Button><Button small icon={Save} onClick={() => { record(true); store.toast('Draft decision saved'); }}>Save draft</Button></span>
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.6fr) minmax(0, 1fr)' }}>
         <Card flush>
@@ -403,7 +383,15 @@ export function SuggestTheme() {
         <KpiCard icon={Sprout} label="Local trial-to-adoption" value={pct(a.trialToAdoptionPct)} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.6fr) minmax(0, 1fr)' }}>
-        <Card title="Strategic theme configuration" icon={Layers}>
+        <Card title="Strategic theme configuration" icon={Layers} right={<>
+          <Button small icon={Eye} onClick={() => setEvidence({ title: 'Opportunity evidence — Ambad', owner: 'Field Sales Manager territory records', facts: [
+            ...a.villages.map((v) => ({ label: `${v.name} trial-to-adoption`, value: `${v.adopters} / ${v.trials} = ${pct(v.pct)}` })),
+            { label: 'Village conversion gap', value: `${a.villageGap.toFixed(1)} pp` }, { label: 'Activities completed', value: `${a.activitiesDone} / ${a.activitiesPlanned}` },
+            { label: `${MARKET.state} penetration`, value: MARKET.penetration },
+          ] })}>Opportunity evidence</Button>
+          <Button small icon={Save} onClick={saveDraft}>Save draft</Button>
+          <Button small primary onClick={() => setParams((p) => { const n = new URLSearchParams(p); n.set('drawer', 'submit'); return n; })}>Review recommendation</Button>
+        </>}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 12 }}>
             {field('Region', <Select label="Region" value={f.region} options={regionOpts} onChange={(v) => set('region', v as RegionId)} />)}
             {sel('State', f.state, ['Maharashtra'], 'state')}
@@ -444,34 +432,17 @@ export function SuggestTheme() {
         </div>
       </div>
       <Card><WorkflowStepper steps={STEPS.themeSuggestion} current={0} /></Card>
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.opportunity)}>Back</Button>}
-        secondary={<>
-          <Button icon={Eye} onClick={() => setEvidence({ title: 'Opportunity evidence — Ambad', owner: 'Field Sales Manager territory records', facts: [
-            ...a.villages.map((v) => ({ label: `${v.name} trial-to-adoption`, value: `${v.adopters} / ${v.trials} = ${pct(v.pct)}` })),
-            { label: 'Village conversion gap', value: `${a.villageGap.toFixed(1)} pp` }, { label: 'Activities completed', value: `${a.activitiesDone} / ${a.activitiesPlanned}` },
-            { label: `${MARKET.state} penetration`, value: MARKET.penetration },
-          ] })}>Opportunity evidence</Button>
-          <Button icon={Save} onClick={saveDraft}>Save draft theme</Button>
-        </>}
-        primary={<Button primary onClick={() => setParams((p) => { const n = new URLSearchParams(p); n.set('drawer', 'submit'); return n; })}>Review theme recommendation</Button>}
-      />
+      <FooterBar onBack={() => go(R.opportunity)} onNext={() => go(R.tracker)} />
       {params.get('drawer') === 'submit' && (
         <Drawer title="Strategic theme recommendation — review and submit" status={<StatusChip tone="warn">Draft · not sent</StatusChip>}
           onClose={() => setParams((p) => { const n = new URLSearchParams(p); n.delete('drawer'); return n; })}
-          footer={<>
-            <Button small icon={ArrowLeft} onClick={() => setParams((p) => { const n = new URLSearchParams(p); n.delete('drawer'); return n; })}>Back</Button>
-            <Button small icon={Eye} onClick={() => go(R.review(linked.id))}>View linked theme</Button>
-            <Button small icon={Save} onClick={saveDraft}>Save draft</Button>
-            <span className="sp" />
-            <Button small primary icon={Send} onClick={submit}>Submit recommendation to Marketing Head</Button>
-          </>}>
+          footer={<PanelFooter onBack={() => setParams((p) => { const n = new URLSearchParams(p); n.delete('drawer'); return n; })} action={<Button small primary icon={Send} onClick={submit}>Submit recommendation to Marketing Head</Button>} />}>
           <div className="row" style={{ gap: 14 }}>
             <FileText size={28} color="var(--brand)" />
             <div><b className="strong" style={{ fontSize: 16 }}>{f.theme}</b><div className="muted">{regionById(f.region).name} / {f.state} / {f.district} / {f.territory} · {f.crop} / {f.product}</div></div>
             <span style={{ marginLeft: 'auto' }} className="row"><StatusChip tone="warn">{f.priority} priority</StatusChip><StatusChip tone="ok">Recipient: Marketing Head</StatusChip></span>
           </div>
-          <div className="row"><StatusChip tone="info" icon={Link2}>{f.link === 'modify' ? `Modification to: ${linked.name}` : 'Separate theme'}</StatusChip></div>
+          <div className="row"><StatusChip tone="info" icon={Link2}>{f.link === 'modify' ? `Modification to: ${linked.name}` : 'Separate theme'}</StatusChip><span style={{ marginLeft: 'auto' }} className="row"><Button small icon={Eye} onClick={() => go(R.review(linked.id))}>View linked theme</Button><Button small icon={Save} onClick={saveDraft}>Save draft</Button></span></div>
           <div className="grid g2">
             <Card title="Strategic success measures" flush>
               <DataTable rows={measures} rowKey={(m) => m.id} columns={[

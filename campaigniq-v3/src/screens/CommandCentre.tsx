@@ -1,5 +1,5 @@
 /** Screen 1 — National Command Centre (mockup BH.1.png). */
-import { AlertCircle, BadgeIndianRupee, ChartColumn, ChartColumnIncreasing, ClipboardCheck, Coins, ExternalLink, Layers, Megaphone, Plus, ShieldCheck, Target, TriangleAlert, Users } from 'lucide-react';
+import { AlertCircle, BadgeIndianRupee, ChartColumn, ChartColumnIncreasing, ClipboardCheck, Coins, ExternalLink, Layers, Megaphone, Target, TriangleAlert, Users } from 'lucide-react';
 import { useState } from 'react';
 import { ATTRIBUTION_STATUS, CAMPAIGNS, REGIONS, regionMetrics, THEME_QUEUE, THEME_STATUS, type ThemeId } from '../data/bh';
 import { crore, num, pct, ratio, sum } from '../data/format';
@@ -118,14 +118,7 @@ export function CommandCentre() {
         </Card>
       </div>
 
-      <FooterBar
-        secondary={<>
-          <Button icon={Layers} onClick={() => go(R.portfolio)}>View campaign portfolio</Button>
-          <Button icon={Coins} onClick={() => go(R.investment)}>View investment &amp; ROI</Button>
-          <Button icon={ShieldCheck} onClick={() => go(R.inbox)}>Review strategic themes</Button>
-        </>}
-        primary={<Button primary icon={Plus} onClick={() => go(R.suggest)}>Suggest new strategic theme</Button>}
-      />
+      <FooterBar onBack={() => window.history.back()} onNext={() => go(R.portfolio)} />
     </div>
   );
 }

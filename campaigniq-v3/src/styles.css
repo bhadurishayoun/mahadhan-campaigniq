@@ -64,11 +64,12 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 
 /* ---------- cards ---------- */
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; display: flex; flex-direction: column; min-width: 0; }
-.card-head { display: flex; align-items: center; gap: 10px; padding: 12px 16px 0; min-height: 40px; }
+.card-head { display: flex; align-items: center; gap: 8px 10px; padding: 12px 16px 0; min-height: 40px; flex-wrap: wrap; }
 .card-head h3 { font-size: 14px; font-weight: 700; color: var(--dark); display: flex; align-items: center; gap: 8px; }
 .card-head h3 svg { color: var(--brand); }
 .card-head h3 small { font-size: 12px; font-weight: 400; color: var(--ink-soft); }
-.card-head .right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.card-head .right { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.card-head h3 { white-space: nowrap; }
 .card-body { padding: 10px 16px 14px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
 .card-body.flush { padding: 8px 0 4px; }
 

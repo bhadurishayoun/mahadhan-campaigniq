@@ -1,5 +1,5 @@
 /** Screen 5 — Campaign Effectiveness (mockup BH.2a.png) with screen 6 — Campaign Diagnostics drawer (BH.2b.png). */
-import { ArrowLeft, ChartColumn, Coins, FileSearch, FileText, Gauge, Megaphone, ShieldCheck, Stethoscope, Target, TrendingUp, Users } from 'lucide-react';
+import { ChartColumn, Coins, FileSearch, FileText, Gauge, Megaphone, ShieldCheck, Stethoscope, Target, TrendingUp, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AMBAD, ambadMetrics, ATTRIBUTION_STATUS, businessCase, campaignById, campaignMetrics, campaignsOf, campaignTotals, regionById, type Campaign, type CampaignId } from '../data/bh';
@@ -7,7 +7,7 @@ import { lakh, num, pct, pp, ratio, times } from '../data/format';
 import { R } from '../routes';
 import { SERIES } from '../theme';
 import { HBars, Legend } from '../ui/charts';
-import { Bar, Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
+import { Bar, Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, PanelFooter, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { Drawer, EvidenceDrawer, type Evidence } from '../ui/overlay';
 import { useBhStore } from '../store/bhStore';
@@ -85,18 +85,11 @@ export function Effectiveness() {
               series={[{ key: 'target', label: 'Target', color: SERIES.planned }, { key: 'recorded', label: 'Recorded', color: SERIES.observed }]}
               max={Math.max(...camps.map((c) => c.adoptionTarget))} format={num} />
           </Card>
-          <CommercialStrip c={sel} />
+          <CommercialStrip c={sel} onDiagnostics={() => set({ drawer: 'diagnostics', campaign: sel.id })} onEvidence={() => setEvidence(attributionEvidence(sel))} />
         </div>
       )}
 
-      <FooterBar
-        back={<Button small icon={ArrowLeft} onClick={() => go(R.region(region))}>Back</Button>}
-        secondary={<>
-          <Button icon={Stethoscope} onClick={sel ? () => set({ drawer: 'diagnostics', campaign: sel.id }) : undefined}>Campaign diagnostics</Button>
-          <Button icon={FileSearch} onClick={sel ? () => setEvidence(attributionEvidence(sel)) : undefined}>Attribution evidence</Button>
-        </>}
-        primary={<Button primary icon={Coins} onClick={() => go(R.campaignInvestment(region))}>Campaign investment</Button>}
-      />
+      <FooterBar onBack={() => go(R.region(region))} onNext={() => go(R.investment)} />
 
       {drawer === 'diagnostics' && sel && <Diagnostics c={sel} onClose={() => set({ drawer: null })} />}
       {evidence && <EvidenceDrawer evidence={evidence} onClose={() => setEvidence(null)} />}
@@ -104,7 +97,7 @@ export function Effectiveness() {
   );
 }
 
-function CommercialStrip({ c }: { c: Campaign }) {
+function CommercialStrip({ c, onDiagnostics, onEvidence }: { c: Campaign; onDiagnostics: () => void; onEvidence: () => void }) {
   const m = campaignMetrics(c);
   const bc = businessCase(c.id);
   const pending = <StatusChip tone="neutral">Business case pending</StatusChip>;
@@ -119,7 +112,7 @@ function CommercialStrip({ c }: { c: Campaign }) {
     { label: 'Actual net ROI', value: <StatusChip tone="neutral">{ATTRIBUTION_STATUS}</StatusChip> },
   ];
   return (
-    <Card title={`${c.name} — commercial effectiveness`} icon={Coins}>
+    <Card title={`${c.name} — commercial effectiveness`} icon={Coins} right={<><Button small icon={Stethoscope} onClick={onDiagnostics}>Diagnostics</Button><Button small icon={FileSearch} onClick={onEvidence}>Attribution evidence</Button></>}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '12px 14px' }}>
         {cells.map((x) => <div key={x.label}><div className="kpi-label">{x.label}</div><div className="strong" style={{ fontSize: 16, marginTop: 4 }}>{x.value}</div></div>)}
       </div>
@@ -169,14 +162,7 @@ function Diagnostics({ c, onClose }: { c: Campaign; onClose: () => void }) {
     <Drawer
       title={`${c.name} — performance diagnostics`}
       onClose={onClose}
-      footer={<>
-        <Button small icon={ArrowLeft} onClick={onClose}>Close</Button>
-        <Button small icon={Target} onClick={() => go(R.territory(AMBAD.territoryId))}>Territory performance</Button>
-        <Button small icon={Coins} onClick={() => go(R.campaignInvestment(c.region))}>Campaign investment</Button>
-        <Button small icon={FileText} onClick={() => go(`${R.suggest}?campaign=${c.id}`)}>Suggest revised theme</Button>
-        <span className="sp" />
-        <Button small primary onClick={requestIntervention}>Request strategic intervention</Button>
-      </>}
+      footer={<PanelFooter onBack={onClose} action={<Button small primary onClick={requestIntervention}>Request strategic intervention</Button>} />}
     >
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
         <KpiCard icon={Gauge} label="Execution variance" value={pp(m.execVariance)} sub={`${c.observedExec}% vs ${c.plannedExec}%`} />
@@ -200,7 +186,7 @@ function Diagnostics({ c, onClose }: { c: Campaign; onClose: () => void }) {
           ]} />
         </Card>
       </div>
-      <Card title="Target achievement" note="at checkpoint">
+      <Card title="Target achievement" note="at checkpoint" right={<Button small icon={FileText} onClick={() => go(`${R.suggest}?campaign=${c.id}`)}>Suggest revised theme</Button>}>
         {achievement.map((x) => (
           <div key={x.label} className="row" style={{ gap: 14 }}><span style={{ width: 140 }}>{x.label}</span><Bar value={x.value} /><b className="ok-text" style={{ width: 54, textAlign: 'right' }}>{pct(x.value, 0)}</b><span className="muted" style={{ width: 110 }}>{x.detail}</span></div>
         ))}

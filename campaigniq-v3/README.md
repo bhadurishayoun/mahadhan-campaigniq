@@ -41,6 +41,8 @@ npx vite preview --port 4174 & node scripts/shots.mjs [filter] [width] [height] 
 | E | Screens 17–20: Action tracker, Intervention drawer, Portfolio learning, Decision Assistant | Done |
 | F | All 20 routes checked at 1440×900 and 1366×768 (no console errors, no horizontal scroll, no clipped text). Still to do: a scripted click-through of every navigation-map row | Partly done |
 
+Bottom bar on every page: Back (left) and Next (right) only; Next follows the screen order 1→2→3→4→5→7→8→9→10→11→12→13→15→17→19→20→1.
+Page actions (theme decision, evidence, save, submit) sit in the header of the card they belong to.
 Actions persist in the browser (localStorage): theme decisions update the inbox, command centre and notifications;
 submitted recommendations, reallocation reviews, intervention requests and next-year priorities appear in the tracker.
 The Decision Assistant answers four prepared questions from the data module (no external model); typed questions are

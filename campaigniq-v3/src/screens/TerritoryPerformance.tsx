@@ -1,5 +1,5 @@
 /** Screen 4 — Territory Performance, Ambad (mockup BH.3.png). */
-import { ArrowLeft, CalendarCheck, ChartColumnBig, Coins, Eye, Lightbulb, MapPin, Plus, Target, TrendingUp, Users } from 'lucide-react';
+import { CalendarCheck, ChartColumnBig, Coins, Lightbulb, MapPin, Plus, Target, TrendingUp, Users } from 'lucide-react';
 import { Navigate, useParams } from 'react-router-dom';
 import { AMBAD, ambadMetrics, ATTRIBUTION_STATUS, territoryById } from '../data/bh';
 import { crore, lakh, num, pct, ratio } from '../data/format';
@@ -76,7 +76,7 @@ export function TerritoryPerformance() {
           ))}
           <div className="row" style={{ justifyContent: 'space-between', background: 'var(--amber-soft)', borderRadius: 8, padding: '8px 12px', marginTop: 'auto' }}><b>Total</b><b>{a.activitiesDone} / {a.activitiesPlanned} ({pct(a.activityPct)})</b></div>
         </Card>
-        <Card title="Strategic opportunities" icon={Lightbulb} flush>
+        <Card title="Strategic opportunities" icon={Lightbulb} flush right={<Button small icon={Plus} onClick={() => go(suggestUrl)}>Suggest theme</Button>}>
           <DataTable rows={opportunities} rowKey={(o) => o.id} columns={[
             { key: 'p', header: 'Parameter', render: (o) => o.parameter },
             { key: 'c', header: 'Current', align: 'right', render: (o) => <b>{o.current}</b> },
@@ -85,14 +85,7 @@ export function TerritoryPerformance() {
         </Card>
       </div>
 
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.region(t.region))}>Back</Button>}
-        secondary={<>
-          <Button icon={Target} onClick={() => go(R.effectiveness(t.region))}>Campaign effectiveness</Button>
-          <Button icon={Eye} onClick={() => go(R.opportunity)}>Market opportunity</Button>
-        </>}
-        primary={<Button primary icon={Plus} onClick={() => go(suggestUrl)}>Suggest territory theme</Button>}
-      />
+      <FooterBar onBack={() => go(R.region(t.region))} onNext={() => go(R.effectiveness(t.region))} />
     </div>
   );
 }

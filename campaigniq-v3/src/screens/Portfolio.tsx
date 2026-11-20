@@ -1,5 +1,5 @@
 /** Screen 2 — Campaign Portfolio Performance (mockup BH.2.png). */
-import { ArrowLeft, ChartColumn, Coins, ExternalLink, Gauge, Layers, MapPinned, Megaphone, Table2, Users } from 'lucide-react';
+import { ChartColumn, Coins, ExternalLink, Gauge, Layers, Megaphone, Table2, Users } from 'lucide-react';
 import { useState } from 'react';
 import { ATTRIBUTION_STATUS, CROP_MIX, PRODUCT_MIX, REGIONS, THEMES, themeCampaigns, type MixRow, type RegionId, type ThemeId } from '../data/bh';
 import { crore, lakh, num, sum } from '../data/format';
@@ -96,11 +96,7 @@ export function Portfolio() {
         </Card>
       </div>
 
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.command)}>Back</Button>}
-        secondary={<Button icon={Coins} onClick={() => go(R.investment)}>Investment &amp; ROI</Button>}
-        primary={<Button primary icon={MapPinned} onClick={() => go(R.region(region === ALL ? drill : (region as RegionId)))}>Regional performance</Button>}
-      />
+      <FooterBar onBack={() => go(R.command)} onNext={() => go(R.region(region === ALL ? drill : (region as RegionId)))} />
     </div>
   );
 }

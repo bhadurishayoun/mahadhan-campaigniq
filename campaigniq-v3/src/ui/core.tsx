@@ -1,5 +1,5 @@
 /** Shared building blocks. Every screen composes these; no screen-specific styling of these elements. */
-import { ArrowRight, Check, ChevronDown, ChevronRight, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, ChevronDown, ChevronRight, type LucideIcon } from 'lucide-react';
 import { Fragment, type ReactNode } from 'react';
 
 // ---------------------------------------------------------------- page frame
@@ -150,15 +150,20 @@ export function Button({ children, onClick, primary, disabled, icon: Icon, small
   );
 }
 
-export function FooterBar({ back, secondary, primary }: { back?: ReactNode; secondary?: ReactNode; primary?: ReactNode }) {
+/** Page bottom bar: Back on the left, Next on the right — nothing else. */
+export function FooterBar({ onBack, onNext }: { onBack: () => void; onNext?: () => void }) {
   return (
     <footer className="footer">
-      {back}
-      {secondary}
+      <Button icon={ArrowLeft} onClick={onBack}>Back</Button>
       <span className="sp" />
-      {primary}
+      {onNext && <button type="button" className="btn primary" onClick={onNext}>Next<ArrowRight size={15} /></button>}
     </footer>
   );
+}
+
+/** Drawer / modal bottom bar: Back on the left, the panel's one action on the right. */
+export function PanelFooter({ onBack, action }: { onBack: () => void; action?: ReactNode }) {
+  return <><Button small icon={ArrowLeft} onClick={onBack}>Back</Button><span className="sp" />{action}</>;
 }
 
 export function Toasts({ items }: { items: { id: number; text: string }[] }) {

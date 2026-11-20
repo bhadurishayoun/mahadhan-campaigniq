@@ -2,7 +2,7 @@
  * Screens 17–20 — Management Action Tracker (BH.5.png) with Intervention Request drawer (BH.5a.png),
  * Portfolio Learning & Next-Year Priorities (BH.5b.png), Decision Assistant (BH.6.png).
  */
-import { ArrowLeft, ArrowRight, CircleCheck, ClipboardList, Coins, Eye, FileSearch, FileText, Folder, Layers, MessageCircle, MessagesSquare, Plus, RefreshCw, Repeat, Save, Send, Target, Users } from 'lucide-react';
+import { ArrowRight, CircleCheck, ClipboardList, Coins, Eye, FileSearch, FileText, Folder, Layers, MessageCircle, MessagesSquare, RefreshCw, Repeat, Save, Send, Target, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
@@ -14,7 +14,7 @@ import { R } from '../routes';
 import { useBhStore } from '../store/bhStore';
 import { C, SERIES } from '../theme';
 import { Donut, HBars, Legend } from '../ui/charts';
-import { Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, SegmentedControl, Select, StatusChip, STEPS, WorkflowStepper, type Tone } from '../ui/core';
+import { Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, PanelFooter, SegmentedControl, Select, StatusChip, STEPS, WorkflowStepper, type Tone } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { Drawer, EvidenceDrawer, type Evidence } from '../ui/overlay';
 import { opt, useGo } from './common';
@@ -76,7 +76,7 @@ export function ActionTracker() {
           </div>
         </Card>
         {sel && (
-          <Card title={`Selected intervention: ${sel.name}`} icon={FileText}>
+          <Card title={`Selected intervention: ${sel.name}`} icon={FileText} right={<><Button small icon={Eye} onClick={() => go(R.effectiveness('west', sel.campaign ?? 'croptek'))}>Linked campaign</Button><Button small primary onClick={() => setP({ drawer: sel.id })}>Open intervention</Button></>}>
             <div className="grid g2">
               <div className="kv">
                 {cm && camp ? <>
@@ -101,14 +101,7 @@ export function ActionTracker() {
           </Card>
         )}
       </div>
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.command)}>Back</Button>}
-        secondary={<>
-          <Button icon={Eye} onClick={() => go(R.effectiveness('west', sel?.campaign ?? 'croptek'))}>Linked campaign</Button>
-          <Button icon={Layers} onClick={() => go(R.learning)}>Portfolio learning</Button>
-        </>}
-        primary={<Button primary onClick={sel ? () => setP({ drawer: sel.id }) : undefined}>Open selected intervention</Button>}
-      />
+      <FooterBar onBack={() => go(R.command)} onNext={() => go(R.learning)} />
       {drawerItem && <InterventionDrawer item={drawerItem} onClose={() => setP({ drawer: null })} />}
     </div>
   );
@@ -129,13 +122,7 @@ function InterventionDrawer({ item, onClose }: { item: Intervention; onClose: ()
 
   return (
     <Drawer title="Strategic intervention request" status={<StatusChip tone={sent ? 'neutral' : 'warn'}>{item.statusLabel}</StatusChip>} onClose={onClose}
-      footer={<>
-        <Button small icon={ArrowLeft} onClick={onClose}>Back</Button>
-        <Button small icon={Eye} onClick={() => go(R.effectiveness('west', item.campaign ?? 'croptek'))}>Linked campaign</Button>
-        <Button small icon={Save} onClick={() => { store.updateIntervention(item.id, patch); store.toast('Draft saved'); }}>Save draft</Button>
-        <span className="sp" />
-        <Button small primary icon={Send} onClick={sent ? undefined : () => { store.updateIntervention(item.id, { ...patch, status: 'awaiting_response', statusLabel: 'Awaiting response' }); store.toast(`Intervention request sent to ${role}`); onClose(); }}>{sent ? 'Request sent' : `Submit intervention request to ${role}`}</Button>
-      </>}>
+      footer={<PanelFooter onBack={onClose} action={<Button small primary icon={Send} onClick={sent ? undefined : () => { store.updateIntervention(item.id, { ...patch, status: 'awaiting_response', statusLabel: 'Awaiting response' }); store.toast(`Intervention request sent to ${role}`); onClose(); }}>{sent ? 'Request sent' : `Submit intervention request to ${role}`}</Button>} />}>
       <div className="row" style={{ gap: 18, background: 'var(--tint)', borderRadius: 8, padding: '8px 14px', flexWrap: 'wrap' }}>
         <b className="strong">{item.name}</b><span className="muted">|</span><span>{item.geography}</span><span className="muted">|</span><StatusChip tone="warn">{priority}</StatusChip>
       </div>
@@ -152,7 +139,7 @@ function InterventionDrawer({ item, onClose }: { item: Intervention; onClose: ()
           ]} />
         ) : <div style={{ padding: '4px 16px 12px' }} className="row"><Target size={16} color="var(--brand)" />{item.trigger}</div>}
       </Card>
-      <Card title="Intervention configuration">
+      <Card title="Intervention configuration" right={<><Button small icon={Eye} onClick={() => go(R.effectiveness('west', item.campaign ?? 'croptek'))}>Linked campaign</Button><Button small icon={Save} onClick={() => { store.updateIntervention(item.id, patch); store.toast('Draft saved'); }}>Save draft</Button></>}>
         <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr .8fr 1fr', gap: 12 }}>
           <label className="field"><span>Intervention type</span><Select label="Intervention type" value={type} onChange={setType} options={[...new Set([item.deliverable, 'Campaign recovery assessment', 'Strategic opportunity assessment', 'Finance validation of reallocation', 'Clarified theme scope'])].map((x) => opt(x, x))} /></label>
           <label className="field"><span>Recipient</span><Select label="Recipient" value={role} onChange={setRole} options={[...new Set([item.role, 'Marketing Head', 'Marketing Head and Finance'])].map((x) => opt(x, x))} /></label>
@@ -218,7 +205,7 @@ export function PortfolioLearning() {
             rows={THEMES.map((t) => ({ label: t.name, values: [themeShares(t).investmentShare, themeShares(t).adoptionShare] }))}
             series={[{ key: 'i', label: 'Investment share', color: SERIES.planned }, { key: 'a', label: 'Adoption share', color: SERIES.observed }]} />
         </Card>
-        <Card title="Next-year strategic priority matrix" icon={ClipboardList}>
+        <Card title="Next-year strategic priority matrix" icon={ClipboardList} right={<><Button small icon={Eye} onClick={() => go(R.effectiveness('west'))}>Campaign evidence</Button><Button small icon={Save} onClick={() => store.toast('Draft priorities saved')}>Save draft</Button><Button small primary icon={Send} onClick={submit}>Submit for Marketing Head assessment</Button></>}>
           <DataTable rows={priorities} rowKey={(p) => p.id} onRowClick={(p) => toggle(prioSel, setPrioSel, p.id)}
             columns={[
               { key: 'g', header: 'Geography / theme', render: (p) => p.geography },
@@ -233,14 +220,7 @@ export function PortfolioLearning() {
           </div>
         </Card>
       </div>
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.tracker)}>Back</Button>}
-        secondary={<>
-          <Button icon={Eye} onClick={() => go(R.effectiveness('west'))}>Campaign evidence</Button>
-          <Button icon={Save} onClick={() => store.toast('Draft priorities saved')}>Save draft priorities</Button>
-        </>}
-        primary={<Button primary icon={Send} onClick={submit}>Submit for Marketing Head assessment</Button>}
-      />
+      <FooterBar onBack={() => go(R.tracker)} onNext={() => go(R.assistant)} />
     </div>
   );
 }
@@ -338,26 +318,22 @@ export function DecisionAssistant() {
             <div className="list-row"><Users size={15} /><b>{num(NATIONAL.adopters)}</b>&nbsp;recorded adopters</div>
             <div className="list-row"><RefreshCw size={15} />Actual net ROI<span className="right"><StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip></span></div>
           </Card>
-          <Card title="Next steps" icon={ArrowRight}>
-            <button type="button" className="list-row" style={{ width: '100%' }} onClick={() => go(R.opportunity)}><ArrowRight size={15} />Explore {gapRegion.name} region market gap<span className="right"><StatusChip tone="ok">Market opportunity</StatusChip></span></button>
-            <button type="button" className="list-row" style={{ width: '100%' }} onClick={() => go(R.review('croptek-next'))}><ArrowRight size={15} />Review Croptek strategic theme<span className="right"><StatusChip tone="ok">Theme review</StatusChip></span></button>
-            <button type="button" className="list-row" style={{ width: '100%' }} onClick={createDraft}><ArrowRight size={15} />Draft strategic theme suggestion<span className="right"><StatusChip tone="ok">Suggest theme</StatusChip></span></button>
-          </Card>
-        </div>
-      </div>
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.command)}>Back</Button>}
-        secondary={<>
-          <Button icon={FileSearch} onClick={() => setEvidence({ title: 'Source evidence', owner: 'Business Head workspace records', facts: [
+          <Card title="Next steps" icon={ArrowRight} right={
+          <Button small icon={FileSearch} onClick={() => setEvidence({ title: 'Source evidence', owner: 'Business Head workspace records', facts: [
             { label: 'Business gap by region', value: REGIONS.map((r) => `${r.name} ${crore(regionMetrics(r).gap, 1)}`).join(' · ') },
             { label: 'Croptek adoption', value: `${croptek.adopters} / ${croptek.adoptionTarget}` },
             { label: 'Ambad village gap', value: `${a.villageGap.toFixed(1)} pp` },
             { label: 'Attribution', value: ATTRIBUTION_STATUS },
           ] })}>Source evidence</Button>
-          <Button icon={FileText} onClick={requestAssessment}>Request market assessment</Button>
-        </>}
-        primary={<Button primary icon={Plus} onClick={createDraft}>Create draft strategic recommendation</Button>}
-      />
+          }>
+            <button type="button" className="list-row" style={{ width: '100%' }} onClick={() => go(R.opportunity)}><ArrowRight size={15} />Explore {gapRegion.name} region market gap<span className="right"><StatusChip tone="ok">Market opportunity</StatusChip></span></button>
+            <button type="button" className="list-row" style={{ width: '100%' }} onClick={() => go(R.review('croptek-next'))}><ArrowRight size={15} />Review Croptek strategic theme<span className="right"><StatusChip tone="ok">Theme review</StatusChip></span></button>
+            <button type="button" className="list-row" style={{ width: '100%' }} onClick={createDraft}><ArrowRight size={15} />Draft strategic theme suggestion<span className="right"><StatusChip tone="ok">Suggest theme</StatusChip></span></button>
+            <button type="button" className="list-row" style={{ width: '100%' }} onClick={requestAssessment}><ArrowRight size={15} />Request market assessment<span className="right"><StatusChip tone="ok">Marketing Head</StatusChip></span></button>
+          </Card>
+        </div>
+      </div>
+      <FooterBar onBack={() => go(R.command)} onNext={() => go(R.command)} />
       {evidence && <EvidenceDrawer evidence={evidence} onClose={() => setEvidence(null)} />}
     </div>
   );

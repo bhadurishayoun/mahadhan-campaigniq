@@ -2,11 +2,11 @@
  * Screens 7–10 — Marketing Investment & ROI (BH.3a.png), Campaign Investment (BH.3b.png),
  * Commercial Returns (BH.3d.png), Reallocation Simulator (BH.3e.png).
  */
-import { ArrowLeft, ArrowLeftRight, Calculator, CalendarClock, CalendarDays, ChartColumn, ChartColumnBig, Coins, FileSearch, Percent, RotateCcw, Save, Scale, ShieldCheck, ShoppingCart, Target, TrendingUp, Users, Wallet } from 'lucide-react';
+import { ArrowLeftRight, Calculator, CalendarClock, CalendarDays, ChartColumn, ChartColumnBig, Coins, FileSearch, Percent, RotateCcw, Save, Scale, ShieldCheck, ShoppingCart, Target, TrendingUp, Users, Wallet } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  ATTRIBUTION_STATUS, businessCase, campaignById, campaignMetrics, campaignsOf, campaignTotals, CROP_MIX, DEFAULT_REALLOCATION, NATIONAL, NATIONAL_METRICS,
+  ATTRIBUTION_STATUS, businessCase, CAMPAIGNS, campaignById, campaignMetrics, campaignsOf, campaignTotals, CROP_MIX, DEFAULT_REALLOCATION, NATIONAL, NATIONAL_METRICS,
   PRODUCT_MIX, REGIONS, regionById, regionMetrics, THEMES, type Campaign, type CampaignId, type MixRow,
 } from '../data/bh';
 import { crore, lakh, num, pct, rupees, sum, times } from '../data/format';
@@ -111,7 +111,20 @@ export function InvestmentRoi() {
             series={[{ key: 'pa', label: 'Investment per adopter', color: SERIES.planned }]}
             max={Math.max(...regions.map((r) => regionMetrics(r).perAdopter))} format={rupees} />
         </Card>
-        <Card title="Financial status" note={region === ALL ? 'National' : undefined} icon={ShieldCheck}>
+        <Card title="Financial status" note={region === ALL ? 'National' : undefined} icon={ShieldCheck} right={
+<Button small icon={FileSearch} onClick={() => setEvidence({
+          title: 'ROI evidence — national portfolio', owner: 'Zonal Manager attribution records',
+          status: <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip>,
+          facts: [
+            { label: 'Campaigns with a business case', value: `${CAMPAIGNS.filter((c) => businessCase(c.id)).length} of ${NATIONAL.campaigns}` },
+            { label: 'Forecast net ROI (Retailer-led Croptek conversion)', value: times(businessCase('croptek')!.netRoi) },
+            { label: 'Purchase matching', value: 'Pending' },
+            { label: 'Comparable sales baseline', value: 'Pending' },
+            { label: 'Validated incremental sales', value: 'Pending' },
+            { label: 'Investment per recorded adopter', value: rupees(NATIONAL_METRICS.perAdopter) },
+          ],
+        })}>ROI evidence</Button>
+        }>
           <StatusList items={[
             { icon: ChartColumn, label: 'Actual net ROI', value: <StatusChip tone="neutral">{ATTRIBUTION_STATUS}</StatusChip> },
             { icon: Coins, label: 'Incremental sales', value: <StatusChip tone="neutral">Pending</StatusChip> },
@@ -120,22 +133,7 @@ export function InvestmentRoi() {
         </Card>
       </div>
 
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.command)}>Back</Button>}
-        secondary={<Button icon={FileSearch} onClick={() => setEvidence({
-          title: 'ROI evidence — national portfolio', owner: 'Zonal Manager attribution records',
-          status: <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip>,
-          facts: [
-            { label: 'Campaigns with a business case', value: '1 of 12' },
-            { label: 'Forecast net ROI (Retailer-led Croptek conversion)', value: times(businessCase('croptek')!.netRoi) },
-            { label: 'Purchase matching', value: 'Pending' },
-            { label: 'Comparable sales baseline', value: 'Pending' },
-            { label: 'Validated incremental sales', value: 'Pending' },
-            { label: 'Investment per recorded adopter', value: rupees(NATIONAL_METRICS.perAdopter) },
-          ],
-        })}>ROI evidence</Button>}
-        primary={<Button primary icon={Coins} onClick={() => go(R.campaignInvestment(region === ALL ? drill : (region as never)))}>Campaign investment</Button>}
-      />
+      <FooterBar onBack={() => go(R.command)} onNext={() => go(R.campaignInvestment(region === ALL ? drill : (region as never)))} />
       {evidence && <EvidenceDrawer evidence={evidence} onClose={() => setEvidence(null)} />}
     </div>
   );
@@ -207,14 +205,7 @@ export function CampaignInvestment() {
           </Card>
         </div>
       )}
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.investment)}>Back</Button>}
-        secondary={<>
-          <Button icon={Target} onClick={() => go(R.effectiveness(region))}>Campaign effectiveness</Button>
-          <Button icon={ArrowLeftRight} onClick={camps.length ? () => go(R.reallocation(region)) : undefined}>Simulate reallocation</Button>
-        </>}
-        primary={<Button primary icon={TrendingUp} onClick={() => go(R.returns(region))}>Commercial returns</Button>}
-      />
+      <FooterBar onBack={() => go(R.investment)} onNext={() => go(R.returns(region))} />
     </div>
   );
 }
@@ -274,27 +265,8 @@ export function CommercialReturns() {
               ]} />
             ) : pendingCase}
           </Card>
-          <Card title="Business case metrics" icon={Scale}>
-            <StatusList items={[
-              { icon: Percent, label: 'Contribution margin (assumed)', value: bc ? <StatusChip tone="ok">{bc.contributionPct}%</StatusChip> : pendingCase },
-              { icon: TrendingUp, label: 'Forecast net ROI (full campaign)', value: bc ? <StatusChip tone="ok">{times(bc.netRoi)}</StatusChip> : pendingCase },
-              { icon: Coins, label: 'Budget utilisation', value: <StatusChip tone="ok">{pct(campaignMetrics(sel).utilisationPct, 0)}</StatusChip> },
-            ]} />
-          </Card>
-          <Card title="Attribution readiness" icon={ShieldCheck}>
-            <StatusList items={[
-              { icon: ShoppingCart, label: 'Purchase matching', value: <StatusChip tone="neutral">Pending</StatusChip> },
-              { icon: ChartColumn, label: 'Comparable sales baseline', value: <StatusChip tone="neutral">Pending</StatusChip> },
-              { icon: Coins, label: 'Actual contribution margin', value: <StatusChip tone="neutral">Pending</StatusChip> },
-              { icon: Target, label: 'Attributable commercial uplift', value: <StatusChip tone="neutral">Pending</StatusChip> },
-            ]} />
-          </Card>
-        </div>
-      )}
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.campaignInvestment(region))}>Back</Button>}
-        secondary={sel && <>
-          <Button icon={FileSearch} onClick={() => setEvidence({
+          <Card title="Business case metrics" icon={Scale} right={
+          <Button small icon={FileSearch} onClick={() => setEvidence({
             title: `Business case — ${sel.name}`, owner: 'Zonal Manager campaign business case',
             status: bc ? <StatusChip tone="ok">Approved</StatusChip> : <StatusChip tone="neutral">Pending</StatusChip>,
             facts: bc ? [
@@ -306,14 +278,30 @@ export function CommercialReturns() {
               { label: 'Forecast net ROI', value: times(bc.netRoi) },
             ] : [{ label: 'Business case', value: 'Pending' }, { label: 'Approved investment', value: lakh(sel.approved) }],
           })}>Business case</Button>
-          <Button icon={ShieldCheck} onClick={() => setEvidence({
+          }>
+            <StatusList items={[
+              { icon: Percent, label: 'Contribution margin (assumed)', value: bc ? <StatusChip tone="ok">{bc.contributionPct}%</StatusChip> : pendingCase },
+              { icon: TrendingUp, label: 'Forecast net ROI (full campaign)', value: bc ? <StatusChip tone="ok">{times(bc.netRoi)}</StatusChip> : pendingCase },
+              { icon: Coins, label: 'Budget utilisation', value: <StatusChip tone="ok">{pct(campaignMetrics(sel).utilisationPct, 0)}</StatusChip> },
+            ]} />
+          </Card>
+          <Card title="Attribution readiness" icon={ShieldCheck} right={
+          <Button small icon={ShieldCheck} onClick={() => setEvidence({
             title: `Attribution evidence — ${sel.name}`, owner: 'Zonal Manager attribution record',
             status: <StatusChip tone="warn">{ATTRIBUTION_STATUS}</StatusChip>,
             facts: [{ label: 'Recorded adopters', value: num(sel.adopters) }, { label: 'Purchase matching', value: 'Pending' }, { label: 'Comparable sales baseline', value: 'Pending' }, { label: 'Attributable commercial uplift', value: 'Pending' }],
           })}>Attribution evidence</Button>
-        </>}
-        primary={<Button primary icon={ArrowLeftRight} onClick={camps.length ? () => go(R.reallocation(region)) : undefined}>Simulate reallocation</Button>}
-      />
+          }>
+            <StatusList items={[
+              { icon: ShoppingCart, label: 'Purchase matching', value: <StatusChip tone="neutral">Pending</StatusChip> },
+              { icon: ChartColumn, label: 'Comparable sales baseline', value: <StatusChip tone="neutral">Pending</StatusChip> },
+              { icon: Coins, label: 'Actual contribution margin', value: <StatusChip tone="neutral">Pending</StatusChip> },
+              { icon: Target, label: 'Attributable commercial uplift', value: <StatusChip tone="neutral">Pending</StatusChip> },
+            ]} />
+          </Card>
+        </div>
+      )}
+      <FooterBar onBack={() => go(R.campaignInvestment(region))} onNext={() => go(R.reallocation(region))} />
       {evidence && <EvidenceDrawer evidence={evidence} onClose={() => setEvidence(null)} />}
     </div>
   );
@@ -332,7 +320,7 @@ export function Reallocation() {
   const [to, setTo] = useState<CampaignId>(start.to);
   const [amount, setAmount] = useState(start.amount);
   const [name, setName] = useState(saved?.name ?? `${r.name} reallocation scenario 1`);
-  if (!camps.length) return <div className="page"><PageHeader title="Reallocation Simulator" /><StatusChip tone="neutral">Campaign-level records pending</StatusChip><FooterBar back={<Button icon={ArrowLeft} onClick={() => go(R.returns(region))}>Back</Button>} /></div>;
+  if (!camps.length) return <div className="page"><PageHeader title="Reallocation Simulator" /><StatusChip tone="neutral">Campaign-level records pending</StatusChip><FooterBar onBack={() => go(R.returns(region))} onNext={() => go(R.opportunity)} /></div>;
 
   const maxMove = campaignMetrics(campaignById(from)).unspent;
   const amt = Math.min(amount, maxMove);
@@ -383,7 +371,8 @@ export function Reallocation() {
             <div className="row"><span className="muted">{lakh(0)}</span><input type="range" min={0} max={maxMove} step={0.5} value={amt} onChange={(e) => setAmount(Number(e.target.value))} style={{ flex: 1, accentColor: 'var(--brand)' }} aria-label="Transfer amount" /><span className="muted">{lakh(maxMove)}</span></div>
           </label>
           <label className="field"><span>Scenario name</span><input className="input" value={name} onChange={(e) => setName(e.target.value)} /></label>
-          <div className="row" style={{ marginTop: 'auto' }}><Button icon={RotateCcw} onClick={reset}>Reset</Button><Button primary icon={Save} onClick={save}>Save scenario</Button></div>
+          <div className="row" style={{ marginTop: 'auto', flexWrap: 'wrap' }}><Button icon={RotateCcw} onClick={reset}>Reset</Button><Button icon={Save} onClick={save}>Save scenario</Button><Button disabled title="Finance validation pending">Approve reallocation</Button></div>
+          <Button primary onClick={from !== to && amt > 0 ? request : undefined}>Request Marketing Head &amp; Finance review</Button>
         </Card>
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.5fr) minmax(0, 1fr)' }}>
@@ -405,15 +394,7 @@ export function Reallocation() {
           ]} />
         </Card>
       </div>
-      <FooterBar
-        back={<Button icon={ArrowLeft} onClick={() => go(R.returns(region))}>Back</Button>}
-        secondary={<>
-          <Button icon={RotateCcw} onClick={reset}>Reset scenario</Button>
-          <Button icon={Save} onClick={save}>Save scenario</Button>
-          <Button disabled title="Finance validation pending">Approve reallocation</Button>
-        </>}
-        primary={<Button primary onClick={from !== to && amt > 0 ? request : undefined}>Request Marketing Head &amp; Finance review</Button>}
-      />
+      <FooterBar onBack={() => go(R.returns(region))} onNext={() => go(R.opportunity)} />
     </div>
   );
 }
