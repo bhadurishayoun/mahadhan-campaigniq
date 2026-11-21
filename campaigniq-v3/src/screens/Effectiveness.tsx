@@ -1,5 +1,5 @@
 /** Screen 5 — Campaign Effectiveness (mockup BH.2a.png) with screen 6 — Campaign Diagnostics drawer (BH.2b.png). */
-import { ChartColumn, Coins, FileSearch, FileText, ShieldCheck, Stethoscope, Target } from 'lucide-react';
+import { CircleCheck, ChartColumn, Coins, FileSearch, FileText, Stethoscope, Target } from 'lucide-react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AMBAD, ambadMetrics, businessCase, netRoi, regionRoi, campaignById, campaignMetrics, campaignsOf, campaignTotals, regionById, type Campaign, type CampaignId } from '../data/bh';
@@ -13,7 +13,7 @@ import { Drawer, EvidenceDrawer, type Evidence } from '../ui/overlay';
 import { useBhStore } from '../store/bhStore';
 import { useGo, useRouteRegion } from './common';
 
-const EVIDENCE_PENDING = ['Purchase matching', 'Incremental baseline', 'Attribution'];
+const EVIDENCE_ITEMS = ['Purchase matching', 'Incremental baseline', 'Attribution'];
 
 export function Effectiveness() {
   const go = useGo();
@@ -101,25 +101,22 @@ export function Effectiveness() {
 function CommercialStrip({ c, onDiagnostics, onEvidence }: { c: Campaign; onDiagnostics: () => void; onEvidence: () => void }) {
   const m = campaignMetrics(c);
   const bc = businessCase(c.id);
-  const cells: { label: string; value: React.ReactNode }[] = [
-    { label: 'Approved envelope', value: lakh(c.approved) },
-    { label: 'Actual investment', value: lakh(c.actual) },
-    { label: 'Utilisation', value: <StatusChip tone="warn">{pct(m.utilisationPct, 0)}</StatusChip> },
-    { label: 'Forecast incremental sales', value: lakh(bc.forecastSales) },
-    { label: 'Forecast contribution', value: lakh(bc.contribution) },
-    { label: 'Forecast net ROI', value: <StatusChip tone="ok">{times(bc.netRoi)}</StatusChip> },
-    { label: 'Validated incremental sales', value: lakh(bc.validatedSales) },
-    { label: 'Actual net ROI', value: <StatusChip tone="ok">{times(bc.actualRoi)}</StatusChip> },
+  const panels: { title: string; rows: { label: string; value: string; good?: boolean }[] }[] = [
+    { title: 'Investment', rows: [{ label: 'Envelope', value: lakh(c.approved) }, { label: 'Investment', value: lakh(c.actual) }, { label: 'Utilisation', value: pct(m.utilisationPct, 0) }] },
+    { title: 'Forecast', rows: [{ label: 'Incr. sales', value: lakh(bc.forecastSales) }, { label: 'Contribution', value: lakh(bc.contribution) }, { label: 'Net ROI', value: times(bc.netRoi) }] },
+    { title: 'Actual', rows: [{ label: 'Incr. sales', value: lakh(bc.validatedSales) }, { label: 'Net ROI', value: times(bc.actualRoi), good: true }, { label: 'vs forecast', value: times(bc.actualRoi - bc.netRoi), good: true }] },
   ];
   return (
-    <Card title={`${c.name} — commercial effectiveness`} icon={Coins} right={<><Button small icon={Stethoscope} onClick={onDiagnostics}>Diagnostics</Button><Button small icon={FileSearch} onClick={onEvidence}>Attribution evidence</Button></>}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '12px 14px' }}>
-        {cells.map((x) => <div key={x.label}><div className="kpi-label">{x.label}</div><div className="strong" style={{ fontSize: 16, marginTop: 4 }}>{x.value}</div></div>)}
+    <Card className="ce-card" title={`${c.name} — commercial effectiveness`} icon={Coins} right={<><Button small icon={Stethoscope} onClick={onDiagnostics}>Diagnostics</Button><Button small icon={FileSearch} onClick={onEvidence}>Attribution evidence</Button></>}>
+      <div className="ce-panels">
+        {panels.map((p) => (
+          <div key={p.title} className="ce-panel">
+            <div className="ce-panel-title">{p.title}</div>
+            {p.rows.map((r) => <div key={r.label} className="ce-row"><span>{r.label}</span><b className={r.good ? 'good' : undefined}>{r.value}</b></div>)}
+          </div>
+        ))}
       </div>
-      <div className="row" style={{ marginTop: 'auto', flexWrap: 'wrap', gap: 10 }}>
-        <span className="kpi-label">Evidence status</span>
-        {EVIDENCE_PENDING.map((e) => <StatusChip key={e} tone="ok" icon={ShieldCheck}>{e}: complete</StatusChip>)}
-      </div>
+      <div className="ce-evidence"><span>Evidence</span>{EVIDENCE_ITEMS.map((e) => <span key={e} className="ce-ev"><CircleCheck size={14} />{e}</span>)}</div>
     </Card>
   );
 }

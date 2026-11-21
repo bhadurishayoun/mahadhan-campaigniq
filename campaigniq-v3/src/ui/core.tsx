@@ -70,7 +70,7 @@ export function Card({ title, icon: Icon, note, right, children, flush, classNam
     <section className={`card${className ? ` ${className}` : ''}`} style={style}>
       {title && (
         <header className="card-head">
-          <h3>{Icon && <Icon size={16} />}{title}{note && <small>{note}</small>}</h3>
+          <h3>{Icon && <Icon size={16} />}<span className="card-title-text">{title}</span>{note && <small>{note}</small>}</h3>
           {right && <div className="right">{right}</div>}
         </header>
       )}
