@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CAMPAIGNS, REGIONS, THEME_QUEUE, THEMES, type RegionId } from '../data/bh';
 import { R } from '../routes';
-import { Button, FilterBar, SegmentedControl, Select } from '../ui/core';
+import { Button, FilterRows } from '../ui/core';
 import { useBhStore } from '../store/bhStore';
 
 export const ALL = 'all';
@@ -94,20 +94,16 @@ export function FilterHeader<V extends string, S extends string>({ f, view, setV
   sortBy: S; setSortBy: (s: S) => void; sorts: { value: S; label: string }[];
 }) {
   return (
-    <>
-      <FilterBar filters={[
+    <FilterRows<V> view={view} setView={setView} views={views}
+      filters={[
         { key: 'region', label: 'Region', value: f.region, options: REGION_OPTIONS, onChange: f.setRegion },
         { key: 'crop', label: 'Crop', value: f.crop, options: CROP_OPTIONS, onChange: f.setCrop },
         { key: 'product', label: 'Product', value: f.product, options: PRODUCT_OPTIONS, onChange: f.setProduct },
         { key: 'theme', label: 'Theme', value: f.theme, options: THEME_OPTIONS, onChange: f.setTheme },
+      ]}
+      extras={[
+        { key: 'season', label: 'Season', value: f.season, onChange: (v) => f.setSeason(v as SeasonFilter), options: [{ value: 'all', label: 'All seasons' }, { value: 'Kharif', label: 'Kharif' }, { value: 'Rabi', label: 'Rabi' }] },
+        { key: 'sort', label: 'Sort by', value: sortBy, onChange: (v) => setSortBy(v as S), options: sorts },
       ]} />
-      <div className="row" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-        <SegmentedControl<V> value={view} onChange={setView} options={views} />
-        <div className="row" style={{ gap: 12 }}>
-          <label className="row" style={{ gap: 6 }}><span className="seg-label">Season</span><Select label="Season" value={f.season} onChange={(v) => f.setSeason(v as SeasonFilter)} options={[{ value: 'all', label: 'All seasons' }, { value: 'Kharif', label: 'Kharif' }, { value: 'Rabi', label: 'Rabi' }]} /></label>
-          <label className="row" style={{ gap: 6 }}><span className="seg-label">Sort by</span><Select label="Sort by" value={sortBy} onChange={(v) => setSortBy(v as S)} options={sorts} /></label>
-        </div>
-      </div>
-    </>
   );
 }

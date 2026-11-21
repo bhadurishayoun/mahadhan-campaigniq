@@ -61,8 +61,8 @@ cards, donut and category counts use `interventionCounts()` (tested in `bh.test.
 |---|---|---|
 | 0 | Mockups (`docs/mockups/field-sales-manager/`, 15), routes (`F` in `src/routes.ts`), sidebar, persona switch (avatar menu, master login), top-bar scope (Jalna cluster · Ambad · Ghansawangi · Badnapur), 15 screens with titles and Back/Next wired | Done |
 | 1 | Data (`src/data/fsm.ts`, tested in `fsm.test.ts`): cluster, Ambad outlets, crop plan, priorities, campaign budget / scenarios / funnel, 13 execution units, impact. Ambad figures read from `bh.ts`. BH West now Ambad · Ghansawangi · Badnapur · Aurangabad · Nashik (West ₹16.0 Cr ABP, ₹14.2 Cr sales unchanged) | Done |
-| 2 | Screens 1–5 (My Plan) | Next |
-| 3 | Screens 6–10 (My Campaigns and wizard) | To do |
+| 2 | Screens 1–5 (My Plan): performance (filters, Value / Growth views, Plan territory), territory network (geography explorer, outlet drawer), outlet targets (editable, live reconciliation, CSV import / template), village onion plan (calculator, inline edit), plan review (validation, submit). Shared `StepTabs` and `FilterRows` in `src/ui/core.tsx` | Done |
+| 3 | Screens 6–10 (My Campaigns and wizard) | Next |
 | 4 | Screens 11–15, verification, deploy | To do |
 
 The active persona follows the route (`/bh/…` or `/fsm/…`); a non-master login is kept to its own workspace.

@@ -36,35 +36,99 @@ export const clusterTotal = () => {
   return { lastYear, abp, ytdSales: sum(rows, (r) => r.ytdSales), growthPct: ratio(abp - lastYear, lastYear) };
 };
 
-// ---------------------------------------------------------------- Ambad outlet network
+// ---------------------------------------------------------------- crop / product / season splits (My Performance filters)
+export const FSM_CROPS = ['Onion', 'Maize', 'Other crops'] as const;
+export type FsmCrop = (typeof FSM_CROPS)[number];
+/** Last-year sales and ABP by crop per territory (₹ L); each sums to the territory total. Ambad's onion ABP is the BH figure. */
+const CROP_SPLIT: Record<FsmTerritoryId, { lastYear: number[]; abp: number[] }> = {
+  ambad: { lastYear: [144, 80, 96], abp: [190, 125, 105] },
+  ghansawangi: { lastYear: [98, 77, 105], abp: [119, 94, 127] },
+  badnapur: { lastYear: [62, 51, 87], abp: [75, 61, 104] },
+};
+/** Product and season shares of sales (%), same across the cluster. */
+export const PRODUCT_SHARE: Record<string, number> = { Croptek: 56, 'Other products': 44 };
+export const SEASON_SHARE: Record<string, number> = { Kharif: 60, Rabi: 40 };
+/** Last year's cluster target and incentive achievement (FY 2025–26). */
+export const LAST_YEAR_SNAPSHOT = { target: 850, incentivePct: 91.7 };
+export const GROWTH_DRIVERS = ['Expand Croptek adoption in onion and maize', 'Increase business from under-served retailers', 'Drive repeat purchase from last-year trial users'];
+
+export interface PerfFilter { crop: string; product: string; season: string }
+const ALL_F = 'all';
+/** Share (0–1) of a territory's figure that passes the crop / product / season filters. */
+const share = (id: FsmTerritoryId, f: PerfFilter, kind: 'lastYear' | 'abp') => {
+  const split = CROP_SPLIT[id][kind];
+  const total = sum(split, (v) => v);
+  const crop = f.crop === ALL_F ? 1 : split[FSM_CROPS.indexOf(f.crop as FsmCrop)] / total;
+  const product = f.product === ALL_F ? 1 : PRODUCT_SHARE[f.product] / 100;
+  const season = f.season === ALL_F ? 1 : SEASON_SHARE[f.season] / 100;
+  return crop * product * season;
+};
+
+/** Cluster rows under the My Performance filters (figures scale with the selected crop / product / season). */
+export const perfRows = (f: PerfFilter = { crop: ALL_F, product: ALL_F, season: ALL_F }): ClusterRow[] => clusterRows().map((r) => {
+  const ly = r.lastYear * share(r.id, f, 'lastYear');
+  const abp = r.abp * share(r.id, f, 'abp');
+  return { ...r, lastYear: ly, abp, ytdSales: r.ytdSales * share(r.id, f, 'abp'), growthPct: ratio(abp - ly, ly) };
+});
+
+/** Last-year sales mix across the cluster: crop shares and product shares (%). */
+export const lastYearMix = () => {
+  const total = sum(FSM_TERRITORY_IDS, (id) => LAST_YEAR[id]);
+  return {
+    crops: FSM_CROPS.map((c, i) => ({ name: c, pct: ratio(sum(FSM_TERRITORY_IDS, (id) => CROP_SPLIT[id].lastYear[i]), total) })),
+    products: Object.entries(PRODUCT_SHARE).map(([name, pct]) => ({ name, pct })),
+  };
+};
+
+// ---------------------------------------------------------------- outlet networks (Ambad in full; Ghansawangi and Badnapur)
 export type MappingStatus = 'Mapped' | 'Pending verification';
 
 export interface Dealer { id: string; name: string; village: string; lastYear: number; proposed: number; activeRetailers: number; inactiveRetailers: number }
 export interface Retailer { id: string; name: string; dealerId: string; village: string; active: boolean; mapping: MappingStatus; secondaryDemand: number }
 
-export const DEALERS: Dealer[] = [
-  { id: 'dhanora-agro', name: 'Dhanora Agro Inputs', village: 'Dhanora', lastYear: 48, proposed: 55, activeRetailers: 11, inactiveRetailers: 1 },
-  { id: 'ambad-depot', name: 'Ambad Crop Depot', village: 'Ambad HQ', lastYear: 36, proposed: 43, activeRetailers: 10, inactiveRetailers: 1 },
-  { id: 'wadi-krishi', name: 'Wadi Gaon Krishi Kendra', village: 'Wadi Gaon', lastYear: 46, proposed: 54, activeRetailers: 10, inactiveRetailers: 1 },
-  { id: 'ganesh-fert', name: 'Shree Ganesh Fertilisers', village: 'Ambad HQ', lastYear: 44, proposed: 52, activeRetailers: 9, inactiveRetailers: 1 },
-  { id: 'pimpalgaon-agro', name: 'Pimpalgaon Agro Services', village: 'Pimpalgaon', lastYear: 40, proposed: 47, activeRetailers: 9, inactiveRetailers: 0 },
-  { id: 'kumbhephal-seva', name: 'Kumbhephal Kisan Seva', village: 'Kumbhephal', lastYear: 38, proposed: 45, activeRetailers: 9, inactiveRetailers: 1 },
-  { id: 'jai-kisan', name: 'Jai Kisan Traders', village: 'Ambad HQ', lastYear: 36, proposed: 43, activeRetailers: 8, inactiveRetailers: 0 },
-  { id: 'matoshree-agro', name: 'Matoshree Agro Agencies', village: 'Dhanora', lastYear: 32, proposed: 41, activeRetailers: 8, inactiveRetailers: 1 },
-];
-
-export const OUTLET_VILLAGES = [...new Set(DEALERS.map((d) => d.village))];
+const DEALER_SETS: Record<FsmTerritoryId, Dealer[]> = {
+  ambad: [
+    { id: 'dhanora-agro', name: 'Dhanora Agro Inputs', village: 'Dhanora', lastYear: 48, proposed: 55, activeRetailers: 11, inactiveRetailers: 1 },
+    { id: 'ambad-depot', name: 'Ambad Crop Depot', village: 'Ambad HQ', lastYear: 36, proposed: 43, activeRetailers: 10, inactiveRetailers: 1 },
+    { id: 'wadi-krishi', name: 'Wadi Gaon Krishi Kendra', village: 'Wadi Gaon', lastYear: 46, proposed: 54, activeRetailers: 10, inactiveRetailers: 1 },
+    { id: 'ganesh-fert', name: 'Shree Ganesh Fertilisers', village: 'Ambad HQ', lastYear: 44, proposed: 52, activeRetailers: 9, inactiveRetailers: 1 },
+    { id: 'pimpalgaon-agro', name: 'Pimpalgaon Agro Services', village: 'Pimpalgaon', lastYear: 40, proposed: 47, activeRetailers: 9, inactiveRetailers: 0 },
+    { id: 'kumbhephal-seva', name: 'Kumbhephal Kisan Seva', village: 'Kumbhephal', lastYear: 38, proposed: 45, activeRetailers: 9, inactiveRetailers: 1 },
+    { id: 'jai-kisan', name: 'Jai Kisan Traders', village: 'Ambad HQ', lastYear: 36, proposed: 43, activeRetailers: 8, inactiveRetailers: 0 },
+    { id: 'matoshree-agro', name: 'Matoshree Agro Agencies', village: 'Dhanora', lastYear: 32, proposed: 41, activeRetailers: 8, inactiveRetailers: 1 },
+  ],
+  ghansawangi: [
+    { id: 'ghansawangi-agro', name: 'Ghansawangi Agro Centre', village: 'Ghansawangi HQ', lastYear: 58, proposed: 64, activeRetailers: 10, inactiveRetailers: 1 },
+    { id: 'tirthpuri-krishi', name: 'Tirthpuri Krishi Kendra', village: 'Tirthpuri', lastYear: 52, proposed: 58, activeRetailers: 9, inactiveRetailers: 0 },
+    { id: 'samarth-fert', name: 'Samarth Fertilisers', village: 'Ghansawangi HQ', lastYear: 48, proposed: 53, activeRetailers: 8, inactiveRetailers: 1 },
+    { id: 'kumbhar-seva', name: 'Kumbhar Pimpalgaon Kisan Seva', village: 'Kumbhar Pimpalgaon', lastYear: 46, proposed: 51, activeRetailers: 8, inactiveRetailers: 1 },
+    { id: 'rani-agro', name: 'Rani Unchegaon Agro Inputs', village: 'Rani Unchegaon', lastYear: 40, proposed: 45, activeRetailers: 7, inactiveRetailers: 0 },
+    { id: 'vitthal-traders', name: 'Vitthal Traders', village: 'Tirthpuri', lastYear: 36, proposed: 39, activeRetailers: 6, inactiveRetailers: 1 },
+  ],
+  badnapur: [
+    { id: 'badnapur-depot', name: 'Badnapur Crop Depot', village: 'Badnapur HQ', lastYear: 52, proposed: 57, activeRetailers: 9, inactiveRetailers: 1 },
+    { id: 'shelgaon-agro', name: 'Shelgaon Agro Services', village: 'Shelgaon', lastYear: 44, proposed: 48, activeRetailers: 8, inactiveRetailers: 1 },
+    { id: 'rajewadi-krishi', name: 'Rajewadi Krishi Kendra', village: 'Rajewadi', lastYear: 40, proposed: 44, activeRetailers: 7, inactiveRetailers: 0 },
+    { id: 'daregaon-seva', name: 'Daregaon Kisan Seva', village: 'Daregaon', lastYear: 34, proposed: 38, activeRetailers: 6, inactiveRetailers: 1 },
+    { id: 'mauli-fert', name: 'Mauli Fertilisers', village: 'Badnapur HQ', lastYear: 30, proposed: 33, activeRetailers: 5, inactiveRetailers: 0 },
+  ],
+};
 
 const SHOP = ['Krishi Seva Kendra', 'Agro Centre', 'Kisan Traders', 'Fertiliser Stores', 'Agri Mart', 'Shetkari Seva', 'Beej Bhandar', 'Agro Agencies', 'Krushi Udyog', 'Kisan Kendra', 'Agri Point', 'Shivam Agro'];
 const PREFIX = ['Balaji', 'Saraswati', 'Mauli', 'Om Sai', 'Shivneri', 'Datta', 'Ganga', 'Vitthal', 'Samarth', 'Laxmi', 'Jay Bhavani', 'Renuka'];
 
 /**
  * Retailers mapped under each dealer. Indicative secondary demand: 80% of the dealer's proposed target, spread across
- * its active retailers (inactive retailers carry none until reactivated and verified).
+ * its active retailers by outlet size (inactive retailers carry none until reactivated and verified).
  */
-export const RETAILERS: Retailer[] = DEALERS.flatMap((d, di) => {
+const SIZE = [1.5, 1.3, 1.2, 1.1, 1, 1, 0.9, 0.9, 0.8, 0.8, 0.7, 0.6];
+/** Demand of the i-th active retailer when a dealer's target is spread over `active` retailers. */
+export const retailerDemand = (dealerTarget: number, active: number, i: number) => {
+  const w = SIZE.slice(0, active);
+  return Math.round(((dealerTarget * 0.8 * w[i]) / w.reduce((s, x) => s + x, 0)) * 10) / 10;
+};
+const retailersFor = (dealers: Dealer[]): Retailer[] => dealers.flatMap((d, di) => {
   const n = d.activeRetailers + d.inactiveRetailers;
-  const each = Math.round(((d.proposed * 0.8) / d.activeRetailers) * 10) / 10;
   return Array.from({ length: n }, (_, i) => {
     const active = i < d.activeRetailers;
     return {
@@ -74,19 +138,35 @@ export const RETAILERS: Retailer[] = DEALERS.flatMap((d, di) => {
       village: d.village,
       active,
       mapping: active ? 'Mapped' : 'Pending verification',
-      secondaryDemand: active ? each : 0,
+      secondaryDemand: active ? retailerDemand(d.proposed, d.activeRetailers, i) : 0,
     } satisfies Retailer;
   });
 });
+const RETAILER_SETS: Record<FsmTerritoryId, Retailer[]> = {
+  ambad: retailersFor(DEALER_SETS.ambad),
+  ghansawangi: retailersFor(DEALER_SETS.ghansawangi),
+  badnapur: retailersFor(DEALER_SETS.badnapur),
+};
 
-export const outletSummary = () => {
-  const lastYear = sum(DEALERS, (d) => d.lastYear);
-  const proposed = sum(DEALERS, (d) => d.proposed);
+export const dealersOf = (t: FsmTerritoryId = 'ambad') => DEALER_SETS[t];
+export const retailersOf = (t: FsmTerritoryId = 'ambad') => RETAILER_SETS[t];
+export const villagesOf = (t: FsmTerritoryId = 'ambad') => [...new Set(DEALER_SETS[t].map((d) => d.village))];
+export const DEALERS = DEALER_SETS.ambad;
+export const RETAILERS = RETAILER_SETS.ambad;
+export const OUTLET_VILLAGES = villagesOf('ambad');
+export const TERRITORY_DISTRICT = 'Jalna';
+export const territoryName = (t: FsmTerritoryId) => FSM_NAME[t];
+
+export const outletSummary = (t: FsmTerritoryId = 'ambad') => {
+  const dealers = dealersOf(t);
+  const retailers = retailersOf(t);
+  const lastYear = sum(dealers, (d) => d.lastYear);
+  const proposed = sum(dealers, (d) => d.proposed);
   return {
-    dealers: DEALERS.length,
-    activeRetailers: RETAILERS.filter((r) => r.active).length,
-    inactiveRetailers: RETAILERS.filter((r) => !r.active).length,
-    villages: OUTLET_VILLAGES.length,
+    dealers: dealers.length,
+    activeRetailers: retailers.filter((r) => r.active).length,
+    inactiveRetailers: retailers.filter((r) => !r.active).length,
+    villages: villagesOf(t).length,
     lastYear,
     proposed,
     growthPct: ratio(proposed - lastYear, lastYear),
@@ -94,36 +174,67 @@ export const outletSummary = () => {
 };
 
 /** Target reconciliation for a set of proposed dealer targets (editable on the outlet planning screen). */
-export const targetReconciliation = (proposed: number[] = DEALERS.map((d) => d.proposed)) => {
-  const assigned = territoryById('ambad')!.abp;
+export const targetReconciliation = (proposed: number[] = DEALERS.map((d) => d.proposed), t: FsmTerritoryId = 'ambad') => {
+  const assigned = territoryById(t)!.abp;
   const total = sum(proposed, (p) => p);
   return { assigned, proposed: total, unallocated: assigned - total, allocatedPct: ratio(total, assigned) };
 };
 
-// ---------------------------------------------------------------- Ambad crop plan
+// ---------------------------------------------------------------- crop plans
 export interface CropPlanRow { crop: string; abp: number; proposed: number }
 
-/** Onion ABP is the Business Head Ambad onion ABP; the plan-linked uplift per crop is ABP − proposed. */
-export const cropPlan = (): CropPlanRow[] => [
-  { crop: 'Onion', abp: AMBAD.onionAbp, proposed: 165 },
-  { crop: 'Maize', abp: 125, proposed: 110 },
-  { crop: 'Other crops', abp: 105, proposed: 105 },
-];
+const CROP_PROPOSED: Record<FsmTerritoryId, number[]> = { ambad: [165, 110, 105], ghansawangi: [109, 86, 115], badnapur: [69, 56, 95] };
+/** Crop plan per territory. Ambad's onion ABP is the Business Head figure; plan-linked uplift per crop is ABP − proposed. */
+export const cropPlan = (t: FsmTerritoryId = 'ambad'): CropPlanRow[] => FSM_CROPS.map((crop, i) => ({
+  crop,
+  abp: t === 'ambad' && i === 0 ? AMBAD.onionAbp : CROP_SPLIT[t].abp[i],
+  proposed: CROP_PROPOSED[t][i],
+}));
 
 /** Planning economics: 20 kg/acre at ₹100/kg, i.e. ₹2,000 per acre. */
 export const FUNNEL_DEFAULTS = { reachPct: 70, trialPct: 45, adoptionPct: 60, kgPerAcre: 20, rupeesPerKg: 100, acresPerAdopter: 5 };
 export const acresFor = (lakh: number) => Math.round((lakh * 100000) / (FUNNEL_DEFAULTS.kgPerAcre * FUNNEL_DEFAULTS.rupeesPerKg));
+/** Coverage calculator rates. */
+export const COVERAGE_RATES = { retentionPct: 80, newAcreConversionPct: 60 };
 
 export interface VillageOnionPlan { village: string; lastYear: number; plan: number }
-export const ONION_VILLAGE_PLAN: VillageOnionPlan[] = [
-  { village: 'Wadi Gaon', lastYear: 13, plan: 18 },
-  { village: 'Dhanora', lastYear: 10, plan: 15 },
-  { village: 'Pimpalgaon', lastYear: 9, plan: 12 },
-  { village: 'Kumbhephal', lastYear: 9, plan: 12 },
-  { village: 'Shahagad', lastYear: 8, plan: 10 },
-  { village: 'Rohilagad', lastYear: 7, plan: 10 },
-  { village: 'Other villages', lastYear: 74, plan: 88 },
-];
+const ONION_SETS: Record<FsmTerritoryId, VillageOnionPlan[]> = {
+  ambad: [
+    { village: 'Wadi Gaon', lastYear: 13, plan: 18 },
+    { village: 'Dhanora', lastYear: 10, plan: 15 },
+    { village: 'Pimpalgaon', lastYear: 9, plan: 12 },
+    { village: 'Kumbhephal', lastYear: 9, plan: 12 },
+    { village: 'Shahagad', lastYear: 8, plan: 10 },
+    { village: 'Rohilagad', lastYear: 7, plan: 10 },
+    { village: 'Other villages', lastYear: 74, plan: 88 },
+  ],
+  ghansawangi: [
+    { village: 'Ghansawangi HQ', lastYear: 30, plan: 33 },
+    { village: 'Tirthpuri', lastYear: 26, plan: 29 },
+    { village: 'Kumbhar Pimpalgaon', lastYear: 22, plan: 25 },
+    { village: 'Rani Unchegaon', lastYear: 20, plan: 22 },
+  ],
+  badnapur: [
+    { village: 'Badnapur HQ', lastYear: 20, plan: 22 },
+    { village: 'Shelgaon', lastYear: 16, plan: 18 },
+    { village: 'Rajewadi', lastYear: 14, plan: 16 },
+    { village: 'Daregaon', lastYear: 12, plan: 13 },
+  ],
+};
+export const onionPlanOf = (t: FsmTerritoryId = 'ambad') => ONION_SETS[t];
+export const ONION_VILLAGE_PLAN = ONION_SETS.ambad;
+
+/** Coverage and volume calculator for one village's onion plan (₹ L). */
+export const coverageCalc = (v: VillageOnionPlan, plan = v.plan) => {
+  const { kgPerAcre, rupeesPerKg } = FUNNEL_DEFAULTS;
+  const volumeMt = (plan * 100000) / rupeesPerKg / 1000;
+  const lastVolumeMt = (v.lastYear * 100000) / rupeesPerKg / 1000;
+  const requiredAcres = Math.round((volumeMt * 1000) / kgPerAcre);
+  const previousAcres = Math.round((lastVolumeMt * 1000) / kgPerAcre);
+  const retainedAcres = Math.round((previousAcres * COVERAGE_RATES.retentionPct) / 100);
+  const newAcres = Math.max(0, requiredAcres - retainedAcres);
+  return { volumeMt, lastVolumeMt, requiredAcres, previousAcres, retainedAcres, newAcres, eligibleNewAcres: Math.round(newAcres / (COVERAGE_RATES.newAcreConversionPct / 100)), coverageGrowth: requiredAcres - previousAcres };
+};
 
 // ---------------------------------------------------------------- business priorities (My Campaigns)
 export interface BusinessPriority { id: string; name: string; crop: string; villages: string[]; uplift: number | null }

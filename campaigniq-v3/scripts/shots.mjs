@@ -34,6 +34,21 @@ const ROUTES = [
   ['18-intervention-drawer', '/bh/interventions?drawer=croptek-review'],
   ['19-learning', '/bh/interventions/learning'],
   ['20-assistant', '/bh/assistant'],
+  ['fsm-01-plan', '/fsm/plan'],
+  ['fsm-02-network', '/fsm/plan/network/ambad'],
+  ['fsm-03-outlets', '/fsm/plan/outlets/ambad'],
+  ['fsm-04-crop', '/fsm/plan/crop/ambad'],
+  ['fsm-05-review', '/fsm/plan/review/ambad'],
+  ['fsm-06-campaigns', '/fsm/campaigns'],
+  ['fsm-07-objective', '/fsm/campaigns/new/objective'],
+  ['fsm-08-activities', '/fsm/campaigns/new/activities'],
+  ['fsm-09-scenario', '/fsm/campaigns/new/scenario'],
+  ['fsm-10-wizard-review', '/fsm/campaigns/new/review'],
+  ['fsm-11-execution', '/fsm/execution'],
+  ['fsm-12-activity', '/fsm/execution/dhanora-field-demonstration'],
+  ['fsm-13-impact', '/fsm/impact'],
+  ['fsm-14-diagnostic', '/fsm/impact/diagnostic'],
+  ['fsm-15-assistant', '/fsm/assistant'],
 ].filter(([n]) => n.includes(filter));
 
 const PORT = 9600 + Math.floor(Math.random() * 300);

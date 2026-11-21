@@ -88,7 +88,8 @@ const RULES: [RegExp, KpiIconName][] = [
   [/gap|variance|shortfall/i, 'alert'],
   [/utilisation|execution|complet/i, 'gauge'],
   [/trial|conversion/i, 'sprout'],
-  [/retail/i, 'store'],
+  [/retail|dealer|outlet/i, 'store'],
+  [/growth/i, 'sales'],
   [/incremental|sales|uplift/i, 'sales'],
   [/unspent/i, 'wallet'],
   [/transfer/i, 'swap'],
@@ -99,6 +100,7 @@ const RULES: [RegExp, KpiIconName][] = [
   [/adopt|farmer/i, 'farmers'],
   [/\baction|draft|awaiting|closed|review|clarification/i, 'checklist'],
   [/territor|region|village/i, 'pin'],
+  [/allocat|proposed|plan/i, 'checklist'],
 ];
 
 export const kpiIconFor = (label: string): KpiIconName => RULES.find(([re]) => re.test(label))?.[1] ?? 'target';

@@ -1,5 +1,5 @@
 /** Shared building blocks. Every screen composes these; no screen-specific styling of these elements. */
-import { ArrowLeft, ArrowRight, Check, ChevronDown, ChevronRight, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, ChevronDown, ChevronRight, CircleCheck, type LucideIcon } from 'lucide-react';
 import { Fragment, type ReactNode } from 'react';
 import { KpiIcon, kpiIconFor, type KpiIconName } from './kpiIcons';
 
@@ -141,4 +141,43 @@ export function PanelFooter({ onBack, action }: { onBack: () => void; action?: R
 export function Toasts({ items }: { items: { id: number; text: string }[] }) {
   if (!items.length) return null;
   return <div className="toasts" role="status">{items.map((t) => <div key={t.id} className="toast"><Check size={15} />{t.text}</div>)}</div>;
+}
+
+// ---------------------------------------------------------------- filter rows, step tabs
+/**
+ * Two-row filter block (the Campaign Portfolio pattern). Row 1: equal-width labelled selects.
+ * Row 2: view buttons on the left; compact labelled selects (e.g. Season, Sort by) on the right.
+ */
+export function FilterRows<V extends string>({ filters, view, setView, views, extras }: {
+  filters: FilterDef[]; view: V; setView: (v: V) => void; views: { value: V; label: string }[]; extras: FilterDef[];
+}) {
+  return (
+    <>
+      <FilterBar filters={filters} />
+      <div className="row" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <SegmentedControl<V> value={view} onChange={setView} options={views} />
+        <div className="row" style={{ gap: 12 }}>
+          {extras.map((e) => (
+            <label key={e.key} className="row" style={{ gap: 6 }}><span className="seg-label">{e.label}</span><Select label={e.label} value={e.value} onChange={e.onChange} options={e.options} /></label>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
+/** Sub-navigation tabs (plan tabs, wizard steps): active = green fill, done = green check, others outline. */
+export function StepTabs({ items, active }: { items: { label: string; icon: LucideIcon; onClick: () => void }[]; active: number }) {
+  return (
+    <nav className="steptabs" style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}>
+      {items.map((it, i) => {
+        const Icon = i < active ? CircleCheck : it.icon;
+        return (
+          <button key={it.label} type="button" className={i === active ? 'on' : i < active ? 'done' : ''} aria-current={i === active ? 'step' : undefined} onClick={it.onClick}>
+            <Icon size={17} />{it.label}
+          </button>
+        );
+      })}
+    </nav>
+  );
 }

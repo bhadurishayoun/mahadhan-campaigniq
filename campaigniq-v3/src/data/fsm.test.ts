@@ -4,6 +4,7 @@ import { sum } from './format';
 import {
   ACTIVITY_UNITS, acresFor, budgetMix, CAMPAIGN_ACTIVITIES, clusterRows, clusterTotal, cropPlan, DEALERS, executionCounts, FARMERS_REACHED,
   funnel, impactSummary, objectiveCoverage, ONION_VILLAGE_PLAN, outletSummary, RETAILERS, scenarioOutcome, SCENARIOS, targetReconciliation,
+  coverageCalc, dealersOf, lastYearMix, onionPlanOf, perfRows, retailersOf,
 } from './fsm';
 
 const r1 = (v: number) => Math.round(v * 10) / 10;
@@ -98,5 +99,31 @@ describe('campaign', () => {
     const s = impactSummary();
     expect([s.forecast, s.tracked, r1(s.variance)]).toEqual([12, 5.4, 6.6]);
     expect(s.netRoiToDate).toBeCloseTo((5.4 * CONTRIBUTION_MARGIN - s.spend) / s.spend, 10);
+  });
+});
+
+describe('every territory plan reconciles', () => {
+  it('dealers, crop plan and village onion plan', () => {
+    for (const t of ['ambad', 'ghansawangi', 'badnapur'] as const) {
+      const o = outletSummary(t);
+      expect(o.lastYear).toBe(clusterRows().find((r) => r.id === t)!.lastYear);
+      const crops = cropPlan(t);
+      expect(sum(crops, (c) => c.abp)).toBe(territoryById(t)!.abp);
+      expect(sum(crops, (c) => c.proposed)).toBe(o.proposed);
+      expect(sum(onionPlanOf(t), (v) => v.plan)).toBe(crops[0].proposed);
+      expect(retailersOf(t).length).toBe(sum(dealersOf(t), (d) => d.activeRetailers + d.inactiveRetailers));
+    }
+  });
+  it('performance filters scale and reconcile', () => {
+    const all = perfRows();
+    const byCrop = ['Onion', 'Maize', 'Other crops'].map((crop) => perfRows({ crop, product: 'all', season: 'all' }));
+    expect(r1(sum(byCrop, (rows) => sum(rows, (r) => r.lastYear)))).toBe(sum(all, (r) => r.lastYear));
+    expect(r1(sum(byCrop, (rows) => sum(rows, (r) => r.abp)))).toBe(sum(all, (r) => r.abp));
+    const mix = lastYearMix();
+    expect(mix.crops.map((c) => Math.round(c.pct))).toEqual([38, 26, 36]);
+  });
+  it('coverage calculator (Dhanora)', () => {
+    const c = coverageCalc(ONION_VILLAGE_PLAN.find((v) => v.village === 'Dhanora')!);
+    expect([c.volumeMt, c.requiredAcres, c.previousAcres, c.retainedAcres, c.newAcres, c.eligibleNewAcres]).toEqual([15, 750, 500, 400, 350, 583]);
   });
 });

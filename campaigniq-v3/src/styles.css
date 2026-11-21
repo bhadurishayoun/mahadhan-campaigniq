@@ -231,3 +231,29 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 /* Action tracker register: scrolls inside its card */
 .register-scroll { max-height: 460px; overflow-y: auto; }
 .register-scroll thead th { position: sticky; top: 0; z-index: 1; background: var(--canvas); }
+
+/* Step tabs (My Plan tabs, campaign wizard steps) */
+.steptabs { display: grid; gap: 8px; }
+.steptabs button { display: flex; align-items: center; justify-content: center; gap: 8px; height: 42px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); font-size: 13px; font-weight: 600; color: var(--ink); text-align: center; }
+.steptabs button:hover { border-color: var(--light); }
+.steptabs button.done { color: var(--dark); border-color: var(--light); }
+.steptabs button.done svg { color: var(--brand); }
+.steptabs button.on { background: var(--brand); border-color: var(--brand); color: var(--card); }
+/* Inline number inputs in tables */
+.num-input { width: 92px; height: 30px; text-align: center; border: 1px solid var(--line); border-radius: 6px; background: var(--card); font-size: 13px; font-variant-numeric: tabular-nums; }
+.num-input:focus { outline: 2px solid var(--light); border-color: var(--brand); }
+/* Geography explorer */
+.geo { display: flex; flex-direction: column; gap: 2px; }
+.geo button { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; font-size: 13px; text-align: left; color: var(--ink); }
+.geo button.on { background: var(--tint); color: var(--dark); font-weight: 600; }
+.geo .lvl1 { padding-left: 22px; }
+.geo .lvl2 { padding-left: 36px; }
+.stack { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.stack > .card:last-child { flex: 1; }
+/* Target reconciliation strip */
+.recon { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.4fr); gap: 16px; align-items: center; }
+.recon > div { display: flex; flex-direction: column; gap: 4px; align-items: center; }
+.recon span { font-size: 12px; font-weight: 600; color: var(--ink-soft); }
+.recon b { font-size: 20px; color: var(--dark); font-variant-numeric: tabular-nums; }
+.recon b.warn { color: var(--amber-dark); }
+.recon .grow { align-items: stretch; }
