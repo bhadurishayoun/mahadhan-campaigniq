@@ -41,11 +41,11 @@ export function MarketOpportunity() {
   const a = ambadMetrics();
   const tiles = selRegion.id === 'west'
     ? [
-      { icon: ChartColumn, label: `${MARKET.state} product penetration`, value: MARKET.penetration, chip: 'Source validation required' },
-      { icon: Sprout, label: 'Ambad local trial-to-adoption', value: pct(a.trialToAdoptionPct, 0) },
-      { icon: Target, label: 'Dhanora vs Wadi Gaon gap', value: `${a.villageGap.toFixed(1)} pp` },
+      { icon: ChartColumn, label: `${MARKET.state} product penetration`, value: MARKET.penetration, chip: 'Validate' },
+      { icon: Sprout, label: 'Ambad trial-to-adoption', value: pct(a.trialToAdoptionPct) },
+      { icon: Target, label: 'Village conversion gap', value: `${a.villageGap.toFixed(1)} pp` },
       { icon: CircleCheck, label: 'Activity completion', value: pct(a.activityPct) },
-      { icon: Users, label: 'Farmer follow-up completion', value: pct(a.followUpPct, 0) },
+      { icon: Users, label: 'Farmer follow-up completion', value: pct(a.followUpPct) },
       { icon: Store, label: 'Retailer activation', value: pct(a.retailerActivationPct) },
     ]
     : [
@@ -93,17 +93,18 @@ export function MarketOpportunity() {
           reference={{ value: NATIONAL_METRICS.gap / REGIONS.length, label: `Avg ${crore(NATIONAL_METRICS.gap / REGIONS.length, 1)}` }}
           tooltip={(r) => `ABP ${crore(r.abp, 1)} · Actual ${crore(r.achieved, 1)} · Gap ${crore(regionMetrics(r).gap, 1)} (${pct((regionMetrics(r).gap / r.abp) * 100)})`} />
         <Card title="Crop × product × geography opportunity" icon={MapPin}>
-          <div className="row" style={{ flexWrap: 'wrap' }}>
+          <div className="row" style={{ flexWrap: 'nowrap', overflow: 'hidden' }}>
             {selRegion.id === 'west'
               ? <><StatusChip tone="info" icon={MapPin}>Ambad / Jalna</StatusChip><StatusChip tone="info" icon={Sprout}>{AMBAD.crop}</StatusChip><StatusChip tone="info" icon={Box}>{AMBAD.product}</StatusChip></>
               : <StatusChip tone="info" icon={MapPin}>{selRegion.name} region</StatusChip>}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 10 }}>
+          <div className="opp-list">
             {tiles.map((t) => (
-              <div key={t.label} style={{ border: '1px solid var(--line)', borderRadius: 8, padding: '8px 10px' }}>
-                <div className="row" style={{ gap: 6, alignItems: 'flex-start' }}><t.icon size={15} color="var(--brand)" /><span className="kpi-label">{t.label}</span></div>
-                <div className="strong" style={{ fontSize: 18, marginTop: 4 }}>{t.value}</div>
-                {t.chip && <StatusChip wrap tone="warn">{t.chip}</StatusChip>}
+              <div key={t.label} className="opp-row">
+                <t.icon size={16} />
+                <span className="opp-label">{t.label}</span>
+                {t.chip && <span className="opp-tag">{t.chip}</span>}
+                <b className="opp-value">{t.value}</b>
               </div>
             ))}
           </div>
