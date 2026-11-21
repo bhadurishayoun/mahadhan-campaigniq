@@ -1,4 +1,4 @@
-/** Screen 1 — National Command Centre (mockup BH.1.png). */
+/** Screen 1 — Marketing and Command Centre (mockup BH.1.png). */
 import { AlertCircle, ChartColumn, ClipboardCheck, ExternalLink, Layers, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 import { CAMPAIGNS, netRoi, REGIONS, regionMetrics, regionRoi, THEME_QUEUE, THEME_STATUS, type ThemeId } from '../data/bh';
@@ -24,7 +24,6 @@ export function CommandCentre() {
   // Crop, product and campaign records exist for West campaigns; picking one narrows the view to West.
   const westOnly = crop !== ALL || product !== ALL || campaign !== ALL;
   const rows = REGIONS.filter((r) => (region === ALL || r.id === region) && (!westOnly || r.id === 'west'));
-  const filtered = rows.length !== REGIONS.length;
   const campaignsOf = (r: (typeof REGIONS)[number]) => (campaign !== ALL ? 1 : theme === ALL ? r.campaigns : r.themeMix[theme as ThemeId]);
 
   const t = {
@@ -38,11 +37,10 @@ export function CommandCentre() {
   }
   const sales = campaign !== ALL ? CAMPAIGNS.find((x) => x.id === campaign)!.sales : sum(rows, (r) => r.sales);
   const achPct = ratio(t.achieved, t.abp);
-  const scopeName = filtered ? (rows.length === 1 ? `${rows[0].name} region` : 'Selection') : 'Total (national)';
 
   return (
     <div className="page">
-      <PageHeader title="National Business & Marketing Command Centre" />
+      <PageHeader title="Marketing and Command Centre" />
       <FilterBar filters={[
         { key: 'region', label: 'Region', value: region, options: REGION_OPTIONS, onChange: setRegion },
         { key: 'crop', label: 'Crop', value: crop, options: CROP_OPTIONS, onChange: setCrop },
@@ -67,9 +65,9 @@ export function CommandCentre() {
           onRowClick={(r) => go(R.region(r.id))}
           columns={[
             { key: 'region', header: 'Region', render: (r) => <b>{r.name}</b> },
-            { key: 'ach', header: 'YTD business achievement', render: (r) => <span className="row nw">{crore(r.achieved, 1)} / {crore(r.abp, 1)}<StatusChip tone="ok">{pct(regionMetrics(r).achievementPct)}</StatusChip></span> },
+            { key: 'ach', header: 'YTD business achievement', render: (r) => <span className="row" style={{ flexWrap: 'wrap', rowGap: 4 }}>{crore(r.achieved, 1)} / {crore(r.abp, 1)}<StatusChip tone="ok">{pct(regionMetrics(r).achievementPct)}</StatusChip></span> },
             { key: 'camp', header: 'Campaigns running', align: 'right', render: (r) => campaignsOf(r) },
-            { key: 'exec', header: 'Planned vs observed execution', render: (r) => <span className="row nw">{r.plannedExec}% / {r.observedExec}%<DualBar planned={r.plannedExec} observed={r.observedExec} /></span> },
+            { key: 'exec', header: 'Planned vs observed execution', render: (r) => <span className="row" style={{ flexWrap: 'wrap', rowGap: 4 }}>{r.plannedExec}% / {r.observedExec}%<DualBar planned={r.plannedExec} observed={r.observedExec} /></span> },
             { key: 'inv', header: 'Marketing investment', align: 'right', render: (r) => crore(r.actual) },
             { key: 'adopt', header: 'Recorded adoption', align: 'right', render: (r) => num(r.adopters) },
             { key: 'sales', header: 'Attributed incremental sales', align: 'right', render: (r) => crore(r.sales) },
@@ -77,10 +75,10 @@ export function CommandCentre() {
             { key: 'view', header: 'Drilldown', align: 'center', render: (r) => <Button small icon={ExternalLink} onClick={() => go(R.region(r.id))}>View</Button> },
           ]}
           total={{
-            region: scopeName,
-            ach: <span className="row nw">{crore(t.achieved, 1)} / {crore(t.abp, 1)}<StatusChip tone="ok">{pct(achPct)}</StatusChip></span>,
+            region: 'Total',
+            ach: <span className="row" style={{ flexWrap: 'wrap', rowGap: 4 }}>{crore(t.achieved, 1)} / {crore(t.abp, 1)}<StatusChip tone="ok">{pct(achPct)}</StatusChip></span>,
             camp: num(t.campaigns),
-            exec: <span className="row nw">{t.planned}% / {t.observed}%<DualBar planned={t.planned} observed={t.observed} /></span>,
+            exec: <span className="row" style={{ flexWrap: 'wrap', rowGap: 4 }}>{t.planned}% / {t.observed}%<DualBar planned={t.planned} observed={t.observed} /></span>,
             inv: crore(t.actual),
             adopt: num(t.adopters),
             sales: crore(sales),

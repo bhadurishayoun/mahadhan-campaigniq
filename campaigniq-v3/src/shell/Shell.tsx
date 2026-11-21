@@ -1,4 +1,4 @@
-import { AlertCircle, Bell, Calendar, CalendarCheck, ChartColumnBig, ChartColumnIncreasing, ChevronDown, CircleHelp, Crosshair, Layers, LogOut, MessagesSquare, ShieldCheck, Sprout, UserRound, type LucideIcon } from 'lucide-react';
+import { AlertCircle, Bell, Calendar, CalendarCheck, ChartColumnBig, ChartColumnIncreasing, ChevronDown, CircleHelp, Flag, Layers, LogOut, BotMessageSquare, ShieldCheck, Sprout, UserRound, type LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { PERSONAS } from '../auth/nav';
@@ -9,12 +9,12 @@ import { Toasts } from '../ui/core';
 import { attentionItems } from './attention';
 
 const NAV: { key: NavKey; label: string; icon: LucideIcon; to: string }[] = [
-  { key: 'command', label: 'National Command Centre', icon: ChartColumnIncreasing, to: R.command },
+  { key: 'command', label: 'Marketing and Command Centre', icon: ChartColumnIncreasing, to: R.command },
   { key: 'portfolio', label: 'Campaign Portfolio Performance', icon: Layers, to: R.portfolio },
   { key: 'investment', label: 'Marketing Investment & ROI', icon: ChartColumnBig, to: R.investment },
   { key: 'themes', label: 'Strategic Themes & Approvals', icon: ShieldCheck, to: R.inbox },
-  { key: 'interventions', label: 'Strategic Interventions', icon: Crosshair, to: R.tracker },
-  { key: 'assistant', label: 'Decision Assistant', icon: MessagesSquare, to: R.assistant },
+  { key: 'interventions', label: 'Strategic Interventions', icon: Flag, to: R.tracker },
+  { key: 'assistant', label: 'AI Copilot workspace', icon: BotMessageSquare, to: R.assistant },
 ];
 
 function useOutside(onClose: () => void) {
@@ -75,7 +75,7 @@ export function Shell({ userName, onSignOut }: { userName: string; onSignOut: ()
           {(close) => <button type="button" className="on" onClick={close}>{PERIOD}</button>}
         </Dropdown>
         <div className="tb-right">
-          <button type="button" className="icon-btn" aria-label="Help" title="Decision Assistant" onClick={() => nav(R.assistant)}><CircleHelp size={19} /></button>
+          <button type="button" className="icon-btn" aria-label="Help" title="AI Copilot workspace" onClick={() => nav(R.assistant)}><CircleHelp size={19} /></button>
           <Dropdown right trigger={(_o, t) => <button type="button" className="icon-btn" aria-label="Notifications" onClick={t}><Bell size={19} />{alerts.length > 0 && <span className="dot" />}</button>}>
             {(close) => alerts.map((a) => <button key={a.id} type="button" onClick={() => { nav(a.to); close(); }}><AlertCircle size={15} color="var(--amber)" />{a.text}</button>)}
           </Dropdown>

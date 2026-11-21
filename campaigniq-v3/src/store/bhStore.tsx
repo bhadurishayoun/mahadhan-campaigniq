@@ -61,7 +61,8 @@ function load(): State {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return initial();
-    return { ...initial(), ...(JSON.parse(raw) as Partial<State>) };
+    // Scope is never restored: every fresh open starts on all regions (national portfolio).
+    return { ...initial(), ...(JSON.parse(raw) as Partial<State>), scope: 'national' };
   } catch {
     return initial();
   }

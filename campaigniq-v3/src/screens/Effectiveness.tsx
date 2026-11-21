@@ -73,7 +73,7 @@ export function Effectiveness() {
               { key: 'sales', header: 'Validated incremental sales', align: 'right', render: (c) => lakh(c.sales) },
               { key: 'roi', header: 'Net ROI', align: 'center', render: (c) => <StatusChip tone="ok">{times(netRoi(c.sales, c.actual))}</StatusChip> },
             ]}
-            total={{ name: `${r.name} region (total)`, plan: `${tot.plannedExec}%`, obs: `${tot.observedExec}%`, target: num(tot.target), adopt: num(tot.adopters), ach: <span className="progress"><Bar value={tot.adoptionPct} /><b>{pct(tot.adoptionPct)}</b></span>, sales: lakh(r.sales), roi: <StatusChip tone="ok">{times(regionRoi(r))}</StatusChip> }}
+            total={{ name: 'Total', plan: `${tot.plannedExec}%`, obs: `${tot.observedExec}%`, target: num(tot.target), adopt: num(tot.adopters), ach: <span className="progress"><Bar value={tot.adoptionPct} /><b>{pct(tot.adoptionPct)}</b></span>, sales: lakh(r.sales), roi: <StatusChip tone="ok">{times(regionRoi(r))}</StatusChip> }}
           />
         ) : <div style={{ padding: '6px 16px 10px' }}><StatusChip tone="neutral">Campaign-level records pending</StatusChip></div>}
       </Card>

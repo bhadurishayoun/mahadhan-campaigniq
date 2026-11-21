@@ -45,7 +45,7 @@ export function RegionalPerformance() {
               { key: 'adopt', header: 'Adopters', align: 'right', render: (t) => (t.adopters !== null ? num(t.adopters) : <StatusChip tone="neutral">Pending</StatusChip>) },
               { key: 'view', header: 'View', align: 'center', render: (t) => (hasDetail(t) ? <Button small onClick={() => go(R.territory(t.id))}>View</Button> : <StatusChip tone="neutral">Pending</StatusChip>) },
             ]}
-            total={{ name: `Total (${r.name})`, abp: crore(sum(terrs, (t) => t.abp)), sales: crore(sum(terrs, (t) => t.ytdSales)), ach: pct(ratio(sum(terrs, (t) => t.ytdSales), sum(terrs, (t) => t.abp))), camp: sum(terrs, (t) => t.campaigns) }}
+            total={{ name: 'Total', abp: crore(sum(terrs, (t) => t.abp)), sales: crore(sum(terrs, (t) => t.ytdSales)), ach: pct(ratio(sum(terrs, (t) => t.ytdSales), sum(terrs, (t) => t.abp))), camp: sum(terrs, (t) => t.campaigns) }}
           />
         ) : <div style={{ padding: '6px 16px 10px' }}><StatusChip tone="neutral">Territory plans pending</StatusChip></div>}
       </Card>

@@ -101,13 +101,13 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 .bar.amber > i { background: var(--amber); }
 .progress { display: flex; align-items: center; gap: 8px; }
 .progress b { font-weight: 600; min-width: 46px; }
-.dual { display: flex; flex-direction: column; gap: 3px; width: 100px; }
+.dual { display: flex; flex-direction: column; gap: 3px; width: 72px; }
 .dual .bar { height: 5px; flex: none; }
 
 /* ---------- table ---------- */
 .tbl { width: 100%; border-collapse: collapse; }
-.tbl th { font-size: 12px; font-weight: 600; color: var(--ink-soft); text-align: center; vertical-align: middle; padding: 8px 10px; background: var(--canvas); border-bottom: 1px solid var(--line); line-height: 1.25; }
-.tbl td { font-size: 13px; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; text-align: center; font-variant-numeric: tabular-nums; }
+.tbl th { font-size: 12px; font-weight: 600; color: var(--ink-soft); text-align: center; vertical-align: middle; padding: 8px 6px; background: var(--canvas); border-bottom: 1px solid var(--line); line-height: 1.25; }
+.tbl td { font-size: 13px; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: middle; text-align: center; font-variant-numeric: tabular-nums; }
 .tbl tr:last-child td { border-bottom: 0; }
 .tbl .r, .tbl .c { text-align: center; }
 .tbl td .row, .tbl td .progress { display: inline-flex; justify-content: center; }

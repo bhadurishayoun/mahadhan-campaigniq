@@ -93,7 +93,7 @@ export function InvestmentRoi() {
               { key: 'roi', header: 'Actual net ROI', align: 'center', render: (r) => <StatusChip tone="ok">{times(regionRoi(r))}</StatusChip> },
               { key: 'v', header: 'View', align: 'center', render: (r) => <Button small onClick={() => go(R.campaignInvestment(r.id))}>View</Button> },
             ]}
-            total={{ n: region === ALL ? 'National (total)' : 'Total', ap: lakh(k.approved), ac: lakh(k.actual), un: lakh(k.approved - k.actual), ut: <span className="progress"><b>{pct((k.actual / k.approved) * 100)}</b><Bar value={(k.actual / k.approved) * 100} /></span>, ad: num(sum(regions, (r) => r.adopters)), pa: rupees(perAdopter(k.actual, sum(regions, (r) => r.adopters))), roi: '–' }}
+            total={{ n: 'Total', ap: lakh(k.approved), ac: lakh(k.actual), un: lakh(k.approved - k.actual), ut: <span className="progress"><b>{pct((k.actual / k.approved) * 100)}</b><Bar value={(k.actual / k.approved) * 100} /></span>, ad: num(sum(regions, (r) => r.adopters)), pa: rupees(perAdopter(k.actual, sum(regions, (r) => r.adopters))), roi: '–' }}
           />
         ) : (
           <DataTable rows={mix} rowKey={(m) => m.id}
@@ -175,7 +175,7 @@ export function CampaignInvestment() {
               { key: 'ad', header: 'Recorded adopters', align: 'right', render: (c) => num(c.adopters) },
               { key: 'pa', header: 'Investment per recorded adopter', align: 'right', render: (c) => rupees(campaignMetrics(c).perAdopter) },
             ]}
-            total={{ n: `Total (${r.name} region)`, ap: lakh(t.approved), ac: lakh(t.actual), un: lakh(t.unspent), ut: <span className="progress"><b>{pct(t.utilisationPct)}</b><Bar value={t.utilisationPct} /></span>, ad: num(t.adopters), pa: rupees(t.perAdopter) }}
+            total={{ n: 'Total', ap: lakh(t.approved), ac: lakh(t.actual), un: lakh(t.unspent), ut: <span className="progress"><b>{pct(t.utilisationPct)}</b><Bar value={t.utilisationPct} /></span>, ad: num(t.adopters), pa: rupees(t.perAdopter) }}
           />
         ) : <div style={{ padding: '6px 16px 10px' }}><StatusChip tone="neutral">Campaign-level records pending</StatusChip></div>}
       </Card>
@@ -248,7 +248,7 @@ export function CommercialReturns() {
               { key: 'as', header: 'Actual incremental sales', align: 'right', render: (c) => lakh(c.sales) },
               { key: 'ar', header: 'Actual net ROI', align: 'center', render: (c) => <StatusChip tone="ok">{times(netRoi(c.sales, c.actual))}</StatusChip> },
             ]}
-            total={{ n: `${r.name} region (total)`, ap: lakh(t.approved), ac: lakh(t.actual), ad: num(t.adopters), fs: '–', fc: '–', fr: '–', as: lakh(r.sales), ar: <StatusChip tone="ok">{times(regionRoi(r))}</StatusChip> }}
+            total={{ n: 'Total', ap: lakh(t.approved), ac: lakh(t.actual), ad: num(t.adopters), fs: '–', fc: '–', fr: '–', as: lakh(r.sales), ar: <StatusChip tone="ok">{times(regionRoi(r))}</StatusChip> }}
           />
         ) : <div style={{ padding: '6px 16px 10px' }}><StatusChip tone="neutral">Campaign-level records pending</StatusChip></div>}
       </Card>

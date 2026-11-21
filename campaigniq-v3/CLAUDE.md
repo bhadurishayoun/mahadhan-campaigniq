@@ -6,7 +6,8 @@ and `../business-head-prompt.md`. Open each mockup once before building its scre
 ## 1. Hygiene (checked by `npm run hygiene`; must report 0)
 1. No placeholder language: Illustrative, Sample, Demo, Mock, Synthetic, Dummy, Placeholder, Lorem, TBD, V2.
 2. No AI wording or styling: AI, Copilot, Smart, Intelligence, Intelligent, Insight (as label), Generated, Powered by,
-   Magic, Auto-suggest; no Sparkles/Wand icons, no gradients, no emoji. "AI Copilot" → **Decision Assistant**;
+   Magic, Auto-suggest; no Sparkles/Wand icons, no gradients, no emoji. Exception: the exact name **AI Copilot workspace**
+   (client decision); "National Command Centre" is now **Marketing and Command Centre**;
    "Market Opportunity Intelligence" → **Market Opportunity**.
 3. No guidance or disclaimer sentences, no "Sources: …" rows, no role-flow strips. Status = StatusChip + WorkflowStepper.
 4. No screen codes in UI text (BH.1, MH.2, PM.10C, TM.IM1 …), no "READ-ONLY" chips. Codes live only in `routes.ts`.

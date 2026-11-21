@@ -27,7 +27,9 @@ for (const f of files) {
     // Strip comments and import lines; check visible strings and JSX text only.
     const line = raw.replace(/\/\/.*$/, '').replace(/\/\*.*?\*\//g, '');
     if (/^\s*(import|\*|\/\*)/.test(raw)) return;
-    const text = [...line.matchAll(/'([^']*)'|"([^"]*)"|`([^`]*)`|>([^<>{}]+)</g)].map((m) => m[1] ?? m[2] ?? m[3] ?? m[4]).join(' ');
+    // The workspace name "AI Copilot workspace" is the one approved use of AI / Copilot.
+    const text0 = [...line.matchAll(/'([^']*)'|"([^"]*)"|`([^`]*)`|>([^<>{}]+)</g)].map((m) => m[1] ?? m[2] ?? m[3] ?? m[4]).join(' ');
+    const text = text0.replace(/AI Copilot workspace/g, '');
     for (const w of WORDS) if (new RegExp(`\\b${w.replace(/ /g, '\\s+')}\\b`, 'i').test(text)) hits.push(`${where}  banned word "${w}"`);
     if (CODE.test(text)) hits.push(`${where}  screen code`);
     if (/Sources:|READ-ONLY/i.test(text)) hits.push(`${where}  sources / read-only label`);

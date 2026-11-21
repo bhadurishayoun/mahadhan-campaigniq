@@ -40,7 +40,7 @@ export function Portfolio() {
 
   return (
     <div className="page">
-      <Breadcrumb items={[{ label: 'National Command Centre', onClick: () => go(R.command) }, { label: 'Campaign portfolio performance' }]} />
+      <Breadcrumb items={[{ label: 'Marketing and Command Centre', onClick: () => go(R.command) }, { label: 'Campaign portfolio performance' }]} />
       <PageHeader title="National Campaign Portfolio Performance" />
       <FilterBar filters={[
         { key: 'region', label: 'Region', value: region, options: REGION_OPTIONS, onChange: setRegion },

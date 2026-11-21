@@ -33,7 +33,7 @@ export function DataTable<T>({ columns, rows, rowKey, total, selected, onRowClic
             </tr>
           );
         })}
-        {total && (
+        {total && rows.length > 1 && (
           <tr className="total">{columns.map((c) => <td key={c.key} className={cls(c.align)}>{total[c.key] ?? ''}</td>)}</tr>
         )}
       </tbody>

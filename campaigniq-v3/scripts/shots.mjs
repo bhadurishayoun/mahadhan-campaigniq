@@ -68,6 +68,8 @@ for (const [name, route] of ROUTES) {
     const h = Math.max(${H}, (main ? main.scrollHeight + 60 : 0), document.documentElement.scrollHeight);
     const hscroll = document.documentElement.scrollWidth > window.innerWidth + 1 || (main && main.scrollWidth > main.clientWidth + 1);
     const clipped = [...document.querySelectorAll('.page *, .drawer *, .modal *')].filter(e => e.children.length === 0 && e.textContent.trim() && e.scrollWidth > e.clientWidth + 2 && getComputedStyle(e).overflow !== 'visible').map(e => e.textContent.trim().slice(0, 40)).slice(0, 5);
+    const wide = [...document.querySelectorAll('.card .tbl')].filter(t => t.getBoundingClientRect().right > t.closest('.card').getBoundingClientRect().right + 1).map(e => (e.closest('.card')?.querySelector('h3')?.textContent || 'card').slice(0, 40));
+    clipped.push(...wide.map(w => 'WIDE: ' + w));
     const route = location.hash;
     return { h, hscroll, clipped, route };
   })()`);

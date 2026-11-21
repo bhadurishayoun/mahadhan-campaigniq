@@ -1,6 +1,6 @@
 /**
  * Screens 17–20 — Management Action Tracker (BH.5.png) with Intervention Request drawer (BH.5a.png),
- * Portfolio Learning & Next-Year Priorities (BH.5b.png), Decision Assistant (BH.6.png).
+ * Portfolio Learning & Next-Year Priorities (BH.5b.png), AI Copilot workspace (BH.6.png).
  */
 import { ArrowRight, CircleCheck, ClipboardList, Coins, Eye, FileSearch, FileText, Folder, Layers, MessageCircle, MessagesSquare, RefreshCw, Save, Send, Target, Users } from 'lucide-react';
 import { useState } from 'react';
@@ -225,7 +225,7 @@ export function PortfolioLearning() {
   );
 }
 
-// ================================================================ 20 Decision Assistant
+// ================================================================ 20 AI Copilot workspace
 type QuestionId = 'priorities' | 'growth' | 'campaigns' | 'change';
 const QUESTIONS: { id: QuestionId; text: string; keys: string[] }[] = [
   { id: 'priorities', text: `Which regions and marketing themes should I prioritise for ${NEXT_FY}, and why?`, keys: ['priorit', 'region', 'theme'] },
@@ -273,8 +273,8 @@ export function DecisionAssistant() {
 
   return (
     <div className="page">
-      <Breadcrumb items={[{ label: 'Decision Assistant' }, { label: 'National portfolio' }, { label: 'Strategic priorities' }]} />
-      <PageHeader title="Decision Assistant" />
+      <Breadcrumb items={[{ label: 'AI Copilot workspace' }, { label: 'National portfolio' }, { label: 'Strategic priorities' }]} />
+      <PageHeader title="AI Copilot workspace" />
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.75fr) minmax(0, 1fr)' }}>
         <Card>
           <div className="row" style={{ gap: 12 }}><Users size={20} color="var(--ink-soft)" /><div className="input" style={{ display: 'flex', alignItems: 'center', height: 'auto', minHeight: 40, fontSize: 14, background: 'var(--canvas)' }}>{question.text}</div></div>
