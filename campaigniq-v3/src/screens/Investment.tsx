@@ -384,17 +384,17 @@ export function Reallocation() {
         <KpiCard label="Unspent budget" value={lakh(t.unspent)} />
         <KpiCard label="Simulated transfer" value={lakh(valid ? amt : 0)} />
       </div>
-      <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.8fr) minmax(0, 1fr)' }}>
-        <Card title={`Campaign budget reallocation — ${r.name} region`} icon={Coins} flush>
+      <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 2.3fr) minmax(0, 1fr)' }}>
+        <Card className="realloc-card" title={`Campaign budget reallocation — ${r.name} region`} icon={Coins} flush>
           <DataTable rows={rows} rowKey={(x) => x.c.id}
             columns={[
-              { key: 'n', header: 'Campaign', render: (x) => x.c.name },
-              { key: 'ap', header: 'Existing approved budget', align: 'right', render: (x) => lakh(x.c.approved) },
-              { key: 'ac', header: 'Actual investment', align: 'right', render: (x) => lakh(x.c.actual) },
-              { key: 'un', header: 'Unspent budget', align: 'right', render: (x) => lakh(unspentOf(x.c)) },
-              { key: 'ad', header: 'Proposed adjustment', align: 'center', render: (x) => adjChip(x.adj) },
-              { key: 'rb', header: 'Simulated revised budget', align: 'right', render: (x) => lakh(x.revised) },
-              { key: 'ru', header: 'Revised unspent budget', align: 'right', render: (x) => lakh(x.revisedUnspent) },
+              { key: 'n', header: 'Campaign', width: '26%', render: (x) => <span className="rc-name">{x.c.name.replace(/-/g, '‑')}</span> },
+              { key: 'ap', header: 'Existing budget', width: '12.33%', align: 'right', render: (x) => lakh(x.c.approved) },
+              { key: 'ac', header: 'Actual', width: '12.33%', align: 'right', render: (x) => lakh(x.c.actual) },
+              { key: 'un', header: 'Unspent', width: '12.33%', align: 'right', render: (x) => lakh(unspentOf(x.c)) },
+              { key: 'ad', header: 'Adjustment', width: '12.33%', align: 'center', render: (x) => adjChip(x.adj) },
+              { key: 'rb', header: 'Simulated budget', width: '12.33%', align: 'right', render: (x) => lakh(x.revised) },
+              { key: 'ru', header: 'Revised unspent', width: '12.33%', align: 'right', render: (x) => lakh(x.revisedUnspent) },
             ]}
             total={{ n: 'Total', ap: lakh(t.approved), ac: lakh(t.actual), un: lakh(t.unspent), ad: lakh(net), rb: lakh(sum(rows, (x) => x.revised)), ru: lakh(sum(rows, (x) => x.revisedUnspent)) }}
           />
