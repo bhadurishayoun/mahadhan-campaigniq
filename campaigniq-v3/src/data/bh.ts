@@ -241,8 +241,12 @@ export const AMBAD = {
   onionAbp: 190, // lakh, all-product onion ABP
   campaignLinkedSales: 5.4, // lakh, provisional
   villages: [
-    { name: 'Dhanora', adopters: 24, trials: 62 },
-    { name: 'Wadi Gaon', adopters: 48, trials: 98 },
+    { name: 'Wadi Gaon', adopters: 24, trials: 49 },
+    { name: 'Pimpalgaon', adopters: 9, trials: 19 },
+    { name: 'Kumbhephal', adopters: 10, trials: 22 },
+    { name: 'Shahagad', adopters: 9, trials: 20 },
+    { name: 'Rohilagad', adopters: 8, trials: 19 },
+    { name: 'Dhanora', adopters: 12, trials: 31 },
   ],
   interventions: [
     { name: 'Field demonstrations', done: 3, planned: 4 },
@@ -273,6 +277,10 @@ export const ambadMetrics = () => {
     adopters,
     trialToAdoptionPct: ratio(adopters, trials),
     villages: villagePct,
+    /** villages sorted by trial-to-adoption, highest first */
+    villagesSorted: [...villagePct].sort((x, y) => y.pct - x.pct),
+    highest: [...villagePct].sort((x, y) => y.pct - x.pct)[0],
+    lowest: [...villagePct].sort((x, y) => x.pct - y.pct)[0],
     villageGap: Math.max(...pcts) - Math.min(...pcts),
     followUpPct: ratio(AMBAD.interventions[4].done, AMBAD.interventions[4].planned),
     retailerActivationPct: ratio(AMBAD.interventions[1].done, AMBAD.interventions[1].planned),

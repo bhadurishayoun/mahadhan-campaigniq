@@ -147,7 +147,7 @@ function Diagnostics({ c, onClose }: { c: Campaign; onClose: () => void }) {
   ];
   const drivers = [
     ...AMBAD.interventions.map((i) => { const p = ratio(i.done, i.planned); return { id: i.name, driver: i.name, progress: `${i.done} / ${i.planned}`, status: <StatusChip tone={p >= 75 ? 'ok' : 'warn'}>{pct(p, p % 1 ? 1 : 0)}</StatusChip> }; }),
-    { id: 'gap', driver: `Village conversion gap (${a.villages.map((v) => `${v.name} ${pct(v.pct)}`).join(' vs ')})`, progress: `${a.villageGap.toFixed(1)} pp`, status: <StatusChip tone="warn">Review</StatusChip> },
+    { id: 'gap', driver: `Village conversion gap (${a.lowest.name} ${pct(a.lowest.pct)} vs ${a.highest.name} ${pct(a.highest.pct)})`, progress: `${a.villageGap.toFixed(1)} pp`, status: <StatusChip tone="warn">Review</StatusChip> },
     { id: 'attr', driver: 'Sales attribution', progress: lakh(c.sales), status: <StatusChip tone="ok">Complete</StatusChip> },
   ];
   const achievement = [

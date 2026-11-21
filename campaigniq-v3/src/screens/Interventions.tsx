@@ -256,7 +256,7 @@ export function DecisionAssistant() {
     priorities: [
       { n: '1', title: `${gapRegion.name} region`, evidence: `${crore(regionMetrics(gapRegion).gap, 1)} YTD business ABP gap`, status: 'Review', tone: 'warn', action: 'Review market opportunity', to: R.opportunity },
       { n: '2', title: 'West Croptek conversion', evidence: `${croptek.adopters} adopters / ${croptek.adoptionTarget} checkpoint target = ${pct(cm.adoptionPct, 0)}`, status: 'Provisional', tone: 'neutral', action: 'Review existing theme performance', to: R.effectiveness('west', 'croptek') },
-      { n: '3', title: 'Ambad village gap', evidence: `${a.villages.map((v) => `${v.name} ${pct(v.pct)}`).join(' vs ')} = ${a.villageGap.toFixed(1)} pp`, status: 'Validation required', tone: 'warn', action: 'Validate intervention evidence', to: R.territory('ambad') },
+      { n: '3', title: 'Ambad village gap', evidence: `${a.lowest.name} ${pct(a.lowest.pct)} vs ${a.highest.name} ${pct(a.highest.pct)} = ${a.villageGap.toFixed(1)} pp`, status: 'Validation required', tone: 'warn', action: 'Validate intervention evidence', to: R.territory('ambad') },
     ],
     growth: [...REGIONS].sort((x, y) => regionMetrics(y).gap - regionMetrics(x).gap).map((r, i) => ({ n: String(i + 1), title: `${r.name} region`, evidence: `${crore(regionMetrics(r).gap, 1)} gap · ${pct(regionMetrics(r).achievementPct)} of ABP`, status: pp(regionMetrics(r).execVariance) + ' execution', tone: 'warn' as Tone, action: 'Open regional performance', to: R.region(r.id) })),
     campaigns: [...CAMPAIGNS].sort((x, y) => campaignMetrics(x).execVariance - campaignMetrics(y).execVariance).map((c, i) => ({ n: String(i + 1), title: c.name, evidence: `${pp(campaignMetrics(c).execVariance)} execution · ${pct(campaignMetrics(c).adoptionPct, 0)} of adoption target`, status: campaignMetrics(c).adoptionPct < 75 ? 'Review' : 'On watch', tone: (campaignMetrics(c).adoptionPct < 75 ? 'warn' : 'ok') as Tone, action: 'Open campaign diagnostics', to: R.diagnostics(c.region, c.id) })),
@@ -294,7 +294,7 @@ export function DecisionAssistant() {
                 <div className="card" style={{ padding: '10px 14px', gap: 8 }}>
                   <b className="strong">Ambad adoption ({PERIOD}) – reference</b>
                   <div className="row" style={{ gap: 16 }}>
-                    <div style={{ flex: 1 }}><HBars labelWidth={90} max={60} format={(v) => pct(v)} rows={[...a.villages].reverse().map((v) => ({ label: v.name, values: [v.pct], highlight: v.pct < 45 ? 0 : undefined }))} series={[{ key: 'p', label: 'Trial-to-adoption', color: SERIES.planned }]} /></div>
+                    <div style={{ flex: 1 }}><HBars labelWidth={90} max={60} format={(v) => pct(v)} rows={[a.highest, a.lowest].map((v) => ({ label: v.name, values: [v.pct], highlight: v.pct < 45 ? 0 : undefined }))} series={[{ key: 'p', label: 'Trial-to-adoption', color: SERIES.planned }]} /></div>
                     <StatusChip tone="ok">{a.villageGap.toFixed(1)} pp gap</StatusChip>
                   </div>
                 </div>

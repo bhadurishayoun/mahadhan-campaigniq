@@ -2,7 +2,7 @@
 import { CalendarCheck, Coins, Lightbulb, MapPin, Plus, TrendingUp, Users } from 'lucide-react';
 import { Navigate, useParams } from 'react-router-dom';
 import { AMBAD, ambadMetrics, campaignById, netRoi, territoryById } from '../data/bh';
-import { crore, lakh, num, pct, ratio, times } from '../data/format';
+import { crore, lakh, num, pct, pp, ratio, times } from '../data/format';
 import { R } from '../routes';
 import { useBhStore } from '../store/bhStore';
 import { Bar, Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
@@ -62,12 +62,20 @@ export function TerritoryPerformance() {
 
       <div className="grid g3">
         <Card title="Village-wise trial-to-adoption" icon={Users}>
-          {a.villages.map((v, i) => (
-            <div key={v.name} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <div className="row" style={{ justifyContent: 'space-between' }}><span>{v.name}</span><span>{v.adopters} / {v.trials} = <b>{pct(v.pct)}</b></span></div>
-              <Bar value={v.pct} tone={i === 0 ? 'amber' : 'brand'} />
-            </div>
-          ))}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 8 }}>
+            {a.villagesSorted.map((v) => {
+              const diff = v.pct - a.trialToAdoptionPct;
+              return (
+                <div key={v.name} title={`${v.name} · Trials ${v.trials} · Adopters ${v.adopters} · ${pct(v.pct)} (${pp(diff, 1)} vs territory)`} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div className="row" style={{ justifyContent: 'space-between' }}><span>{v.name}</span><span>{v.adopters} / {v.trials} = <b>{pct(v.pct)}</b></span></div>
+                  <div style={{ position: 'relative' }}>
+                    <Bar value={v.pct} tone={v.name === a.lowest.name ? 'amber' : 'brand'} />
+                    <span style={{ position: 'absolute', top: -3, bottom: -3, left: `${a.trialToAdoptionPct}%`, borderLeft: '1.5px dashed var(--ink-soft)' }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
           <div className="row" style={{ justifyContent: 'space-between', background: 'var(--amber-soft)', borderRadius: 8, padding: '8px 12px', marginTop: 'auto' }}><b>Conversion gap</b><b className="kpi-value" style={{ fontSize: 18 }}>{a.villageGap.toFixed(1)} pp</b></div>
         </Card>
         <Card title="Intervention execution" icon={CalendarCheck}>
