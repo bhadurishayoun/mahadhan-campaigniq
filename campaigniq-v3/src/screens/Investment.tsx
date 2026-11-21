@@ -236,9 +236,9 @@ export function CommercialReturns() {
       </div>
       <Card title="Campaign commercial return matrix" icon={Coins} flush>
         {camps.length && t ? (
-          <DataTable rows={camps} rowKey={(c) => c.id} selected={selId} onRowClick={(c) => setParams({ campaign: c.id })}
+          <DataTable selectable rows={camps} rowKey={(c) => c.id} selected={selId} onRowClick={(c) => setParams({ campaign: c.id })}
             columns={[
-              { key: 'n', header: 'Campaign', render: (c) => <span className="row"><span className={`radio${c.id === selId ? ' on' : ''}`} />{c.name}</span> },
+              { key: 'n', header: 'Campaign', render: (c) => c.name },
               { key: 'ap', header: 'Approved investment', align: 'right', render: (c) => lakh(c.approved) },
               { key: 'ac', header: 'Actual investment', align: 'right', render: (c) => lakh(c.actual) },
               { key: 'ad', header: 'Recorded adopters', align: 'right', render: (c) => num(c.adopters) },

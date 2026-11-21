@@ -62,9 +62,10 @@ export function Effectiveness() {
             rows={camps}
             rowKey={(c) => c.id}
             selected={selectedId}
+            selectable
             onRowClick={(c) => set({ campaign: c.id })}
             columns={[
-              { key: 'name', header: 'Campaign', render: (c) => <span className="row"><span className={`radio${c.id === selectedId ? ' on' : ''}`} />{c.name}</span> },
+              { key: 'name', header: 'Campaign', render: (c) => c.name },
               { key: 'plan', header: 'Planned execution', align: 'right', render: (c) => `${c.plannedExec}%` },
               { key: 'obs', header: 'Observed execution', align: 'right', render: (c) => `${c.observedExec}%` },
               { key: 'target', header: 'Adoption target (checkpoint)', align: 'right', render: (c) => num(c.adoptionTarget) },

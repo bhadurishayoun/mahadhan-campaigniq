@@ -73,9 +73,9 @@ export function MarketOpportunity() {
         <KpiCard label="Achievement" value={pct(NATIONAL_METRICS.achievementPct)} />
       </div>
       <Card title="Regional business gap and marketing coverage" icon={Layers} flush>
-        <DataTable rows={regions} rowKey={(r) => r.id} selected={selRegion.id} onRowClick={(r) => setSel(r.id)}
+        <DataTable selectable rows={regions} rowKey={(r) => r.id} selected={selRegion.id} onRowClick={(r) => setSel(r.id)}
           columns={[
-            { key: 'n', header: 'Region', render: (r) => <span className="row"><span className={`radio${r.id === selRegion.id ? ' on' : ''}`} /><b>{r.name}</b></span> },
+            { key: 'n', header: 'Region', render: (r) => <b>{r.name}</b> },
             { key: 'abp', header: 'ABP', align: 'right', render: (r) => crore(r.abp, 1) },
             { key: 'ach', header: 'Actual sales', align: 'right', render: (r) => crore(r.achieved, 1) },
             { key: 'gap', header: 'Business gap', align: 'right', render: (r) => <b>{crore(regionMetrics(r).gap, 1)}</b> },
@@ -159,9 +159,8 @@ export function ThemeInbox() {
       ]} />
       <Card title="Strategic theme approval queue" icon={FileText} flush right={<Button small primary icon={CheckCircle2} onClick={sel && store.themeStatus[sel.id] !== 'clarification_requested' ? () => go(`${R.decision(sel.id)}&choice=approve`) : undefined}>Approve theme</Button>}>
         {queue.length ? (
-          <DataTable rows={queue} rowKey={(t) => t.id} selected={sel?.id} onRowClick={(t) => setSelId(t.id)}
+          <DataTable selectable rows={queue} rowKey={(t) => t.id} selected={sel?.id} onRowClick={(t) => setSelId(t.id)}
             columns={[
-              { key: 'r', header: '', width: 40, render: (t) => <span className={`radio${t.id === sel?.id ? ' on' : ''}`} /> },
               { key: 'n', header: 'Proposed theme', render: (t) => t.name },
               { key: 'g', header: 'Region', render: (t) => t.geography },
               { key: 'c', header: 'Priority crop / product', render: (t) => t.cropProduct },
