@@ -2,20 +2,20 @@
  * Screens 7–10 — Marketing Investment & ROI (BH.3a.png), Campaign Investment (BH.3b.png),
  * Commercial Returns (BH.3d.png), Reallocation Simulator (BH.3e.png).
  */
-import { ArrowLeftRight, CalendarClock, CalendarDays, ChartColumn, Coins, FileSearch, Percent, RotateCcw, Save, Scale, ShieldCheck, ShoppingCart, Target, TrendingUp, Users } from 'lucide-react';
+import { ArrowLeftRight, ChevronDown, CalendarClock, CalendarDays, ChartColumn, Coins, FileSearch, Percent, RotateCcw, Save, Scale, ShieldCheck, ShoppingCart, Target, TrendingUp, Users } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   businessCase, CAMPAIGNS, nationalReturns, netRoi, regionRoi, campaignById, campaignMetrics, campaignsOf, campaignTotals, CROP_MIX, DEFAULT_REALLOCATION, NATIONAL, NATIONAL_METRICS,
-  PRODUCT_MIX, REGIONS, regionById, regionMetrics, THEMES, type Campaign, type CampaignId, type MixRow, type RegionId,
+  PRODUCT_MIX, ALL_CAMPAIGNS, planCampaign, planCampaignsOf, type PlanCampaign, REGIONS, regionById, regionMetrics, THEMES, type CampaignId, type MixRow, type RegionId,
 } from '../data/bh';
 import { crore, lakh, num, pct, rupees, sum, times } from '../data/format';
 import { R } from '../routes';
 import { useBhStore } from '../store/bhStore';
 import { RegionBarsCard } from './RegionBars';
 import { SERIES } from '../theme';
-import { GroupedBars, HBars, Legend, Waterfall } from '../ui/charts';
-import { Bar, Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, SegmentedControl, Select, StatusChip } from '../ui/core';
+import { GroupedBars, Legend, Waterfall } from '../ui/charts';
+import { Bar, Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, SegmentedControl, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { EvidenceDrawer, type Evidence } from '../ui/overlay';
 import { ALL, CAMPAIGN_OPTIONS, CROP_OPTIONS, PRODUCT_OPTIONS, REGION_OPTIONS, THEME_OPTIONS, useDrillRegion, useGo, useRouteRegion, useScopeFilter } from './common';
@@ -311,25 +311,39 @@ export function CommercialReturns() {
 export function Reallocation() {
   const go = useGo();
   const store = useBhStore();
-  const region = useRouteRegion();
-  const r = regionById(region);
-  const camps = campaignsOf(region);
-  const saved = store.scenarios.find((s) => s.region === region);
-  const start = saved ?? { ...DEFAULT_REALLOCATION, region, name: `${r.name} reallocation scenario 1` };
-  const [from, setFrom] = useState<CampaignId>(start.from);
-  const [to, setTo] = useState<CampaignId>(start.to);
+  const routeRegion = useRouteRegion();
+  const unspentOf = (c: PlanCampaign) => c.approved - c.actual;
+  const defaultsFor = (rg: RegionId) => {
+    if (rg === DEFAULT_REALLOCATION.region) return { from: DEFAULT_REALLOCATION.from as string, to: DEFAULT_REALLOCATION.to as string, amount: DEFAULT_REALLOCATION.amount };
+    const cs = planCampaignsOf(rg);
+    return { from: cs[0].id, to: cs[1].id, amount: Math.min(2, unspentOf(cs[0])) };
+  };
+  const saved = store.scenarios.find((s) => s.region === routeRegion);
+  const start = saved ?? defaultsFor(routeRegion);
+  const [from, setFrom] = useState<string>(start.from);
+  const [to, setTo] = useState<string>(start.to);
   const [amount, setAmount] = useState(start.amount);
-  const [name, setName] = useState(saved?.name ?? `${r.name} reallocation scenario 1`);
-  if (!camps.length) return <div className="page"><PageHeader title="Reallocation Simulator" /><StatusChip tone="neutral">Campaign-level records pending</StatusChip><FooterBar onBack={() => go(R.returns(region))} onNext={() => go(R.opportunity)} /></div>;
+  const [name, setName] = useState(saved?.name ?? `${regionById(routeRegion).name} reallocation scenario 1`);
+  const [hover, setHover] = useState<{ text: string; top: number } | null>(null);
 
-  const maxMove = campaignMetrics(campaignById(from)).unspent;
+  const fromC = planCampaign(from);
+  const region = fromC.region; // the table, checks and totals follow the selected campaigns' region
+  const r = regionById(region);
+  const camps = planCampaignsOf(region);
+  const maxMove = unspentOf(fromC);
   const amt = Math.min(amount, maxMove);
-  const adj = (c: Campaign) => (c.id === to && from !== to ? amt : c.id === from && from !== to ? -amt : 0);
-  const rows = camps.map((c) => ({ c, adj: adj(c), revised: c.approved + adj(c), revisedUnspent: campaignMetrics(c).unspent + adj(c) }));
-  const t = campaignTotals(region);
+  const valid = to !== from && planCampaign(to).region === region;
+  const adjOf = (c: PlanCampaign) => (!valid ? 0 : c.id === to ? amt : c.id === from ? -amt : 0);
+  const rows = camps.map((c) => ({ c, adj: adjOf(c), revised: c.approved + adjOf(c), revisedUnspent: unspentOf(c) + adjOf(c) }));
+  const t = { approved: sum(camps, (c) => c.approved), actual: sum(camps, (c) => c.actual), unspent: sum(camps, unspentOf) };
   const net = sum(rows, (x) => x.adj);
-  const opts = camps.map((c) => ({ value: c.id, label: c.name }));
-  const reset = () => { setFrom(DEFAULT_REALLOCATION.from); setTo(DEFAULT_REALLOCATION.to); setAmount(DEFAULT_REALLOCATION.amount); setName(`${r.name} reallocation scenario 1`); };
+  const pickFrom = (id: string) => {
+    const c = planCampaign(id);
+    setFrom(id);
+    setAmount((a) => Math.min(a, unspentOf(c)));
+    if (planCampaign(to).region !== c.region || to === id) setTo(planCampaignsOf(c.region).find((x) => x.id !== id)!.id);
+  };
+  const reset = () => { const d = defaultsFor(region); setFrom(d.from); setTo(d.to); setAmount(d.amount); setName(`${r.name} reallocation scenario 1`); };
   const save = () => { store.saveScenario({ id: `${region}-scenario`, name, region, from, to, amount: amt }); store.toast(`Scenario "${name}" saved`); };
   const request = () => {
     save();
@@ -338,6 +352,27 @@ export function Reallocation() {
     go(`${R.tracker}?selected=reallocation`);
   };
   const adjChip = (v: number) => (v > 0 ? <StatusChip tone="ok">+{lakh(v)}</StatusChip> : v < 0 ? <StatusChip tone="warn">–{lakh(-v)}</StatusChip> : lakh(0));
+  const campaignSelect = (label: string, value: string, onChange: (v: string) => void, disabledFor: (c: PlanCampaign) => boolean) => (
+    <label className="field"><span>{label}</span>
+      <div className="select">
+        <select aria-label={label} value={value} onChange={(e) => onChange(e.target.value)}>
+          {REGIONS.map((rg) => (
+            <optgroup key={rg.id} label={`${rg.name} region`}>
+              {planCampaignsOf(rg.id).map((c) => <option key={c.id} value={c.id} disabled={disabledFor(c)}>{c.name}</option>)}
+            </optgroup>
+          ))}
+        </select>
+        <ChevronDown size={15} />
+      </div>
+    </label>
+  );
+
+  // Chart: all 12 campaigns grouped by region; the scope region's group first.
+  const scope = store.scope === 'national' ? region : store.scope;
+  const groups = [...REGIONS].sort((a, b) => (a.id === scope ? -1 : b.id === scope ? 1 : 0));
+  const simulated = (c: PlanCampaign) => c.approved + adjOf(c);
+  const maxBar = Math.max(...ALL_CAMPAIGNS.map((c) => Math.max(c.approved, simulated(c))));
+  const signed = (v: number) => (v > 0 ? `+${lakh(v)}` : v < 0 ? `–${lakh(-v)}` : lakh(0));
 
   return (
     <div className="page">
@@ -347,16 +382,16 @@ export function Reallocation() {
         <KpiCard label="Approved budget" value={lakh(t.approved)} />
         <KpiCard label="Actual investment" value={lakh(t.actual)} />
         <KpiCard label="Unspent budget" value={lakh(t.unspent)} />
-        <KpiCard label="Simulated transfer" value={lakh(from === to ? 0 : amt)} />
+        <KpiCard label="Simulated transfer" value={lakh(valid ? amt : 0)} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.8fr) minmax(0, 1fr)' }}>
-        <Card title="Campaign budget reallocation" icon={Coins} flush>
+        <Card title={`Campaign budget reallocation — ${r.name} region`} icon={Coins} flush>
           <DataTable rows={rows} rowKey={(x) => x.c.id}
             columns={[
               { key: 'n', header: 'Campaign', render: (x) => x.c.name },
               { key: 'ap', header: 'Existing approved budget', align: 'right', render: (x) => lakh(x.c.approved) },
               { key: 'ac', header: 'Actual investment', align: 'right', render: (x) => lakh(x.c.actual) },
-              { key: 'un', header: 'Unspent budget', align: 'right', render: (x) => lakh(campaignMetrics(x.c).unspent) },
+              { key: 'un', header: 'Unspent budget', align: 'right', render: (x) => lakh(unspentOf(x.c)) },
               { key: 'ad', header: 'Proposed adjustment', align: 'center', render: (x) => adjChip(x.adj) },
               { key: 'rb', header: 'Simulated revised budget', align: 'right', render: (x) => lakh(x.revised) },
               { key: 'ru', header: 'Revised unspent budget', align: 'right', render: (x) => lakh(x.revisedUnspent) },
@@ -365,21 +400,36 @@ export function Reallocation() {
           />
         </Card>
         <Card title="Reallocation controls" icon={ArrowLeftRight}>
-          <label className="field"><span>Transfer from</span><Select label="Transfer from" value={from} options={opts} onChange={(v) => { setFrom(v as CampaignId); setAmount((a) => Math.min(a, campaignMetrics(campaignById(v as CampaignId)).unspent)); }} /></label>
-          <label className="field"><span>Transfer to</span><Select label="Transfer to" value={to} options={opts.filter((o) => o.value !== from)} onChange={(v) => setTo(v as CampaignId)} /></label>
+          {campaignSelect('Transfer from', from, pickFrom, () => false)}
+          {campaignSelect('Transfer to', to, setTo, (c) => c.region !== region || c.id === from)}
           <label className="field"><span>Amount: {lakh(amt)}</span>
             <div className="row"><span className="muted">{lakh(0)}</span><input type="range" min={0} max={maxMove} step={0.5} value={amt} onChange={(e) => setAmount(Number(e.target.value))} style={{ flex: 1, accentColor: 'var(--brand)' }} aria-label="Transfer amount" /><span className="muted">{lakh(maxMove)}</span></div>
           </label>
           <label className="field"><span>Scenario name</span><input className="input" value={name} onChange={(e) => setName(e.target.value)} /></label>
           <div className="row" style={{ marginTop: 'auto', flexWrap: 'wrap' }}><Button icon={RotateCcw} onClick={reset}>Reset</Button><Button icon={Save} onClick={save}>Save scenario</Button><Button disabled title="Finance validation pending">Approve reallocation</Button></div>
-          <Button primary onClick={from !== to && amt > 0 ? request : undefined}>Request Marketing Head &amp; Finance review</Button>
+          <Button primary onClick={valid && amt > 0 ? request : undefined}>Request Marketing Head &amp; Finance review</Button>
         </Card>
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.5fr) minmax(0, 1fr)' }}>
         <Card title="Existing vs simulated budget by campaign" note="₹ lakh" icon={ChartColumn} right={<Legend series={[{ key: 'e', label: 'Existing budget', color: SERIES.planned }, { key: 's', label: 'Simulated budget', color: SERIES.observed }]} />}>
-          <HBars rows={rows.map((x) => ({ label: x.c.name, values: [x.c.approved, x.revised] }))}
-            series={[{ key: 'e', label: 'Existing', color: SERIES.planned }, { key: 's', label: 'Simulated', color: SERIES.observed }]}
-            max={Math.max(...rows.map((x) => Math.max(x.c.approved, x.revised)))} format={(v) => String(v)} labelWidth={210} />
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 6, position: 'relative' }} onMouseLeave={() => setHover(null)}>
+            {groups.map((g) => (
+              <div key={g.id} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <b className="strong" style={{ fontSize: 12.5 }}>{g.name} · {lakh(sum(planCampaignsOf(g.id), (c) => c.approved))}</b>
+                {planCampaignsOf(g.id).map((c) => (
+                  <div key={c.id} className="hbar" style={{ ['--label-w' as string]: '220px', cursor: 'default' }}
+                    onMouseEnter={(e) => setHover({ text: `${c.name} · Existing ${lakh(c.approved)} · Simulated ${lakh(simulated(c))} · Change ${signed(simulated(c) - c.approved)}`, top: (e.currentTarget as HTMLElement).offsetTop })}>
+                    <span style={{ fontSize: 12.5 }}>{c.name}</span>
+                    <div className="tracks">
+                      <div className="track"><i style={{ width: `${(c.approved / maxBar) * 82}%`, height: 13, background: SERIES.planned }} /><b>{c.approved}</b></div>
+                      <div className="track"><i style={{ width: `${(simulated(c) / maxBar) * 82}%`, height: 13, background: SERIES.observed }} /><b>{simulated(c)}</b></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+            {hover && <div className="toast" style={{ position: 'absolute', right: 0, top: Math.max(0, hover.top - 40), background: 'var(--card)', color: 'var(--ink)', border: '1px solid var(--line)', pointerEvents: 'none' }}>{hover.text}</div>}
+          </div>
         </Card>
         <Card title="Financial impact and validation" icon={ShieldCheck}>
           <StatusList items={[

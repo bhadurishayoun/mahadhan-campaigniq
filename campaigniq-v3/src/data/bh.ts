@@ -433,3 +433,22 @@ export const nextYearPriorities = () => {
 
 export const INTERVENTION_DELIVERABLES = ['Campaign performance diagnosis', 'Territory-wise recovery opportunities', 'Revised strategic intervention plan', 'Updated outcome and investment forecast'];
 export const THEME_DELIVERABLES = ['Market opportunity validation', 'Existing theme overlap assessment', 'Target KPI recommendations', 'Refined strategic theme brief'];
+
+// ---------------------------------------------------------------- campaign budgets, all regions (reallocation)
+/** Budget view of every active campaign (West detail above + the other regions). Sums reconcile to REGIONS and THEMES. */
+export interface PlanCampaign { id: string; region: RegionId; name: string; theme: ThemeId; approved: number; actual: number; adopters: number }
+
+export const ALL_CAMPAIGNS: PlanCampaign[] = [
+  ...CAMPAIGNS.map(({ id, region, name, theme, approved, actual, adopters }) => ({ id, region, name, theme, approved, actual, adopters })),
+  { id: 'paddy', region: 'south', name: 'Paddy conversion drive', theme: 'conversion', approved: 23, actual: 18, adopters: 160 },
+  { id: 'retailer-south', region: 'south', name: 'Retailer partner programme', theme: 'retailer', approved: 21, actual: 16, adopters: 170 },
+  { id: 'awareness-south', region: 'south', name: 'Crop nutrition awareness South', theme: 'awareness', approved: 26, actual: 20, adopters: 160 },
+  { id: 'wheat', region: 'north', name: 'Wheat adoption drive', theme: 'conversion', approved: 20, actual: 14, adopters: 120 },
+  { id: 'trial-north', region: 'north', name: 'Trial & follow-up North', theme: 'trial', approved: 24, actual: 17, adopters: 150 },
+  { id: 'soil-health', region: 'north', name: 'Soil health awareness', theme: 'awareness', approved: 11, actual: 8, adopters: 100 },
+  { id: 'enablement-east', region: 'east', name: 'Retailer enablement East', theme: 'retailer', approved: 14, actual: 10, adopters: 110 },
+  { id: 'trial-east', region: 'east', name: 'Trial & follow-up East', theme: 'trial', approved: 21, actual: 15, adopters: 130 },
+];
+
+export const planCampaign = (id: string) => ALL_CAMPAIGNS.find((c) => c.id === id)!;
+export const planCampaignsOf = (region: RegionId) => ALL_CAMPAIGNS.filter((c) => c.region === region);

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { sum } from './format';
 import {
-  AMBAD, ambadMetrics, businessCase, CAMPAIGNS, CONTRIBUTION_MARGIN, CROP_MIX, nationalReturns, netRoi, PRODUCT_MIX, regionRoi, campaignMetrics, campaignTotals, initialInterventions, NATIONAL,
+  ALL_CAMPAIGNS, AMBAD, ambadMetrics, businessCase, CAMPAIGNS, planCampaignsOf, CONTRIBUTION_MARGIN, CROP_MIX, nationalReturns, netRoi, PRODUCT_MIX, regionRoi, campaignMetrics, campaignTotals, initialInterventions, NATIONAL,
   NATIONAL_METRICS, REGIONS, regionMetrics, territoriesOf, THEMES, themeCampaigns, themeShares,
 } from './bh';
 
@@ -118,5 +118,19 @@ describe('attributed returns reconcile', () => {
   it('forecasts', () => {
     expect(CAMPAIGNS.map((c) => businessCase(c.id).forecastSales)).toEqual([48, 112, 107, 88]);
     expect(businessCase('croptek').netRoi).toBeCloseTo(0.4, 5);
+  });
+});
+
+describe('all-region campaign budgets reconcile', () => {
+  it('regions, themes and count', () => {
+    expect(ALL_CAMPAIGNS.length).toBe(12);
+    REGIONS.forEach((r) => {
+      const cs = planCampaignsOf(r.id);
+      expect([sum(cs, (c) => c.approved), sum(cs, (c) => c.actual), sum(cs, (c) => c.adopters)]).toEqual([r.approved, r.actual, r.adopters]);
+      expect(cs.length).toBe(r.campaigns);
+    });
+    expect(THEMES.map((t) => [sum(ALL_CAMPAIGNS.filter((c) => c.theme === t.id), (c) => c.actual), sum(ALL_CAMPAIGNS.filter((c) => c.theme === t.id), (c) => c.adopters)]))
+      .toEqual([[64, 720], [48, 460], [50, 420], [28, 260]]);
+    THEMES.forEach((t) => expect(ALL_CAMPAIGNS.filter((c) => c.theme === t.id).length).toBe(themeCampaigns(t.id)));
   });
 });

@@ -3,7 +3,7 @@
  * Holds what users change: scope, theme decisions, interventions, recommendations, scenarios, learning priorities.
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { initialInterventions, THEME_QUEUE, type CampaignId, type Intervention, type RegionId, type ThemeStatus } from '../data/bh';
+import { initialInterventions, THEME_QUEUE, type Intervention, type RegionId, type ThemeStatus } from '../data/bh';
 
 export type Scope = RegionId | 'national';
 
@@ -30,8 +30,8 @@ export interface Scenario {
   id: string;
   name: string;
   region: RegionId;
-  from: CampaignId;
-  to: CampaignId;
+  from: string;
+  to: string;
   amount: number;
 }
 
