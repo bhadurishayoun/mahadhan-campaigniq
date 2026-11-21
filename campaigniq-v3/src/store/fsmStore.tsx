@@ -3,7 +3,7 @@
  * Kept in sessionStorage so going back through the wizard keeps what was entered.
  */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { FsmScope } from '../data/fsm';
+import { defaultWizard, type FsmScope, type WizardState } from '../data/fsm';
 import type { FsmTerritoryId } from '../routes';
 
 export interface FsmState {
@@ -16,11 +16,14 @@ export interface FsmState {
   onionPlan: Record<string, number>;
   /** Review notes per territory. */
   notes: Record<string, string>;
-  wizard: Record<string, unknown>;
+  /** Campaign wizard entries (null until a business priority starts a draft). */
+  wizard: WizardState | null;
+  /** Campaign status per business priority. */
+  campaigns: Record<string, 'draft' | 'launched'>;
 }
 
-const KEY = 'campaigniq.v3.fsm.2';
-const INITIAL: FsmState = { scope: 'cluster', submitted: [], targets: {}, onionPlan: {}, notes: {}, wizard: {} };
+const KEY = 'campaigniq.v3.fsm.3';
+const INITIAL: FsmState = { scope: 'cluster', submitted: [], targets: {}, onionPlan: {}, notes: {}, wizard: null, campaigns: {} };
 
 function load(): FsmState {
   try {
@@ -35,7 +38,10 @@ interface FsmStore extends FsmState {
   setTargets: (patch: Record<string, number>) => void;
   setOnionPlan: (key: string, v: number) => void;
   setNotes: (t: FsmTerritoryId, text: string) => void;
-  setWizard: (patch: Record<string, unknown>) => void;
+  /** Start (or keep) the wizard for a business priority; a different priority starts a fresh draft. */
+  startWizard: (priorityId: string) => void;
+  setWizard: (patch: Partial<WizardState>) => void;
+  launchCampaign: () => void;
 }
 
 const Ctx = createContext<FsmStore | null>(null);
@@ -52,7 +58,9 @@ export function FsmStoreProvider({ children }: { children: ReactNode }) {
     setTargets: (patch) => setState((s) => ({ ...s, targets: { ...s.targets, ...patch } })),
     setOnionPlan: (key, v) => setState((s) => ({ ...s, onionPlan: { ...s.onionPlan, [key]: v } })),
     setNotes: (t, text) => setState((s) => ({ ...s, notes: { ...s.notes, [t]: text } })),
-    setWizard: (patch) => setState((s) => ({ ...s, wizard: { ...s.wizard, ...patch } })),
+    startWizard: (priorityId) => setState((s) => ({ ...s, wizard: s.wizard?.priority === priorityId ? s.wizard : defaultWizard(priorityId), campaigns: { ...s.campaigns, [priorityId]: s.campaigns[priorityId] ?? 'draft' } })),
+    setWizard: (patch) => setState((s) => ({ ...s, wizard: { ...(s.wizard ?? defaultWizard('onion-croptek')), ...patch } })),
+    launchCampaign: () => setState((s) => (s.wizard ? { ...s, campaigns: { ...s.campaigns, [s.wizard.priority]: 'launched' } } : s)),
   }), [state]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

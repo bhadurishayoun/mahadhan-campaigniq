@@ -237,18 +237,33 @@ export const coverageCalc = (v: VillageOnionPlan, plan = v.plan) => {
 };
 
 // ---------------------------------------------------------------- business priorities (My Campaigns)
-export interface BusinessPriority { id: string; name: string; crop: string; villages: string[]; uplift: number | null }
+export interface BusinessPriority {
+  id: string; name: string; crop: string; villages: string[]; uplift: number | null;
+  description: string; audience: string; approach: string; objective: string; campaignType: string; campaignName: string;
+  /** Incremental sales (₹ L) under the conservative, base and optimistic scenarios. */
+  scenarioSales: [number, number, number];
+}
 export const BUSINESS_PRIORITIES: BusinessPriority[] = [
-  { id: 'onion-croptek', name: 'Onion — Croptek conversion', crop: 'Onion', villages: ['Dhanora', 'Wadi Gaon'], uplift: 25 },
-  { id: 'maize-expansion', name: 'Maize — portfolio expansion', crop: 'Maize', villages: ['Ambad HQ', 'Pimpalgaon'], uplift: 15 },
-  { id: 'retailer-engagement', name: 'Retailer engagement', crop: 'All crops', villages: ['Across Ambad'], uplift: null },
+  { id: 'onion-croptek', name: 'Onion — Croptek conversion', crop: 'Onion', villages: ['Dhanora', 'Wadi Gaon'], uplift: 25,
+    description: 'Convert conventional nutrition users', audience: 'Conventional nutrition users', approach: 'Retailer-led + field demonstrations',
+    objective: 'Convert conventional nutrition users', campaignType: 'Retailer-led conversion', campaignName: 'Ambad Onion Croptek conversion', scenarioSales: [8, 12, 16] },
+  { id: 'maize-expansion', name: 'Maize — portfolio expansion', crop: 'Maize', villages: ['Ambad HQ', 'Pimpalgaon'], uplift: 15,
+    description: 'Expand coverage at existing outlets', audience: 'Existing maize growers', approach: 'Field demonstrations + farmer meetings',
+    objective: 'Expand coverage at existing outlets', campaignType: 'Field demonstration led', campaignName: 'Ambad Maize portfolio expansion', scenarioSales: [5, 7, 9] },
+  { id: 'retailer-engagement', name: 'Retailer engagement', crop: 'All crops', villages: ['Dhanora', 'Wadi Gaon', 'Ambad HQ', 'Pimpalgaon', 'Kumbhephal'], uplift: null,
+    description: 'Improve channel advocacy and reach', audience: 'Mapped retailers and their farmers', approach: 'Retailer activation sessions',
+    objective: 'Improve channel advocacy and reach', campaignType: 'Retailer-led conversion', campaignName: 'Ambad retailer engagement', scenarioSales: [4, 6, 8] },
 ];
+export const priorityById = (id: string) => BUSINESS_PRIORITIES.find((p) => p.id === id) ?? BUSINESS_PRIORITIES[0];
 
 // ---------------------------------------------------------------- campaign: Ambad Onion Croptek conversion
 export const FSM_CAMPAIGN = { id: 'ambad-onion-croptek', name: 'Ambad Onion Croptek conversion', territory: 'ambad' as FsmTerritoryId, crop: 'Onion', product: 'Croptek', villages: ['Dhanora', 'Wadi Gaon'] };
 
 /** Farmers reached in the campaign villages. */
 export const FARMERS_REACHED: Record<string, number> = { Dhanora: 280, 'Wadi Gaon': 360 };
+/** Farmers in each village that a campaign can target (campaign villages are the reached figures above). */
+export const VILLAGE_FARMERS: Record<string, number> = { ...FARMERS_REACHED, 'Ambad HQ': 300, Pimpalgaon: 240, Kumbhephal: 220 };
+export const CAMPAIGN_VILLAGES = Object.keys(VILLAGE_FARMERS);
 
 export interface CampaignActivity { id: string; name: string; units: number; unitLabel: string; cost: number }
 export const CAMPAIGN_ACTIVITIES: CampaignActivity[] = [
@@ -280,8 +295,7 @@ export const scenarioOutcome = (sales: number, budget = budgetMix().total) => ({
 });
 
 /** Objective coverage: the onion priority's plan-linked uplift against a scenario's sales. */
-export const objectiveCoverage = (sales: number) => {
-  const objective = BUSINESS_PRIORITIES[0].uplift!;
+export const objectiveCoverage = (sales: number, objective = BUSINESS_PRIORITIES[0].uplift!) => {
   return { objective, covered: sales, remaining: objective - sales, coveredPct: ratio(sales, objective) };
 };
 
@@ -339,4 +353,92 @@ export const impactSummary = () => {
   const spend = spendToDate();
   const a = ambadMetrics();
   return { forecast, tracked, variance: forecast - tracked, spend, netRoiToDate: netRoi(tracked, spend), trials: a.trials, adopters: a.adopters, trialToAdoptionPct: a.trialToAdoptionPct, villageGap: a.villageGap };
+};
+
+// ---------------------------------------------------------------- campaign wizard
+export const OBJECTIVES = ['Convert conventional nutrition users', 'Expand coverage at existing outlets', 'Improve channel advocacy and reach', 'Drive repeat purchase from trial users'];
+export const AUDIENCES = ['Verified CRM cohort (eligible)', 'Last-year trial users', 'Mapped retailers and their farmers'];
+export const CAMPAIGN_TYPES = ['Retailer-led conversion', 'Field demonstration led', 'Farmer meeting led', 'Digital advisory led'];
+export const CHANNELS = ['Dhanora / Wadi Gaon', 'Retailer channel', 'Village meetings', 'Consent-based digital', 'Field follow-up'];
+export const TIMINGS = ['Pre-activation', 'Crop-stage window', 'Follow-up support', 'Post-activity'];
+/** Calendar phase for each timing. */
+export const PHASE_OF: Record<string, 'Preparation' | 'Crop-stage window' | 'Follow-up'> = {
+  'Pre-activation': 'Preparation', 'Crop-stage window': 'Crop-stage window', 'Follow-up support': 'Follow-up', 'Post-activity': 'Follow-up',
+};
+
+export interface WizardActivity extends CampaignActivity { channel: string; timing: string; owner: string }
+export interface WizardState {
+  priority: string;
+  name: string;
+  objective: string;
+  villages: string[];
+  retailers: string[];
+  audience: string;
+  campaignType: string;
+  activities: WizardActivity[];
+  scenario: ScenarioId;
+  assumptions: typeof FUNNEL_DEFAULTS;
+  rationale: string;
+  attachment: string;
+  /** Furthest wizard step reached (0–3). */
+  maxStep: number;
+  readinessResolved: boolean;
+}
+
+const ACTIVITY_DEFAULTS: Record<string, { channel: string; timing: string; owner: string }> = {
+  demonstration: { channel: 'Dhanora / Wadi Gaon', timing: 'Crop-stage window', owner: 'R. Jadhav' },
+  retailer: { channel: 'Retailer channel', timing: 'Pre-activation', owner: 'S. Pawar' },
+  meeting: { channel: 'Village meetings', timing: 'Crop-stage window', owner: 'M. Shinde' },
+  digital: { channel: 'Consent-based digital', timing: 'Follow-up support', owner: 'P. Kale' },
+  followup: { channel: 'Field follow-up', timing: 'Post-activity', owner: 'P. Kale' },
+};
+
+/** Wizard entries prefilled from a business priority. Linked retailers: the first three active retailers in its villages. */
+export const defaultWizard = (priorityId: string): WizardState => {
+  const p = priorityById(priorityId);
+  return {
+    priority: p.id,
+    name: p.campaignName,
+    objective: p.objective,
+    villages: p.villages.filter((v) => CAMPAIGN_VILLAGES.includes(v)),
+    retailers: RETAILERS.filter((r) => r.active && p.villages.includes(r.village)).slice(0, 3).map((r) => r.id),
+    audience: AUDIENCES[0],
+    campaignType: p.campaignType,
+    activities: CAMPAIGN_ACTIVITIES.map((a) => ({ ...a, ...ACTIVITY_DEFAULTS[a.id] })),
+    scenario: 'base',
+    assumptions: { ...FUNNEL_DEFAULTS },
+    rationale: '',
+    attachment: '',
+    maxStep: 0,
+    readinessResolved: false,
+  };
+};
+
+/** Scenario outcomes for a wizard: the priority's scenario sales against the wizard's activity budget. */
+export const wizardScenarios = (w: WizardState) => {
+  const p = priorityById(w.priority);
+  const budget = budgetMix(w.activities).total;
+  return SCENARIOS.map((s, i) => ({ ...s, ...scenarioOutcome(p.scenarioSales[i], budget), budget }));
+};
+
+/** Required-field check for the objective step; returns the fields still missing. */
+export const objectiveErrors = (w: WizardState) => {
+  const e: Record<string, string> = {};
+  if (!w.name.trim()) e.name = 'Enter a campaign name';
+  if (!w.objective) e.objective = 'Choose an objective';
+  if (w.villages.length === 0) e.villages = 'Select at least one village';
+  if (w.retailers.length === 0) e.retailers = 'Link at least one retailer';
+  if (!w.audience) e.audience = 'Choose the target audience';
+  if (!w.campaignType) e.campaignType = 'Choose a campaign type';
+  return e;
+};
+
+/** Activity step check: every activity needs a name, units, an owner and a budget. */
+export const activityErrors = (w: WizardState) => {
+  const e: Record<string, string> = {};
+  if (w.activities.length === 0) e.list = 'Add at least one activity';
+  w.activities.forEach((a) => {
+    if (!a.name.trim() || a.units <= 0 || a.cost <= 0 || !a.owner) e[a.id] = 'Name, units, owner and budget are required';
+  });
+  return e;
 };

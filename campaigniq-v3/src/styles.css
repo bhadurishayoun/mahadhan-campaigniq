@@ -257,3 +257,24 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 .recon b { font-size: 20px; color: var(--dark); font-variant-numeric: tabular-nums; }
 .recon b.warn { color: var(--amber-dark); }
 .recon .grow { align-items: stretch; }
+/* Wizard forms */
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; margin-bottom: 8px; }
+.field .muted, .pick-list .muted { font-size: 12px; color: var(--muted); font-weight: 400; }
+.field .err, .err { font-size: 12px; color: var(--risk); font-weight: 600; }
+.pick { display: flex; flex-wrap: wrap; gap: 6px; }
+.pick button { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); font-size: 13px; color: var(--ink); }
+.pick button.on { background: var(--tint); border-color: var(--light); color: var(--dark); font-weight: 600; }
+.pick-list { max-height: 168px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; padding: 4px 10px; }
+.pick-list label { padding: 5px 0; font-size: 13px; font-weight: 400; color: var(--ink); gap: 8px; }
+.pick-list input { accent-color: var(--brand); }
+.card-sub { font-size: 12px; font-weight: 700; color: var(--ink-soft); margin: 12px 0 2px; }
+/* Crop-stage calendar */
+.phases { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.phases > div { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: 8px; background: var(--tint); font-size: 13px; }
+.phases > div.on { background: var(--brand); color: var(--card); }
+.phases b { font-size: 13px; margin-bottom: 2px; }
+/* Scenario cards */
+.scenarios { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.scenarios > button { display: flex; flex-direction: column; gap: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); text-align: left; color: var(--ink); font-size: 13px; }
+.scenarios > button.on { border: 2px solid var(--brand); background: var(--tint); }
+.scenarios .list-row { font-size: 13px; }

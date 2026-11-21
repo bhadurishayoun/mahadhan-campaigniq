@@ -4,7 +4,7 @@ import { sum } from './format';
 import {
   ACTIVITY_UNITS, acresFor, budgetMix, CAMPAIGN_ACTIVITIES, clusterRows, clusterTotal, cropPlan, DEALERS, executionCounts, FARMERS_REACHED,
   funnel, impactSummary, objectiveCoverage, ONION_VILLAGE_PLAN, outletSummary, RETAILERS, scenarioOutcome, SCENARIOS, targetReconciliation,
-  coverageCalc, dealersOf, lastYearMix, onionPlanOf, perfRows, retailersOf,
+  coverageCalc, dealersOf, lastYearMix, onionPlanOf, perfRows, retailersOf, defaultWizard, wizardScenarios, objectiveErrors, activityErrors,
 } from './fsm';
 
 const r1 = (v: number) => Math.round(v * 10) / 10;
@@ -125,5 +125,21 @@ describe('every territory plan reconciles', () => {
   it('coverage calculator (Dhanora)', () => {
     const c = coverageCalc(ONION_VILLAGE_PLAN.find((v) => v.village === 'Dhanora')!);
     expect([c.volumeMt, c.requiredAcres, c.previousAcres, c.retainedAcres, c.newAcres, c.eligibleNewAcres]).toEqual([15, 750, 500, 400, 350, 583]);
+  });
+});
+
+describe('campaign wizard', () => {
+  it('prefills from the business priority and matches the campaign figures', () => {
+    const w = defaultWizard('onion-croptek');
+    expect([w.name, w.villages.join(','), w.retailers.length]).toEqual(['Ambad Onion Croptek conversion', 'Dhanora,Wadi Gaon', 3]);
+    expect(budgetMix(w.activities).total).toBe(3);
+    expect(wizardScenarios(w).map((s) => [s.sales, r2(s.netRoi)])).toEqual([[8, -0.07], [12, 0.4], [16, 0.87]]);
+    expect(objectiveErrors(w)).toEqual({});
+    expect(activityErrors(w)).toEqual({});
+  });
+  it('flags missing required fields', () => {
+    const w = { ...defaultWizard('maize-expansion'), name: ' ', villages: [], retailers: [] };
+    expect(Object.keys(objectiveErrors(w)).sort()).toEqual(['name', 'retailers', 'villages']);
+    expect(activityErrors({ ...w, activities: [] })).toHaveProperty('list');
   });
 });
