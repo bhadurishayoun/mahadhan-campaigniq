@@ -1,5 +1,5 @@
 /** Chart wrappers. Series colours come from theme.ts (planned = brand, observed/actual = amber). */
-import { Bar, BarChart, CartesianGrid, Cell, LabelList, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { C } from '../theme';
 
 const AXIS = { fontSize: 12, fill: C.inkSoft };
@@ -19,7 +19,7 @@ export interface Series { key: string; label: string; color: string }
 
 /** Vertical grouped columns with value labels on top. */
 /** `highlight` = x value of the selected category: bold label, other categories faded. */
-export function GroupedBars<T extends Record<string, unknown>>({ data, x, series, height = 200, unit = '', max, highlight }: { data: T[]; x: keyof T & string; series: Series[]; height?: number; unit?: string; max?: number; highlight?: string }) {
+export function GroupedBars<T extends Record<string, unknown>>({ data, x, series, height = 200, unit = '', max, highlight, tooltip }: { tooltip?: (row: T) => string; data: T[]; x: keyof T & string; series: Series[]; height?: number; unit?: string; max?: number; highlight?: string }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       <ResponsiveContainer width="100%" height={height}>
@@ -27,6 +27,10 @@ export function GroupedBars<T extends Record<string, unknown>>({ data, x, series
           <CartesianGrid vertical={false} stroke={C.line} strokeDasharray="3 3" />
           <XAxis dataKey={x} tick={<WrapTick bold={highlight} />} height={38} axisLine={{ stroke: C.line }} tickLine={false} interval={0} />
           <YAxis tick={AXIS} axisLine={false} tickLine={false} domain={[0, max ?? 'auto']} tickFormatter={(v) => `${v}${unit}`} />
+          {tooltip && <Tooltip cursor={{ fill: C.kpiBg }} content={({ active, payload }) => {
+            const row = active ? (payload?.[0]?.payload as T | undefined) : undefined;
+            return row ? <div className="toast" style={{ background: C.card, color: C.ink, border: `1px solid ${C.line}` }}>{tooltip(row)}</div> : null;
+          }} />}
           {series.map((s) => (
             <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.color} radius={[3, 3, 0, 0]} maxBarSize={34} isAnimationActive={false}>
               {data.map((d) => <Cell key={String(d[x])} fill={s.color} fillOpacity={highlight && d[x] !== highlight ? 0.35 : 1} />)}

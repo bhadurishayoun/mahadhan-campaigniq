@@ -2,7 +2,7 @@
 import { AlertCircle, ChartColumn, ClipboardCheck, ExternalLink, Layers, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 import { CAMPAIGNS, netRoi, REGIONS, regionMetrics, regionRoi, THEME_QUEUE, THEME_STATUS, type ThemeId } from '../data/bh';
-import { crore, num, pct, ratio, sum, times } from '../data/format';
+import { crore, num, pct, pp, ratio, sum, times } from '../data/format';
 import { R } from '../routes';
 import { attentionItems } from '../shell/attention';
 import { useBhStore } from '../store/bhStore';
@@ -90,10 +90,11 @@ export function CommandCentre() {
       </Card>
 
       <div className="grid" style={{ gridTemplateColumns: '1fr 1.3fr 1fr' }}>
-        <Card title="Regional execution comparison (planned vs observed)" icon={ChartColumn}>
+        <Card title="Regional execution comparison" icon={ChartColumn}>
           <GroupedBars
-            data={REGIONS.map((r) => ({ region: r.name, planned: r.plannedExec, observed: r.observedExec }))} highlight={region === ALL ? undefined : REGIONS.find((r) => r.id === region)?.name}
+            data={REGIONS.map((r) => ({ region: r.name, planned: r.plannedExec, observed: r.observedExec }))}
             x="region" unit="%" max={100}
+            tooltip={(d) => `${d.region} · Planned ${d.planned}% · Observed ${d.observed}% · Gap ${pp(d.observed - d.planned)}`}
             series={[{ key: 'planned', label: 'Planned execution', color: SERIES.planned }, { key: 'observed', label: 'Observed execution', color: SERIES.observed }]}
           />
         </Card>
