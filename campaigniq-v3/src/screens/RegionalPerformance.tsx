@@ -25,7 +25,7 @@ export function RegionalPerformance() {
       <div className="kpis">
         <KpiCard label="Region achievement vs YTD ABP" value={crore(r.achieved, 1)} />
         <KpiCard label="Active campaigns" value={r.campaigns} />
-        <KpiCard label="Observed execution" value={`${r.observedExec}%`} />
+        <KpiCard label="Planned Execution" value={`${r.observedExec}%`} />
         <KpiCard label="Recorded adopters" value={num(r.adopters)} />
       </div>
 

@@ -85,9 +85,9 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 /* ---------- KPI (mockup layout, one value) ---------- */
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); grid-auto-columns: 1fr; grid-auto-rows: 1fr; gap: 12px; }
 .kpi { background: var(--kpi-bg); border: 1px solid var(--kpi-line); border-radius: 10px; padding: 10px 14px 12px; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; min-width: 0; }
-.kpi-head { display: flex; align-items: center; gap: 10px; min-height: 48px; }
-.kpi-label { font-size: 12.5px; font-weight: 600; color: var(--kpi-ink); line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.kpi-value { font-size: 22px; font-weight: 700; color: var(--dark); line-height: 28px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kpi-head { display: flex; align-items: center; gap: 10px; min-height: 54px; }
+.kpi-label { font-size: 14.5px; font-weight: 700; color: var(--kpi-ink); line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.kpi-value { display: flex; justify-content: center; text-align: center; font-size: 22px; font-weight: 700; color: var(--dark); line-height: 28px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; }
 
 /* ---------- chips, bars ---------- */
 .chip { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; border-radius: 6px; padding: 2px 8px; white-space: nowrap; line-height: 1.5; }

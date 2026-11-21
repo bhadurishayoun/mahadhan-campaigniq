@@ -32,7 +32,7 @@ export function TerritoryPerformance() {
       <PageHeader title={`${t.name} Territory Performance`} />
       <div className="kpis">
         <KpiCard label="Territory all-product ABP" value={crore(t.abp)} />
-        <KpiCard label="Activity completion" value={pct(a.activityPct)} />
+        <KpiCard label="Activity Completed" value={pct(a.activityPct)} />
         <KpiCard label="Recorded adopters" value={num(a.adopters)} />
         <KpiCard label="Trial-to-adoption" value={pct(a.trialToAdoptionPct)} />
       </div>
