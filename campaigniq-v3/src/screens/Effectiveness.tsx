@@ -2,7 +2,7 @@
 import { CheckCircle2, LineChart, Wallet, ChartColumn, Coins, FileSearch, Stethoscope, Target } from 'lucide-react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { AMBAD, ambadMetrics, businessCase, netRoi, regionRoi, campaignById, campaignMetrics, campaignsOf, campaignTotals, regionById, type Campaign, type CampaignId } from '../data/bh';
+import { AMBAD, territoriesOf, ambadMetrics, businessCase, netRoi, regionRoi, campaignById, campaignMetrics, campaignsOf, campaignTotals, regionById, type Campaign, type CampaignId } from '../data/bh';
 import { lakh, num, pct, pp, ratio, times } from '../data/format';
 import { R } from '../routes';
 import { SERIES } from '../theme';
@@ -11,7 +11,7 @@ import { Bar, Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, PanelFoo
 import { DataTable } from '../ui/DataTable';
 import { Drawer, EvidenceDrawer, type Evidence } from '../ui/overlay';
 import { useBhStore } from '../store/bhStore';
-import { ApproveThemeButton, useGo, useRouteRegion } from './common';
+import { ApproveThemeButton, useGo, useRouteRegion, useBack } from './common';
 
 
 export function Effectiveness() {
@@ -26,7 +26,7 @@ export function Effectiveness() {
   const set = (patch: Record<string, string | null>) => {
     const p = new URLSearchParams(params);
     Object.entries(patch).forEach(([k, v]) => (v === null ? p.delete(k) : p.set(k, v)));
-    setParams(p);
+    setParams(p, { replace: true });
   };
   const tot = camps.length ? campaignTotals(region) : null;
   const sel = selectedId ? campaignById(selectedId) : null;
@@ -45,6 +45,7 @@ export function Effectiveness() {
     ],
   });
 
+  const back = useBack((() => { const tt = territoriesOf(region).find((x) => x.activitiesDone !== null); return tt ? R.territory(tt.id) : R.region(region); })());
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Campaign Portfolio Performance', onClick: () => go(R.portfolio) }, { label: `${r.name} region`, onClick: () => go(R.region(region)) }, { label: 'Campaign effectiveness' }]} />
@@ -90,7 +91,7 @@ export function Effectiveness() {
         </div>
       )}
 
-      <FooterBar onBack={() => go(R.region(region))} onNext={() => go(R.investment)} />
+      <FooterBar onBack={back} onNext={() => go(R.investment)} />
 
       {drawer === 'diagnostics' && sel && <Diagnostics c={sel} onClose={() => set({ drawer: null })} />}
       {evidence && <EvidenceDrawer evidence={evidence} onClose={() => setEvidence(null)} />}

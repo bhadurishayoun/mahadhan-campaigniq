@@ -7,7 +7,7 @@ import { SERIES } from '../theme';
 import { GroupedBars, HBars } from '../ui/charts';
 import { Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
-import { useGo, useRouteRegion } from './common';
+import { useGo, useRouteRegion, useBack } from './common';
 
 export function RegionalPerformance() {
   const go = useGo();
@@ -18,6 +18,7 @@ export function RegionalPerformance() {
   const hasDetail = (t: (typeof terrs)[number]) => t.activitiesDone !== null;
   const firstDetail = terrs.find(hasDetail);
 
+  const back = useBack(R.portfolio);
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Campaign Portfolio Performance', onClick: () => go(R.portfolio) }, { label: `${r.name} region` }]} />
@@ -69,7 +70,7 @@ export function RegionalPerformance() {
         </Card>
       </div>
 
-      <FooterBar onBack={() => go(R.portfolio)} onNext={() => go(firstDetail ? R.territory(firstDetail.id) : R.effectiveness(id))} />
+      <FooterBar onBack={back} onNext={() => go(firstDetail ? R.territory(firstDetail.id) : R.effectiveness(id))} />
     </div>
   );
 }

@@ -19,11 +19,11 @@ import { HBars, Legend } from '../ui/charts';
 import { Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, PanelFooter, SegmentedControl, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { EvidenceDrawer, Modal, type Evidence } from '../ui/overlay';
-import { ALL, CROP_OPTIONS, opt, PRODUCT_OPTIONS, REGION_OPTIONS, useGo, useScopeFilter } from './common';
+import { ALL, CROP_OPTIONS, opt, PRODUCT_OPTIONS, REGION_OPTIONS, useGo, useScopeFilter, useBack } from './common';
 
 function ThemeTabs({ active }: { active: 'inbox' | 'opportunity' }) {
-  const go = useGo();
-  return <SegmentedControl value={active} onChange={(v) => go(v === 'inbox' ? R.inbox : R.opportunity)} options={[{ value: 'inbox', label: 'Theme approval inbox' }, { value: 'opportunity', label: 'Market opportunity' }]} />;
+  const nav = useNavigate();
+  return <SegmentedControl value={active} onChange={(v) => nav(v === 'inbox' ? R.inbox : R.opportunity, { replace: true })} options={[{ value: 'inbox', label: 'Theme approval inbox' }, { value: 'opportunity', label: 'Market opportunity' }]} />;
 }
 
 
@@ -56,6 +56,7 @@ export function MarketOpportunity() {
       { icon: Sprout, label: 'Crop and product records', value: 'Pending' },
     ];
 
+  const back = useBack(R.reallocation(region === ALL ? 'west' : (region as RegionId)));
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Strategic themes & approvals', onClick: () => go(R.inbox) }, { label: 'Market opportunity' }]} />
@@ -118,7 +119,7 @@ export function MarketOpportunity() {
             ]} />
         </Card>
       </div>
-      <FooterBar onBack={() => go(R.command)} onNext={() => go(R.inbox)} />
+      <FooterBar onBack={back} onNext={() => go(R.inbox)} />
     </div>
   );
 }
@@ -142,6 +143,7 @@ export function ThemeInbox() {
   const st = Object.values(store.themeStatus);
   const open = st.filter((s) => s === 'review_pending' || s === 'clarification_requested').length;
 
+  const back = useBack(R.opportunity);
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Strategic themes & approvals' }, { label: 'Theme approval inbox' }]} />
@@ -190,7 +192,7 @@ export function ThemeInbox() {
           </Card>
         </div>
       )}
-      <FooterBar onBack={() => go(R.opportunity)} onNext={sel ? () => go(R.review(sel.id)) : undefined} />
+      <FooterBar onBack={back} onNext={sel ? () => go(R.review(sel.id)) : undefined} />
       {modalTheme && <DecisionModal t={modalTheme} initialChoice={params.get('choice') as ThemeDecision['choice'] | null} onClose={() => setParams({})} onShowOriginal={() => setEvidence({ title: `Original proposal — ${modalTheme.name}`, owner: 'Marketing Head and Zonal Manager records', facts: [
         { label: 'Proposed by', value: modalTheme.proposedBy }, { label: 'Geography', value: modalTheme.geography }, { label: 'Crop / product', value: modalTheme.cropProduct },
         { label: 'Objective', value: modalTheme.objective }, { label: 'Target cohort', value: modalTheme.cohort }, { label: 'Priority', value: modalTheme.priority },
@@ -223,6 +225,7 @@ export function ThemeReview() {
   ];
   const showEvidence = (title: string, facts: Evidence['facts']) => setEvidence({ title, owner: 'Marketing Head and Zonal Manager records', facts });
 
+  const back = useBack(R.inbox);
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Strategic themes & approvals', onClick: () => go(R.inbox) }, { label: 'Theme approval inbox', onClick: () => go(R.inbox) }, { label: 'Detailed review' }]} />
@@ -269,7 +272,7 @@ export function ThemeReview() {
           </Card>
         </div>
       </div>
-      <FooterBar onBack={() => go(R.inbox)} onNext={() => go(R.tracker)} />
+      <FooterBar onBack={back} onNext={() => go(R.tracker)} />
       {params.get('modal') === 'decision' && <DecisionModal t={t} initialChoice={params.get('choice') as ThemeDecision['choice'] | null} onClose={() => setParams({})} onShowOriginal={() => showEvidence(`Original proposal — ${t.name}`, [
         { label: 'Proposed by', value: t.proposedBy }, { label: 'Geography', value: t.geography }, { label: 'Crop / product', value: t.cropProduct },
         { label: 'Objective', value: t.objective }, { label: 'Target cohort', value: t.cohort }, { label: 'Priority', value: t.priority },

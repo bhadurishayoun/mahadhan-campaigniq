@@ -8,7 +8,7 @@ import { SERIES } from '../theme';
 import { HBars, HeatGrid } from '../ui/charts';
 import { Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, SegmentedControl, Select, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
-import { ALL, CROP_OPTIONS, PRODUCT_OPTIONS, REGION_OPTIONS, THEME_OPTIONS, useDrillRegion, useGo, useScopeFilter } from './common';
+import { ALL, CROP_OPTIONS, PRODUCT_OPTIONS, REGION_OPTIONS, THEME_OPTIONS, useDrillRegion, useGo, useScopeFilter, useBack } from './common';
 
 type View = 'theme' | 'crop' | 'product' | 'geography';
 type SortKey = 'roi' | 'investment' | 'adopters' | 'sales';
@@ -46,6 +46,7 @@ export function Portfolio() {
   const drillFor = (m: MixRow): string => (view === 'geography' ? R.region(m.id as RegionId) : view === 'theme' ? R.region(topRegionFor(m.id as ThemeId)) : R.region(drill));
   const groupLabel = { theme: 'Theme', crop: 'Crop', product: 'Product', geography: 'Region' }[view];
 
+  const back = useBack(R.command);
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Marketing and Command Centre', onClick: () => go(R.command) }, { label: 'Campaign Portfolio Performance' }]} />
@@ -111,7 +112,7 @@ export function Portfolio() {
         </Card>
       </div>
 
-      <FooterBar onBack={() => go(R.command)} onNext={() => go(R.region(region === ALL ? drill : (region as RegionId)))} />
+      <FooterBar onBack={back} onNext={() => go(R.region(region === ALL ? drill : (region as RegionId)))} />
     </div>
   );
 }

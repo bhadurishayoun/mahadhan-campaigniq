@@ -7,7 +7,7 @@ import { R } from '../routes';
 import { useBhStore } from '../store/bhStore';
 import { Bar, Breadcrumb, Card, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
-import { ApproveThemeButton, useGo } from './common';
+import { ApproveThemeButton, useGo, useBack } from './common';
 import { useEffect } from 'react';
 
 export function TerritoryPerformance() {
@@ -16,6 +16,7 @@ export function TerritoryPerformance() {
   const { territory = '' } = useParams();
   const t = territoryById(territory);
   useEffect(() => { if (t) store.setScope(t.region); }, [t?.region]); // eslint-disable-line react-hooks/exhaustive-deps
+  const back = useBack(R.region(t?.region ?? 'west'));
   if (!t || t.id !== AMBAD.territoryId) return <Navigate to={R.region(t?.region ?? 'west')} replace />;
   const a = ambadMetrics();
   const opportunities = [
@@ -92,7 +93,7 @@ export function TerritoryPerformance() {
         </Card>
       </div>
 
-      <FooterBar onBack={() => go(R.region(t.region))} onNext={() => go(R.effectiveness(t.region))} />
+      <FooterBar onBack={back} onNext={() => go(R.effectiveness(t.region))} />
     </div>
   );
 }

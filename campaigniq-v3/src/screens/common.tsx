@@ -64,3 +64,9 @@ export function ApproveThemeButton({ match, primary }: { match?: { region?: Regi
   const a = useApproveTheme(match);
   return <Button small primary={primary} icon={a.pending ? CheckCircle2 : Eye} onClick={a.open}>{a.label}</Button>;
 }
+
+/** Back follows the path taken; when the page was opened directly (history idx 0) it goes to `fallback`. */
+export function useBack(fallback: string) {
+  const nav = useNavigate();
+  return () => ((window.history.state?.idx ?? 0) > 0 ? nav(-1) : nav(fallback));
+}

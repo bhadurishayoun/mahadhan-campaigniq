@@ -10,7 +10,7 @@ import { SERIES } from '../theme';
 import { GroupedBars } from '../ui/charts';
 import { Button, Card, DualBar, FilterBar, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
-import { ALL, CAMPAIGN_OPTIONS, CROP_OPTIONS, PRODUCT_OPTIONS, REGION_OPTIONS, THEME_OPTIONS, useGo, useScopeFilter } from './common';
+import { ALL, CAMPAIGN_OPTIONS, CROP_OPTIONS, PRODUCT_OPTIONS, REGION_OPTIONS, THEME_OPTIONS, useGo, useScopeFilter, useBack } from './common';
 
 export function CommandCentre() {
   const go = useGo();
@@ -38,6 +38,7 @@ export function CommandCentre() {
   const sales = campaign !== ALL ? CAMPAIGNS.find((x) => x.id === campaign)!.sales : sum(rows, (r) => r.sales);
   const achPct = ratio(t.achieved, t.abp);
 
+  const back = useBack(R.command);
   return (
     <div className="page">
       <PageHeader title="Marketing and Command Centre" />
@@ -117,7 +118,7 @@ export function CommandCentre() {
         </Card>
       </div>
 
-      <FooterBar onBack={() => window.history.back()} onNext={() => go(R.portfolio)} />
+      <FooterBar onBack={back} onNext={() => go(R.portfolio)} />
     </div>
   );
 }

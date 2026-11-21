@@ -18,7 +18,7 @@ import { GroupedBars, Legend, Waterfall } from '../ui/charts';
 import { Bar, Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, SegmentedControl, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { EvidenceDrawer, type Evidence } from '../ui/overlay';
-import { ALL, CAMPAIGN_OPTIONS, CROP_OPTIONS, PRODUCT_OPTIONS, REGION_OPTIONS, THEME_OPTIONS, useDrillRegion, useGo, useRouteRegion, useScopeFilter } from './common';
+import { ALL, CAMPAIGN_OPTIONS, CROP_OPTIONS, PRODUCT_OPTIONS, REGION_OPTIONS, THEME_OPTIONS, useDrillRegion, useGo, useRouteRegion, useScopeFilter, useBack } from './common';
 
 const perAdopter = (actualL: number, adopters: number) => Math.round((actualL * 100000) / adopters);
 
@@ -58,6 +58,7 @@ export function InvestmentRoi() {
     : campaignsOf('west').filter((c) => campaign === ALL || c.id === campaign).map((c) => ({ id: c.id, name: c.name, campaigns: 1, investment: c.actual, adopters: c.adopters, sales: c.sales }));
   const label = { region: 'Region', crop: 'Crop', product: 'Product', theme: 'Theme', campaign: 'Campaign' }[view];
 
+  const back = useBack(R.effectiveness(region === ALL ? drill : (region as RegionId)));
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Marketing investment & ROI' }, { label: region === ALL ? 'National portfolio' : `${regionById(region as never).name} region` }]} />
@@ -138,7 +139,7 @@ export function InvestmentRoi() {
         </Card>
       </div>
 
-      <FooterBar onBack={() => go(R.command)} onNext={() => go(R.campaignInvestment(region === ALL ? drill : (region as never)))} />
+      <FooterBar onBack={back} onNext={() => go(R.campaignInvestment(region === ALL ? drill : (region as never)))} />
       {evidence && <EvidenceDrawer evidence={evidence} onClose={() => setEvidence(null)} />}
     </div>
   );
@@ -153,6 +154,7 @@ export function CampaignInvestment() {
   const t = camps.length ? campaignTotals(region) : null;
   const maxApproved = Math.max(1, ...camps.map((c) => c.approved));
 
+  const back = useBack(R.investment);
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Marketing investment & ROI', onClick: () => go(R.investment) }, { label: `${r.name} region` }, { label: 'Campaign investment' }]} />
@@ -206,7 +208,7 @@ export function CampaignInvestment() {
           </Card>
         </div>
       )}
-      <FooterBar onBack={() => go(R.investment)} onNext={() => go(R.returns(region))} />
+      <FooterBar onBack={back} onNext={() => go(R.returns(region))} />
     </div>
   );
 }
@@ -224,6 +226,7 @@ export function CommercialReturns() {
   const t = camps.length ? campaignTotals(region) : null;
   const [evidence, setEvidence] = useState<Evidence | null>(null);
 
+  const back = useBack(R.campaignInvestment(region));
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Marketing investment & ROI', onClick: () => go(R.investment) }, { label: `${r.name} region`, onClick: () => go(R.campaignInvestment(region)) }, { label: 'Commercial returns' }]} />
@@ -236,7 +239,7 @@ export function CommercialReturns() {
       </div>
       <Card title="Campaign commercial return matrix" icon={Coins} flush>
         {camps.length && t ? (
-          <DataTable selectable rows={camps} rowKey={(c) => c.id} selected={selId} onRowClick={(c) => setParams({ campaign: c.id })}
+          <DataTable selectable rows={camps} rowKey={(c) => c.id} selected={selId} onRowClick={(c) => setParams({ campaign: c.id }, { replace: true })}
             columns={[
               { key: 'n', header: 'Campaign', render: (c) => c.name },
               { key: 'ap', header: 'Approved investment', align: 'right', render: (c) => lakh(c.approved) },
@@ -301,7 +304,7 @@ export function CommercialReturns() {
           </Card>
         </div>
       )}
-      <FooterBar onBack={() => go(R.campaignInvestment(region))} onNext={() => go(R.reallocation(region))} />
+      <FooterBar onBack={back} onNext={() => go(R.reallocation(region))} />
       {evidence && <EvidenceDrawer evidence={evidence} onClose={() => setEvidence(null)} />}
     </div>
   );
@@ -376,6 +379,7 @@ export function Reallocation() {
   const maxBar = Math.max(...ALL_CAMPAIGNS.map((c) => Math.max(c.approved, simulated(c))));
   const signed = (v: number) => (v > 0 ? `+${lakh(v)}` : v < 0 ? `–${lakh(-v)}` : lakh(0));
 
+  const back = useBack(R.returns(region));
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Marketing investment & ROI', onClick: () => go(R.investment) }, { label: `${r.name} region`, onClick: () => go(R.campaignInvestment(region)) }, { label: 'Reallocation simulator' }]} />
@@ -447,7 +451,7 @@ export function Reallocation() {
           ]} />
         </Card>
       </div>
-      <FooterBar onBack={() => go(R.returns(region))} onNext={() => go(R.opportunity)} />
+      <FooterBar onBack={back} onNext={() => go(R.opportunity)} />
     </div>
   );
 }

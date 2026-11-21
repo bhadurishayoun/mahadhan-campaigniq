@@ -6,7 +6,7 @@ import { ArrowRight, CircleCheck, ClipboardList, Coins, Eye, FileSearch, FileTex
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  ambadMetrics, businessCase, campaignById, nationalReturns, netRoi, campaignMetrics, CAMPAIGNS, FY, INTERVENTION_DELIVERABLES, NATIONAL, NEXT_FY, nextYearPriorities,
+  ambadMetrics, businessCase, campaignById, THEME_QUEUE, nationalReturns, netRoi, campaignMetrics, CAMPAIGNS, FY, INTERVENTION_DELIVERABLES, NATIONAL, NEXT_FY, nextYearPriorities,
   REGIONS, regionMetrics, THEMES, themeCampaigns, themeShares, type Intervention, type InterventionCategory, type Priority,
 } from '../data/bh';
 import { crore, lakh, num, pct, pp, times } from '../data/format';
@@ -17,7 +17,7 @@ import { Donut, HBars, Legend } from '../ui/charts';
 import { Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, PanelFooter, SegmentedControl, Select, StatusChip, type Tone } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { Drawer, EvidenceDrawer, type Evidence } from '../ui/overlay';
-import { opt, useGo } from './common';
+import { opt, useGo, useBack } from './common';
 
 const CATEGORY_ICON: Record<InterventionCategory, typeof Target> = { Performance: Target, 'Strategic theme': Users, Investment: Coins, 'Theme clarification': MessageCircle };
 const statusTone = (i: Intervention): Tone => (i.status === 'draft' ? 'warn' : i.status === 'closed' ? 'ok' : 'neutral');
@@ -34,10 +34,11 @@ export function ActionTracker() {
   const drawerId = params.get('drawer');
   const drawerItem = store.interventions.find((i) => i.id === drawerId);
   const counts = { total: store.interventions.length, draft: store.interventions.filter((i) => i.status === 'draft').length, awaiting: store.interventions.filter((i) => i.status === 'awaiting_response').length, closed: store.interventions.filter((i) => i.status === 'closed').length };
-  const setP = (patch: Record<string, string | null>) => setParams((p) => { const n = new URLSearchParams(p); Object.entries(patch).forEach(([k, v]) => (v === null ? n.delete(k) : n.set(k, v))); return n; });
+  const setP = (patch: Record<string, string | null>) => setParams((p) => { const n = new URLSearchParams(p); Object.entries(patch).forEach(([k, v]) => (v === null ? n.delete(k) : n.set(k, v))); return n; }, { replace: true });
   const camp = sel?.campaign ? campaignById(sel.campaign) : null;
   const cm = camp ? campaignMetrics(camp) : null;
 
+  const back = useBack(R.review(THEME_QUEUE[0].id));
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Strategic interventions' }, { label: 'Management action tracker' }]} />
@@ -101,7 +102,7 @@ export function ActionTracker() {
           </Card>
         )}
       </div>
-      <FooterBar onBack={() => go(R.command)} onNext={() => go(R.learning)} />
+      <FooterBar onBack={back} onNext={() => go(R.learning)} />
       {drawerItem && <InterventionDrawer item={drawerItem} onClose={() => setP({ drawer: null })} />}
     </div>
   );
@@ -174,6 +175,7 @@ export function PortfolioLearning() {
   };
   const checkbox = (on: boolean) => <span className={`check${on ? ' on' : ''}`}>{on && <CircleCheck size={11} />}</span>;
 
+  const back = useBack(R.tracker);
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Strategic interventions', onClick: () => go(R.tracker) }, { label: 'Portfolio learning' }, { label: 'Next-year priorities' }]} />
@@ -219,7 +221,7 @@ export function PortfolioLearning() {
           </div>
         </Card>
       </div>
-      <FooterBar onBack={() => go(R.tracker)} onNext={() => go(R.assistant)} />
+      <FooterBar onBack={back} onNext={() => go(R.assistant)} />
     </div>
   );
 }
@@ -270,6 +272,7 @@ export function DecisionAssistant() {
     go(`${R.tracker}?selected=${id}`);
   };
 
+  const back = useBack(R.learning);
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'AI Copilot workspace' }, { label: 'National portfolio' }, { label: 'Strategic priorities' }]} />
@@ -332,7 +335,7 @@ export function DecisionAssistant() {
           </Card>
         </div>
       </div>
-      <FooterBar onBack={() => go(R.command)} onNext={() => go(R.command)} />
+      <FooterBar onBack={back} onNext={() => go(R.command)} />
       {evidence && <EvidenceDrawer evidence={evidence} onClose={() => setEvidence(null)} />}
     </div>
   );
