@@ -315,7 +315,7 @@ export interface ThemeProposal {
 }
 
 export const THEME_QUEUE: ThemeProposal[] = [
-  { id: 'croptek-next', name: 'Croptek conversion — next season', geography: 'West / Maharashtra', state: 'Maharashtra', region: 'west', cropProduct: 'Onion / Croptek', crop: 'Onion', product: 'Croptek', proposedBy: 'Marketing Head', priority: 'High', status: 'review_pending', objective: 'Farmer conversion', cohort: 'Eligible non-adopters and trial users', focus: 'Conversion & adoption' },
+  { id: 'croptek-next', name: 'Croptek conversion', geography: 'West / Maharashtra', state: 'Maharashtra', region: 'west', cropProduct: 'Onion / Croptek', crop: 'Onion', product: 'Croptek', proposedBy: 'Marketing Head', priority: 'High', status: 'review_pending', objective: 'Farmer conversion', cohort: 'Eligible non-adopters and trial users', focus: 'Conversion & adoption' },
   { id: 'retailer-advocacy', name: 'Multi-region retailer advocacy', geography: 'Multi-region', state: 'Multi-region', region: 'multi', cropProduct: 'Pending validation', crop: null, product: null, proposedBy: 'Marketing Head', priority: 'High', status: 'review_pending', objective: 'Retailer advocacy', cohort: 'Priority retailers', focus: 'Retailer enablement' },
   { id: 'north-awareness', name: 'North region crop nutrition awareness', geography: 'North', state: 'North region', region: 'north', cropProduct: 'Pending', crop: null, product: null, proposedBy: 'Marketing Head', priority: 'Medium', status: 'clarification_requested', objective: 'Crop nutrition awareness', cohort: 'Pending', focus: 'Crop nutrition awareness' },
 ];

@@ -2,7 +2,7 @@
  * Screens 11–16 — Market Opportunity (BH.4.png), Theme Approval Inbox (BH.4b.png), Theme Detailed Review (BH.4c.png),
  * Theme Decision modal (BH.4d.png), Suggest Strategic Theme (BH.4e.png), Recommendation Review & Submit drawer (BH.4f.png).
  */
-import { Box, ChartColumn, CircleCheck, Eye, FileSearch, FileText, Layers, Link2, MapPin, Plus, Save, Send, Sprout, Store, Target, Users } from 'lucide-react';
+import { Box, ChartColumn, CircleCheck, Eye, FileSearch, FileText, Layers, Link2, MapPin, CheckCircle2, Save, Send, Sprout, Store, Target, Users } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
@@ -108,7 +108,7 @@ export function MarketOpportunity() {
             ))}
           </div>
         </Card>
-        <Card title="Potential theme candidates" note="next season / revised themes" icon={Layers} flush>
+        <Card title="Potential theme candidates" note="revised themes" icon={Layers} flush>
           <DataTable rows={themeCandidates()} rowKey={(c) => c.id}
             columns={[
               { key: 't', header: 'Theme', render: (c) => c.name },
@@ -154,11 +154,12 @@ export function ThemeInbox() {
         { key: 'product', label: 'Product', value: product, options: PRODUCT_OPTIONS, onChange: setProduct },
         { key: 'status', label: 'Status', value: status, options: [opt(ALL, 'All statuses'), ...Object.entries(THEME_STATUS).map(([k, v]) => opt(k, v.bh === '—' ? v.mh : v.bh))], onChange: setStatus },
       ]} />
-      <Card title="Strategic theme approval queue" icon={FileText} flush right={<Button small icon={Plus} onClick={() => go(R.suggest)}>Suggest new theme</Button>}>
+      <Card title="Strategic theme approval queue" icon={FileText} flush right={<Button small primary icon={CheckCircle2} onClick={sel && store.themeStatus[sel.id] !== 'clarification_requested' ? () => go(`${R.decision(sel.id)}&choice=approve`) : undefined}>Approve theme</Button>}>
         {queue.length ? (
           <DataTable rows={queue} rowKey={(t) => t.id} selected={sel?.id} onRowClick={(t) => setSelId(t.id)}
             columns={[
-              { key: 'n', header: 'Proposed theme', render: (t) => <span className="row"><span className={`radio${t.id === sel?.id ? ' on' : ''}`} />{t.name}</span> },
+              { key: 'r', header: '', width: 40, render: (t) => <span className={`radio${t.id === sel?.id ? ' on' : ''}`} /> },
+              { key: 'n', header: 'Proposed theme', render: (t) => t.name },
               { key: 'g', header: 'Region', render: (t) => t.geography },
               { key: 'c', header: 'Priority crop / product', render: (t) => t.cropProduct },
               { key: 'p', header: 'Proposed by', render: (t) => t.proposedBy },
@@ -262,7 +263,7 @@ export function ThemeReview() {
         </div>
       </div>
       <FooterBar onBack={() => go(R.inbox)} onNext={() => go(R.suggest)} />
-      {params.get('modal') === 'decision' && <DecisionModal t={t} onClose={() => setParams({})} onShowOriginal={() => showEvidence(`Original proposal — ${t.name}`, [
+      {params.get('modal') === 'decision' && <DecisionModal t={t} initialChoice={params.get('choice') as ThemeDecision['choice'] | null} onClose={() => setParams({})} onShowOriginal={() => showEvidence(`Original proposal — ${t.name}`, [
         { label: 'Proposed by', value: t.proposedBy }, { label: 'Geography', value: t.geography }, { label: 'Crop / product', value: t.cropProduct },
         { label: 'Objective', value: t.objective }, { label: 'Target cohort', value: t.cohort }, { label: 'Priority', value: t.priority },
       ])} />}
@@ -278,11 +279,11 @@ const CHOICES: { id: ThemeDecision['choice']; label: string; action: string; toa
   { id: 'reject', label: 'Reject theme', action: 'Reject theme', toast: 'Theme rejected' },
 ];
 
-function DecisionModal({ t, onClose, onShowOriginal }: { t: ThemeProposal; onClose: () => void; onShowOriginal: () => void }) {
+function DecisionModal({ t, onClose, onShowOriginal, initialChoice }: { t: ThemeProposal; onClose: () => void; onShowOriginal: () => void; initialChoice?: ThemeDecision['choice'] | null }) {
   const store = useBhStore();
   const nav = useNavigate();
   const draft = store.decisions.find((d) => d.themeId === t.id && d.draft);
-  const [choice, setChoice] = useState<ThemeDecision['choice']>(draft?.choice ?? 'return');
+  const [choice, setChoice] = useState<ThemeDecision['choice']>(initialChoice ?? draft?.choice ?? 'return');
   const [comment, setComment] = useState(draft?.comment ?? '');
   const c = CHOICES.find((x) => x.id === choice)!;
   const record = (isDraft: boolean) => store.decideTheme({ themeId: t.id, choice, comment, at: new Date().toISOString(), draft: isDraft });
@@ -295,7 +296,7 @@ function DecisionModal({ t, onClose, onShowOriginal }: { t: ThemeProposal; onClo
         <span className="row"><Layers size={18} color="var(--amber)" /><b className="strong">{t.name}</b></span>
         <span className="row"><MapPin size={16} color="var(--brand)" />{t.state} {t.cropProduct}</span>
         <span className="row"><Users size={16} color="var(--brand)" />Proposed by {t.proposedBy}</span>
-        <StatusChip tone="ok" icon={Sprout}>New next-season theme proposal</StatusChip>
+        <StatusChip tone="ok" icon={Sprout}>New theme proposal</StatusChip>
         <span style={{ marginLeft: 'auto' }} className="row"><Button small icon={Eye} onClick={onShowOriginal}>View original</Button><Button small icon={Save} onClick={() => { record(true); store.toast('Draft decision saved'); }}>Save draft</Button></span>
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.6fr) minmax(0, 1fr)' }}>
