@@ -1,6 +1,7 @@
 /** Shared building blocks. Every screen composes these; no screen-specific styling of these elements. */
 import { ArrowLeft, ArrowRight, Check, ChevronDown, ChevronRight, type LucideIcon } from 'lucide-react';
 import { Fragment, type ReactNode } from 'react';
+import { KpiIcon, kpiIconFor, type KpiIconName } from './kpiIcons';
 
 // ---------------------------------------------------------------- page frame
 export function Breadcrumb({ items }: { items: { label: string; onClick?: () => void }[] }) {
@@ -53,17 +54,12 @@ export function FilterBar({ filters }: { filters: FilterDef[] }) {
 }
 
 // ---------------------------------------------------------------- KPI
-/** One KPI layout everywhere: icon box | label (2 lines) · value · sub-line · 6px bar (ratio cards) or spacer. */
-export function KpiCard({ icon: Icon, label, value, sub, ratio }: { icon: LucideIcon; label: string; value: ReactNode; sub: ReactNode; ratio?: number }) {
+/** KPI card per mockup: header (icon + label), then ONE value. Icon auto-picked from the label unless given. */
+export function KpiCard({ label, value, icon }: { label: string; value: ReactNode; icon?: KpiIconName }) {
   return (
     <div className="kpi">
-      <span className="kpi-tile"><Icon size={20} /></span>
-      <div className="kpi-body">
-        <div className="kpi-label">{label}</div>
-        <div className="kpi-value">{value}</div>
-        <div className="kpi-sub">{sub}</div>
-        {ratio !== undefined ? <span className="kpi-bar"><i style={{ width: `${Math.max(0, Math.min(100, ratio))}%` }} /></span> : <span className="kpi-bar spacer" />}
-      </div>
+      <div className="kpi-head"><KpiIcon name={icon ?? kpiIconFor(label)} /><span className="kpi-label">{label}</span></div>
+      <div className="kpi-value">{value}</div>
     </div>
   );
 }

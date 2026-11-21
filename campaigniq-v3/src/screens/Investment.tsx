@@ -2,7 +2,7 @@
  * Screens 7–10 — Marketing Investment & ROI (BH.3a.png), Campaign Investment (BH.3b.png),
  * Commercial Returns (BH.3d.png), Reallocation Simulator (BH.3e.png).
  */
-import { ArrowLeftRight, Calculator, CalendarClock, CalendarDays, ChartColumn, ChartColumnBig, Coins, FileSearch, Percent, RotateCcw, Save, Scale, ShieldCheck, ShoppingCart, Target, TrendingUp, Users, Wallet } from 'lucide-react';
+import { ArrowLeftRight, CalendarClock, CalendarDays, ChartColumn, Coins, FileSearch, Percent, RotateCcw, Save, Scale, ShieldCheck, ShoppingCart, Target, TrendingUp, Users } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
@@ -73,10 +73,10 @@ export function InvestmentRoi() {
         { value: 'region', label: 'Region-wise' }, { value: 'crop', label: 'Crop-wise' }, { value: 'product', label: 'Product-wise' }, { value: 'theme', label: 'Theme-wise' }, { value: 'campaign', label: 'Campaign-wise' },
       ]} />
       <div className="kpis">
-        <KpiCard icon={Wallet} label="Approved marketing budget" value={crore(k.approved)} sub={`across ${regions.length} region${regions.length > 1 ? 's' : ''}`} />
-        <KpiCard icon={ChartColumnBig} label="Actual marketing investment" value={crore(k.actual)} sub={<>of {crore(k.approved)}<StatusChip tone="ok">{pct((k.actual / k.approved) * 100, 0)}</StatusChip></>} ratio={(k.actual / k.approved) * 100} />
-        <KpiCard icon={Calculator} label="Unspent budget" value={lakh(k.approved - k.actual)} sub="not yet spent" />
-        <KpiCard icon={Target} label="Budget utilisation" value={pct((k.actual / k.approved) * 100, 0)} sub={`${crore(k.actual)} of ${crore(k.approved)}`} ratio={(k.actual / k.approved) * 100} />
+        <KpiCard label="Approved marketing budget" value={crore(k.approved)} />
+        <KpiCard label="Actual marketing investment" value={crore(k.actual)} />
+        <KpiCard label="Unspent budget" value={lakh(k.approved - k.actual)} />
+        <KpiCard label="Budget utilisation" value={pct((k.actual / k.approved) * 100, 0)} />
       </div>
 
       <Card title={`${label}-wise marketing investment and efficiency`} icon={Coins} flush>
@@ -158,10 +158,10 @@ export function CampaignInvestment() {
       <Breadcrumb items={[{ label: 'Marketing investment & ROI', onClick: () => go(R.investment) }, { label: `${r.name} region` }, { label: 'Campaign investment' }]} />
       <PageHeader title={`${r.name} Region Campaign Investment`} />
       <div className="kpis">
-        <KpiCard icon={Wallet} label="Approved budget" value={lakh(r.approved)} sub={`across ${camps.length} campaigns`} />
-        <KpiCard icon={ChartColumnBig} label="Actual investment" value={lakh(r.actual)} sub={<>of {lakh(r.approved)}<StatusChip tone="ok">{pct(regionMetrics(r).utilisationPct, 0)}</StatusChip></>} ratio={regionMetrics(r).utilisationPct} />
-        <KpiCard icon={Calculator} label="Unspent budget" value={lakh(regionMetrics(r).unspent)} sub="not yet spent" />
-        <KpiCard icon={Target} label="Utilisation" value={pct(regionMetrics(r).utilisationPct, 0)} sub={`${lakh(r.actual)} of ${lakh(r.approved)}`} ratio={regionMetrics(r).utilisationPct} />
+        <KpiCard label="Approved budget" value={lakh(r.approved)} />
+        <KpiCard label="Actual investment" value={lakh(r.actual)} />
+        <KpiCard label="Unspent budget" value={lakh(regionMetrics(r).unspent)} />
+        <KpiCard label="Utilisation" value={pct(regionMetrics(r).utilisationPct, 0)} />
       </div>
       <Card title="Campaign-wise investment allocation" icon={Coins} flush>
         {camps.length && t ? (
@@ -229,10 +229,10 @@ export function CommercialReturns() {
       <Breadcrumb items={[{ label: 'Marketing investment & ROI', onClick: () => go(R.investment) }, { label: `${r.name} region`, onClick: () => go(R.campaignInvestment(region)) }, { label: 'Commercial returns' }]} />
       <PageHeader title={`${r.name} Region Commercial Returns`} />
       <div className="kpis">
-        <KpiCard icon={Wallet} label="Approved budget" value={lakh(r.approved)} sub={`across ${camps.length} campaigns`} />
-        <KpiCard icon={ChartColumnBig} label="Actual investment" value={lakh(r.actual)} sub={<>of {lakh(r.approved)}<StatusChip tone="ok">{pct(regionMetrics(r).utilisationPct, 0)}</StatusChip></>} ratio={regionMetrics(r).utilisationPct} />
-        <KpiCard icon={Users} label="Recorded adopters" value={num(r.adopters)} sub="farmers" />
-        <KpiCard icon={Target} label="Actual net ROI" value={times(regionRoi(r))} sub={`on ${lakh(r.sales)} incremental sales`} />
+        <KpiCard label="Approved budget" value={lakh(r.approved)} />
+        <KpiCard label="Actual investment" value={lakh(r.actual)} />
+        <KpiCard label="Recorded adopters" value={num(r.adopters)} />
+        <KpiCard label="Actual net ROI" value={times(regionRoi(r))} />
       </div>
       <Card title="Campaign commercial return matrix" icon={Coins} flush>
         {camps.length && t ? (
@@ -344,10 +344,10 @@ export function Reallocation() {
       <Breadcrumb items={[{ label: 'Marketing investment & ROI', onClick: () => go(R.investment) }, { label: `${r.name} region`, onClick: () => go(R.campaignInvestment(region)) }, { label: 'Reallocation simulator' }]} />
       <PageHeader title="Reallocation Simulator" right={<StatusChip tone="warn">What-if draft · not approved</StatusChip>} />
       <div className="kpis">
-        <KpiCard icon={Wallet} label="Approved budget" value={lakh(t.approved)} sub={`across ${camps.length} campaigns`} />
-        <KpiCard icon={ChartColumnBig} label="Actual investment" value={lakh(t.actual)} sub={<>of {lakh(t.approved)}<StatusChip tone="ok">{pct(t.utilisationPct, 0)}</StatusChip></>} ratio={t.utilisationPct} />
-        <KpiCard icon={Calculator} label="Unspent budget" value={lakh(t.unspent)} sub="not yet spent" />
-        <KpiCard icon={ArrowLeftRight} label="Simulated transfer" value={lakh(from === to ? 0 : amt)} sub={`${campaignById(from).short} → ${campaignById(to).short}`} />
+        <KpiCard label="Approved budget" value={lakh(t.approved)} />
+        <KpiCard label="Actual investment" value={lakh(t.actual)} />
+        <KpiCard label="Unspent budget" value={lakh(t.unspent)} />
+        <KpiCard label="Simulated transfer" value={lakh(from === to ? 0 : amt)} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.8fr) minmax(0, 1fr)' }}>
         <Card title="Campaign budget reallocation" icon={Coins} flush>

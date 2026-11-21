@@ -2,7 +2,7 @@
  * Screens 17–20 — Management Action Tracker (BH.5.png) with Intervention Request drawer (BH.5a.png),
  * Portfolio Learning & Next-Year Priorities (BH.5b.png), Decision Assistant (BH.6.png).
  */
-import { ArrowRight, CircleCheck, ClipboardList, Coins, Eye, FileSearch, FileText, Folder, Layers, MessageCircle, MessagesSquare, RefreshCw, Repeat, Save, Send, Target, Users } from 'lucide-react';
+import { ArrowRight, CircleCheck, ClipboardList, Coins, Eye, FileSearch, FileText, Folder, Layers, MessageCircle, MessagesSquare, RefreshCw, Save, Send, Target, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
@@ -43,10 +43,10 @@ export function ActionTracker() {
       <Breadcrumb items={[{ label: 'Strategic interventions' }, { label: 'Management action tracker' }]} />
       <PageHeader title="Strategic Intervention & Management Decision Tracker" />
       <div className="kpis">
-        <KpiCard icon={ClipboardList} label="Total actions" value={counts.total} sub="in the register" />
-        <KpiCard icon={FileText} label="Drafts" value={counts.draft} sub="not yet sent" />
-        <KpiCard icon={Repeat} label="Awaiting response" value={counts.awaiting} sub="with Marketing Head" />
-        <KpiCard icon={CircleCheck} label="Closed" value={counts.closed} sub="resolved" />
+        <KpiCard label="Total actions" value={counts.total} />
+        <KpiCard label="Drafts" value={counts.draft} />
+        <KpiCard label="Awaiting response" value={counts.awaiting} />
+        <KpiCard label="Closed" value={counts.closed} />
       </div>
       <SegmentedControl<'all' | InterventionCategory> value={cat} onChange={setCat} options={[
         { value: 'all', label: 'All actions' }, { value: 'Performance', label: 'Performance' }, { value: 'Investment', label: 'Investment' }, { value: 'Strategic theme', label: 'Strategic themes' }, { value: 'Theme clarification', label: 'Clarifications' },
@@ -180,10 +180,10 @@ export function PortfolioLearning() {
       <Breadcrumb items={[{ label: 'Strategic interventions', onClick: () => go(R.tracker) }, { label: 'Portfolio learning' }, { label: 'Next-year priorities' }]} />
       <PageHeader title="National Campaign Portfolio Learning & Next-Year Strategic Priorities" right={<StatusChip tone={store.learningSubmitted ? 'ok' : 'warn'}>{store.learningSubmitted ? 'Submitted for assessment' : 'Draft priorities'}</StatusChip>} />
       <div className="kpis">
-        <KpiCard icon={Layers} label="Active campaigns" value={NATIONAL.campaigns} sub="national portfolio" />
-        <KpiCard icon={Coins} label="Actual investment" value={crore(NATIONAL.actual)} sub={<>of {crore(NATIONAL.approved)}<StatusChip tone="ok">{pct((NATIONAL.actual / NATIONAL.approved) * 100, 0)}</StatusChip></>} ratio={(NATIONAL.actual / NATIONAL.approved) * 100} />
-        <KpiCard icon={Users} label="Recorded adopters" value={num(NATIONAL.adopters)} sub="farmers" />
-        <KpiCard icon={RefreshCw} label="Actual net ROI" value={times(nationalReturns().roi)} sub={`on ${crore(nationalReturns().sales)} incremental sales`} />
+        <KpiCard label="Active campaigns" value={NATIONAL.campaigns} />
+        <KpiCard label="Actual investment" value={crore(NATIONAL.actual)} />
+        <KpiCard label="Recorded adopters" value={num(NATIONAL.adopters)} />
+        <KpiCard label="Actual net ROI" value={times(nationalReturns().roi)} />
       </div>
       <Card title="National strategic theme performance and learning" icon={Layers} flush>
         <DataTable rows={THEMES} rowKey={(t) => t.id} selected={themesSel[0]} onRowClick={(t) => toggle(themesSel, setThemesSel, t.id)}

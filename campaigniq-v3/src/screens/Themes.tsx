@@ -2,7 +2,7 @@
  * Screens 11–16 — Market Opportunity (BH.4.png), Theme Approval Inbox (BH.4b.png), Theme Detailed Review (BH.4c.png),
  * Theme Decision modal (BH.4d.png), Suggest Strategic Theme (BH.4e.png), Recommendation Review & Submit drawer (BH.4f.png).
  */
-import { AlertTriangle, Box, ChartColumn, CircleCheck, Clock, Eye, FileSearch, FileText, Layers, Link2, MapPin, MessageCircle, Plus, Save, Send, Sprout, Store, Target, Trophy, Users } from 'lucide-react';
+import { Box, ChartColumn, CircleCheck, Eye, FileSearch, FileText, Layers, Link2, MapPin, Plus, Save, Send, Sprout, Store, Target, Users } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
@@ -68,10 +68,10 @@ export function MarketOpportunity() {
         { key: 'product', label: 'Product', value: product, options: PRODUCT_OPTIONS, onChange: setProduct },
       ]} />
       <div className="kpis">
-        <KpiCard icon={Target} label="YTD business ABP" value={crore(NATIONAL.abp, 1)} sub="national, all regions" />
-        <KpiCard icon={Layers} label="Actual achievement" value={crore(NATIONAL.achieved, 1)} sub={<>of {crore(NATIONAL.abp, 1)}<StatusChip tone="ok">{pct(NATIONAL_METRICS.achievementPct)}</StatusChip></>} ratio={NATIONAL_METRICS.achievementPct} />
-        <KpiCard icon={AlertTriangle} label="Business gap" value={crore(NATIONAL_METRICS.gap, 1)} sub={`${pct(100 - NATIONAL_METRICS.achievementPct)} below ABP`} />
-        <KpiCard icon={Trophy} label="Achievement" value={pct(NATIONAL_METRICS.achievementPct)} sub={`${crore(NATIONAL.achieved, 1)} of ${crore(NATIONAL.abp, 1)}`} ratio={NATIONAL_METRICS.achievementPct} />
+        <KpiCard label="YTD business ABP" value={crore(NATIONAL.abp, 1)} />
+        <KpiCard label="Actual achievement" value={crore(NATIONAL.achieved, 1)} />
+        <KpiCard label="Business gap" value={crore(NATIONAL_METRICS.gap, 1)} />
+        <KpiCard label="Achievement" value={pct(NATIONAL_METRICS.achievementPct)} />
       </div>
       <Card title="Regional business gap and marketing coverage" icon={Layers} flush>
         <DataTable rows={regions} rowKey={(r) => r.id} selected={selRegion.id} onRowClick={(r) => setSel(r.id)}
@@ -144,9 +144,9 @@ export function ThemeInbox() {
       <Breadcrumb items={[{ label: 'Strategic themes & approvals' }, { label: 'Theme approval inbox' }]} />
       <PageHeader title="Theme Approval Inbox" right={<ThemeTabs active="inbox" />} />
       <div className="kpis">
-        <KpiCard icon={Layers} label="Under review" value={open} sub="open themes" />
-        <KpiCard icon={Clock} label="Awaiting decision" value={st.filter((s) => s === 'review_pending').length} sub="Business Head decision" />
-        <KpiCard icon={MessageCircle} label="Clarification requested" value={st.filter((s) => s === 'clarification_requested').length} sub="with Marketing Head" />
+        <KpiCard label="Under review" value={open} />
+        <KpiCard label="Awaiting decision" value={st.filter((s) => s === 'review_pending').length} />
+        <KpiCard label="Clarification requested" value={st.filter((s) => s === 'clarification_requested').length} />
       </div>
       <FilterBar filters={[
         { key: 'region', label: 'Region', value: region, options: REGION_OPTIONS, onChange: setRegion },
@@ -378,10 +378,10 @@ export function SuggestTheme() {
       <Breadcrumb items={[{ label: 'Strategic themes & approvals', onClick: () => go(R.inbox) }, { label: 'Suggest new theme' }]} />
       <PageHeader title="Suggest Strategic Marketing Theme" right={<StatusChip tone="warn">Draft · not submitted</StatusChip>} />
       <div className="kpis">
-        <KpiCard icon={Target} label="Village conversion gap" value={`${a.villageGap.toFixed(1)} pp`} sub="Dhanora vs Wadi Gaon" />
-        <KpiCard icon={Users} label="Farmer follow-up completion" value={pct(a.followUpPct)} sub="of planned follow-ups" ratio={a.followUpPct} />
-        <KpiCard icon={Store} label="Retailer activation" value={pct(a.retailerActivationPct)} sub="of planned activations" ratio={a.retailerActivationPct} />
-        <KpiCard icon={Sprout} label="Local trial-to-adoption" value={pct(a.trialToAdoptionPct)} sub={`${num(a.adopters)} of ${num(a.trials)} trials`} ratio={a.trialToAdoptionPct} />
+        <KpiCard label="Village conversion gap" value={`${a.villageGap.toFixed(1)} pp`} />
+        <KpiCard label="Farmer follow-up completion" value={pct(a.followUpPct)} />
+        <KpiCard label="Retailer activation" value={pct(a.retailerActivationPct)} />
+        <KpiCard label="Local trial-to-adoption" value={pct(a.trialToAdoptionPct)} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.6fr) minmax(0, 1fr)' }}>
         <Card title="Strategic theme configuration" icon={Layers} right={<>

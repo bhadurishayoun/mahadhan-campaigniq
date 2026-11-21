@@ -1,5 +1,5 @@
 /** Screen 1 — National Command Centre (mockup BH.1.png). */
-import { AlertCircle, BadgeIndianRupee, ChartColumn, ChartColumnIncreasing, ClipboardCheck, Coins, ExternalLink, Layers, Megaphone, Target, TriangleAlert, Users } from 'lucide-react';
+import { AlertCircle, ChartColumn, ClipboardCheck, ExternalLink, Layers, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
 import { CAMPAIGNS, netRoi, REGIONS, regionMetrics, regionRoi, THEME_QUEUE, THEME_STATUS, type ThemeId } from '../data/bh';
 import { crore, num, pct, ratio, sum, times } from '../data/format';
@@ -38,7 +38,6 @@ export function CommandCentre() {
   }
   const sales = campaign !== ALL ? CAMPAIGNS.find((x) => x.id === campaign)!.sales : sum(rows, (r) => r.sales);
   const achPct = ratio(t.achieved, t.abp);
-  const utilPct = ratio(t.actual, t.approved);
   const scopeName = filtered ? (rows.length === 1 ? `${rows[0].name} region` : 'Selection') : 'Total (national)';
 
   return (
@@ -53,12 +52,12 @@ export function CommandCentre() {
       ]} />
 
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(6, minmax(0, 1fr))' }}>
-        <KpiCard icon={Target} label="Achievement vs YTD ABP" value={crore(t.achieved, 1)} sub={<>of {crore(t.abp, 1)}<StatusChip tone="ok">{pct(achPct)}</StatusChip></>} ratio={achPct} />
-        <KpiCard icon={Coins} label="Investment vs approved" value={crore(t.actual)} sub={<>of {crore(t.approved)}<StatusChip tone="ok">{pct(utilPct, 0)}</StatusChip></>} ratio={utilPct} />
-        <KpiCard icon={Megaphone} label="Active campaigns" value={num(t.campaigns)} sub={`${rows.length} region${rows.length > 1 ? 's' : ''}`} />
-        <KpiCard icon={Users} label="Farmer adoption" value={num(t.adopters)} sub="farmers" />
-        <KpiCard icon={ChartColumnIncreasing} label="Incremental sales" value={crore(sales)} sub="validated" />
-        <KpiCard icon={BadgeIndianRupee} label="Portfolio net ROI" value={times(netRoi(sales, t.actual))} sub="35% margin" />
+        <KpiCard label="Achievement vs YTD ABP" value={crore(t.achieved, 1)} />
+        <KpiCard label="Investment vs approved" value={crore(t.actual)} />
+        <KpiCard label="Active campaigns" value={num(t.campaigns)} />
+        <KpiCard label="Farmer adoption" value={num(t.adopters)} />
+        <KpiCard label="Incremental sales" value={crore(sales)} />
+        <KpiCard label="Portfolio net ROI" value={times(netRoi(sales, t.actual))} />
       </div>
 
       <Card title="National campaign portfolio performance (region-wise)" icon={Layers} flush>

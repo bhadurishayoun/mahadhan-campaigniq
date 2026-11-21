@@ -1,8 +1,8 @@
 /** Screen 5 — Campaign Effectiveness (mockup BH.2a.png) with screen 6 — Campaign Diagnostics drawer (BH.2b.png). */
-import { ChartColumn, Coins, FileSearch, FileText, Gauge, Megaphone, ShieldCheck, Stethoscope, Target, TrendingUp, Users } from 'lucide-react';
+import { ChartColumn, Coins, FileSearch, FileText, ShieldCheck, Stethoscope, Target } from 'lucide-react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { AMBAD, ambadMetrics, businessCase, netRoi, regionMetrics, regionRoi, campaignById, campaignMetrics, campaignsOf, campaignTotals, regionById, type Campaign, type CampaignId } from '../data/bh';
+import { AMBAD, ambadMetrics, businessCase, netRoi, regionRoi, campaignById, campaignMetrics, campaignsOf, campaignTotals, regionById, type Campaign, type CampaignId } from '../data/bh';
 import { lakh, num, pct, pp, ratio, times } from '../data/format';
 import { R } from '../routes';
 import { SERIES } from '../theme';
@@ -51,10 +51,10 @@ export function Effectiveness() {
       <Breadcrumb items={[{ label: 'Campaign portfolio performance', onClick: () => go(R.portfolio) }, { label: `${r.name} region`, onClick: () => go(R.region(region)) }, { label: 'Campaign effectiveness' }]} />
       <PageHeader title={`${r.name} Region Campaign Effectiveness`} />
       <div className="kpis">
-        <KpiCard icon={Megaphone} label="Active campaigns" value={r.campaigns} sub={`in ${r.name} region`} />
-        <KpiCard icon={Users} label="Recorded adopters" value={num(r.adopters)} sub="farmers" />
-        <KpiCard icon={Coins} label="Marketing investment" value={lakh(r.actual)} sub={<>of {lakh(r.approved)}<StatusChip tone="ok">{pct(regionMetrics(r).utilisationPct, 0)}</StatusChip></>} ratio={regionMetrics(r).utilisationPct} />
-        <KpiCard icon={TrendingUp} label="Validated incremental sales" value={lakh(r.sales)} sub={<>net ROI<StatusChip tone="ok">{times(regionRoi(r))}</StatusChip></>} />
+        <KpiCard label="Active campaigns" value={r.campaigns} />
+        <KpiCard label="Recorded adopters" value={num(r.adopters)} />
+        <KpiCard label="Marketing investment" value={lakh(r.actual)} />
+        <KpiCard label="Validated incremental sales" value={lakh(r.sales)} />
       </div>
 
       <Card title="Campaign outcome scorecard" icon={Target} flush>
@@ -162,9 +162,9 @@ function Diagnostics({ c, onClose }: { c: Campaign; onClose: () => void }) {
       footer={<PanelFooter onBack={onClose} action={<Button small primary onClick={requestIntervention}>Request strategic intervention</Button>} />}
     >
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
-        <KpiCard icon={Gauge} label="Execution variance" value={pp(m.execVariance)} sub={`${c.observedExec}% vs ${c.plannedExec}%`} />
-        <KpiCard icon={Users} label="Adoption shortfall" value={num(m.shortfall)} sub={`${num(c.adopters)} vs ${num(c.adoptionTarget)}`} />
-        <KpiCard icon={Coins} label="Budget utilisation" value={pct(m.utilisationPct, 0)} sub={`${lakh(c.actual)} of ${lakh(c.approved)}`} ratio={m.utilisationPct} />
+        <KpiCard label="Execution variance" value={pp(m.execVariance)} />
+        <KpiCard label="Adoption shortfall" value={num(m.shortfall)} />
+        <KpiCard label="Budget utilisation" value={pct(m.utilisationPct, 0)} />
       </div>
       <div className="grid g2">
         <Card title={`Campaign performance variance (${regionById(c.region).name})`} flush>

@@ -1,5 +1,5 @@
 /** Screen 2 — Campaign Portfolio Performance (mockup BH.2.png). */
-import { ChartColumn, Coins, ExternalLink, Gauge, Layers, Megaphone, Table2, Users } from 'lucide-react';
+import { ChartColumn, ExternalLink, Layers, Table2 } from 'lucide-react';
 import { useState } from 'react';
 import { CROP_MIX, netRoi, PRODUCT_MIX, REGIONS, THEMES, themeCampaigns, type MixRow, type RegionId, type ThemeId } from '../data/bh';
 import { crore, lakh, num, sum, times } from '../data/format';
@@ -52,10 +52,10 @@ export function Portfolio() {
         { value: 'theme', label: 'Theme-wise' }, { value: 'crop', label: 'Crop-wise' }, { value: 'product', label: 'Product-wise' }, { value: 'geography', label: 'Geography-wise' },
       ]} />
       <div className="kpis">
-        <KpiCard icon={Megaphone} label="Active campaigns" value={num(kpi.campaigns)} sub={`across ${regions.length} region${regions.length > 1 ? 's' : ''}`} />
-        <KpiCard icon={Coins} label="Actual marketing investment" value={crore(kpi.investment)} sub={`on ${num(kpi.adopters)} adopters`} />
-        <KpiCard icon={Users} label="Recorded adopters" value={num(kpi.adopters)} sub="farmers" />
-        <KpiCard icon={Gauge} label="Average regional execution" value={`${avgExec}%`} sub={`observed vs ${Math.round(sum(regions, (r) => r.plannedExec) / regions.length)}% planned`} ratio={avgExec} />
+        <KpiCard label="Active campaigns" value={num(kpi.campaigns)} />
+        <KpiCard label="Actual marketing investment" value={crore(kpi.investment)} />
+        <KpiCard label="Recorded adopters" value={num(kpi.adopters)} />
+        <KpiCard label="Average regional execution" value={`${avgExec}%`} />
       </div>
 
       <Card title={`${groupLabel}-wise campaign performance`} icon={Layers} flush>

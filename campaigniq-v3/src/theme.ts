@@ -17,6 +17,10 @@ export const C = {
   canvas: '#F5F7F6',
   card: '#FFFFFF',
   overlay: 'rgba(18, 61, 36, 0.45)',
+  amberDark: '#B9831C',
+  kpiBg: '#F1F8F3',
+  kpiLine: '#D3E8DA',
+  kpiInk: '#1A2420',
 } as const;
 
 /** Chart series mapping, fixed across the workspace. */
@@ -30,6 +34,7 @@ const CSS_NAMES: Record<keyof typeof C, string> = {
   brand: '--brand', dark: '--dark', tint: '--tint', light: '--light', amber: '--amber', amberSoft: '--amber-soft',
   amberInk: '--amber-ink', risk: '--risk', riskSoft: '--risk-soft', neutral: '--neutral', ink: '--ink',
   inkSoft: '--ink-soft', muted: '--muted', line: '--line', canvas: '--canvas', card: '--card', overlay: '--overlay',
+  amberDark: '--amber-dark', kpiBg: '--kpi-bg', kpiLine: '--kpi-line', kpiInk: '--kpi-ink',
 };
 
 export function applyTheme() {

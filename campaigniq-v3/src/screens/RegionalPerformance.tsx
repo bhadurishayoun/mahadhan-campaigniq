@@ -1,7 +1,7 @@
 /** Screen 3 — Regional Performance (no mockup; same anatomy as the territory screen). */
-import { ChartColumn, Gauge, MapPin, Megaphone, Target, Users } from 'lucide-react';
-import { campaignsOf, REGIONS, regionById, regionMetrics, territoriesOf } from '../data/bh';
-import { crore, num, pct, pp, ratio, sum } from '../data/format';
+import { ChartColumn, MapPin, Users } from 'lucide-react';
+import { campaignsOf, REGIONS, regionById, territoriesOf } from '../data/bh';
+import { crore, num, pct, ratio, sum } from '../data/format';
 import { R } from '../routes';
 import { SERIES } from '../theme';
 import { GroupedBars, HBars } from '../ui/charts';
@@ -13,7 +13,6 @@ export function RegionalPerformance() {
   const go = useGo();
   const id = useRouteRegion();
   const r = regionById(id);
-  const m = regionMetrics(r);
   const terrs = territoriesOf(id);
   const camps = campaignsOf(id);
   const hasDetail = (t: (typeof terrs)[number]) => t.activitiesDone !== null;
@@ -24,10 +23,10 @@ export function RegionalPerformance() {
       <Breadcrumb items={[{ label: 'Campaign portfolio performance', onClick: () => go(R.portfolio) }, { label: `${r.name} region` }]} />
       <PageHeader title={`${r.name} Region Performance`} />
       <div className="kpis">
-        <KpiCard icon={Target} label="Region achievement vs YTD ABP" value={crore(r.achieved, 1)} sub={<>of {crore(r.abp, 1)}<StatusChip tone="ok">{pct(m.achievementPct)}</StatusChip></>} ratio={m.achievementPct} />
-        <KpiCard icon={Megaphone} label="Active campaigns" value={r.campaigns} sub={`across ${terrs.length} territories`} />
-        <KpiCard icon={Gauge} label="Observed execution" value={`${r.observedExec}%`} sub={<>vs {r.plannedExec}% planned<StatusChip tone="warn">{pp(m.execVariance)}</StatusChip></>} ratio={r.observedExec} />
-        <KpiCard icon={Users} label="Recorded adopters" value={num(r.adopters)} sub="farmers" />
+        <KpiCard label="Region achievement vs YTD ABP" value={crore(r.achieved, 1)} />
+        <KpiCard label="Active campaigns" value={r.campaigns} />
+        <KpiCard label="Observed execution" value={`${r.observedExec}%`} />
+        <KpiCard label="Recorded adopters" value={num(r.adopters)} />
       </div>
 
       <Card title="Territory performance" icon={MapPin} flush>

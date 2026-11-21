@@ -1,5 +1,5 @@
 /** Screen 4 — Territory Performance, Ambad (mockup BH.3.png). */
-import { CalendarCheck, ChartColumnBig, Coins, Lightbulb, MapPin, Plus, Target, TrendingUp, Users } from 'lucide-react';
+import { CalendarCheck, Coins, Lightbulb, MapPin, Plus, TrendingUp, Users } from 'lucide-react';
 import { Navigate, useParams } from 'react-router-dom';
 import { AMBAD, ambadMetrics, campaignById, netRoi, territoryById } from '../data/bh';
 import { crore, lakh, num, pct, ratio, times } from '../data/format';
@@ -31,10 +31,10 @@ export function TerritoryPerformance() {
       <Breadcrumb items={[{ label: 'Campaign portfolio performance', onClick: () => go(R.portfolio) }, { label: 'West region', onClick: () => go(R.region(t.region)) }, { label: 'Ambad' }]} />
       <PageHeader title={`${t.name} Territory Performance`} />
       <div className="kpis">
-        <KpiCard icon={ChartColumnBig} label="Territory all-product ABP" value={crore(t.abp)} sub={`all crops, ${crore(t.ytdSales)} sold YTD`} />
-        <KpiCard icon={CalendarCheck} label="Activities completed" value={`${a.activitiesDone} / ${a.activitiesPlanned}`} sub={pct(a.activityPct)} ratio={a.activityPct} />
-        <KpiCard icon={Users} label="Recorded adopters" value={num(a.adopters)} sub="farmers" />
-        <KpiCard icon={Target} label="Trial-to-adoption" value={pct(a.trialToAdoptionPct)} sub={`${num(a.adopters)} of ${num(a.trials)} trials`} ratio={a.trialToAdoptionPct} />
+        <KpiCard label="Territory all-product ABP" value={crore(t.abp)} />
+        <KpiCard label="Activity completion" value={pct(a.activityPct)} />
+        <KpiCard label="Recorded adopters" value={num(a.adopters)} />
+        <KpiCard label="Trial-to-adoption" value={pct(a.trialToAdoptionPct)} />
       </div>
 
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 300px' }}>
