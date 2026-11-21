@@ -216,9 +216,10 @@ export interface Territory {
 
 export const TERRITORIES: Territory[] = [
   { id: 'ambad', name: 'Ambad (Jalna)', region: 'west', abp: 420, ytdSales: 362, campaigns: 2, activitiesDone: 9, activitiesPlanned: 13, adopters: 72 },
-  { id: 'jalna', name: 'Jalna', region: 'west', abp: 380, ytdSales: 315, campaigns: 1, activitiesDone: null, activitiesPlanned: null, adopters: null },
-  { id: 'aurangabad', name: 'Aurangabad', region: 'west', abp: 460, ytdSales: 402, campaigns: 1, activitiesDone: null, activitiesPlanned: null, adopters: null },
-  { id: 'nashik', name: 'Nashik', region: 'west', abp: 340, ytdSales: 341, campaigns: 0, activitiesDone: null, activitiesPlanned: null, adopters: null },
+  { id: 'ghansawangi', name: 'Ghansawangi', region: 'west', abp: 340, ytdSales: 290, campaigns: 1, activitiesDone: null, activitiesPlanned: null, adopters: null },
+  { id: 'badnapur', name: 'Badnapur', region: 'west', abp: 240, ytdSales: 205, campaigns: 0, activitiesDone: null, activitiesPlanned: null, adopters: null },
+  { id: 'aurangabad', name: 'Aurangabad', region: 'west', abp: 340, ytdSales: 303, campaigns: 1, activitiesDone: null, activitiesPlanned: null, adopters: null },
+  { id: 'nashik', name: 'Nashik', region: 'west', abp: 260, ytdSales: 260, campaigns: 0, activitiesDone: null, activitiesPlanned: null, adopters: null },
 ];
 export const territoriesOf = (region: RegionId) => TERRITORIES.filter((t) => t.region === region);
 export const territoryById = (id: string) => TERRITORIES.find((t) => t.id === id);

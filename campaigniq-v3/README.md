@@ -60,8 +60,8 @@ cards, donut and category counts use `interventionCounts()` (tested in `bh.test.
 | Phase | Scope | Status |
 |---|---|---|
 | 0 | Mockups (`docs/mockups/field-sales-manager/`, 15), routes (`F` in `src/routes.ts`), sidebar, persona switch (avatar menu, master login), top-bar scope (Jalna cluster · Ambad · Ghansawangi · Badnapur), 15 screens with titles and Back/Next wired | Done |
-| 1 | Data (`src/data/fsm.ts`) + tests; BH West territories aligned (Ambad, Ghansawangi, Badnapur) | Next |
-| 2 | Screens 1–5 (My Plan) | To do |
+| 1 | Data (`src/data/fsm.ts`, tested in `fsm.test.ts`): cluster, Ambad outlets, crop plan, priorities, campaign budget / scenarios / funnel, 13 execution units, impact. Ambad figures read from `bh.ts`. BH West now Ambad · Ghansawangi · Badnapur · Aurangabad · Nashik (West ₹16.0 Cr ABP, ₹14.2 Cr sales unchanged) | Done |
+| 2 | Screens 1–5 (My Plan) | Next |
 | 3 | Screens 6–10 (My Campaigns and wizard) | To do |
 | 4 | Screens 11–15, verification, deploy | To do |
 
