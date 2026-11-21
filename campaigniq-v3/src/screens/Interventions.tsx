@@ -14,7 +14,7 @@ import { R } from '../routes';
 import { useBhStore } from '../store/bhStore';
 import { C, SERIES } from '../theme';
 import { Donut, HBars, Legend } from '../ui/charts';
-import { Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, PanelFooter, SegmentedControl, Select, StatusChip, STEPS, WorkflowStepper, type Tone } from '../ui/core';
+import { Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, PanelFooter, SegmentedControl, Select, StatusChip, type Tone } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { Drawer, EvidenceDrawer, type Evidence } from '../ui/overlay';
 import { opt, useGo } from './common';
@@ -151,7 +151,6 @@ function InterventionDrawer({ item, onClose }: { item: Intervention; onClose: ()
       <Card title="Required deliverables">
         {INTERVENTION_DELIVERABLES.map((d) => <div key={d} className="list-row"><span className="check" />{d}<span className="right"><StatusChip tone="warn">{sent ? 'Awaiting submission' : 'Not submitted'}</StatusChip></span></div>)}
       </Card>
-      <WorkflowStepper steps={STEPS.intervention} current={sent ? 1 : 0} />
     </Drawer>
   );
 }

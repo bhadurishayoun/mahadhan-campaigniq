@@ -220,3 +220,9 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 .opp-label { flex: 1; min-width: 0; font-size: 13px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .opp-tag { flex: none; font-size: 12px; font-weight: 600; color: var(--amber-ink); background: var(--amber-soft); border-radius: 4px; padding: 1px 6px; }
 .opp-value { flex: none; font-size: 16px; font-weight: 700; color: var(--dark); white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* ---------- theme evidence grid (3 x 2, divider lines) ---------- */
+.ev-grid { flex: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: 1fr 1fr; margin: 0 -16px -14px; }
+.ev-cell { padding: 10px 14px; display: flex; flex-direction: column; justify-content: center; gap: 4px; text-align: left; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); min-width: 0; }
+.ev-cell:nth-child(3n) { border-right: 0; } .ev-cell:nth-child(n+4) { border-bottom: 0; }
+.ev-cell b { font-size: 22px; font-weight: 700; color: var(--brand); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ev-cell span { font-size: 12.5px; color: var(--ink-soft); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

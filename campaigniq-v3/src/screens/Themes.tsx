@@ -16,7 +16,7 @@ import { useBhStore, type ThemeDecision } from '../store/bhStore';
 import { RegionBarsCard } from './RegionBars';
 import { SERIES } from '../theme';
 import { HBars, Legend } from '../ui/charts';
-import { Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, PanelFooter, SegmentedControl, Select, StatusChip, STEPS, WorkflowStepper } from '../ui/core';
+import { Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, PanelFooter, SegmentedControl, Select, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { Drawer, EvidenceDrawer, Modal, type Evidence } from '../ui/overlay';
 import { ALL, CROP_OPTIONS, opt, PRODUCT_OPTIONS, REGION_OPTIONS, useGo, useScopeFilter } from './common';
@@ -26,7 +26,6 @@ function ThemeTabs({ active }: { active: 'inbox' | 'opportunity' }) {
   return <SegmentedControl value={active} onChange={(v) => go(v === 'inbox' ? R.inbox : R.opportunity)} options={[{ value: 'inbox', label: 'Theme approval inbox' }, { value: 'opportunity', label: 'Market opportunity' }]} />;
 }
 
-const stepOf = (status: string) => (status === 'review_pending' || status === 'clarification_requested' ? 1 : 3);
 
 // ================================================================ 11 Market Opportunity
 export function MarketOpportunity() {
@@ -169,10 +168,10 @@ export function ThemeInbox() {
         ) : <div style={{ padding: '6px 16px 10px' }}><StatusChip tone="neutral">No themes match the filters</StatusChip></div>}
       </Card>
       {sel && (
-        <div className="grid g3">
-          <Card title="Selected theme opportunity evidence" icon={ChartColumn} right={<StatusChip tone="warn">{sel.id === 'croptek-next' ? 'Next season (revision)' : sel.priority}</StatusChip>}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '14px 10px' }}>
-              {themeEvidence(sel.id).map((e) => <div key={e.label}><div className="strong" style={{ fontSize: 20, color: 'var(--brand)' }}>{e.value}</div><div className="muted" style={{ fontSize: 12 }}>{e.label}</div></div>)}
+        <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr)' }}>
+          <Card title={sel.name} icon={ChartColumn}>
+            <div className="ev-grid">
+              {themeEvidence(sel.id).map((e) => <div key={e.label} className="ev-cell"><b>{e.value}</b><span>{e.label.replace(/-/g, '‑')}</span></div>)}
             </div>
           </Card>
           <Card title="Strategic alignment and approval readiness" icon={CircleCheck}>
@@ -188,7 +187,6 @@ export function ThemeInbox() {
           </Card>
         </div>
       )}
-      {sel && <Card><WorkflowStepper steps={STEPS.themeReview} current={stepOf(store.themeStatus[sel.id])} /></Card>}
       <FooterBar onBack={() => go(R.opportunity)} onNext={sel ? () => go(R.review(sel.id)) : undefined} />
     </div>
   );
@@ -326,7 +324,6 @@ function DecisionModal({ t, onClose, onShowOriginal }: { t: ThemeProposal; onClo
         <div className="field"><span>Recipient</span><StatusChip tone="ok">Marketing Head</StatusChip></div>
         <div className="field"><span>Theme version</span><StatusChip tone="ok">{draft ? 'Saved draft' : 'Current draft'}</StatusChip></div>
       </div>
-      <WorkflowStepper steps={STEPS.themeReview} current={decided ? 3 : 1} />
     </Modal>
   );
 }
@@ -433,7 +430,6 @@ export function SuggestTheme() {
           </Card>
         </div>
       </div>
-      <Card><WorkflowStepper steps={STEPS.themeSuggestion} current={0} /></Card>
       <FooterBar onBack={() => go(R.opportunity)} onNext={() => go(R.tracker)} />
       {params.get('drawer') === 'submit' && (
         <Drawer title="Strategic theme recommendation — review and submit" status={<StatusChip tone="warn">Draft · not sent</StatusChip>}
@@ -461,7 +457,6 @@ export function SuggestTheme() {
             <label className="field"><span>Assessment due date</span><input type="date" className="input" value={f.due} onChange={(e) => set('due', e.target.value)} /></label>
             <label className="field"><span>Additional instructions</span><input className="input" value={f.notes} onChange={(e) => set('notes', e.target.value)} placeholder="Strategic direction" /></label>
           </div>
-          <WorkflowStepper steps={STEPS.themeSuggestion} current={0} />
         </Drawer>
       )}
       {evidence && <EvidenceDrawer evidence={evidence} onClose={() => setEvidence(null)} />}

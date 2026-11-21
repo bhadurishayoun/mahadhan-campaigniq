@@ -112,31 +112,6 @@ export function SegmentedControl<T extends string>({ label, value, options, onCh
   );
 }
 
-export function WorkflowStepper({ steps, current, label = 'Workflow' }: { steps: readonly string[]; current: number; label?: string }) {
-  return (
-    <div className="row" style={{ gap: 14 }}>
-      <b className="strong">{label}</b>
-      <div className="stepper">
-        {steps.map((s, i) => (
-          <Fragment key={s}>
-            {i > 0 && <ArrowRight size={15} className="step-arrow" />}
-            <span className={`step${i < current ? ' done' : i === current ? ' on' : ''}`}>
-              {i < current ? <Check size={14} /> : <span className={`radio${i === current ? ' on' : ''}`} style={i === current ? { borderColor: 'var(--card)' } : undefined} />}
-              {s}
-            </span>
-          </Fragment>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/** One stepper set, identical labels wherever it appears. */
-export const STEPS = {
-  themeReview: ['Proposal submitted', 'Business Head review', 'Decision', 'Marketing Head assignment', 'Campaign development'],
-  themeSuggestion: ['Business Head draft', 'Marketing Head assessment', 'Refined theme', 'Business Head approval', 'Campaign development'],
-  intervention: ['Intervention draft', 'Marketing Head assessment', 'Recovery plan', 'Business Head review', 'Action tracking'],
-} as const;
 
 // ---------------------------------------------------------------- buttons, footer
 export function Button({ children, onClick, primary, disabled, icon: Icon, small, title }: { children: ReactNode; onClick?: () => void; primary?: boolean; disabled?: boolean; icon?: LucideIcon; small?: boolean; title?: string }) {
