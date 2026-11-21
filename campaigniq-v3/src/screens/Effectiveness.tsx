@@ -107,7 +107,7 @@ function CommercialStrip({ c, onDiagnostics, onEvidence }: { c: Campaign; onDiag
     { title: 'Actual', rows: [{ label: 'Incr. sales', value: lakh(bc.validatedSales) }, { label: 'Net ROI', value: times(bc.actualRoi), good: true }, { label: 'vs forecast', value: times(bc.actualRoi - bc.netRoi), good: true }] },
   ];
   return (
-    <Card className="ce-card" title={`${c.name} — commercial effectiveness`} icon={Coins} right={<><Button small icon={Stethoscope} onClick={onDiagnostics}>Diagnostics</Button><Button small icon={FileSearch} onClick={onEvidence}>Attribution evidence</Button></>}>
+    <Card className="ce-card" title={`${c.name}`} icon={Coins} right={<><Button small icon={Stethoscope} onClick={onDiagnostics}>Diagnostics</Button><Button small icon={FileSearch} onClick={onEvidence}>Attribution evidence</Button></>}>
       <div className="ce-panels">
         {panels.map((p) => (
           <div key={p.title} className="ce-panel">
