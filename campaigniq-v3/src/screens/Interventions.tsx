@@ -6,12 +6,12 @@ import { ArrowRight, CircleCheck, ClipboardList, Coins, Eye, FileSearch, FileTex
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  ambadMetrics, businessCase, campaignById, nationalReturns, netRoi, campaignMetrics, CAMPAIGNS, FY, INTERVENTION_DELIVERABLES, NATIONAL, NEXT_FY, nextYearPriorities, PERIOD,
+  ambadMetrics, businessCase, campaignById, nationalReturns, netRoi, campaignMetrics, CAMPAIGNS, FY, INTERVENTION_DELIVERABLES, NATIONAL, NEXT_FY, nextYearPriorities,
   REGIONS, regionMetrics, THEMES, themeCampaigns, themeShares, type Intervention, type InterventionCategory, type Priority,
 } from '../data/bh';
 import { crore, lakh, num, pct, pp, times } from '../data/format';
 import { R } from '../routes';
-import { useBhStore } from '../store/bhStore';
+import { useBhData, useBhStore } from '../store/bhStore';
 import { C, SERIES } from '../theme';
 import { Donut, HBars, Legend } from '../ui/charts';
 import { Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, PanelFooter, SegmentedControl, Select, StatusChip, type Tone } from '../ui/core';
@@ -236,6 +236,7 @@ const QUESTIONS: { id: QuestionId; text: string; keys: string[] }[] = [
 export function DecisionAssistant() {
   const go = useGo();
   const store = useBhStore();
+  const periodLbl = useBhData().periodLabel;
   const [q, setQ] = useState<QuestionId>('priorities');
   const [draft, setDraft] = useState('');
   const [evidence, setEvidence] = useState<Evidence | null>(null);
@@ -253,7 +254,7 @@ export function DecisionAssistant() {
   type Row = { n: string; title: string; evidence: string; status: string; tone: Tone; action: string; to: string };
   const answers: Record<QuestionId, Row[]> = {
     priorities: [
-      { n: '1', title: `${gapRegion.name} region`, evidence: `${crore(regionMetrics(gapRegion).gap, 1)} YTD business ABP gap`, status: 'Review', tone: 'warn', action: 'Review market opportunity', to: R.opportunity },
+      { n: '1', title: `${gapRegion.name} region`, evidence: `${crore(regionMetrics(gapRegion).gap, 1)} business ABP gap`, status: 'Review', tone: 'warn', action: 'Review market opportunity', to: R.opportunity },
       { n: '2', title: 'West Croptek conversion', evidence: `${croptek.adopters} adopters / ${croptek.adoptionTarget} checkpoint target = ${pct(cm.adoptionPct, 0)}`, status: 'Provisional', tone: 'neutral', action: 'Review existing theme performance', to: R.effectiveness('west', 'croptek') },
       { n: '3', title: 'Ambad village gap', evidence: `${a.lowest.name} ${pct(a.lowest.pct)} vs ${a.highest.name} ${pct(a.highest.pct)} = ${a.villageGap.toFixed(1)} pp`, status: 'Validation required', tone: 'warn', action: 'Validate intervention evidence', to: R.territory('ambad') },
     ],
@@ -291,7 +292,7 @@ export function DecisionAssistant() {
                 ]} />
               {q === 'priorities' && (
                 <div className="card" style={{ padding: '10px 14px', gap: 8 }}>
-                  <b className="strong">Ambad adoption ({PERIOD}) – reference</b>
+                  <b className="strong">Ambad adoption ({periodLbl}) – reference</b>
                   <div className="row" style={{ gap: 16 }}>
                     <div style={{ flex: 1 }}><HBars labelWidth={90} max={60} format={(v) => pct(v)} rows={[a.highest, a.lowest].map((v) => ({ label: v.name, values: [v.pct], highlight: v.pct < 45 ? 0 : undefined }))} series={[{ key: 'p', label: 'Trial-to-adoption', color: SERIES.planned }]} /></div>
                     <StatusChip tone="ok">{a.villageGap.toFixed(1)} pp gap</StatusChip>
@@ -311,7 +312,7 @@ export function DecisionAssistant() {
         <div className="stack">
           <Card title="Current context" icon={Folder}>
             <div className="list-row"><Folder size={15} />National portfolio</div>
-            <div className="list-row"><FileText size={15} />{FY} · {PERIOD}</div>
+            <div className="list-row"><FileText size={15} />{FY} · {periodLbl}</div>
             <div className="list-row"><Layers size={15} /><b>{NATIONAL.campaigns}</b>&nbsp;active campaigns</div>
             <div className="list-row"><Coins size={15} /><b>{crore(NATIONAL.actual)}</b>&nbsp;actual marketing investment</div>
             <div className="list-row"><Users size={15} /><b>{num(NATIONAL.adopters)}</b>&nbsp;recorded adopters</div>

@@ -47,7 +47,7 @@ export function Effectiveness() {
 
   return (
     <div className="page">
-      <Breadcrumb items={[{ label: 'Campaign portfolio performance', onClick: () => go(R.portfolio) }, { label: `${r.name} region`, onClick: () => go(R.region(region)) }, { label: 'Campaign effectiveness' }]} />
+      <Breadcrumb items={[{ label: 'Campaign Portfolio Performance', onClick: () => go(R.portfolio) }, { label: `${r.name} region`, onClick: () => go(R.region(region)) }, { label: 'Campaign effectiveness' }]} />
       <PageHeader title={`${r.name} Region Campaign Effectiveness`} />
       <div className="kpis">
         <KpiCard label="Active campaigns" value={r.campaigns} />

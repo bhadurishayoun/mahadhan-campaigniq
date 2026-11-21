@@ -67,7 +67,7 @@ export function MarketOpportunity() {
         { key: 'product', label: 'Product', value: product, options: PRODUCT_OPTIONS, onChange: setProduct },
       ]} />
       <div className="kpis">
-        <KpiCard label="YTD business ABP" value={crore(NATIONAL.abp, 1)} />
+        <KpiCard label="Business ABP" value={crore(NATIONAL.abp, 1)} />
         <KpiCard label="Actual achievement" value={crore(NATIONAL.achieved, 1)} />
         <KpiCard label="Business gap" value={crore(NATIONAL_METRICS.gap, 1)} />
         <KpiCard label="Achievement" value={pct(NATIONAL_METRICS.achievementPct)} />
@@ -76,7 +76,7 @@ export function MarketOpportunity() {
         <DataTable rows={regions} rowKey={(r) => r.id} selected={selRegion.id} onRowClick={(r) => setSel(r.id)}
           columns={[
             { key: 'n', header: 'Region', render: (r) => <span className="row"><span className={`radio${r.id === selRegion.id ? ' on' : ''}`} /><b>{r.name}</b></span> },
-            { key: 'abp', header: 'YTD ABP', align: 'right', render: (r) => crore(r.abp, 1) },
+            { key: 'abp', header: 'ABP', align: 'right', render: (r) => crore(r.abp, 1) },
             { key: 'ach', header: 'Actual sales', align: 'right', render: (r) => crore(r.achieved, 1) },
             { key: 'gap', header: 'Business gap', align: 'right', render: (r) => <b>{crore(regionMetrics(r).gap, 1)}</b> },
             { key: 'c', header: 'Active campaigns', align: 'right', render: (r) => r.campaigns },
@@ -87,7 +87,7 @@ export function MarketOpportunity() {
         />
       </Card>
       <div className="grid" style={{ gridTemplateColumns: '.9fr 1fr 1.25fr' }}>
-        <RegionBarsCard title="Regional business gaps" icon={ChartColumn} sub={`YTD ABP − actual sales · total ${crore(NATIONAL_METRICS.gap, 1)}`} scope={region === ALL ? null : (region as RegionId)}
+        <RegionBarsCard title="Regional business gaps" icon={ChartColumn} sub={`ABP − actual sales · total ${crore(NATIONAL_METRICS.gap, 1)}`} scope={region === ALL ? null : (region as RegionId)}
           value={(r) => regionMetrics(r).gap} format={(v) => crore(v, 1)}
           reference={{ value: NATIONAL_METRICS.gap / REGIONS.length, label: `Avg ${crore(NATIONAL_METRICS.gap / REGIONS.length, 1)}` }}
           tooltip={(r) => `ABP ${crore(r.abp, 1)} · Actual ${crore(r.achieved, 1)} · Gap ${crore(regionMetrics(r).gap, 1)} (${pct((regionMetrics(r).gap / r.abp) * 100)})`} />
@@ -206,7 +206,7 @@ export function ThemeReview() {
   const c = campaignById('croptek');
   const cm = campaignMetrics(c);
   const rows = [
-    { p: 'West region business gap', v: crore(regionMetrics(west).gap, 2), scope: 'Regional business', st: 'Review', facts: [{ label: 'West YTD ABP', value: crore(west.abp, 1) }, { label: 'West achievement', value: crore(west.achieved, 1) }] },
+    { p: 'West region business gap', v: crore(regionMetrics(west).gap, 2), scope: 'Regional business', st: 'Review', facts: [{ label: 'West ABP', value: crore(west.abp, 1) }, { label: 'West achievement', value: crore(west.achieved, 1) }] },
     { p: 'Ambad all-product onion ABP', v: crore(AMBAD.onionAbp), scope: 'Territory / all-product', st: 'Review', facts: [{ label: 'Territory all-product ABP', value: crore(TERRITORIES[0].abp) }, { label: 'Onion all-product ABP', value: crore(AMBAD.onionAbp) }] },
     { p: 'Croptek-specific allocation', v: 'Pending', scope: 'Product-specific', st: 'Pending', facts: [{ label: 'SKU mapping', value: 'Pending' }] },
     { p: `${MARKET.state} penetration`, v: MARKET.penetration, scope: 'State market signal', st: 'Validate', facts: [{ label: 'Source validation', value: 'Required' }] },

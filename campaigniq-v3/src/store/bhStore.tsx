@@ -3,7 +3,7 @@
  * Holds what users change: scope, theme decisions, interventions, recommendations, scenarios, learning priorities.
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { initialInterventions, THEME_QUEUE, type Intervention, type RegionId, type ThemeStatus } from '../data/bh';
+import { applyPeriod, initialInterventions, periodLabel, THEME_QUEUE, type Intervention, type PeriodId, type RegionId, type ThemeStatus } from '../data/bh';
 
 export type Scope = RegionId | 'national';
 
@@ -37,6 +37,7 @@ export interface Scenario {
 
 interface State {
   scope: Scope;
+  period: PeriodId;
   themeStatus: Record<string, ThemeStatus>;
   decisions: ThemeDecision[];
   interventions: Intervention[];
@@ -49,6 +50,7 @@ const KEY = 'campaigniq.v3.bh';
 
 const initial = (): State => ({
   scope: 'national',
+  period: 'ytd',
   themeStatus: Object.fromEntries(THEME_QUEUE.map((t) => [t.id, t.status])),
   decisions: [],
   interventions: initialInterventions(),
@@ -62,7 +64,7 @@ function load(): State {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return initial();
     // Scope is never restored: every fresh open starts on all regions (national portfolio).
-    return { ...initial(), ...(JSON.parse(raw) as Partial<State>), scope: 'national' };
+    return { ...initial(), ...(JSON.parse(raw) as Partial<State>), scope: 'national', period: 'ytd' };
   } catch {
     return initial();
   }
@@ -72,6 +74,7 @@ interface Toast { id: number; text: string }
 
 interface Ctx extends State {
   setScope: (s: Scope) => void;
+  setPeriod: (p: PeriodId) => void;
   decideTheme: (d: ThemeDecision) => void;
   addIntervention: (i: Intervention) => void;
   updateIntervention: (id: string, patch: Partial<Intervention>) => void;
@@ -103,11 +106,15 @@ export function BhStoreProvider({ children }: { children: ReactNode }) {
     window.setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3200);
   }, []);
 
+  // The selected period rewrites the data module before any screen renders (see applyPeriod in data/bh.ts).
+  applyPeriod(state.period);
+
   const value = useMemo<Ctx>(() => ({
     ...state,
     toasts,
     toast,
     setScope: (scope) => setState((s) => (s.scope === scope ? s : { ...s, scope })),
+    setPeriod: (period) => setState((s) => (s.period === period ? s : { ...s, period })),
     decideTheme: (d) => setState((s) => ({
       ...s,
       decisions: [...s.decisions.filter((x) => !(x.themeId === d.themeId && x.draft)), d],
@@ -128,4 +135,10 @@ export function useBhStore(): Ctx {
   const ctx = useContext(StoreCtx);
   if (!ctx) throw new Error('useBhStore outside provider');
   return ctx;
+}
+
+/** The one selector every screen reads: top-bar scope and period (the data module is already set to the period). */
+export function useBhData() {
+  const { scope, period } = useBhStore();
+  return { scope, period, periodLabel: periodLabel(period) };
 }

@@ -105,17 +105,9 @@ export const themeShares = (t: Theme) => ({
 
 /** Portfolio views by crop and by product (same national totals: 12 campaigns, ₹190 L, 1,860 adopters). */
 export interface MixRow { id: string; name: string; campaigns: number; investment: number; adopters: number; sales: number }
-export const CROP_MIX: MixRow[] = [
-  { id: 'onion', name: 'Onion', campaigns: 4, investment: 62, adopters: 640, sales: 240 },
-  { id: 'cotton', name: 'Cotton', campaigns: 3, investment: 52, adopters: 470, sales: 196 },
-  { id: 'soybean', name: 'Soybean', campaigns: 3, investment: 46, adopters: 450, sales: 172 },
-  { id: 'maize', name: 'Maize', campaigns: 2, investment: 30, adopters: 300, sales: 98 },
-];
-export const PRODUCT_MIX: MixRow[] = [
-  { id: 'croptek', name: 'Croptek', campaigns: 5, investment: 80, adopters: 820, sales: 300 },
-  { id: 'npk', name: 'Mahadhan 19:19:19', campaigns: 4, investment: 66, adopters: 600, sales: 240 },
-  { id: 'bensulf', name: 'Mahadhan Bensulf', campaigns: 3, investment: 44, adopters: 440, sales: 166 },
-];
+/** Filled from ALL_CAMPAIGNS (crop / product tags) by applyPeriod, so they always reconcile to the national totals. */
+export const CROP_MIX: MixRow[] = [];
+export const PRODUCT_MIX: MixRow[] = [];
 
 // ---------------------------------------------------------------- theme status labels
 export const THEME_STATUS: Record<ThemeStatus, { mh: string; bh: string; tone: 'ok' | 'warn' | 'risk' | 'neutral' }> = {
@@ -444,19 +436,116 @@ export const THEME_DELIVERABLES = ['Market opportunity validation', 'Existing th
 
 // ---------------------------------------------------------------- campaign budgets, all regions (reallocation)
 /** Budget view of every active campaign (West detail above + the other regions). Sums reconcile to REGIONS and THEMES. */
-export interface PlanCampaign { id: string; region: RegionId; name: string; theme: ThemeId; approved: number; actual: number; adopters: number }
+export type Season = 'Kharif' | 'Rabi';
+export interface PlanCampaign { id: string; region: RegionId; name: string; theme: ThemeId; crop: string; product: string; season: Season; approved: number; actual: number; adopters: number; sales: number }
+
+/** Crop, product and season per West campaign (detail records above). */
+const WEST_TAGS: Record<CampaignId, { crop: string; product: string; season: Season }> = {
+  croptek: { crop: 'Onion', product: 'Croptek', season: 'Rabi' },
+  adoption: { crop: 'Soybean', product: 'Mahadhan 19:19:19', season: 'Kharif' },
+  enablement: { crop: 'Onion', product: 'Croptek', season: 'Rabi' },
+  trial: { crop: 'Cotton', product: 'Mahadhan Bensulf', season: 'Kharif' },
+};
 
 export const ALL_CAMPAIGNS: PlanCampaign[] = [
-  ...CAMPAIGNS.map(({ id, region, name, theme, approved, actual, adopters }) => ({ id, region, name, theme, approved, actual, adopters })),
-  { id: 'paddy', region: 'south', name: 'Paddy conversion drive', theme: 'conversion', approved: 23, actual: 18, adopters: 160 },
-  { id: 'retailer-south', region: 'south', name: 'Retailer partner programme', theme: 'retailer', approved: 21, actual: 16, adopters: 170 },
-  { id: 'awareness-south', region: 'south', name: 'Crop nutrition awareness South', theme: 'awareness', approved: 26, actual: 20, adopters: 160 },
-  { id: 'wheat', region: 'north', name: 'Wheat adoption drive', theme: 'conversion', approved: 20, actual: 14, adopters: 120 },
-  { id: 'trial-north', region: 'north', name: 'Trial & follow-up North', theme: 'trial', approved: 24, actual: 17, adopters: 150 },
-  { id: 'soil-health', region: 'north', name: 'Soil health awareness', theme: 'awareness', approved: 11, actual: 8, adopters: 100 },
-  { id: 'enablement-east', region: 'east', name: 'Retailer enablement East', theme: 'retailer', approved: 14, actual: 10, adopters: 110 },
-  { id: 'trial-east', region: 'east', name: 'Trial & follow-up East', theme: 'trial', approved: 21, actual: 15, adopters: 130 },
+  ...CAMPAIGNS.map(({ id, region, name, theme, approved, actual, adopters, sales }) => ({ id, region, name, theme, ...WEST_TAGS[id], approved, actual, adopters, sales })),
+  { id: 'paddy', region: 'south', name: 'Paddy conversion drive', theme: 'conversion', crop: 'Paddy', product: 'Mahadhan 19:19:19', season: 'Kharif', approved: 23, actual: 18, adopters: 160, sales: 68 },
+  { id: 'retailer-south', region: 'south', name: 'Retailer partner programme', theme: 'retailer', crop: 'Cotton', product: 'Croptek', season: 'Kharif', approved: 21, actual: 16, adopters: 170, sales: 64 },
+  { id: 'awareness-south', region: 'south', name: 'Crop nutrition awareness South', theme: 'awareness', crop: 'Maize', product: 'Mahadhan Bensulf', season: 'Kharif', approved: 26, actual: 20, adopters: 160, sales: 60 },
+  { id: 'wheat', region: 'north', name: 'Wheat adoption drive', theme: 'conversion', crop: 'Wheat', product: 'Mahadhan 19:19:19', season: 'Rabi', approved: 20, actual: 14, adopters: 120, sales: 56 },
+  { id: 'trial-north', region: 'north', name: 'Trial & follow-up North', theme: 'trial', crop: 'Wheat', product: 'Croptek', season: 'Rabi', approved: 24, actual: 17, adopters: 150, sales: 54 },
+  { id: 'soil-health', region: 'north', name: 'Soil health awareness', theme: 'awareness', crop: 'Maize', product: 'Mahadhan Bensulf', season: 'Kharif', approved: 11, actual: 8, adopters: 100, sales: 28 },
+  { id: 'enablement-east', region: 'east', name: 'Retailer enablement East', theme: 'retailer', crop: 'Paddy', product: 'Croptek', season: 'Kharif', approved: 14, actual: 10, adopters: 110, sales: 44 },
+  { id: 'trial-east', region: 'east', name: 'Trial & follow-up East', theme: 'trial', crop: 'Soybean', product: 'Mahadhan 19:19:19', season: 'Kharif', approved: 21, actual: 15, adopters: 130, sales: 44 },
 ];
 
 export const planCampaign = (id: string) => ALL_CAMPAIGNS.find((c) => c.id === id)!;
 export const planCampaignsOf = (region: RegionId) => ALL_CAMPAIGNS.filter((c) => c.region === region);
+
+/** Portfolio mix by a campaign tag (crop / product / theme / region), optionally filtered by season. */
+export const mixBy = (key: 'crop' | 'product', season: Season | 'all' = 'all'): MixRow[] => {
+  const cs = ALL_CAMPAIGNS.filter((c) => season === 'all' || c.season === season);
+  const names = [...new Set(cs.map((c) => c[key]))];
+  return names.map((n) => {
+    const g = cs.filter((c) => c[key] === n);
+    return { id: n.toLowerCase().replace(/[^a-z0-9]+/g, '-'), name: n, campaigns: g.length, investment: sum(g, (c) => c.actual), adopters: sum(g, (c) => c.adopters), sales: sum(g, (c) => c.sales) };
+  }).sort((a, b) => b.investment - a.investment);
+};
+
+// ================================================================ reporting periods
+/**
+ * Every flow figure above is the YTD (Apr 2026 – Feb 2027) total. Each is split into months with MONTH_SHARES
+ * (rounded per month, remainder in Feb so the months add up exactly to YTD); a period is the sum of its months.
+ * applyPeriod() rewrites the exported records in place, so every screen and helper reads the selected period.
+ * Counts (campaigns, territories, activities) and rates (planned / observed execution) do not change by period.
+ */
+export type PeriodId = 'ytd' | 'q1' | 'q2' | 'q3' | 'q4' | 'feb';
+export const MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'] as const;
+export const MONTH_SHARES = [6, 7, 10, 12, 11, 9, 10, 11, 9, 8, 7];
+export const PERIODS: { id: PeriodId; label: string; months: number[] }[] = [
+  { id: 'ytd', label: 'YTD through Feb 2027', months: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+  { id: 'q1', label: 'Q1 · Apr–Jun 2026', months: [0, 1, 2] },
+  { id: 'q2', label: 'Q2 · Jul–Sep 2026', months: [3, 4, 5] },
+  { id: 'q3', label: 'Q3 · Oct–Dec 2026', months: [6, 7, 8] },
+  { id: 'q4', label: 'Q4 to date · Jan–Feb 2027', months: [9, 10] },
+  { id: 'feb', label: 'Feb 2027', months: [10] },
+];
+
+const round = (v: number, dp: number) => Math.round(v * 10 ** dp) / 10 ** dp;
+const dpOf = (v: number) => (Number.isInteger(v) ? 0 : 1);
+
+/** Monthly split of a YTD total: shares rounded per month, the rounding remainder goes into Feb. */
+export const monthlySplit = (total: number, dp = dpOf(total)): number[] => {
+  const m = MONTH_SHARES.slice(0, -1).map((s) => round((total * s) / 100, dp));
+  return [...m, round(total - m.reduce((a, b) => a + b, 0), dp)];
+};
+const forPeriod = (total: number, months: number[]) => {
+  const dp = dpOf(total);
+  const m = monthlySplit(total, dp);
+  return round(months.reduce((s, i) => s + m[i], 0), dp);
+};
+
+const BASE = JSON.parse(JSON.stringify({
+  regions: REGIONS, themes: THEMES, campaigns: CAMPAIGNS, all: ALL_CAMPAIGNS, territories: TERRITORIES,
+  villages: AMBAD.villages, cropRows: AMBAD.cropRows, onionAbp: AMBAD.onionAbp, linked: AMBAD.campaignLinkedSales, bc: BUSINESS_CASE,
+}));
+
+const scaleFields = <T extends object>(target: T, base: T, fields: (keyof T)[], months: number[]) => {
+  fields.forEach((f) => {
+    const v = base[f] as unknown;
+    (target as Record<keyof T, unknown>)[f] = typeof v === 'number' ? forPeriod(v, months) : v;
+  });
+};
+
+let currentPeriod: PeriodId | null = null;
+export const periodLabel = (id: PeriodId) => PERIODS.find((p) => p.id === id)!.label;
+export const getPeriod = () => currentPeriod ?? 'ytd';
+
+export function applyPeriod(id: PeriodId) {
+  if (currentPeriod === id) return;
+  currentPeriod = id;
+  const months = PERIODS.find((p) => p.id === id)!.months;
+  REGIONS.forEach((r, i) => scaleFields(r, BASE.regions[i], ['abp', 'achieved', 'approved', 'actual', 'adopters', 'sales'], months));
+  THEMES.forEach((t, i) => scaleFields(t, BASE.themes[i], ['investment', 'adopters', 'sales'], months));
+  CAMPAIGNS.forEach((c, i) => scaleFields(c, BASE.campaigns[i], ['adoptionTarget', 'adopters', 'approved', 'actual', 'sales'], months));
+  ALL_CAMPAIGNS.forEach((c, i) => scaleFields(c, BASE.all[i], ['approved', 'actual', 'adopters', 'sales'], months));
+  TERRITORIES.forEach((t, i) => scaleFields(t, BASE.territories[i], ['abp', 'ytdSales', 'adopters'], months));
+  AMBAD.villages.forEach((v, i) => scaleFields(v, BASE.villages[i], ['adopters', 'trials'], months));
+  AMBAD.cropRows.forEach((r, i) => scaleFields(r, BASE.cropRows[i], ['allProductAbp', 'trials', 'adopters'], months));
+  AMBAD.onionAbp = forPeriod(BASE.onionAbp, months);
+  AMBAD.campaignLinkedSales = forPeriod(BASE.linked, months);
+  BUSINESS_CASE.croptek = { forecastSales: forPeriod(BASE.bc.croptek.forecastSales, months) };
+  Object.assign(NATIONAL, {
+    abp: sum(REGIONS, (r) => r.abp), achieved: sum(REGIONS, (r) => r.achieved), campaigns: sum(REGIONS, (r) => r.campaigns),
+    approved: sum(REGIONS, (r) => r.approved), actual: sum(REGIONS, (r) => r.actual), adopters: sum(REGIONS, (r) => r.adopters),
+  });
+  Object.assign(NATIONAL_METRICS, {
+    achievementPct: ratio(NATIONAL.achieved, NATIONAL.abp), gap: NATIONAL.abp - NATIONAL.achieved,
+    unspent: NATIONAL.approved - NATIONAL.actual, utilisationPct: ratio(NATIONAL.actual, NATIONAL.approved),
+    perAdopter: Math.round((NATIONAL.actual * 100000) / NATIONAL.adopters),
+  });
+  CROP_MIX.splice(0, CROP_MIX.length, ...mixBy('crop'));
+  PRODUCT_MIX.splice(0, PRODUCT_MIX.length, ...mixBy('product'));
+}
+
+applyPeriod('ytd');

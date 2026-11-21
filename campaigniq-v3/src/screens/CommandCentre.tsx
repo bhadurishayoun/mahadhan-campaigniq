@@ -50,7 +50,7 @@ export function CommandCentre() {
       ]} />
 
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(6, minmax(0, 1fr))' }}>
-        <KpiCard label="Achievement vs YTD ABP" value={crore(t.achieved, 1)} />
+        <KpiCard label="Achievement vs ABP" value={crore(t.achieved, 1)} />
         <KpiCard label="Investment vs approved" value={crore(t.actual)} />
         <KpiCard label="Active campaigns" value={num(t.campaigns)} />
         <KpiCard label="Farmer adoption" value={num(t.adopters)} />
@@ -65,7 +65,7 @@ export function CommandCentre() {
           onRowClick={(r) => go(R.region(r.id))}
           columns={[
             { key: 'region', header: 'Region', render: (r) => <b>{r.name}</b> },
-            { key: 'ach', header: 'YTD business achievement', render: (r) => <span className="row" style={{ flexWrap: 'wrap', rowGap: 4 }}>{crore(r.achieved, 1)} / {crore(r.abp, 1)}<StatusChip tone="ok">{pct(regionMetrics(r).achievementPct)}</StatusChip></span> },
+            { key: 'ach', header: 'Business achievement', render: (r) => <span className="row" style={{ flexWrap: 'wrap', rowGap: 4 }}>{crore(r.achieved, 1)} / {crore(r.abp, 1)}<StatusChip tone="ok">{pct(regionMetrics(r).achievementPct)}</StatusChip></span> },
             { key: 'camp', header: 'Campaigns running', align: 'right', render: (r) => campaignsOf(r) },
             { key: 'exec', header: 'Planned vs observed execution', render: (r) => <span className="row" style={{ flexWrap: 'wrap', rowGap: 4 }}>{r.plannedExec}% / {r.observedExec}%<DualBar planned={r.plannedExec} observed={r.observedExec} /></span> },
             { key: 'inv', header: 'Marketing investment', align: 'right', render: (r) => crore(r.actual) },

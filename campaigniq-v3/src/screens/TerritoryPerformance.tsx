@@ -28,7 +28,7 @@ export function TerritoryPerformance() {
 
   return (
     <div className="page">
-      <Breadcrumb items={[{ label: 'Campaign portfolio performance', onClick: () => go(R.portfolio) }, { label: 'West region', onClick: () => go(R.region(t.region)) }, { label: 'Ambad' }]} />
+      <Breadcrumb items={[{ label: 'Campaign Portfolio Performance', onClick: () => go(R.portfolio) }, { label: 'West region', onClick: () => go(R.region(t.region)) }, { label: 'Ambad' }]} />
       <PageHeader title={`${t.name} Territory Performance`} />
       <div className="kpis">
         <KpiCard label="Territory all-product ABP" value={crore(t.abp)} />
@@ -47,7 +47,7 @@ export function TerritoryPerformance() {
               { key: 'product', header: 'Product', render: (r) => r.product },
               { key: 'abp', header: 'All-product crop ABP', align: 'right', render: (r) => (r.allProductAbp !== null ? <b>{crore(r.allProductAbp)}</b> : <StatusChip tone="neutral">Pending</StatusChip>) },
               { key: 'pabp', header: 'Product-specific ABP', align: 'center', render: (r) => <StatusChip tone={r.allProductAbp !== null ? 'warn' : 'neutral'}>{r.allProductAbp !== null ? 'SKU mapping pending' : 'Pending'}</StatusChip> },
-              { key: 'sales', header: 'YTD sales', align: 'center', render: (r) => <StatusChip tone={r.allProductAbp !== null ? 'warn' : 'neutral'}>{r.allProductAbp !== null ? 'SKU mapping pending' : 'Pending'}</StatusChip> },
+              { key: 'sales', header: 'Sales', align: 'center', render: (r) => <StatusChip tone={r.allProductAbp !== null ? 'warn' : 'neutral'}>{r.allProductAbp !== null ? 'SKU mapping pending' : 'Pending'}</StatusChip> },
               { key: 'trials', header: 'Trials', align: 'right', render: (r) => (r.trials !== null ? num(r.trials) : '–') },
               { key: 'adopt', header: 'Recorded adopters', align: 'right', render: (r) => (r.adopters !== null ? num(r.adopters) : '–') },
               { key: 'conv', header: 'Conversion', align: 'right', render: (r) => (r.trials ? <span className="ok-text">{pct(ratio(r.adopters ?? 0, r.trials))}</span> : '–') },

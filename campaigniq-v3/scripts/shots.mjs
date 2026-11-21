@@ -58,6 +58,11 @@ await send('Page.navigate', { url: BASE });
 await wait(1500);
 await ev(`localStorage.setItem('campaigniq.session.v2', JSON.stringify({name:'Review',persona:'strategy',userId:'MASTER001',master:true})); localStorage.removeItem('campaigniq.v3.bh'); true`);
 await send('Page.reload'); await wait(1500);
+// Optional: pick top-bar menu items by label, e.g. PICK="Q3 · Oct–Dec 2026|West region" (opens each top-bar menu and clicks the item).
+for (const label of (process.env.PICK || '').split('|').filter(Boolean)) {
+  await ev(`(async () => { for (const t of document.querySelectorAll('.tb-select')) { t.click(); await new Promise(r => setTimeout(r, 150)); const b = [...document.querySelectorAll('.menu button')].find(x => x.textContent.trim() === ${JSON.stringify(label)}); if (b) { b.click(); return true; } t.click(); } return false; })()`);
+  await wait(400);
+}
 
 for (const [name, route] of ROUTES) {
   errors.length = 0;
@@ -77,7 +82,7 @@ for (const [name, route] of ROUTES) {
   await ev(`document.querySelector('.app') && (document.querySelector('.app').style.height = 'auto', document.querySelector('.main').style.overflow = 'visible'); true`);
   await wait(500);
   const shot = await send('Page.captureScreenshot', { format: 'png' });
-  fs.writeFileSync(path.join(out, `${name}-${W}.png`), Buffer.from(shot.data, 'base64'));
+  fs.writeFileSync(path.join(out, `${name}-${W}${process.env.PICK ? '-picked' : ''}.png`), Buffer.from(shot.data, 'base64'));
   await send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: false });
   console.log(`${name.padEnd(26)} ${info.route.padEnd(70)} ${info.hscroll ? 'H-SCROLL ' : ''}${info.clipped.length ? 'CLIPPED ' + JSON.stringify(info.clipped) + ' ' : ''}${errors.length ? 'ERRORS ' + JSON.stringify(errors) : 'ok'}`);
 }

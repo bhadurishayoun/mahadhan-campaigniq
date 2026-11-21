@@ -2,9 +2,9 @@ import { AlertCircle, Bell, Calendar, CalendarCheck, ChartColumnBig, ChartColumn
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { PERSONAS } from '../auth/nav';
-import { FY, PERIOD, SCOPES } from '../data/bh';
+import { FY, PERIODS, SCOPES } from '../data/bh';
 import { navKeyOf, R, type NavKey } from '../routes';
-import { useBhStore, type Scope } from '../store/bhStore';
+import { useBhData, useBhStore, type Scope } from '../store/bhStore';
 import { Toasts } from '../ui/core';
 import { attentionItems } from './attention';
 
@@ -42,6 +42,7 @@ export function Shell({ userName, onSignOut }: { userName: string; onSignOut: ()
   const nav = useNavigate();
   const { pathname } = useLocation();
   const store = useBhStore();
+  const data = useBhData();
   const active = navKeyOf(pathname);
   const alerts = attentionItems(store.themeStatus);
   const scopeLabel = SCOPES.find((s) => s.id === store.scope)?.label ?? SCOPES[0].label;
@@ -71,8 +72,8 @@ export function Shell({ userName, onSignOut }: { userName: string; onSignOut: ()
           ))}
         </Dropdown>
         <span className="tb-sep" />
-        <Dropdown trigger={(_o, t) => <button type="button" className="tb-select" onClick={t}><CalendarCheck size={17} />{PERIOD}<ChevronDown size={15} /></button>}>
-          {(close) => <button type="button" className="on" onClick={close}>{PERIOD}</button>}
+        <Dropdown trigger={(_o, t) => <button type="button" className="tb-select" onClick={t}><CalendarCheck size={17} />{data.periodLabel}<ChevronDown size={15} /></button>}>
+          {(close) => PERIODS.map((p) => <button key={p.id} type="button" className={p.id === data.period ? 'on' : ''} onClick={() => { store.setPeriod(p.id); close(); }}>{p.label}</button>)}
         </Dropdown>
         <div className="tb-right">
           <button type="button" className="icon-btn" aria-label="Help" title="AI Copilot workspace" onClick={() => nav(R.assistant)}><CircleHelp size={19} /></button>

@@ -29,7 +29,7 @@ function StatusList({ items }: { items: { icon: typeof Coins; label: string; val
 // ================================================================ shared card: investment per recorded adopter
 function PerAdopterCard({ scope }: { scope: RegionId | null }) {
   return (
-    <RegionBarsCard title="Investment per recorded adopter" icon={Users} sub="Actual investment ÷ recorded adopters, YTD" scope={scope}
+    <RegionBarsCard title="Investment per recorded adopter" icon={Users} sub="Actual investment ÷ recorded adopters, selected period" scope={scope}
       value={(r) => regionMetrics(r).perAdopter} format={rupees}
       reference={{ value: NATIONAL_METRICS.perAdopter, label: `National avg ${rupees(NATIONAL_METRICS.perAdopter)}` }}
       tooltip={(r) => `Investment ${lakh(r.actual)} · Adopters ${num(r.adopters)} · ${rupees(regionMetrics(r).perAdopter)} per adopter`} />

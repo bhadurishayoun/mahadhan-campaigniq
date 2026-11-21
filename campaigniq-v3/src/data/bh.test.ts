@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { sum } from './format';
 import {
-  ALL_CAMPAIGNS, AMBAD, ambadMetrics, businessCase, CAMPAIGNS, planCampaignsOf, CONTRIBUTION_MARGIN, CROP_MIX, nationalReturns, netRoi, PRODUCT_MIX, regionRoi, campaignMetrics, campaignTotals, initialInterventions, NATIONAL,
+  ALL_CAMPAIGNS, AMBAD, ambadMetrics, applyPeriod, businessCase, CAMPAIGNS, MONTH_SHARES, monthlySplit, planCampaignsOf, CONTRIBUTION_MARGIN, CROP_MIX, nationalReturns, netRoi, PRODUCT_MIX, regionRoi, campaignMetrics, campaignTotals, initialInterventions, NATIONAL,
   NATIONAL_METRICS, REGIONS, regionMetrics, territoriesOf, THEMES, themeCampaigns, themeShares,
 } from './bh';
 
@@ -134,5 +134,25 @@ describe('all-region campaign budgets reconcile', () => {
     expect(THEMES.map((t) => [sum(ALL_CAMPAIGNS.filter((c) => c.theme === t.id), (c) => c.actual), sum(ALL_CAMPAIGNS.filter((c) => c.theme === t.id), (c) => c.adopters)]))
       .toEqual([[64, 720], [48, 460], [50, 420], [28, 260]]);
     THEMES.forEach((t) => expect(ALL_CAMPAIGNS.filter((c) => c.theme === t.id).length).toBe(themeCampaigns(t.id)));
+  });
+});
+
+describe('reporting periods', () => {
+  it('monthly splits add up to YTD for every region and metric', () => {
+    expect(MONTH_SHARES.reduce((a, b) => a + b, 0)).toBe(100);
+    REGIONS.forEach((r) => (['abp', 'achieved', 'approved', 'actual', 'adopters', 'sales'] as const).forEach((k) => {
+      expect(monthlySplit(r[k]).reduce((a, b) => a + b, 0)).toBeCloseTo(r[k], 6);
+    }));
+  });
+  it('quarters add up to YTD and every period reconciles', () => {
+    const ytd = REGIONS.map((r) => r.abp);
+    const q = (['q1', 'q2', 'q3', 'q4'] as const).map((p) => { applyPeriod(p); return REGIONS.map((r) => r.abp); });
+    ytd.forEach((v, i) => expect(q.reduce((s, x) => s + x[i], 0)).toBe(v));
+    applyPeriod('q3');
+    expect(REGIONS[0].abp).toBe(480); // West ABP ₹16 Cr × (10 + 11 + 9)%
+    expect(NATIONAL.abp).toBe(sum(REGIONS, (r) => r.abp));
+    expect(sum(CROP_MIX, (m) => m.investment)).toBe(sum(ALL_CAMPAIGNS, (c) => c.actual));
+    applyPeriod('ytd');
+    expect(REGIONS[0].abp).toBe(1600);
   });
 });

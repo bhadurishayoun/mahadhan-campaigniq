@@ -1,16 +1,17 @@
 /** Screen 2 — Campaign Portfolio Performance (mockup BH.2.png). */
 import { ChartColumn, ExternalLink, Layers, Table2 } from 'lucide-react';
 import { useState } from 'react';
-import { CROP_MIX, netRoi, PRODUCT_MIX, REGIONS, THEMES, themeCampaigns, type MixRow, type RegionId, type ThemeId } from '../data/bh';
+import { ALL_CAMPAIGNS, netRoi, REGIONS, THEMES, type MixRow, type Season, type RegionId, type ThemeId } from '../data/bh';
 import { crore, lakh, num, sum, times } from '../data/format';
 import { R } from '../routes';
 import { SERIES } from '../theme';
 import { HBars, HeatGrid } from '../ui/charts';
-import { Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, SegmentedControl, StatusChip } from '../ui/core';
+import { Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, SegmentedControl, Select, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { ALL, CROP_OPTIONS, PRODUCT_OPTIONS, REGION_OPTIONS, THEME_OPTIONS, useDrillRegion, useGo, useScopeFilter } from './common';
 
 type View = 'theme' | 'crop' | 'product' | 'geography';
+type SortKey = 'roi' | 'investment' | 'adopters' | 'sales';
 
 /** Region with the most campaigns for a theme (drill target for a theme row). */
 const topRegionFor = (t: ThemeId): RegionId => [...REGIONS].sort((a, b) => b.themeMix[t] - a.themeMix[t])[0].id;
@@ -24,33 +25,46 @@ export function Portfolio() {
   const [view, setView] = useState<View>('theme');
   const drill = useDrillRegion();
 
+  const [season, setSeason] = useState<'all' | Season>('all');
+  const [sortBy, setSortBy] = useState<SortKey>('roi');
   const regions = REGIONS.filter((r) => region === ALL || r.id === region);
   const themes = THEMES.filter((t) => theme === ALL || t.id === theme);
-  const kpi = region === ALL
-    ? { campaigns: sum(themes, (t) => themeCampaigns(t.id)), investment: sum(themes, (t) => t.investment), adopters: sum(themes, (t) => t.adopters) }
-    : { campaigns: sum(regions, (r) => (theme === ALL ? r.campaigns : r.themeMix[theme as ThemeId])), investment: sum(regions, (r) => r.actual), adopters: sum(regions, (r) => r.adopters) };
+  // Every figure on this page comes from the campaign records in scope, so season and filters reconcile everywhere.
+  const camps = ALL_CAMPAIGNS.filter((c) => (region === ALL || c.region === region) && (theme === ALL || c.theme === theme)
+    && (season === 'all' || c.season === season) && (crop === ALL || c.crop === crop) && (product === ALL || c.product === product));
+  const group = (key: string, name: string, g: typeof camps): MixRow => ({ id: key, name, campaigns: g.length, investment: sum(g, (c) => c.actual), adopters: sum(g, (c) => c.adopters), sales: sum(g, (c) => c.sales) });
+  const by = (f: (c: (typeof camps)[number]) => string) => [...new Set(camps.map(f))].map((k) => group(k, k, camps.filter((c) => f(c) === k)));
+  const kpi = { campaigns: camps.length, investment: sum(camps, (c) => c.actual), adopters: sum(camps, (c) => c.adopters) };
   const avgExec = Math.round(sum(regions, (r) => r.observedExec) / regions.length);
+  const SORTS: Record<SortKey, (m: MixRow) => number> = { roi: (m) => netRoi(m.sales, m.investment), investment: (m) => m.investment, adopters: (m) => m.adopters, sales: (m) => m.sales };
 
-  const mixRows: MixRow[] = view === 'crop' ? CROP_MIX.filter((m) => crop === ALL || m.name === crop)
-    : view === 'product' ? PRODUCT_MIX.filter((m) => product === ALL || m.name === product)
-    : view === 'geography' ? regions.map((r) => ({ id: r.id, name: `${r.name} region`, campaigns: r.campaigns, investment: r.actual, adopters: r.adopters, sales: r.sales }))
-    : themes.map((t) => ({ id: t.id, name: t.name, campaigns: themeCampaigns(t.id), investment: t.investment, adopters: t.adopters, sales: t.sales }));
+  const mixRows: MixRow[] = (view === 'crop' ? by((c) => c.crop)
+    : view === 'product' ? by((c) => c.product)
+    : view === 'geography' ? regions.map((r) => group(r.id, `${r.name} region`, camps.filter((c) => c.region === r.id))).filter((m) => m.campaigns > 0)
+    : themes.map((t) => group(t.id, t.name, camps.filter((c) => c.theme === t.id))).filter((m) => m.campaigns > 0))
+    .sort((x, y) => SORTS[sortBy](y) - SORTS[sortBy](x));
   const drillFor = (m: MixRow): string => (view === 'geography' ? R.region(m.id as RegionId) : view === 'theme' ? R.region(topRegionFor(m.id as ThemeId)) : R.region(drill));
   const groupLabel = { theme: 'Theme', crop: 'Crop', product: 'Product', geography: 'Region' }[view];
 
   return (
     <div className="page">
-      <Breadcrumb items={[{ label: 'Marketing and Command Centre', onClick: () => go(R.command) }, { label: 'Campaign portfolio performance' }]} />
-      <PageHeader title="National Campaign Portfolio Performance" />
+      <Breadcrumb items={[{ label: 'Marketing and Command Centre', onClick: () => go(R.command) }, { label: 'Campaign Portfolio Performance' }]} />
+      <PageHeader title="Campaign Portfolio Performance" />
       <FilterBar filters={[
         { key: 'region', label: 'Region', value: region, options: REGION_OPTIONS, onChange: setRegion },
         { key: 'crop', label: 'Crop', value: crop, options: CROP_OPTIONS, onChange: setCrop },
         { key: 'product', label: 'Product', value: product, options: PRODUCT_OPTIONS, onChange: setProduct },
         { key: 'theme', label: 'Theme', value: theme, options: THEME_OPTIONS, onChange: setTheme },
       ]} />
-      <SegmentedControl<View> label="Analytical view" value={view} onChange={setView} options={[
+      <div className="row" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <SegmentedControl<View> value={view} onChange={setView} options={[
         { value: 'theme', label: 'Theme-wise' }, { value: 'crop', label: 'Crop-wise' }, { value: 'product', label: 'Product-wise' }, { value: 'geography', label: 'Geography-wise' },
-      ]} />
+        ]} />
+        <div className="row" style={{ gap: 12 }}>
+          <label className="row" style={{ gap: 6 }}><span className="seg-label">Season</span><Select label="Season" value={season} onChange={(v) => setSeason(v as 'all' | Season)} options={[{ value: 'all', label: 'All seasons' }, { value: 'Kharif', label: 'Kharif' }, { value: 'Rabi', label: 'Rabi' }]} /></label>
+          <label className="row" style={{ gap: 6 }}><span className="seg-label">Sort by</span><Select label="Sort by" value={sortBy} onChange={(v) => setSortBy(v as SortKey)} options={[{ value: 'roi', label: 'Net ROI (high–low)' }, { value: 'investment', label: 'Investment' }, { value: 'adopters', label: 'Adopters' }, { value: 'sales', label: 'Incremental sales' }]} /></label>
+        </div>
+      </div>
       <div className="kpis">
         <KpiCard label="Active campaigns" value={num(kpi.campaigns)} />
         <KpiCard label="Actual marketing investment" value={crore(kpi.investment)} />
@@ -82,16 +96,16 @@ export function Portfolio() {
             rows={REGIONS.map((r) => ({ key: r.id, label: r.name }))}
             highlight={region === ALL ? undefined : region}
             cols={themes.map((t) => ({ key: t.id, label: t.short }))}
-            value={(r, t) => REGIONS.find((x) => x.id === r)!.themeMix[t as ThemeId]}
+            value={(r, t) => camps.filter((c) => c.region === r && c.theme === t).length}
             onCell={(r) => go(R.region(r as RegionId))}
             total
           />
         </Card>
         <Card title="Recorded adopters by theme" icon={ChartColumn}>
           <HBars
-            rows={themes.map((t) => ({ label: t.name, values: [t.adopters] }))}
+            rows={themes.map((t) => ({ label: t.name, values: [sum(camps.filter((c) => c.theme === t.id), (c) => c.adopters)] }))}
             series={[{ key: 'adopters', label: 'Recorded adopters', color: SERIES.planned }]}
-            max={Math.max(...THEMES.map((t) => t.adopters))}
+            max={Math.max(1, ...themes.map((t) => sum(camps.filter((c) => c.theme === t.id), (c) => c.adopters)))}
             format={num}
           />
         </Card>

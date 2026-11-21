@@ -20,10 +20,10 @@ export function RegionalPerformance() {
 
   return (
     <div className="page">
-      <Breadcrumb items={[{ label: 'Campaign portfolio performance', onClick: () => go(R.portfolio) }, { label: `${r.name} region` }]} />
+      <Breadcrumb items={[{ label: 'Campaign Portfolio Performance', onClick: () => go(R.portfolio) }, { label: `${r.name} region` }]} />
       <PageHeader title={`${r.name} Region Performance`} />
       <div className="kpis">
-        <KpiCard label="Region achievement vs YTD ABP" value={crore(r.achieved, 1)} />
+        <KpiCard label="Region achievement vs ABP" value={crore(r.achieved, 1)} />
         <KpiCard label="Active campaigns" value={r.campaigns} />
         <KpiCard label="Planned Execution" value={`${r.observedExec}%`} />
         <KpiCard label="Recorded adopters" value={num(r.adopters)} />
@@ -38,7 +38,7 @@ export function RegionalPerformance() {
             columns={[
               { key: 'name', header: 'Territory', render: (t) => <b>{t.name}</b> },
               { key: 'abp', header: 'ABP', align: 'right', render: (t) => crore(t.abp) },
-              { key: 'sales', header: 'YTD sales', align: 'right', render: (t) => crore(t.ytdSales) },
+              { key: 'sales', header: 'Sales', align: 'right', render: (t) => crore(t.ytdSales) },
               { key: 'ach', header: 'Achievement', align: 'right', render: (t) => <StatusChip tone={t.ytdSales >= t.abp ? 'ok' : 'warn'}>{pct(ratio(t.ytdSales, t.abp))}</StatusChip> },
               { key: 'camp', header: 'Campaigns', align: 'right', render: (t) => t.campaigns },
               { key: 'act', header: 'Activities', align: 'center', render: (t) => (hasDetail(t) ? `${t.activitiesDone} / ${t.activitiesPlanned}` : <StatusChip tone="neutral">Pending</StatusChip>) },
