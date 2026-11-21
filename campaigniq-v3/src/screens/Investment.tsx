@@ -337,6 +337,8 @@ export function Reallocation() {
   const rows = camps.map((c) => ({ c, adj: adjOf(c), revised: c.approved + adjOf(c), revisedUnspent: unspentOf(c) + adjOf(c) }));
   const t = { approved: sum(camps, (c) => c.approved), actual: sum(camps, (c) => c.actual), unspent: sum(camps, unspentOf) };
   const net = sum(rows, (x) => x.adj);
+  /** Table: every campaign, West first then South, North, East; adjustments only on the active scenario. */
+  const allRows = ALL_CAMPAIGNS.map((c) => ({ c, adj: adjOf(c), revised: c.approved + adjOf(c), revisedUnspent: unspentOf(c) + adjOf(c) }));
   const pickFrom = (id: string) => {
     const c = planCampaign(id);
     setFrom(id);
@@ -385,18 +387,19 @@ export function Reallocation() {
         <KpiCard label="Simulated transfer" value={lakh(valid ? amt : 0)} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 2.3fr) minmax(0, 1fr)' }}>
-        <Card className="realloc-card" title={`Campaign budget reallocation — ${r.name} region`} icon={Coins} flush>
-          <DataTable rows={rows} rowKey={(x) => x.c.id}
+        <Card className="realloc-card" title="Campaign budget reallocation" icon={Coins} flush>
+          <DataTable rows={allRows} rowKey={(x) => x.c.id}
             columns={[
+              { key: 'rg', header: 'Region', width: '8%', render: (x) => regionById(x.c.region).name },
               { key: 'n', header: 'Campaign', width: '26%', render: (x) => <span className="rc-name">{x.c.name.replace(/-/g, '‑')}</span> },
-              { key: 'ap', header: 'Existing budget', width: '12.33%', align: 'right', render: (x) => lakh(x.c.approved) },
-              { key: 'ac', header: 'Actual', width: '12.33%', align: 'right', render: (x) => lakh(x.c.actual) },
-              { key: 'un', header: 'Unspent', width: '12.33%', align: 'right', render: (x) => lakh(unspentOf(x.c)) },
-              { key: 'ad', header: 'Adjustment', width: '12.33%', align: 'center', render: (x) => adjChip(x.adj) },
-              { key: 'rb', header: 'Simulated budget', width: '12.33%', align: 'right', render: (x) => lakh(x.revised) },
-              { key: 'ru', header: 'Revised unspent', width: '12.33%', align: 'right', render: (x) => lakh(x.revisedUnspent) },
+              { key: 'ap', header: 'Existing budget', width: '11%', align: 'right', render: (x) => lakh(x.c.approved) },
+              { key: 'ac', header: 'Actual', width: '11%', align: 'right', render: (x) => lakh(x.c.actual) },
+              { key: 'un', header: 'Unspent', width: '11%', align: 'right', render: (x) => lakh(unspentOf(x.c)) },
+              { key: 'ad', header: 'Adjustment', width: '11%', align: 'center', render: (x) => adjChip(x.adj) },
+              { key: 'rb', header: 'Simulated budget', width: '11%', align: 'right', render: (x) => lakh(x.revised) },
+              { key: 'ru', header: 'Revised unspent', width: '11%', align: 'right', render: (x) => lakh(x.revisedUnspent) },
             ]}
-            total={{ n: 'Total', ap: lakh(t.approved), ac: lakh(t.actual), un: lakh(t.unspent), ad: lakh(net), rb: lakh(sum(rows, (x) => x.revised)), ru: lakh(sum(rows, (x) => x.revisedUnspent)) }}
+            total={{ rg: 'Total', ap: lakh(sum(allRows, (x) => x.c.approved)), ac: lakh(sum(allRows, (x) => x.c.actual)), un: lakh(sum(allRows, (x) => unspentOf(x.c))), ad: lakh(sum(allRows, (x) => x.adj)), rb: lakh(sum(allRows, (x) => x.revised)), ru: lakh(sum(allRows, (x) => x.revisedUnspent)) }}
           />
         </Card>
         <Card title="Reallocation controls" icon={ArrowLeftRight}>

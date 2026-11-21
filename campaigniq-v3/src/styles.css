@@ -208,6 +208,6 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 .realloc-card .tbl { width: 100%; table-layout: fixed; }
 .realloc-card .tbl th, .realloc-card .tbl td { hyphens: none; word-break: normal; overflow-wrap: normal; }
 .realloc-card .tbl th { white-space: normal; padding-left: 6px; padding-right: 6px; }
-.realloc-card .tbl td { height: 44px; }
+.realloc-card .tbl td { height: 38px; padding-top: 4px; padding-bottom: 4px; }
 .realloc-card .tbl th:first-child, .realloc-card .tbl td:first-child { padding-left: 16px; }
 .realloc-card .rc-name { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
