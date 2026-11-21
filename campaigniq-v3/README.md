@@ -52,3 +52,6 @@ the mockups show only the theme view).
 Pages with view buttons (Campaign Portfolio Performance, Marketing Investment & ROI) share one filter header
 (`FilterHeader` in `src/screens/common.tsx`): Region · Crop · Product · Theme on row 1; view buttons, Season and Sort by
 on row 2. Every figure on those pages comes from the campaign records that pass the filters; the total row stays last.
+Action tracker: 18 seeded register items (5 drafts, 9 awaiting response, 4 closed) in `initialInterventions()`; KPI
+cards, donut and category counts use `interventionCounts()` (tested in `bh.test.ts`). Store key bumped to
+`campaigniq.v3.bh.3` so browsers pick up the seeded rows.

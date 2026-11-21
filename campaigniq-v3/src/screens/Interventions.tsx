@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   ambadMetrics, businessCase, campaignById, THEME_QUEUE, nationalReturns, netRoi, campaignMetrics, CAMPAIGNS, FY, INTERVENTION_DELIVERABLES, NATIONAL, NEXT_FY, nextYearPriorities,
-  REGIONS, regionMetrics, THEMES, themeCampaigns, themeShares, type Intervention, type InterventionCategory, type Priority,
+  REGIONS, regionMetrics, THEMES, themeCampaigns, themeShares, interventionCounts, type Intervention, type InterventionCategory, type Priority,
 } from '../data/bh';
 import { crore, lakh, num, pct, pp, times } from '../data/format';
 import { R } from '../routes';
@@ -33,7 +33,7 @@ export function ActionTracker() {
   const sel = store.interventions.find((i) => i.id === selId) ?? store.interventions[0];
   const drawerId = params.get('drawer');
   const drawerItem = store.interventions.find((i) => i.id === drawerId);
-  const counts = { total: store.interventions.length, draft: store.interventions.filter((i) => i.status === 'draft').length, awaiting: store.interventions.filter((i) => i.status === 'awaiting_response').length, closed: store.interventions.filter((i) => i.status === 'closed').length };
+  const counts = interventionCounts(store.interventions);
   const setP = (patch: Record<string, string | null>) => setParams((p) => { const n = new URLSearchParams(p); Object.entries(patch).forEach(([k, v]) => (v === null ? n.delete(k) : n.set(k, v))); return n; }, { replace: true });
   const camp = sel?.campaign ? campaignById(sel.campaign) : null;
   const cm = camp ? campaignMetrics(camp) : null;
@@ -50,9 +50,11 @@ export function ActionTracker() {
         <KpiCard label="Closed" value={counts.closed} />
       </div>
       <SegmentedControl<'all' | InterventionCategory> value={cat} onChange={setCat} options={[
-        { value: 'all', label: 'All actions' }, { value: 'Performance', label: 'Performance' }, { value: 'Investment', label: 'Investment' }, { value: 'Strategic theme', label: 'Strategic themes' }, { value: 'Theme clarification', label: 'Clarifications' },
+        { value: 'all', label: `All actions (${counts.total})` }, ...([['Performance', 'Performance'], ['Investment', 'Investment'], ['Strategic theme', 'Strategic themes'], ['Theme clarification', 'Clarifications']] as [InterventionCategory, string][])
+          .map(([value, label]) => ({ value, label: `${label} (${store.interventions.filter((i) => i.category === value).length})` })),
       ]} />
       <Card title="Management intervention register" icon={ClipboardList} flush>
+        <div className="register-scroll">
         <DataTable rows={list} rowKey={(i) => i.id} selected={sel?.id} onRowClick={(i) => setP({ selected: i.id })}
           columns={[
             { key: 'n', header: 'Intervention', render: (i) => { const I = CATEGORY_ICON[i.category]; return <span className="row"><I size={17} color="var(--brand)" /><b>{i.name}</b></span>; } },
@@ -64,6 +66,7 @@ export function ActionTracker() {
             { key: 's', header: 'Status', align: 'center', render: (i) => <StatusChip tone={statusTone(i)}>{i.statusLabel}</StatusChip> },
             { key: 'v', header: 'View', align: 'center', render: (i) => <Button small onClick={() => setP({ selected: i.id, drawer: i.id })}>Open</Button> },
           ]} />
+        </div>
       </Card>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, .8fr) minmax(0, 1.6fr)' }}>
         <Card title="Action status distribution" icon={Target}>
@@ -144,7 +147,7 @@ function InterventionDrawer({ item, onClose }: { item: Intervention; onClose: ()
         <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr .8fr 1fr', gap: 12 }}>
           <label className="field"><span>Intervention type</span><Select label="Intervention type" value={type} onChange={setType} options={[...new Set([item.deliverable, 'Campaign recovery assessment', 'Strategic opportunity assessment', 'Finance validation of reallocation', 'Clarified theme scope'])].map((x) => opt(x, x))} /></label>
           <label className="field"><span>Recipient</span><Select label="Recipient" value={role} onChange={setRole} options={[...new Set([item.role, 'Marketing Head', 'Marketing Head and Finance'])].map((x) => opt(x, x))} /></label>
-          <label className="field"><span>Priority</span><Select label="Priority" value={priority} onChange={(v) => setPriority(v as Priority)} options={['High', 'Medium', 'Low'].map((x) => opt(x, x))} /></label>
+          <label className="field"><span>Priority</span><Select label="Priority" value={priority} onChange={(v) => setPriority(v as Priority)} options={['High', 'Medium', 'Low', 'Review'].map((x) => opt(x, x))} /></label>
           <label className="field"><span>Response due date</span><input type="date" className="input" value={due} onChange={(e) => setDue(e.target.value)} /></label>
           <label className="field" style={{ gridColumn: '1 / -1' }}><span>Management instructions</span><textarea className="input" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Management instructions" /></label>
         </div>

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { sum } from './format';
 import {
-  ALL_CAMPAIGNS, AMBAD, ambadMetrics, applyPeriod, businessCase, CAMPAIGNS, MONTH_SHARES, monthlySplit, planCampaignsOf, CONTRIBUTION_MARGIN, CROP_MIX, nationalReturns, netRoi, PRODUCT_MIX, regionRoi, campaignMetrics, campaignTotals, initialInterventions, NATIONAL,
+  ALL_CAMPAIGNS, AMBAD, ambadMetrics, applyPeriod, businessCase, CAMPAIGNS, MONTH_SHARES, monthlySplit, planCampaignsOf, CONTRIBUTION_MARGIN, CROP_MIX, nationalReturns, netRoi, PRODUCT_MIX, regionRoi, campaignMetrics, campaignTotals, initialInterventions, interventionCounts, NATIONAL,
   NATIONAL_METRICS, REGIONS, regionMetrics, territoriesOf, THEMES, themeCampaigns, themeShares,
 } from './bh';
 
@@ -98,9 +98,18 @@ describe('territories and Ambad', () => {
   });
   it('interventions register', () => {
     const list = initialInterventions();
-    expect(list.filter((i) => i.status === 'draft').length).toBe(2);
-    expect(list.filter((i) => i.status === 'awaiting_response').length).toBe(2);
+    expect(list.filter((i) => i.status === 'draft').length).toBe(5);
+    expect(list.filter((i) => i.status === 'awaiting_response').length).toBe(9);
+    expect(list.filter((i) => i.status === 'closed').length).toBe(4);
     expect(list[0].trigger).toBe('–8 pp execution variance');
+  });
+  it('tracker KPI counts equal the register rows', () => {
+    const list = initialInterventions();
+    const k = interventionCounts(list);
+    expect(k).toEqual({ total: 18, draft: 5, awaiting: 9, closed: 4 });
+    expect(k.total).toBe(list.length);
+    expect(k.draft + k.awaiting + k.closed).toBe(list.length);
+    expect(new Set(list.map((i) => i.id)).size).toBe(list.length);
   });
 });
 

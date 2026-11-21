@@ -34,7 +34,7 @@ interface State {
   learningSubmitted: boolean;
 }
 
-const KEY = 'campaigniq.v3.bh.2'; // bumped when the stored shape or seeded records change
+const KEY = 'campaigniq.v3.bh.3'; // bumped when the stored shape or seeded records change
 
 const initial = (): State => ({
   scope: 'national',

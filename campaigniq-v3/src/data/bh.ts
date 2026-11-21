@@ -287,7 +287,7 @@ export const MARKET = {
 
 // ---------------------------------------------------------------- strategic themes (queue)
 export type ThemeStatus = 'review_pending' | 'clarification_requested' | 'approved' | 'returned' | 'rejected';
-export type Priority = 'High' | 'Medium' | 'Low';
+export type Priority = 'High' | 'Medium' | 'Low' | 'Review';
 
 export interface ThemeProposal {
   id: string;
@@ -350,8 +350,30 @@ export const initialInterventions = (): Intervention[] => {
     { id: 'croptek-theme-approval', name: 'Croptek conversion theme approval', category: 'Strategic theme', geography: 'Ambad', trigger: `${a.villageGap.toFixed(1)} pp village conversion gap`, role: 'Marketing Head', priority: 'High', status: 'awaiting_response', statusLabel: 'Decision pending', deliverable: 'Theme decision' },
     { id: 'reallocation', name: 'Marketing investment reallocation', category: 'Investment', geography: 'West', trigger: `₹${DEFAULT_REALLOCATION.amount} L simulated transfer`, role: 'Marketing Head and Finance', priority: 'Medium', status: 'draft', statusLabel: 'Draft not sent', deliverable: 'Finance validation of reallocation' },
     { id: 'north-clarification', name: 'North region crop nutrition awareness clarification', category: 'Theme clarification', geography: 'North', trigger: 'Scope validation', role: 'Marketing Head', priority: 'Medium', status: 'awaiting_response', statusLabel: 'Response pending', deliverable: 'Clarified theme scope' },
+    { id: 'south-paddy-review', name: 'South paddy campaign execution review', category: 'Performance', geography: 'South', trigger: '–7 pp execution variance', role: 'Marketing Head', priority: 'High', status: 'draft', statusLabel: 'Draft not sent', deliverable: 'Campaign recovery assessment' },
+    { id: 'east-underspend', name: 'East budget underspend review', category: 'Investment', geography: 'East', trigger: '₹10 L unspent (29%)', role: 'Marketing Head and Finance', priority: 'Medium', status: 'draft', statusLabel: 'Draft not sent', deliverable: 'Budget utilisation plan' },
+    { id: 'north-wheat-review', name: 'North wheat adoption review', category: 'Performance', geography: 'North', trigger: '120 adopters recorded', role: 'Zonal Manager', priority: 'Medium', status: 'draft', statusLabel: 'Draft not sent', deliverable: 'Adoption recovery assessment' },
+    { id: 'south-retailer-recovery', name: 'Retailer partner programme recovery plan', category: 'Performance', geography: 'South', trigger: 'Retailer activation 66.7%', role: 'Marketing Head', priority: 'High', status: 'awaiting_response', statusLabel: 'Response pending', deliverable: 'Retailer recovery plan' },
+    { id: 'retailer-advocacy-approval', name: 'Multi-region retailer advocacy theme approval', category: 'Strategic theme', geography: 'Multi-region', trigger: 'Theme awaiting decision', role: 'Marketing Head', priority: 'High', status: 'awaiting_response', statusLabel: 'Decision pending', deliverable: 'Theme decision' },
+    { id: 'soil-health-roi', name: 'Soil health awareness ROI review', category: 'Investment', geography: 'North', trigger: '+0.10× theme ROI', role: 'Marketing Head and Finance', priority: 'Medium', status: 'awaiting_response', statusLabel: 'Response pending', deliverable: 'Investment level review' },
+    { id: 'ambad-follow-up', name: 'Ambad farmer follow-up plan', category: 'Performance', geography: 'Ambad', trigger: '50% follow-up completion', role: 'Zonal Manager', priority: 'High', status: 'awaiting_response', statusLabel: 'Response pending', deliverable: 'Farmer follow-up plan' },
+    { id: 'dhanora-conversion', name: 'Dhanora village conversion drive', category: 'Performance', geography: 'Ambad', trigger: '38.7% trial-to-adoption', role: 'Zonal Manager', priority: 'Medium', status: 'awaiting_response', statusLabel: 'Response pending', deliverable: 'Village conversion plan' },
+    { id: 'south-gap-assessment', name: 'South business gap assessment', category: 'Strategic theme', geography: 'South', trigger: '₹2.2 Cr ABP gap', role: 'Marketing Head', priority: 'High', status: 'awaiting_response', statusLabel: 'Assessment pending', deliverable: 'Opportunity assessment' },
+    { id: 'east-trial-phasing', name: 'East trial follow-up budget phasing', category: 'Investment', geography: 'East', trigger: 'Budget phasing validation', role: 'Marketing Head and Finance', priority: 'Review', status: 'awaiting_response', statusLabel: 'Response pending', deliverable: 'Finance validation of phasing' },
+    { id: 'west-retailer-topup', name: 'West retailer enablement budget top-up', category: 'Investment', geography: 'West', trigger: '₹2 L added', role: 'Marketing Head and Finance', priority: 'Medium', status: 'closed', statusLabel: 'Closed', deliverable: 'Budget top-up' },
+    { id: 'south-nutrition-scope', name: 'South crop nutrition scope clarification', category: 'Theme clarification', geography: 'South', trigger: 'Scope confirmed', role: 'Marketing Head', priority: 'Medium', status: 'closed', statusLabel: 'Closed', deliverable: 'Clarified theme scope' },
+    { id: 'q2-kharif-review', name: 'Q2 kharif execution review', category: 'Performance', geography: 'National', trigger: 'Review completed', role: 'Marketing Head', priority: 'High', status: 'closed', statusLabel: 'Closed', deliverable: 'Execution review' },
+    { id: 'croptek-sku-mapping', name: 'Croptek SKU mapping confirmation', category: 'Theme clarification', geography: 'West', trigger: 'Mapping confirmed', role: 'Zonal Manager', priority: 'Review', status: 'closed', statusLabel: 'Closed', deliverable: 'SKU mapping' },
   ];
 };
+
+/** Tracker KPI counts, computed from the register rows. */
+export const interventionCounts = (list: Intervention[]) => ({
+  total: list.length,
+  draft: list.filter((i) => i.status === 'draft').length,
+  awaiting: list.filter((i) => i.status === 'awaiting_response').length,
+  closed: list.filter((i) => i.status === 'closed').length,
+});
 
 // ---------------------------------------------------------------- reallocation
 export const DEFAULT_REALLOCATION = { from: 'trial' as CampaignId, to: 'croptek' as CampaignId, amount: 2, region: 'west' as RegionId };
