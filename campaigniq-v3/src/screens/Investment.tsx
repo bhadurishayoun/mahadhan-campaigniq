@@ -70,7 +70,7 @@ export function InvestmentRoi() {
         { key: 'theme', label: 'Theme', value: theme, options: THEME_OPTIONS, onChange: setTheme },
         { key: 'campaign', label: 'Campaign', value: campaign, options: CAMPAIGN_OPTIONS, onChange: setCampaign },
       ]} />
-      <SegmentedControl<InvView> label="Analytical view" value={view} onChange={setView} options={[
+      <SegmentedControl<InvView> label="" value={view} onChange={setView} options={[
         { value: 'region', label: 'Region-wise' }, { value: 'crop', label: 'Crop-wise' }, { value: 'product', label: 'Product-wise' }, { value: 'theme', label: 'Theme-wise' }, { value: 'campaign', label: 'Campaign-wise' },
       ]} />
       <div className="kpis">
