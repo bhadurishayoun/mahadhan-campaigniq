@@ -123,12 +123,12 @@ export function Button({ children, onClick, primary, disabled, icon: Icon, small
 }
 
 /** Page bottom bar: Back on the left, Next on the right — nothing else. */
-export function FooterBar({ onBack, onNext }: { onBack: () => void; onNext?: () => void }) {
+export function FooterBar({ onBack, onNext, nextLabel = 'Next' }: { onBack: () => void; onNext?: () => void; nextLabel?: string }) {
   return (
     <footer className="footer">
       <Button icon={ArrowLeft} onClick={onBack}>Back</Button>
       <span className="sp" />
-      {onNext && <button type="button" className="btn primary" onClick={onNext}>Next<ArrowRight size={15} /></button>}
+      {onNext && <button type="button" className="btn primary" onClick={onNext}>{nextLabel}<ArrowRight size={15} /></button>}
     </footer>
   );
 }

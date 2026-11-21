@@ -55,3 +55,14 @@ on row 2. Every figure on those pages comes from the campaign records that pass 
 Action tracker: 18 seeded register items (5 drafts, 9 awaiting response, 4 closed) in `initialInterventions()`; KPI
 cards, donut and category counts use `interventionCounts()` (tested in `bh.test.ts`). Store key bumped to
 `campaigniq.v3.bh.3` so browsers pick up the seeded rows.
+
+## Field Sales Manager (persona `tm`, login TM001 / Territory@123 or the master login)
+| Phase | Scope | Status |
+|---|---|---|
+| 0 | Mockups (`docs/mockups/field-sales-manager/`, 15), routes (`F` in `src/routes.ts`), sidebar, persona switch (avatar menu, master login), top-bar scope (Jalna cluster · Ambad · Ghansawangi · Badnapur), 15 screens with titles and Back/Next wired | Done |
+| 1 | Data (`src/data/fsm.ts`) + tests; BH West territories aligned (Ambad, Ghansawangi, Badnapur) | Next |
+| 2 | Screens 1–5 (My Plan) | To do |
+| 3 | Screens 6–10 (My Campaigns and wizard) | To do |
+| 4 | Screens 11–15, verification, deploy | To do |
+
+The active persona follows the route (`/bh/…` or `/fsm/…`); a non-master login is kept to its own workspace.

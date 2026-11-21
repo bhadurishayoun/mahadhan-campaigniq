@@ -8,7 +8,7 @@ const EXEMPT = [/[\\/]auth[\\/]/, /\.test\.ts$/, /[\\/]routes\.ts$/];
 const WORDS = ['illustrative', 'sample', 'demo', 'mock', 'synthetic', 'dummy', 'placeholder', 'lorem', 'tbd', 'v2',
   'ai', 'copilot', 'smart', 'intelligence', 'intelligent', 'insight', 'generated', 'powered by', 'magic', 'auto-suggest'];
 const ICONS = ['Sparkles', 'Sparkle', 'WandSparkles', 'Wand2', 'Wand'];
-const CODE = /\b(BH|MH|PM|TM|ZM|FSM)\.\d/;
+const CODE = /\b(BH|MH|PM|TM|ZM|FSM|CW)\.[A-Za-z0-9]/;
 
 const files = [];
 (function walk(d) {
@@ -32,7 +32,7 @@ for (const f of files) {
     const text = text0.replace(/AI Copilot workspace/g, '');
     for (const w of WORDS) if (new RegExp(`\\b${w.replace(/ /g, '\\s+')}\\b`, 'i').test(text)) hits.push(`${where}  banned word "${w}"`);
     if (CODE.test(text)) hits.push(`${where}  screen code`);
-    if (/Sources:|READ-ONLY/i.test(text)) hits.push(`${where}  sources / read-only label`);
+    if (/Sources?:|READ-ONLY|Recommended next|double count|Not an actual/i.test(text)) hits.push(`${where}  sources / read-only label`);
     if (!f.endsWith('theme.ts') && /#[0-9a-fA-F]{3,8}\b/.test(line) && !/var\(--/.test(line)) hits.push(`${where}  hex colour outside theme.ts`);
     for (const ic of ICONS) if (new RegExp(`\\b${ic}\\b`).test(line)) hits.push(`${where}  banned icon ${ic}`);
     const fs1 = line.match(/font-?[sS]ize:\s*'?(\d+(?:\.\d+)?)/);
