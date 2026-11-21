@@ -1,5 +1,5 @@
 /** Screen 5 — Campaign Effectiveness (mockup BH.2a.png) with screen 6 — Campaign Diagnostics drawer (BH.2b.png). */
-import { CircleCheck, ChartColumn, Coins, FileSearch, FileText, Stethoscope, Target } from 'lucide-react';
+import { CheckCircle2, LineChart, Wallet, ChartColumn, Coins, FileSearch, FileText, Stethoscope, Target } from 'lucide-react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AMBAD, ambadMetrics, businessCase, netRoi, regionRoi, campaignById, campaignMetrics, campaignsOf, campaignTotals, regionById, type Campaign, type CampaignId } from '../data/bh';
@@ -13,7 +13,6 @@ import { Drawer, EvidenceDrawer, type Evidence } from '../ui/overlay';
 import { useBhStore } from '../store/bhStore';
 import { useGo, useRouteRegion } from './common';
 
-const EVIDENCE_ITEMS = ['Purchase matching', 'Incremental baseline', 'Attribution'];
 
 export function Effectiveness() {
   const go = useGo();
@@ -101,22 +100,21 @@ export function Effectiveness() {
 function CommercialStrip({ c, onDiagnostics, onEvidence }: { c: Campaign; onDiagnostics: () => void; onEvidence: () => void }) {
   const m = campaignMetrics(c);
   const bc = businessCase(c.id);
-  const panels: { title: string; rows: { label: string; value: string; good?: boolean }[] }[] = [
-    { title: 'Investment', rows: [{ label: 'Envelope', value: lakh(c.approved) }, { label: 'Investment', value: lakh(c.actual) }, { label: 'Utilisation', value: pct(m.utilisationPct, 0) }] },
-    { title: 'Forecast', rows: [{ label: 'Incr. sales', value: lakh(bc.forecastSales) }, { label: 'Contribution', value: lakh(bc.contribution) }, { label: 'Net ROI', value: times(bc.netRoi) }] },
-    { title: 'Actual', rows: [{ label: 'Incr. sales', value: lakh(bc.validatedSales) }, { label: 'Net ROI', value: times(bc.actualRoi), good: true }, { label: 'vs forecast', value: times(bc.actualRoi - bc.netRoi), good: true }] },
+  const panels: { title: string; icon: typeof Wallet; rows: { label: string; value: string; good?: boolean }[] }[] = [
+    { title: 'Investment', icon: Wallet, rows: [{ label: 'Envelope', value: lakh(c.approved) }, { label: 'Investment', value: lakh(c.actual) }, { label: 'Utilisation', value: pct(m.utilisationPct, 0) }] },
+    { title: 'Forecast', icon: LineChart, rows: [{ label: 'Incr. sales', value: lakh(bc.forecastSales) }, { label: 'Contribution', value: lakh(bc.contribution) }, { label: 'Net ROI', value: times(bc.netRoi) }] },
+    { title: 'Actual', icon: CheckCircle2, rows: [{ label: 'Incr. sales', value: lakh(bc.validatedSales) }, { label: 'Net ROI', value: times(bc.actualRoi), good: true }, { label: 'vs forecast', value: times(bc.actualRoi - bc.netRoi), good: true }] },
   ];
   return (
     <Card className="ce-card" title={`${c.name}`} icon={Coins} right={<><Button small icon={Stethoscope} onClick={onDiagnostics}>Diagnostics</Button><Button small icon={FileSearch} onClick={onEvidence}>Attribution evidence</Button></>}>
       <div className="ce-panels">
         {panels.map((p) => (
           <div key={p.title} className="ce-panel">
-            <div className="ce-panel-title">{p.title}</div>
+            <div className="ce-panel-title"><p.icon size={16} />{p.title}</div>
             {p.rows.map((r) => <div key={r.label} className="ce-row"><span>{r.label}</span><b className={r.good ? 'good' : undefined}>{r.value}</b></div>)}
           </div>
         ))}
       </div>
-      <div className="ce-evidence"><span>Evidence</span>{EVIDENCE_ITEMS.map((e) => <span key={e} className="ce-ev"><CircleCheck size={14} />{e}</span>)}</div>
     </Card>
   );
 }

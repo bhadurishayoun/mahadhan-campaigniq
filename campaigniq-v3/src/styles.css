@@ -195,7 +195,8 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 .ce-card .card-head .right { flex-wrap: nowrap; flex: none; }
 .ce-panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; flex: 1; }
 .ce-panel { background: var(--panel-bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 10px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
-.ce-panel-title { font-size: 12px; font-weight: 700; color: var(--ink-soft); padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.ce-panel-title { font-size: 12px; font-weight: 700; color: var(--ink-soft); padding-bottom: 6px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: center; gap: 6px; }
+.ce-panel-title svg { color: var(--brand); flex: none; }
 .ce-row { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
 .ce-row span { font-size: 13px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ce-row b { font-size: 15px; font-weight: 700; color: var(--dark); font-variant-numeric: tabular-nums; white-space: nowrap; }
