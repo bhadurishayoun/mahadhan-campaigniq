@@ -19,8 +19,6 @@ export const R = {
   inbox: '/bh/themes/inbox', // 12 BH.4b.png
   review: (id: string) => `/bh/themes/${id}/review`, // 13 BH.4c.png
   decision: (id: string) => `/bh/themes/${id}/review?modal=decision`, // 14 BH.4d.png
-  suggest: '/bh/themes/suggest', // 15 BH.4e.png
-  suggestSubmit: '/bh/themes/suggest?drawer=submit', // 16 BH.4f.png
   tracker: '/bh/interventions', // 17 BH.5.png
   intervention: (id: string) => `/bh/interventions?drawer=${id}`, // 18 BH.5a.png
   learning: '/bh/interventions/learning', // 19 BH.5b.png

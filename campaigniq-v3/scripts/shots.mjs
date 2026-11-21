@@ -84,6 +84,10 @@ for (const [name, route] of ROUTES) {
   const shot = await send('Page.captureScreenshot', { format: 'png' });
   fs.writeFileSync(path.join(out, `${name}-${W}${process.env.PICK ? '-picked' : ''}.png`), Buffer.from(shot.data, 'base64'));
   await send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: false });
+  if (process.env.CLICK) {
+    const r = await ev(`(async () => { const b = [...document.querySelectorAll('button')].find(x => x.textContent.trim() === ${JSON.stringify(process.env.CLICK)}); if (!b) return null; b.click(); await new Promise(r => setTimeout(r, 600)); return location.hash + (document.querySelector('.modal') ? '  [modal: ' + (document.querySelector('.modal [aria-checked=true]')?.textContent || '?') + ']' : '  [no modal]'); })()`);
+    if (r) console.log(`   CLICK ${process.env.CLICK} -> ${r}`);
+  }
   console.log(`${name.padEnd(26)} ${info.route.padEnd(70)} ${info.hscroll ? 'H-SCROLL ' : ''}${info.clipped.length ? 'CLIPPED ' + JSON.stringify(info.clipped) + ' ' : ''}${errors.length ? 'ERRORS ' + JSON.stringify(errors) : 'ok'}`);
 }
 chrome.kill(); process.exit(0);

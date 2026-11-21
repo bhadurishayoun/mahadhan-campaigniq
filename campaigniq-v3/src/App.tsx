@@ -11,7 +11,7 @@ import { RegionalPerformance } from './screens/RegionalPerformance';
 import { TerritoryPerformance } from './screens/TerritoryPerformance';
 import { Effectiveness } from './screens/Effectiveness';
 import { CampaignInvestment, CommercialReturns, InvestmentRoi, Reallocation } from './screens/Investment';
-import { MarketOpportunity, SuggestTheme, ThemeInbox, ThemeReview } from './screens/Themes';
+import { MarketOpportunity, ThemeInbox, ThemeReview } from './screens/Themes';
 import { ActionTracker, DecisionAssistant, PortfolioLearning } from './screens/Interventions';
 
 /** A session opens the Business Head workspace when it is the master login or a Business Head login. */
@@ -66,7 +66,6 @@ function buildRouter(userName: string, signOut: () => void) {
         { path: 'bh/investment/region/:region/reallocation', element: <Reallocation /> },
         { path: 'bh/themes/opportunity', element: <MarketOpportunity /> },
         { path: 'bh/themes/inbox', element: <ThemeInbox /> },
-        { path: 'bh/themes/suggest', element: <SuggestTheme /> },
         { path: 'bh/themes/:themeId/review', element: <ThemeReview /> },
         { path: 'bh/interventions', element: <ActionTracker /> },
         { path: 'bh/interventions/learning', element: <PortfolioLearning /> },

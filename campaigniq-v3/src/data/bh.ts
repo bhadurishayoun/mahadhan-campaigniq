@@ -347,7 +347,7 @@ export const initialInterventions = (): Intervention[] => {
   const a = ambadMetrics();
   return [
     { id: 'croptek-review', name: 'Croptek campaign performance review', category: 'Performance', geography: 'West', trigger: `${c.execVariance} pp execution variance`.replace('-', '–'), role: 'Marketing Head', priority: 'High', status: 'draft', statusLabel: 'Draft not sent', campaign: 'croptek', deliverable: 'Campaign recovery assessment' },
-    { id: 'structured-follow-up', name: 'Structured farmer conversion & follow-up', category: 'Strategic theme', geography: 'Ambad', trigger: `${a.villageGap.toFixed(1)} pp village conversion gap`, role: 'Marketing Head', priority: 'High', status: 'awaiting_response', statusLabel: 'Assessment pending', deliverable: 'Strategic opportunity assessment' },
+    { id: 'croptek-theme-approval', name: 'Croptek conversion theme approval', category: 'Strategic theme', geography: 'Ambad', trigger: `${a.villageGap.toFixed(1)} pp village conversion gap`, role: 'Marketing Head', priority: 'High', status: 'awaiting_response', statusLabel: 'Decision pending', deliverable: 'Theme decision' },
     { id: 'reallocation', name: 'Marketing investment reallocation', category: 'Investment', geography: 'West', trigger: `₹${DEFAULT_REALLOCATION.amount} L simulated transfer`, role: 'Marketing Head and Finance', priority: 'Medium', status: 'draft', statusLabel: 'Draft not sent', deliverable: 'Finance validation of reallocation' },
     { id: 'north-clarification', name: 'North region crop nutrition awareness clarification', category: 'Theme clarification', geography: 'North', trigger: 'Scope validation', role: 'Marketing Head', priority: 'Medium', status: 'awaiting_response', statusLabel: 'Response pending', deliverable: 'Clarified theme scope' },
   ];
@@ -432,7 +432,6 @@ export const nextYearPriorities = () => {
 };
 
 export const INTERVENTION_DELIVERABLES = ['Campaign performance diagnosis', 'Territory-wise recovery opportunities', 'Revised strategic intervention plan', 'Updated outcome and investment forecast'];
-export const THEME_DELIVERABLES = ['Market opportunity validation', 'Existing theme overlap assessment', 'Target KPI recommendations', 'Refined strategic theme brief'];
 
 // ---------------------------------------------------------------- campaign budgets, all regions (reallocation)
 /** Budget view of every active campaign (West detail above + the other regions). Sums reconcile to REGIONS and THEMES. */

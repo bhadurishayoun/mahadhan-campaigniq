@@ -1,6 +1,9 @@
+import { CheckCircle2, Eye } from 'lucide-react';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CAMPAIGNS, REGIONS, THEMES, type RegionId } from '../data/bh';
+import { CAMPAIGNS, REGIONS, THEME_QUEUE, THEMES, type RegionId } from '../data/bh';
+import { R } from '../routes';
+import { Button } from '../ui/core';
 import { useBhStore } from '../store/bhStore';
 
 export const ALL = 'all';
@@ -39,4 +42,25 @@ export function useDrillRegion(): RegionId {
 export function useGo() {
   const nav = useNavigate();
   return (to: string) => nav(to);
+}
+
+/**
+ * "Approve theme" target: the pending theme matching region / crop / product, else the first theme awaiting
+ * Business Head review. Opens the inbox with that theme selected and the decision modal on "Approve theme".
+ * With nothing pending it becomes "Review themes" and opens the inbox.
+ */
+export function useApproveTheme(match?: { region?: RegionId; crop?: string; product?: string }) {
+  const store = useBhStore();
+  const nav = useNavigate();
+  const pending = THEME_QUEUE.filter((t) => store.themeStatus[t.id] === 'review_pending');
+  const hit = match && pending.find((t) => (!match.region || t.region === match.region) && (!match.crop || t.crop === match.crop) && (!match.product || t.product === match.product));
+  const theme = hit ?? pending[0];
+  return theme
+    ? { label: 'Approve theme', pending: true, open: () => nav(`${R.inbox}?theme=${theme.id}&modal=decision&choice=approve`) }
+    : { label: 'Review themes', pending: false, open: () => nav(R.inbox) };
+}
+
+export function ApproveThemeButton({ match, primary }: { match?: { region?: RegionId; crop?: string; product?: string }; primary?: boolean }) {
+  const a = useApproveTheme(match);
+  return <Button small primary={primary} icon={a.pending ? CheckCircle2 : Eye} onClick={a.open}>{a.label}</Button>;
 }

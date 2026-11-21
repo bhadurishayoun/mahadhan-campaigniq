@@ -1,13 +1,13 @@
 /** Screen 4 — Territory Performance, Ambad (mockup BH.3.png). */
-import { CalendarCheck, Coins, Lightbulb, MapPin, Plus, TrendingUp, Users } from 'lucide-react';
+import { CalendarCheck, Coins, Lightbulb, MapPin, TrendingUp, Users } from 'lucide-react';
 import { Navigate, useParams } from 'react-router-dom';
 import { AMBAD, ambadMetrics, campaignById, netRoi, territoryById } from '../data/bh';
 import { crore, lakh, num, pct, pp, ratio, times } from '../data/format';
 import { R } from '../routes';
 import { useBhStore } from '../store/bhStore';
-import { Bar, Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
+import { Bar, Breadcrumb, Card, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
-import { useGo } from './common';
+import { ApproveThemeButton, useGo } from './common';
 import { useEffect } from 'react';
 
 export function TerritoryPerformance() {
@@ -24,7 +24,6 @@ export function TerritoryPerformance() {
     { id: 'retail', parameter: 'Retailer activation', current: pct(a.retailerActivationPct), action: 'Review activation depth and support' },
     { id: 'roi', parameter: 'Croptek conversion net ROI', current: times(netRoi(campaignById('croptek').sales, campaignById('croptek').actual)), action: 'Extend to Dhanora village' },
   ];
-  const suggestUrl = `${R.suggest}?region=${t.region}&territory=${t.id}&crop=${AMBAD.crop}&product=${AMBAD.product}`;
 
   return (
     <div className="page">
@@ -84,7 +83,7 @@ export function TerritoryPerformance() {
           ))}
           <div className="row" style={{ justifyContent: 'space-between', background: 'var(--amber-soft)', borderRadius: 8, padding: '8px 12px', marginTop: 'auto' }}><b>Total</b><b>{a.activitiesDone} / {a.activitiesPlanned} ({pct(a.activityPct)})</b></div>
         </Card>
-        <Card title="Strategic opportunities" icon={Lightbulb} flush right={<Button small icon={Plus} onClick={() => go(suggestUrl)}>Suggest theme</Button>}>
+        <Card title="Strategic opportunities" icon={Lightbulb} flush right={<ApproveThemeButton match={{ region: t.region, crop: AMBAD.crop, product: AMBAD.product }} />}>
           <DataTable rows={opportunities} rowKey={(o) => o.id} columns={[
             { key: 'p', header: 'Parameter', render: (o) => o.parameter },
             { key: 'c', header: 'Current', align: 'right', render: (o) => <b>{o.current}</b> },

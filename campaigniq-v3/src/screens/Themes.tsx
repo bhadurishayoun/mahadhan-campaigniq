@@ -1,14 +1,14 @@
 /**
  * Screens 11–16 — Market Opportunity (BH.4.png), Theme Approval Inbox (BH.4b.png), Theme Detailed Review (BH.4c.png),
- * Theme Decision modal (BH.4d.png), Suggest Strategic Theme (BH.4e.png), Recommendation Review & Submit drawer (BH.4f.png).
+ * Theme Decision modal (BH.4d.png). The Business Head approves themes proposed by the Marketing Head.
  */
-import { Box, ChartColumn, CircleCheck, Eye, FileSearch, FileText, Layers, Link2, MapPin, CheckCircle2, Save, Send, Sprout, Store, Target, Users } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { Box, ChartColumn, CircleCheck, Eye, FileSearch, FileText, Layers, MapPin, CheckCircle2, Save, Send, Sprout, Store, Target, Users } from 'lucide-react';
+import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
-  AMBAD, ambadMetrics, campaignById, netRoi, campaignMetrics, CAMPAIGNS, MARKET, NATIONAL, NATIONAL_METRICS, READINESS_ITEMS, READINESS_STATUS,
-  REGIONS, regionById, regionMetrics, THEME_DELIVERABLES, THEME_QUEUE, THEME_STATUS, themeCandidates, themeDirections, themeEvidence, TERRITORIES,
-  type CampaignId, type Priority, type RegionId, type ThemeProposal,
+  AMBAD, ambadMetrics, campaignById, netRoi, campaignMetrics, MARKET, NATIONAL, NATIONAL_METRICS, READINESS_ITEMS, READINESS_STATUS,
+  REGIONS, regionById, regionMetrics, THEME_QUEUE, THEME_STATUS, themeCandidates, themeDirections, themeEvidence, TERRITORIES,
+  type RegionId, type ThemeProposal,
 } from '../data/bh';
 import { crore, lakh, num, pct, times } from '../data/format';
 import { R } from '../routes';
@@ -16,9 +16,9 @@ import { useBhStore, type ThemeDecision } from '../store/bhStore';
 import { RegionBarsCard } from './RegionBars';
 import { SERIES } from '../theme';
 import { HBars, Legend } from '../ui/charts';
-import { Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, PanelFooter, SegmentedControl, Select, StatusChip } from '../ui/core';
+import { Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, PanelFooter, SegmentedControl, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
-import { Drawer, EvidenceDrawer, Modal, type Evidence } from '../ui/overlay';
+import { EvidenceDrawer, Modal, type Evidence } from '../ui/overlay';
 import { ALL, CROP_OPTIONS, opt, PRODUCT_OPTIONS, REGION_OPTIONS, useGo, useScopeFilter } from './common';
 
 function ThemeTabs({ active }: { active: 'inbox' | 'opportunity' }) {
@@ -114,7 +114,7 @@ export function MarketOpportunity() {
               { key: 't', header: 'Theme', render: (c) => c.name },
               { key: 'k', header: 'Key indicator', render: (c) => c.indicator },
               { key: 's', header: 'Status', align: 'center', render: () => <StatusChip tone="warn">Candidate</StatusChip> },
-              { key: 'a', header: 'Action', align: 'center', render: (c) => <Button small onClick={() => go(`${R.suggest}?candidate=${c.id}&region=west&territory=ambad&crop=${AMBAD.crop}&product=${AMBAD.product}`)}>Select</Button> },
+              { key: 'a', header: 'Action', align: 'center', render: () => <Button small onClick={() => go(`${R.inbox}?theme=${THEME_QUEUE.find((t) => t.crop === AMBAD.crop && t.product === AMBAD.product)?.id ?? THEME_QUEUE[0].id}`)}>Review theme</Button> },
             ]} />
         </Card>
       </div>
@@ -134,7 +134,10 @@ export function ThemeInbox() {
   const queue = THEME_QUEUE.filter((t) => (region === ALL || t.region === region || t.region === 'multi')
     && (crop === ALL || t.crop === crop) && (product === ALL || t.product === product)
     && (status === ALL || store.themeStatus[t.id] === status));
-  const [selId, setSelId] = useState(THEME_QUEUE[0].id);
+  const [params, setParams] = useSearchParams();
+  const [selId, setSelId] = useState(params.get('theme') ?? THEME_QUEUE[0].id);
+  const [evidence, setEvidence] = useState<Evidence | null>(null);
+  const modalTheme = params.get('modal') === 'decision' ? THEME_QUEUE.find((t) => t.id === params.get('theme')) : undefined;
   const sel = queue.find((t) => t.id === selId) ?? queue[0] ?? null;
   const st = Object.values(store.themeStatus);
   const open = st.filter((s) => s === 'review_pending' || s === 'clarification_requested').length;
@@ -189,6 +192,11 @@ export function ThemeInbox() {
         </div>
       )}
       <FooterBar onBack={() => go(R.opportunity)} onNext={sel ? () => go(R.review(sel.id)) : undefined} />
+      {modalTheme && <DecisionModal t={modalTheme} initialChoice={params.get('choice') as ThemeDecision['choice'] | null} onClose={() => setParams({})} onShowOriginal={() => setEvidence({ title: `Original proposal — ${modalTheme.name}`, owner: 'Marketing Head and Zonal Manager records', facts: [
+        { label: 'Proposed by', value: modalTheme.proposedBy }, { label: 'Geography', value: modalTheme.geography }, { label: 'Crop / product', value: modalTheme.cropProduct },
+        { label: 'Objective', value: modalTheme.objective }, { label: 'Target cohort', value: modalTheme.cohort }, { label: 'Priority', value: modalTheme.priority },
+      ] })} />}
+      {evidence && <EvidenceDrawer evidence={evidence} onClose={() => setEvidence(null)} />}
     </div>
   );
 }
@@ -262,7 +270,7 @@ export function ThemeReview() {
           </Card>
         </div>
       </div>
-      <FooterBar onBack={() => go(R.inbox)} onNext={() => go(R.suggest)} />
+      <FooterBar onBack={() => go(R.inbox)} onNext={() => go(R.tracker)} />
       {params.get('modal') === 'decision' && <DecisionModal t={t} initialChoice={params.get('choice') as ThemeDecision['choice'] | null} onClose={() => setParams({})} onShowOriginal={() => showEvidence(`Original proposal — ${t.name}`, [
         { label: 'Proposed by', value: t.proposedBy }, { label: 'Geography', value: t.geography }, { label: 'Crop / product', value: t.cropProduct },
         { label: 'Objective', value: t.objective }, { label: 'Target cohort', value: t.cohort }, { label: 'Priority', value: t.priority },
@@ -326,141 +334,5 @@ function DecisionModal({ t, onClose, onShowOriginal, initialChoice }: { t: Theme
         <div className="field"><span>Theme version</span><StatusChip tone="ok">{draft ? 'Saved draft' : 'Current draft'}</StatusChip></div>
       </div>
     </Modal>
-  );
-}
-
-// ================================================================ 15 Suggest Strategic Theme + 16 Review & Submit drawer
-interface SuggestForm {
-  region: RegionId; state: string; district: string; territory: string; crop: string; product: string; theme: string;
-  objective: string; priority: Priority; cohort: string; period: string; link: 'modify' | 'separate'; targets: Record<string, string>; due: string; notes: string;
-}
-
-export function SuggestTheme() {
-  const go = useGo();
-  const store = useBhStore();
-  const [params, setParams] = useSearchParams();
-  const a = ambadMetrics();
-  const candidate = themeCandidates().find((c) => c.id === params.get('candidate'));
-  const camp = params.get('campaign') ? campaignById(params.get('campaign') as CampaignId) : null;
-  const terr = TERRITORIES.find((t) => t.id === (params.get('territory') ?? 'ambad')) ?? TERRITORIES[0];
-  const initial = useMemo<SuggestForm>(() => ({
-    region: (params.get('region') as RegionId) ?? camp?.region ?? 'west', state: 'Maharashtra', district: 'Jalna', territory: terr.name.replace(' (Jalna)', ''),
-    crop: params.get('crop') ?? 'Onion', product: params.get('product') ?? 'Croptek',
-    theme: candidate?.name ?? (camp ? `${camp.short} — revised approach` : 'Structured farmer conversion & follow-up'),
-    objective: 'Improve eligible farmer conversion', priority: 'High', cohort: 'Eligible non-adopters and trial users', period: `Kharif ${2027}`,
-    link: 'modify', targets: {}, due: '', notes: '',
-  }), []); // eslint-disable-line react-hooks/exhaustive-deps
-  const [f, setF] = useState<SuggestForm>(initial);
-  const set = <K extends keyof SuggestForm>(k: K, v: SuggestForm[K]) => setF((x) => ({ ...x, [k]: v }));
-  const [evidence, setEvidence] = useState<Evidence | null>(null);
-  const measures = [
-    { id: 'tta', kpi: 'Trial-to-adoption', current: pct(a.trialToAdoptionPct), icon: Target },
-    { id: 'fu', kpi: 'Follow-up completion', current: pct(a.followUpPct), icon: Users },
-    { id: 'gap', kpi: 'Village conversion gap', current: `${a.villageGap.toFixed(1)} pp`, icon: ChartColumn },
-  ];
-  const linked = THEME_QUEUE[0];
-  const recId = 'suggestion-draft';
-  const saveDraft = () => { store.saveRecommendation({ id: recId, name: f.theme, geography: `${f.state} / ${f.district} / ${f.territory}`, cropProduct: `${f.crop} / ${f.product}`, priority: f.priority, linkedThemeId: f.link === 'modify' ? linked.id : null, status: 'draft', targets: f.targets }); store.toast('Draft theme saved'); };
-  const submit = () => {
-    const id = `rec-${Date.now()}`;
-    store.saveRecommendation({ id, name: f.theme, geography: `${f.state} / ${f.district} / ${f.territory}`, cropProduct: `${f.crop} / ${f.product}`, priority: f.priority, linkedThemeId: f.link === 'modify' ? linked.id : null, status: 'sent', targets: f.targets });
-    store.addIntervention({ id, name: f.theme, category: 'Strategic theme', geography: f.territory, trigger: candidate?.indicator ?? `${a.villageGap.toFixed(1)} pp village conversion gap`, role: 'Marketing Head', priority: f.priority, status: 'awaiting_response', statusLabel: 'Assessment pending', deliverable: 'Strategic opportunity assessment and refined theme brief' });
-    store.toast('Recommendation sent to Marketing Head');
-    go(`${R.tracker}?selected=${id}`);
-  };
-  const regionOpts = REGIONS.map((r) => opt(r.id, r.name));
-  const field = (label: string, el: JSX.Element) => <label className="field"><span>{label}</span>{el}</label>;
-  const sel = (label: string, value: string, options: string[], k: keyof SuggestForm) => field(label, <Select label={label} value={value} options={options.map((o) => opt(o, o))} onChange={(v) => set(k, v as never)} />);
-
-  return (
-    <div className="page">
-      <Breadcrumb items={[{ label: 'Strategic themes & approvals', onClick: () => go(R.inbox) }, { label: 'Suggest new theme' }]} />
-      <PageHeader title="Suggest Strategic Marketing Theme" right={<StatusChip tone="warn">Draft · not submitted</StatusChip>} />
-      <div className="kpis">
-        <KpiCard label="Village conversion gap" value={`${a.villageGap.toFixed(1)} pp`} />
-        <KpiCard label="Farmer follow-up completion" value={pct(a.followUpPct)} />
-        <KpiCard label="Retailer activation" value={pct(a.retailerActivationPct)} />
-        <KpiCard label="Local trial-to-adoption" value={pct(a.trialToAdoptionPct)} />
-      </div>
-      <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.6fr) minmax(0, 1fr)' }}>
-        <Card title="Strategic theme configuration" icon={Layers} right={<>
-          <Button small icon={Eye} onClick={() => setEvidence({ title: 'Opportunity evidence — Ambad', owner: 'Field Sales Manager territory records', facts: [
-            ...a.villages.map((v) => ({ label: `${v.name} trial-to-adoption`, value: `${v.adopters} / ${v.trials} = ${pct(v.pct)}` })),
-            { label: 'Village conversion gap', value: `${a.villageGap.toFixed(1)} pp` }, { label: 'Activities completed', value: `${a.activitiesDone} / ${a.activitiesPlanned}` },
-            { label: `${MARKET.state} penetration`, value: MARKET.penetration },
-          ] })}>Opportunity evidence</Button>
-          <Button small icon={Save} onClick={saveDraft}>Save draft</Button>
-          <Button small primary onClick={() => setParams((p) => { const n = new URLSearchParams(p); n.set('drawer', 'submit'); return n; })}>Review recommendation</Button>
-        </>}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 12 }}>
-            {field('Region', <Select label="Region" value={f.region} options={regionOpts} onChange={(v) => set('region', v as RegionId)} />)}
-            {sel('State', f.state, ['Maharashtra'], 'state')}
-            {sel('District', f.district, ['Jalna'], 'district')}
-            {sel('Territory', f.territory, ['Ambad', 'Jalna', 'Aurangabad', 'Nashik'], 'territory')}
-            {sel('Crop', f.crop, ['Onion', 'Maize', 'Cotton', 'Soybean'], 'crop')}
-            {sel('Product', f.product, ['Croptek', 'Mahadhan 19:19:19', 'Mahadhan Bensulf'], 'product')}
-            <div style={{ gridColumn: 'span 2' }}>{field('Suggested theme', <input className="input" value={f.theme} onChange={(e) => set('theme', e.target.value)} />)}</div>
-            <div style={{ gridColumn: 'span 2' }}>{sel('Strategic objective', f.objective, ['Improve eligible farmer conversion', 'Increase product trials', 'Strengthen retailer advocacy'], 'objective')}</div>
-            <div style={{ gridColumn: 'span 2' }}><div className="field"><span>Priority</span><div className="row" style={{ gap: 16, height: 34 }}>
-              {(['High', 'Medium', 'Low'] as Priority[]).map((p) => <button key={p} type="button" className="row" onClick={() => set('priority', p)}><span className={`radio${f.priority === p ? ' on' : ''}`} />{p}</button>)}
-            </div></div></div>
-            <div style={{ gridColumn: 'span 2' }}>{sel('Target cohort', f.cohort, ['Eligible non-adopters and trial users', 'Repeat users', 'Priority retailers'], 'cohort')}</div>
-            <div style={{ gridColumn: 'span 2' }}>{sel('Target planning period', f.period, ['Kharif 2027', 'Rabi 2027–28', 'FY 2027–28'], 'period')}</div>
-          </div>
-          <b className="strong" style={{ marginTop: 4 }}>Proposed success measures</b>
-          <DataTable rows={measures} rowKey={(m) => m.id}
-            columns={[
-              { key: 'k', header: 'KPI', render: (m) => <span className="row"><m.icon size={15} color="var(--brand)" />{m.kpi}</span> },
-              { key: 'c', header: 'Current value', align: 'right', render: (m) => <b className="ok-text">{m.current}</b> },
-              { key: 't', header: 'Proposed target', render: (m) => <input className="input" style={{ height: 30 }} placeholder="Enter target" value={f.targets[m.id] ?? ''} onChange={(e) => set('targets', { ...f.targets, [m.id]: e.target.value })} aria-label={`${m.kpi} target`} /> },
-              { key: 'v', header: 'Validation', align: 'center', render: (m) => <StatusChip tone={f.targets[m.id] ? 'ok' : 'neutral'}>{f.targets[m.id] ? 'Entered' : 'Pending'}</StatusChip> },
-            ]} />
-        </Card>
-        <div className="stack">
-          <Card title="Existing theme alignment" icon={Link2}>
-            <DataTable rows={[{ id: 'auth', name: CAMPAIGNS[0].name, status: <StatusChip tone="ok">Authorised</StatusChip>, overlap: '–' }, { id: linked.id, name: `${linked.name} (Marketing Head proposal)`, status: <StatusChip tone="warn">Awaiting decision</StatusChip>, overlap: <StatusChip tone="warn">Review required</StatusChip> }]} rowKey={(r) => r.id}
-              columns={[{ key: 'n', header: 'Theme', render: (r) => r.name }, { key: 's', header: 'Status', align: 'center', render: (r) => r.status }, { key: 'o', header: 'Overlap', align: 'center', render: (r) => r.overlap }]} />
-            {(['modify', 'separate'] as const).map((l) => (
-              <button key={l} type="button" className="row" style={{ padding: '8px 10px', borderRadius: 8, background: f.link === l ? 'var(--amber-soft)' : 'transparent' }} onClick={() => set('link', l)}>
-                <span className={`radio${f.link === l ? ' on' : ''}`} />{l === 'modify' ? 'Link as modification to existing theme' : 'Suggest separate theme'}
-              </button>
-            ))}
-          </Card>
-          <Card title="Recipient and deliverable" icon={Users}>
-            <div className="kv"><span>Recipient</span><b>Marketing Head</b><span>Required deliverable</span><b>Strategic opportunity assessment and refined theme brief</b><span>Assessment due date</span><b>{f.due || 'Not set'}</b></div>
-          </Card>
-        </div>
-      </div>
-      <FooterBar onBack={() => go(R.opportunity)} onNext={() => go(R.tracker)} />
-      {params.get('drawer') === 'submit' && (
-        <Drawer title="Strategic theme recommendation — review and submit" status={<StatusChip tone="warn">Draft · not sent</StatusChip>}
-          onClose={() => setParams((p) => { const n = new URLSearchParams(p); n.delete('drawer'); return n; })}
-          footer={<PanelFooter onBack={() => setParams((p) => { const n = new URLSearchParams(p); n.delete('drawer'); return n; })} action={<Button small primary icon={Send} onClick={submit}>Submit recommendation to Marketing Head</Button>} />}>
-          <div className="row" style={{ gap: 14 }}>
-            <FileText size={28} color="var(--brand)" />
-            <div><b className="strong" style={{ fontSize: 16 }}>{f.theme}</b><div className="muted">{regionById(f.region).name} / {f.state} / {f.district} / {f.territory} · {f.crop} / {f.product}</div></div>
-            <span style={{ marginLeft: 'auto' }} className="row"><StatusChip tone="warn">{f.priority} priority</StatusChip><StatusChip tone="ok">Recipient: Marketing Head</StatusChip></span>
-          </div>
-          <div className="row"><StatusChip tone="info" icon={Link2}>{f.link === 'modify' ? `Modification to: ${linked.name}` : 'Separate theme'}</StatusChip><span style={{ marginLeft: 'auto' }} className="row"><Button small icon={Eye} onClick={() => go(R.review(linked.id))}>View linked theme</Button><Button small icon={Save} onClick={saveDraft}>Save draft</Button></span></div>
-          <div className="grid g2">
-            <Card title="Strategic success measures" flush>
-              <DataTable rows={measures} rowKey={(m) => m.id} columns={[
-                { key: 'k', header: 'KPI', render: (m) => m.kpi },
-                { key: 'c', header: 'Current value', align: 'right', render: (m) => <b className="ok-text">{m.current}</b> },
-                { key: 't', header: 'Proposed target', align: 'right', render: (m) => f.targets[m.id] || <StatusChip tone="neutral">Not set</StatusChip> },
-              ]} />
-            </Card>
-            <Card title="Requested deliverables">
-              {THEME_DELIVERABLES.map((d) => <div key={d} className="list-row"><span className="check" />{d}<span className="right"><StatusChip tone="neutral">Pending</StatusChip></span></div>)}
-            </Card>
-          </div>
-          <div className="grid" style={{ gridTemplateColumns: '1fr 2fr' }}>
-            <label className="field"><span>Assessment due date</span><input type="date" className="input" value={f.due} onChange={(e) => set('due', e.target.value)} /></label>
-            <label className="field"><span>Additional instructions</span><input className="input" value={f.notes} onChange={(e) => set('notes', e.target.value)} placeholder="Strategic direction" /></label>
-          </div>
-        </Drawer>
-      )}
-      {evidence && <EvidenceDrawer evidence={evidence} onClose={() => setEvidence(null)} />}
-    </div>
   );
 }

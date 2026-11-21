@@ -263,7 +263,6 @@ export function DecisionAssistant() {
     change: THEMES.map((t, i) => ({ n: String(i + 1), title: t.name, evidence: `${pct(themeShares(t).investmentShare)} of investment · ${pct(themeShares(t).adoptionShare)} of adopters`, status: t.direction, tone: (t.direction === 'Redesign' ? 'warn' : 'ok') as Tone, action: 'Open portfolio learning', to: R.learning })),
   };
   const question = QUESTIONS.find((x) => x.id === q)!;
-  const createDraft = () => go(`${R.suggest}?candidate=conversion-acceleration&region=west&territory=ambad&crop=Onion&product=Croptek`);
   const requestAssessment = () => {
     const id = `market-${gapRegion.id}`;
     store.addIntervention({ id, name: `${gapRegion.name} region market assessment`, category: 'Strategic theme', geography: gapRegion.name, trigger: `${crore(regionMetrics(gapRegion).gap, 1)} business gap`, role: 'Marketing Head', priority: 'High', status: 'awaiting_response', statusLabel: 'Assessment pending', deliverable: 'Strategic opportunity assessment' });
@@ -328,7 +327,7 @@ export function DecisionAssistant() {
           }>
             <button type="button" className="list-row" style={{ width: '100%' }} onClick={() => go(R.opportunity)}><ArrowRight size={15} />Explore {gapRegion.name} region market gap<span className="right"><StatusChip tone="ok">Market opportunity</StatusChip></span></button>
             <button type="button" className="list-row" style={{ width: '100%' }} onClick={() => go(R.review('croptek-next'))}><ArrowRight size={15} />Review Croptek strategic theme<span className="right"><StatusChip tone="ok">Theme review</StatusChip></span></button>
-            <button type="button" className="list-row" style={{ width: '100%' }} onClick={createDraft}><ArrowRight size={15} />Draft strategic theme suggestion<span className="right"><StatusChip tone="ok">Suggest theme</StatusChip></span></button>
+            <button type="button" className="list-row" style={{ width: '100%' }} onClick={() => go(R.inbox)}><ArrowRight size={15} />Review pending themes<span className="right"><StatusChip tone="ok">Theme approval inbox</StatusChip></span></button>
             <button type="button" className="list-row" style={{ width: '100%' }} onClick={requestAssessment}><ArrowRight size={15} />Request market assessment<span className="right"><StatusChip tone="ok">Marketing Head</StatusChip></span></button>
           </Card>
         </div>

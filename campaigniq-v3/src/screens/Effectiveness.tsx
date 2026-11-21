@@ -1,5 +1,5 @@
 /** Screen 5 — Campaign Effectiveness (mockup BH.2a.png) with screen 6 — Campaign Diagnostics drawer (BH.2b.png). */
-import { CheckCircle2, LineChart, Wallet, ChartColumn, Coins, FileSearch, FileText, Stethoscope, Target } from 'lucide-react';
+import { CheckCircle2, LineChart, Wallet, ChartColumn, Coins, FileSearch, Stethoscope, Target } from 'lucide-react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AMBAD, ambadMetrics, businessCase, netRoi, regionRoi, campaignById, campaignMetrics, campaignsOf, campaignTotals, regionById, type Campaign, type CampaignId } from '../data/bh';
@@ -11,7 +11,7 @@ import { Bar, Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, PanelFoo
 import { DataTable } from '../ui/DataTable';
 import { Drawer, EvidenceDrawer, type Evidence } from '../ui/overlay';
 import { useBhStore } from '../store/bhStore';
-import { useGo, useRouteRegion } from './common';
+import { ApproveThemeButton, useGo, useRouteRegion } from './common';
 
 
 export function Effectiveness() {
@@ -178,7 +178,7 @@ function Diagnostics({ c, onClose }: { c: Campaign; onClose: () => void }) {
           ]} />
         </Card>
       </div>
-      <Card title="Target achievement" note="at checkpoint" right={<Button small icon={FileText} onClick={() => go(`${R.suggest}?campaign=${c.id}`)}>Suggest revised theme</Button>}>
+      <Card title="Target achievement" note="at checkpoint" right={<ApproveThemeButton match={{ region: c.region }} />}>
         {achievement.map((x) => (
           <div key={x.label} className="row" style={{ gap: 14 }}><span style={{ width: 140 }}>{x.label}</span><Bar value={x.value} /><b className="ok-text" style={{ width: 54, textAlign: 'right' }}>{pct(x.value, 0)}</b><span className="muted" style={{ width: 110 }}>{x.detail}</span></div>
         ))}

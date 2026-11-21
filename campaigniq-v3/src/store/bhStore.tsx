@@ -1,6 +1,6 @@
 /**
  * Business Head workspace state shared across screens (React context + localStorage).
- * Holds what users change: scope, theme decisions, interventions, recommendations, scenarios, learning priorities.
+ * Holds what users change: scope, theme decisions, interventions, scenarios, learning priorities.
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { applyPeriod, initialInterventions, periodLabel, THEME_QUEUE, type Intervention, type PeriodId, type RegionId, type ThemeStatus } from '../data/bh';
@@ -13,17 +13,6 @@ export interface ThemeDecision {
   comment: string;
   at: string;
   draft: boolean;
-}
-
-export interface Recommendation {
-  id: string;
-  name: string;
-  geography: string;
-  cropProduct: string;
-  priority: string;
-  linkedThemeId: string | null;
-  status: 'draft' | 'sent';
-  targets: Record<string, string>;
 }
 
 export interface Scenario {
@@ -41,12 +30,11 @@ interface State {
   themeStatus: Record<string, ThemeStatus>;
   decisions: ThemeDecision[];
   interventions: Intervention[];
-  recommendations: Recommendation[];
   scenarios: Scenario[];
   learningSubmitted: boolean;
 }
 
-const KEY = 'campaigniq.v3.bh';
+const KEY = 'campaigniq.v3.bh.2'; // bumped when the stored shape or seeded records change
 
 const initial = (): State => ({
   scope: 'national',
@@ -54,7 +42,6 @@ const initial = (): State => ({
   themeStatus: Object.fromEntries(THEME_QUEUE.map((t) => [t.id, t.status])),
   decisions: [],
   interventions: initialInterventions(),
-  recommendations: [],
   scenarios: [],
   learningSubmitted: false,
 });
@@ -78,7 +65,6 @@ interface Ctx extends State {
   decideTheme: (d: ThemeDecision) => void;
   addIntervention: (i: Intervention) => void;
   updateIntervention: (id: string, patch: Partial<Intervention>) => void;
-  saveRecommendation: (r: Recommendation) => void;
   saveScenario: (s: Scenario) => void;
   submitLearning: () => void;
   reset: () => void;
@@ -122,7 +108,6 @@ export function BhStoreProvider({ children }: { children: ReactNode }) {
     })),
     addIntervention: (i) => setState((s) => ({ ...s, interventions: [i, ...s.interventions.filter((x) => x.id !== i.id)] })),
     updateIntervention: (id, patch) => setState((s) => ({ ...s, interventions: s.interventions.map((x) => (x.id === id ? { ...x, ...patch } : x)) })),
-    saveRecommendation: (r) => setState((s) => ({ ...s, recommendations: [r, ...s.recommendations.filter((x) => x.id !== r.id)] })),
     saveScenario: (sc) => setState((s) => ({ ...s, scenarios: [sc, ...s.scenarios.filter((x) => x.id !== sc.id)] })),
     submitLearning: () => setState((s) => ({ ...s, learningSubmitted: true })),
     reset: () => setState(initial()),
