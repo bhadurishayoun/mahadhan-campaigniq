@@ -49,3 +49,6 @@ The Decision Assistant answers four prepared questions from the data module (no 
 matched to the closest of the four.
 Crop-wise and product-wise portfolio views use breakdowns defined in `bh.ts` (they reconcile to the national totals;
 the mockups show only the theme view).
+Pages with view buttons (Campaign Portfolio Performance, Marketing Investment & ROI) share one filter header
+(`FilterHeader` in `src/screens/common.tsx`): Region · Crop · Product · Theme on row 1; view buttons, Season and Sort by
+on row 2. Every figure on those pages comes from the campaign records that pass the filters; the total row stays last.

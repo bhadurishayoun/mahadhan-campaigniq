@@ -1,14 +1,14 @@
 /** Screen 2 — Campaign Portfolio Performance (mockup BH.2.png). */
 import { ChartColumn, ExternalLink, Layers, Table2 } from 'lucide-react';
 import { useState } from 'react';
-import { ALL_CAMPAIGNS, netRoi, REGIONS, THEMES, type MixRow, type Season, type RegionId, type ThemeId } from '../data/bh';
+import { ALL_CAMPAIGNS, netRoi, REGIONS, THEMES, type MixRow, type RegionId, type ThemeId } from '../data/bh';
 import { crore, lakh, num, sum, times } from '../data/format';
 import { R } from '../routes';
 import { SERIES } from '../theme';
 import { HBars, HeatGrid } from '../ui/charts';
-import { Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, SegmentedControl, Select, StatusChip } from '../ui/core';
+import { Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
-import { ALL, CROP_OPTIONS, PRODUCT_OPTIONS, REGION_OPTIONS, THEME_OPTIONS, useDrillRegion, useGo, useScopeFilter, useBack } from './common';
+import { ALL, useDrillRegion, useGo, useBack, FilterHeader, useCampaignFilters } from './common';
 
 type View = 'theme' | 'crop' | 'product' | 'geography';
 type SortKey = 'roi' | 'investment' | 'adopters' | 'sales';
@@ -18,14 +18,11 @@ const topRegionFor = (t: ThemeId): RegionId => [...REGIONS].sort((a, b) => b.the
 
 export function Portfolio() {
   const go = useGo();
-  const [region, setRegion] = useScopeFilter();
-  const [crop, setCrop] = useState(ALL);
-  const [product, setProduct] = useState(ALL);
-  const [theme, setTheme] = useState(ALL);
+  const f = useCampaignFilters();
+  const { region, crop, product, theme, season } = f;
   const [view, setView] = useState<View>('theme');
   const drill = useDrillRegion();
 
-  const [season, setSeason] = useState<'all' | Season>('all');
   const [sortBy, setSortBy] = useState<SortKey>('roi');
   const regions = REGIONS.filter((r) => region === ALL || r.id === region);
   const themes = THEMES.filter((t) => theme === ALL || t.id === theme);
@@ -51,21 +48,9 @@ export function Portfolio() {
     <div className="page">
       <Breadcrumb items={[{ label: 'Marketing and Command Centre', onClick: () => go(R.command) }, { label: 'Campaign Portfolio Performance' }]} />
       <PageHeader title="Campaign Portfolio Performance" />
-      <FilterBar filters={[
-        { key: 'region', label: 'Region', value: region, options: REGION_OPTIONS, onChange: setRegion },
-        { key: 'crop', label: 'Crop', value: crop, options: CROP_OPTIONS, onChange: setCrop },
-        { key: 'product', label: 'Product', value: product, options: PRODUCT_OPTIONS, onChange: setProduct },
-        { key: 'theme', label: 'Theme', value: theme, options: THEME_OPTIONS, onChange: setTheme },
-      ]} />
-      <div className="row" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-        <SegmentedControl<View> value={view} onChange={setView} options={[
-        { value: 'theme', label: 'Theme-wise' }, { value: 'crop', label: 'Crop-wise' }, { value: 'product', label: 'Product-wise' }, { value: 'geography', label: 'Geography-wise' },
-        ]} />
-        <div className="row" style={{ gap: 12 }}>
-          <label className="row" style={{ gap: 6 }}><span className="seg-label">Season</span><Select label="Season" value={season} onChange={(v) => setSeason(v as 'all' | Season)} options={[{ value: 'all', label: 'All seasons' }, { value: 'Kharif', label: 'Kharif' }, { value: 'Rabi', label: 'Rabi' }]} /></label>
-          <label className="row" style={{ gap: 6 }}><span className="seg-label">Sort by</span><Select label="Sort by" value={sortBy} onChange={(v) => setSortBy(v as SortKey)} options={[{ value: 'roi', label: 'Net ROI (high–low)' }, { value: 'investment', label: 'Investment' }, { value: 'adopters', label: 'Adopters' }, { value: 'sales', label: 'Incremental sales' }]} /></label>
-        </div>
-      </div>
+      <FilterHeader<View, SortKey> f={f} view={view} setView={setView}
+        views={[{ value: 'theme', label: 'Theme-wise' }, { value: 'crop', label: 'Crop-wise' }, { value: 'product', label: 'Product-wise' }, { value: 'geography', label: 'Geography-wise' }]}
+        sortBy={sortBy} setSortBy={setSortBy} sorts={[{ value: 'roi', label: 'Net ROI (high–low)' }, { value: 'investment', label: 'Investment' }, { value: 'adopters', label: 'Adopters' }, { value: 'sales', label: 'Incremental sales' }]} />
       <div className="kpis">
         <KpiCard label="Active campaigns" value={num(kpi.campaigns)} />
         <KpiCard label="Actual marketing investment" value={crore(kpi.investment)} />

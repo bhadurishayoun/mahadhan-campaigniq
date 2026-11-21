@@ -6,8 +6,8 @@ import { ArrowLeftRight, ChevronDown, CalendarClock, CalendarDays, ChartColumn, 
 import { useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  businessCase, CAMPAIGNS, nationalReturns, netRoi, regionRoi, campaignById, campaignMetrics, campaignsOf, campaignTotals, CROP_MIX, DEFAULT_REALLOCATION, NATIONAL, NATIONAL_METRICS,
-  PRODUCT_MIX, ALL_CAMPAIGNS, planCampaign, planCampaignsOf, type PlanCampaign, REGIONS, regionById, regionMetrics, THEMES, type CampaignId, type MixRow, type RegionId,
+  businessCase, CAMPAIGNS, nationalReturns, netRoi, regionRoi, campaignById, campaignMetrics, campaignsOf, campaignTotals, DEFAULT_REALLOCATION, NATIONAL, NATIONAL_METRICS,
+  ALL_CAMPAIGNS, planCampaign, planCampaignsOf, type PlanCampaign, REGIONS, regionById, regionMetrics, THEMES, type CampaignId, type RegionId,
 } from '../data/bh';
 import { crore, lakh, num, pct, rupees, sum, times } from '../data/format';
 import { R } from '../routes';
@@ -15,10 +15,10 @@ import { useBhStore } from '../store/bhStore';
 import { RegionBarsCard } from './RegionBars';
 import { SERIES } from '../theme';
 import { GroupedBars, Legend, Waterfall } from '../ui/charts';
-import { Bar, Breadcrumb, Button, Card, FilterBar, FooterBar, KpiCard, PageHeader, SegmentedControl, StatusChip } from '../ui/core';
+import { Bar, Breadcrumb, Button, Card, FooterBar, KpiCard, PageHeader, StatusChip } from '../ui/core';
 import { DataTable } from '../ui/DataTable';
 import { EvidenceDrawer, type Evidence } from '../ui/overlay';
-import { ALL, CAMPAIGN_OPTIONS, CROP_OPTIONS, PRODUCT_OPTIONS, REGION_OPTIONS, THEME_OPTIONS, useDrillRegion, useGo, useRouteRegion, useScopeFilter, useBack } from './common';
+import { ALL, useDrillRegion, useGo, useRouteRegion, useBack, FilterHeader, useCampaignFilters } from './common';
 
 const perAdopter = (actualL: number, adopters: number) => Math.round((actualL * 100000) / adopters);
 
@@ -27,96 +27,92 @@ function StatusList({ items }: { items: { icon: typeof Coins; label: string; val
 }
 
 // ================================================================ shared card: investment per recorded adopter
-function PerAdopterCard({ scope }: { scope: RegionId | null }) {
+type InvRow = { id: string; name: string; approved: number; actual: number; adopters: number; sales: number };
+const perAdopterOf = (m: { actual: number; adopters: number }) => (m.adopters ? perAdopter(m.actual, m.adopters) : 0);
+
+const regionInvRow = (id: RegionId): InvRow => { const r = regionById(id); return { id, name: r.name, approved: r.approved, actual: r.actual, adopters: r.adopters, sales: r.sales }; };
+
+function PerAdopterCard({ scope, rowOf = regionInvRow, overall }: { scope: RegionId | null; rowOf?: (r: RegionId) => InvRow; overall?: InvRow }) {
+  const avg = overall ? perAdopterOf(overall) : NATIONAL_METRICS.perAdopter;
   return (
     <RegionBarsCard title="Investment per recorded adopter" icon={Users} sub="Actual investment ÷ recorded adopters, selected period" scope={scope}
-      value={(r) => regionMetrics(r).perAdopter} format={rupees}
-      reference={{ value: NATIONAL_METRICS.perAdopter, label: `National avg ${rupees(NATIONAL_METRICS.perAdopter)}` }}
-      tooltip={(r) => `Investment ${lakh(r.actual)} · Adopters ${num(r.adopters)} · ${rupees(regionMetrics(r).perAdopter)} per adopter`} />
+      value={(r) => perAdopterOf(rowOf(r.id))} format={rupees}
+      reference={{ value: avg, label: `National avg ${rupees(avg)}` }}
+      tooltip={(r) => { const m = rowOf(r.id); return `Investment ${lakh(m.actual)} · Adopters ${num(m.adopters)} · ${rupees(perAdopterOf(m))} per adopter`; }} />
   );
 }
 
 // ================================================================ 7 Marketing Investment & ROI
 type InvView = 'region' | 'crop' | 'product' | 'theme' | 'campaign';
+type InvSort = 'roi' | 'actual' | 'utilisation' | 'perAdopter';
+const INV_SORTS: Record<InvSort, (m: InvRow) => number> = {
+  roi: (m) => (m.actual ? netRoi(m.sales, m.actual) : 0), actual: (m) => m.actual, utilisation: (m) => (m.approved ? m.actual / m.approved : 0), perAdopter: perAdopterOf,
+};
 
 export function InvestmentRoi() {
   const go = useGo();
-  const [region, setRegion] = useScopeFilter();
+  const f = useCampaignFilters();
+  const { region } = f;
   const drill = useDrillRegion();
-  const [crop, setCrop] = useState(ALL);
-  const [product, setProduct] = useState(ALL);
-  const [theme, setTheme] = useState(ALL);
-  const [campaign, setCampaign] = useState(ALL);
   const [view, setView] = useState<InvView>('region');
+  const [sortBy, setSortBy] = useState<InvSort>('roi');
   const [evidence, setEvidence] = useState<Evidence | null>(null);
-  const regions = REGIONS.filter((r) => region === ALL || r.id === region);
-  const k = { approved: sum(regions, (r) => r.approved), actual: sum(regions, (r) => r.actual) };
-
-  const mix: MixRow[] = view === 'crop' ? CROP_MIX.filter((m) => crop === ALL || m.name === crop)
-    : view === 'product' ? PRODUCT_MIX.filter((m) => product === ALL || m.name === product)
-    : view === 'theme' ? THEMES.filter((t) => theme === ALL || t.id === theme).map((t) => ({ id: t.id, name: t.name, campaigns: 0, investment: t.investment, adopters: t.adopters, sales: t.sales }))
-    : campaignsOf('west').filter((c) => campaign === ALL || c.id === campaign).map((c) => ({ id: c.id, name: c.name, campaigns: 1, investment: c.actual, adopters: c.adopters, sales: c.sales }));
+  // Every figure comes from the campaign records that pass the filters (crop, product, theme, season, region).
+  const tagged = ALL_CAMPAIGNS.filter(f.matches);
+  const camps = tagged.filter((c) => region === ALL || c.region === region);
+  const group = (id: string, name: string, g: PlanCampaign[]): InvRow => ({ id, name, approved: sum(g, (c) => c.approved), actual: sum(g, (c) => c.actual), adopters: sum(g, (c) => c.adopters), sales: sum(g, (c) => c.sales) });
+  const by = (key: (c: PlanCampaign) => string, name: (c: PlanCampaign) => string) => [...new Set(camps.map(key))].map((id) => { const g = camps.filter((c) => key(c) === id); return group(id, name(g[0]), g); });
+  const regionRow = (r: RegionId) => group(r, regionById(r).name, tagged.filter((c) => c.region === r));
+  const k = group('all', 'Total', camps);
+  const rows: InvRow[] = (view === 'region' ? REGIONS.filter((r) => region === ALL || r.id === region).map((r) => regionRow(r.id)).filter((m) => m.approved > 0)
+    : view === 'crop' ? by((c) => c.crop, (c) => c.crop)
+    : view === 'product' ? by((c) => c.product, (c) => c.product)
+    : view === 'theme' ? by((c) => c.theme, (c) => THEMES.find((t) => t.id === c.theme)?.name ?? c.theme)
+    : camps.map((c) => group(c.id, c.name, [c])))
+    .sort((x, y) => INV_SORTS[sortBy](y) - INV_SORTS[sortBy](x));
   const label = { region: 'Region', crop: 'Crop', product: 'Product', theme: 'Theme', campaign: 'Campaign' }[view];
+  const util = (m: InvRow) => (m.approved ? (m.actual / m.approved) * 100 : 0);
+  const utilCell = (m: InvRow) => <span className="progress"><b>{pct(util(m))}</b><Bar value={util(m)} /></span>;
+  const roiChip = (m: InvRow) => <StatusChip tone="ok">{times(INV_SORTS.roi(m))}</StatusChip>;
 
   const back = useBack(R.effectiveness(region === ALL ? drill : (region as RegionId)));
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Marketing investment & ROI' }, { label: region === ALL ? 'National portfolio' : `${regionById(region as never).name} region` }]} />
       <PageHeader title="Marketing Investment & ROI" />
-      <FilterBar filters={[
-        { key: 'region', label: 'Region', value: region, options: REGION_OPTIONS, onChange: setRegion },
-        { key: 'crop', label: 'Crop', value: crop, options: CROP_OPTIONS, onChange: setCrop },
-        { key: 'product', label: 'Product', value: product, options: PRODUCT_OPTIONS, onChange: setProduct },
-        { key: 'theme', label: 'Theme', value: theme, options: THEME_OPTIONS, onChange: setTheme },
-        { key: 'campaign', label: 'Campaign', value: campaign, options: CAMPAIGN_OPTIONS, onChange: setCampaign },
-      ]} />
-      <SegmentedControl<InvView> label="" value={view} onChange={setView} options={[
-        { value: 'region', label: 'Region-wise' }, { value: 'crop', label: 'Crop-wise' }, { value: 'product', label: 'Product-wise' }, { value: 'theme', label: 'Theme-wise' }, { value: 'campaign', label: 'Campaign-wise' },
-      ]} />
+      <FilterHeader<InvView, InvSort> f={f} view={view} setView={setView}
+        views={[{ value: 'region', label: 'Region-wise' }, { value: 'crop', label: 'Crop-wise' }, { value: 'product', label: 'Product-wise' }, { value: 'theme', label: 'Theme-wise' }, { value: 'campaign', label: 'Campaign-wise' }]}
+        sortBy={sortBy} setSortBy={setSortBy} sorts={[{ value: 'roi', label: 'Net ROI (high–low)' }, { value: 'actual', label: 'Actual investment' }, { value: 'utilisation', label: 'Utilisation' }, { value: 'perAdopter', label: 'Investment per adopter' }]} />
       <div className="kpis">
         <KpiCard label="Approved marketing budget" value={crore(k.approved)} />
         <KpiCard label="Actual marketing investment" value={crore(k.actual)} />
         <KpiCard label="Unspent budget" value={lakh(k.approved - k.actual)} />
-        <KpiCard label="Budget utilisation" value={pct((k.actual / k.approved) * 100, 0)} />
+        <KpiCard label="Budget utilisation" value={pct(util(k), 0)} />
       </div>
 
       <Card title={`${label}-wise marketing investment and efficiency`} icon={Coins} flush>
-        {view === 'region' ? (
-          <DataTable rows={regions} rowKey={(r) => r.id} onRowClick={(r) => go(R.campaignInvestment(r.id))}
-            columns={[
-              { key: 'n', header: 'Region', render: (r) => <b>{r.name}</b> },
-              { key: 'ap', header: 'Approved budget', align: 'right', render: (r) => lakh(r.approved) },
-              { key: 'ac', header: 'Actual investment', align: 'right', render: (r) => lakh(r.actual) },
-              { key: 'un', header: 'Unspent budget', align: 'right', render: (r) => lakh(regionMetrics(r).unspent) },
-              { key: 'ut', header: 'Utilisation', render: (r) => <span className="progress"><b>{pct(regionMetrics(r).utilisationPct)}</b><Bar value={regionMetrics(r).utilisationPct} /></span> },
-              { key: 'ad', header: 'Recorded adopters', align: 'right', render: (r) => num(r.adopters) },
-              { key: 'pa', header: 'Investment per recorded adopter', align: 'right', render: (r) => rupees(regionMetrics(r).perAdopter) },
-              { key: 'roi', header: 'Actual net ROI', align: 'center', render: (r) => <StatusChip tone="ok">{times(regionRoi(r))}</StatusChip> },
-              { key: 'v', header: 'View', align: 'center', render: (r) => <Button small onClick={() => go(R.campaignInvestment(r.id))}>View</Button> },
-            ]}
-            total={{ n: 'Total', ap: lakh(k.approved), ac: lakh(k.actual), un: lakh(k.approved - k.actual), ut: <span className="progress"><b>{pct((k.actual / k.approved) * 100)}</b><Bar value={(k.actual / k.approved) * 100} /></span>, ad: num(sum(regions, (r) => r.adopters)), pa: rupees(perAdopter(k.actual, sum(regions, (r) => r.adopters))), roi: '–' }}
-          />
-        ) : (
-          <DataTable rows={mix} rowKey={(m) => m.id}
-            columns={[
-              { key: 'n', header: label, render: (m) => <b>{m.name}</b> },
-              { key: 'ac', header: 'Actual investment', align: 'right', render: (m) => lakh(m.investment) },
-              { key: 'sh', header: 'Share of investment', align: 'right', render: (m) => pct((m.investment / NATIONAL.actual) * 100) },
-              { key: 'ad', header: 'Recorded adopters', align: 'right', render: (m) => num(m.adopters) },
-              { key: 'pa', header: 'Investment per recorded adopter', align: 'right', render: (m) => rupees(perAdopter(m.investment, m.adopters)) },
-              { key: 'roi', header: 'Actual net ROI', align: 'center', render: (m) => <StatusChip tone="ok">{times(netRoi(m.sales, m.investment))}</StatusChip> },
-            ]}
-            total={{ n: 'Total', ac: lakh(sum(mix, (m) => m.investment)), sh: pct((sum(mix, (m) => m.investment) / NATIONAL.actual) * 100), ad: num(sum(mix, (m) => m.adopters)), pa: rupees(perAdopter(sum(mix, (m) => m.investment), sum(mix, (m) => m.adopters))), roi: '–' }}
-          />
-        )}
+        <DataTable rows={rows} rowKey={(m) => m.id} onRowClick={view === 'region' ? (m) => go(R.campaignInvestment(m.id as RegionId)) : undefined}
+          columns={[
+            { key: 'n', header: label, render: (m) => <b>{m.name}</b> },
+            { key: 'ap', header: 'Approved budget', align: 'right', render: (m) => lakh(m.approved) },
+            { key: 'ac', header: 'Actual investment', align: 'right', render: (m) => lakh(m.actual) },
+            { key: 'un', header: 'Unspent budget', align: 'right', render: (m) => lakh(m.approved - m.actual) },
+            { key: 'ut', header: 'Utilisation', render: utilCell },
+            { key: 'ad', header: 'Recorded adopters', align: 'right', render: (m) => num(m.adopters) },
+            { key: 'pa', header: 'Investment per recorded adopter', align: 'right', render: (m) => rupees(perAdopterOf(m)) },
+            { key: 'roi', header: 'Actual net ROI', align: 'center', render: roiChip },
+            ...(view === 'region' ? [{ key: 'v', header: 'View', align: 'center' as const, render: (m: InvRow) => <Button small onClick={() => go(R.campaignInvestment(m.id as RegionId))}>View</Button> }] : []),
+          ]}
+          total={{ n: 'Total', ap: lakh(k.approved), ac: lakh(k.actual), un: lakh(k.approved - k.actual), ut: utilCell(k), ad: num(k.adopters), pa: rupees(perAdopterOf(k)), roi: roiChip(k) }}
+        />
       </Card>
 
       <div className="grid" style={{ gridTemplateColumns: '1.15fr 1fr .8fr' }}>
         <Card title="Approved vs actual marketing investment" note="₹ lakh" icon={ChartColumn}>
-          <GroupedBars data={REGIONS.map((r) => ({ region: r.name, approved: r.approved, actual: r.actual }))} x="region" highlight={region === ALL ? undefined : regionById(region as RegionId).name}
+          <GroupedBars data={REGIONS.map((r) => { const m = regionRow(r.id); return { region: r.name, approved: m.approved, actual: m.actual }; })} x="region" highlight={region === ALL ? undefined : regionById(region as RegionId).name}
             series={[{ key: 'approved', label: 'Approved', color: SERIES.planned }, { key: 'actual', label: 'Actual', color: SERIES.observed }]} />
         </Card>
-        <PerAdopterCard scope={region === ALL ? null : (region as RegionId)} />
+        <PerAdopterCard scope={region === ALL ? null : (region as RegionId)} rowOf={regionRow} overall={group('all', 'All', tagged)} />
         <Card title="Financial status" note={region === ALL ? 'National' : undefined} icon={ShieldCheck} right={
 <Button small icon={FileSearch} onClick={() => setEvidence({
           title: 'ROI evidence — national portfolio', owner: 'Zonal Manager attribution records',
@@ -132,8 +128,8 @@ export function InvestmentRoi() {
         })}>ROI evidence</Button>
         }>
           <StatusList items={[
-            { icon: ChartColumn, label: 'Actual net ROI', value: <StatusChip tone="ok">{times(netRoi(sum(regions, (r) => r.sales), k.actual))}</StatusChip> },
-            { icon: Coins, label: 'Incremental sales', value: <StatusChip tone="ok">{crore(sum(regions, (r) => r.sales))}</StatusChip> },
+            { icon: ChartColumn, label: 'Actual net ROI', value: roiChip(k) },
+            { icon: Coins, label: 'Incremental sales', value: <StatusChip tone="ok">{crore(k.sales)}</StatusChip> },
             { icon: CalendarDays, label: 'Outstanding commitments', value: <StatusChip tone="warn">Verify</StatusChip> },
           ]} />
         </Card>

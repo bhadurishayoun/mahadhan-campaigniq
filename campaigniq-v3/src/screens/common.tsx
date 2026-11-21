@@ -1,9 +1,9 @@
 import { CheckCircle2, Eye } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CAMPAIGNS, REGIONS, THEME_QUEUE, THEMES, type RegionId } from '../data/bh';
 import { R } from '../routes';
-import { Button } from '../ui/core';
+import { Button, FilterBar, SegmentedControl, Select } from '../ui/core';
 import { useBhStore } from '../store/bhStore';
 
 export const ALL = 'all';
@@ -69,4 +69,45 @@ export function ApproveThemeButton({ match, primary }: { match?: { region?: Regi
 export function useBack(fallback: string) {
   const nav = useNavigate();
   return () => ((window.history.state?.idx ?? 0) > 0 ? nav(-1) : nav(fallback));
+}
+
+/**
+ * Shared filter block (Campaign Portfolio pattern). Row 1: Region · Crop · Product · Theme.
+ * Row 2: view buttons left; Season and Sort by right. Region stays in sync with the top-bar scope.
+ */
+export type SeasonFilter = 'all' | 'Kharif' | 'Rabi';
+export function useCampaignFilters() {
+  const [region, setRegion] = useScopeFilter();
+  const [crop, setCrop] = useState(ALL);
+  const [product, setProduct] = useState(ALL);
+  const [theme, setTheme] = useState(ALL);
+  const [season, setSeason] = useState<SeasonFilter>('all');
+  /** Campaign passes the non-region filters (crop, product, theme, season). */
+  const matches = (c: { crop: string; product: string; theme: string; season: string }) =>
+    (crop === ALL || c.crop === crop) && (product === ALL || c.product === product) && (theme === ALL || c.theme === theme) && (season === 'all' || c.season === season);
+  return { region, setRegion, crop, setCrop, product, setProduct, theme, setTheme, season, setSeason, matches };
+}
+
+export function FilterHeader<V extends string, S extends string>({ f, view, setView, views, sortBy, setSortBy, sorts }: {
+  f: ReturnType<typeof useCampaignFilters>;
+  view: V; setView: (v: V) => void; views: { value: V; label: string }[];
+  sortBy: S; setSortBy: (s: S) => void; sorts: { value: S; label: string }[];
+}) {
+  return (
+    <>
+      <FilterBar filters={[
+        { key: 'region', label: 'Region', value: f.region, options: REGION_OPTIONS, onChange: f.setRegion },
+        { key: 'crop', label: 'Crop', value: f.crop, options: CROP_OPTIONS, onChange: f.setCrop },
+        { key: 'product', label: 'Product', value: f.product, options: PRODUCT_OPTIONS, onChange: f.setProduct },
+        { key: 'theme', label: 'Theme', value: f.theme, options: THEME_OPTIONS, onChange: f.setTheme },
+      ]} />
+      <div className="row" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <SegmentedControl<V> value={view} onChange={setView} options={views} />
+        <div className="row" style={{ gap: 12 }}>
+          <label className="row" style={{ gap: 6 }}><span className="seg-label">Season</span><Select label="Season" value={f.season} onChange={(v) => f.setSeason(v as SeasonFilter)} options={[{ value: 'all', label: 'All seasons' }, { value: 'Kharif', label: 'Kharif' }, { value: 'Rabi', label: 'Rabi' }]} /></label>
+          <label className="row" style={{ gap: 6 }}><span className="seg-label">Sort by</span><Select label="Sort by" value={sortBy} onChange={(v) => setSortBy(v as S)} options={sorts} /></label>
+        </div>
+      </div>
+    </>
+  );
 }
