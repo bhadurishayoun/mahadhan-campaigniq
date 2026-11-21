@@ -106,10 +106,11 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 
 /* ---------- table ---------- */
 .tbl { width: 100%; border-collapse: collapse; }
-.tbl th { font-size: 12px; font-weight: 600; color: var(--ink-soft); text-align: left; padding: 8px 10px; background: var(--canvas); border-bottom: 1px solid var(--line); line-height: 1.25; }
-.tbl td { font-size: 13px; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.tbl th { font-size: 12px; font-weight: 600; color: var(--ink-soft); text-align: center; vertical-align: middle; padding: 8px 10px; background: var(--canvas); border-bottom: 1px solid var(--line); line-height: 1.25; }
+.tbl td { font-size: 13px; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; text-align: center; font-variant-numeric: tabular-nums; }
 .tbl tr:last-child td { border-bottom: 0; }
-.tbl .r { text-align: right; } .tbl .c { text-align: center; }
+.tbl .r, .tbl .c { text-align: center; }
+.tbl td .row, .tbl td .progress { display: inline-flex; justify-content: center; }
 .tbl tr.click { cursor: pointer; }
 .tbl tr.click:hover td { background: var(--canvas); }
 .tbl tr.sel td { background: var(--tint); }
@@ -175,9 +176,9 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 .toast { background: var(--dark); color: var(--card); padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; display: flex; gap: 8px; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,.2); }
 .heat { width: 100%; border-collapse: separate; border-spacing: 4px; }
 .heat th { font-size: 12px; font-weight: 600; color: var(--ink-soft); padding: 2px 4px; text-align: center; }
-.heat th:first-child { text-align: left; }
+.heat th:first-child { text-align: center; }
 .heat td { text-align: center; font-size: 13px; font-weight: 600; padding: 7px 4px; border-radius: 6px; }
-.heat td.lab { text-align: left; font-weight: 600; background: none; }
+.heat td.lab { text-align: center; font-weight: 600; background: none; }
 .heat td.click { cursor: pointer; }
 .heat td.click:hover { outline: 2px solid var(--brand); }
 .hbars { display: flex; flex-direction: column; gap: 10px; }

@@ -17,7 +17,8 @@ export function DataTable<T>({ columns, rows, rowKey, total, selected, onRowClic
   selected?: string | null;
   onRowClick?: (row: T) => void;
 }) {
-  const cls = (a?: string) => (a === 'right' ? 'r' : a === 'center' ? 'c' : undefined);
+  // Every cell is centred (styles.css); `align: 'right'` now only marks number columns, which never wrap.
+  const cls = (a?: string) => (a === 'right' ? 'nw' : undefined);
   return (
     <table className="tbl">
       <thead>
