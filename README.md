@@ -11,7 +11,8 @@ All data in the tool is illustrative (mockup figures and a synthetic data workbo
 
 > **CampaignIQ v3 (rebuild in progress, persona by persona):** `campaigniq-v3/` rebuilds the tool from the
 > client-approved mockups (Google Drive "Mahadhan_Mockups", copied to `campaigniq-v3/docs/mockups/`). Business Head
-> comes first, following `business-head-prompt.md`; it is published at `/v3/` next to the current site
+> comes first, following `business-head-prompt.md`; the Field Sales Manager persona (`/v3/#/fsm/plan`, login TM001) is built as a
+> drill-down of the same data. Both are published at `/v3/` next to the current site
 > (`…/mahadhan-campaigniq/v3/#/bh/command-centre`, same `MASTER001` sign-in page). Status and next steps:
 > [campaigniq-v3/README.md](campaigniq-v3/README.md).
 

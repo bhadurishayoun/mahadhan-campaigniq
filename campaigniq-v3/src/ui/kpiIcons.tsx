@@ -85,7 +85,7 @@ const PATHS: Record<KpiIconName, ReactNode> = {
 /** Icon chosen from the KPI label (first match wins). */
 const RULES: [RegExp, KpiIconName][] = [
   [/roi/i, 'roi'],
-  [/gap|variance|shortfall/i, 'alert'],
+  [/gap|variance|shortfall|risk/i, 'alert'],
   [/utilisation|execution|complet/i, 'gauge'],
   [/trial|conversion/i, 'sprout'],
   [/retail|dealer|outlet/i, 'store'],

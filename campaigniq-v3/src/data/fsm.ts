@@ -442,3 +442,80 @@ export const activityErrors = (w: WizardState) => {
   });
   return e;
 };
+
+// ---------------------------------------------------------------- execution detail, impact and diagnostics
+export const UNIT_STATUS_LABEL: Record<UnitStatus, string> = { completed: 'Completed', scheduled: 'Scheduled', at_risk: 'At risk', rescheduled: 'Rescheduled', escalated: 'Escalated' };
+export const activityName = (id: string) => CAMPAIGN_ACTIVITIES.find((a) => a.id === id)?.name ?? id;
+
+export interface UnitOverride { status: UnitStatus; owner?: string; date?: string; reason?: string; notes?: string; action?: string }
+/** Activity units with corrective-action overrides applied. */
+export const unitsWith = (overrides: Record<string, UnitOverride> = {}): ActivityUnit[] =>
+  ACTIVITY_UNITS.map((u) => (overrides[u.id] ? { ...u, status: overrides[u.id].status, owner: overrides[u.id].owner ?? u.owner } : u));
+
+export const CORRECTIVE_ACTIONS = ['Request stock confirmation', 'Propose reschedule', 'Reassign owner', 'Escalate issue'];
+export const ACTION_REASONS = ['Stock confirmation pending', 'Participant mobilisation pending', 'Owner unavailable', 'Weather or field conditions', 'Retailer support pending'];
+/** Status an at-risk unit takes after a corrective action. */
+export const statusAfter = (action: string): UnitStatus => (action === 'Escalate issue' ? 'escalated' : 'rescheduled');
+
+/** Execution readiness checklist for each activity type. */
+export const READINESS: Record<string, { item: string; sub: string; status: string }[]> = {
+  demonstration: [
+    { item: 'Stock confirmation', sub: 'Product available for the demonstration', status: 'Pending' },
+    { item: 'Retailer coordination', sub: 'Retailer support for venue and logistics', status: 'To verify' },
+    { item: 'Venue readiness', sub: 'Demonstration plot prepared', status: 'To verify' },
+    { item: 'Farmer mobilisation', sub: 'Participants informed of the schedule', status: 'To verify' },
+  ],
+  meeting: [
+    { item: 'Participant mobilisation', sub: 'Target farmers confirmed', status: 'Pending' },
+    { item: 'Venue readiness', sub: 'Meeting place booked', status: 'To verify' },
+    { item: 'Content readiness', sub: 'Approved advisory material', status: 'To verify' },
+  ],
+  default: [
+    { item: 'Owner confirmation', sub: 'Assigned owner confirmed', status: 'To verify' },
+    { item: 'Content readiness', sub: 'Approved material', status: 'To verify' },
+  ],
+};
+
+/** Campaign-linked sales tracked per village (₹ L); sums to the Business Head Ambad campaign-linked sales. */
+export const VILLAGE_LINKED_SALES: Record<string, number> = { Dhanora: 2.1, 'Wadi Gaon': 3.3 };
+/** Farmers reached per completed unit, by activity. */
+export const REACH_PER_UNIT: Record<string, number> = { demonstration: 60, retailer: 25, meeting: 80, digital: 420, followup: 49 };
+
+/** Village performance: Business Head village trials / adopters with campaign reach, units and tracked sales. */
+export const villagePerformance = (units: ActivityUnit[] = ACTIVITY_UNITS) => AMBAD.villages.map((v) => {
+  const mine = units.filter((u) => u.village.split(', ').includes(v.name));
+  return {
+    name: v.name,
+    campaign: FSM_CAMPAIGN.villages.includes(v.name),
+    farmers: FARMERS_REACHED[v.name] ?? null,
+    trials: v.trials,
+    adopters: v.adopters,
+    conversionPct: ratio(v.adopters, v.trials),
+    planned: mine.length,
+    completed: mine.filter((u) => u.status === 'completed').length,
+    atRisk: mine.filter((u) => u.status === 'at_risk'),
+    sales: VILLAGE_LINKED_SALES[v.name] ?? 0,
+  };
+});
+
+/** Funnel for the campaign villages (Dhanora, Wadi Gaon). */
+export const campaignFunnel = () => {
+  const rows = villagePerformance().filter((v) => v.campaign);
+  const reached = sum(rows, (v) => v.farmers ?? 0);
+  const trials = sum(rows, (v) => v.trials);
+  const adopters = sum(rows, (v) => v.adopters);
+  return { reached, trials, adopters, reachToTrialPct: ratio(trials, reached), trialToAdoptionPct: ratio(adopters, trials) };
+};
+
+/** Intervention effectiveness per activity: completion, reach and spend. */
+export const interventionEffectiveness = (units: ActivityUnit[] = ACTIVITY_UNITS) => CAMPAIGN_ACTIVITIES.map((a) => {
+  const mine = units.filter((u) => u.activity === a.id);
+  const completed = mine.filter((u) => u.status === 'completed').length;
+  return {
+    id: a.id, name: a.name, planned: mine.length, completed,
+    atRisk: mine.filter((u) => u.status === 'at_risk').length,
+    reach: completed * REACH_PER_UNIT[a.id],
+    budget: a.cost,
+    spend: (a.cost / a.units) * completed,
+  };
+});

@@ -3,7 +3,7 @@
  * Kept in sessionStorage so going back through the wizard keeps what was entered.
  */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { defaultWizard, type FsmScope, type WizardState } from '../data/fsm';
+import { defaultWizard, type FsmScope, type UnitOverride, type WizardState } from '../data/fsm';
 import type { FsmTerritoryId } from '../routes';
 
 export interface FsmState {
@@ -20,10 +20,16 @@ export interface FsmState {
   wizard: WizardState | null;
   /** Campaign status per business priority. */
   campaigns: Record<string, 'draft' | 'launched'>;
+  /** Corrective actions saved on activity units. */
+  units: Record<string, UnitOverride>;
+  /** Field evidence file names per activity unit. */
+  evidence: Record<string, string[]>;
+  /** Questions asked in the AI Copilot workspace (most recent first). */
+  asked: string[];
 }
 
-const KEY = 'campaigniq.v3.fsm.3';
-const INITIAL: FsmState = { scope: 'cluster', submitted: [], targets: {}, onionPlan: {}, notes: {}, wizard: null, campaigns: {} };
+const KEY = 'campaigniq.v3.fsm.4';
+const INITIAL: FsmState = { scope: 'cluster', submitted: [], targets: {}, onionPlan: {}, notes: {}, wizard: null, campaigns: {}, units: {}, evidence: {}, asked: [] };
 
 function load(): FsmState {
   try {
@@ -42,6 +48,9 @@ interface FsmStore extends FsmState {
   startWizard: (priorityId: string) => void;
   setWizard: (patch: Partial<WizardState>) => void;
   launchCampaign: () => void;
+  saveAction: (unitId: string, o: UnitOverride) => void;
+  addEvidence: (unitId: string, file: string) => void;
+  ask: (q: string) => void;
 }
 
 const Ctx = createContext<FsmStore | null>(null);
@@ -60,6 +69,9 @@ export function FsmStoreProvider({ children }: { children: ReactNode }) {
     setNotes: (t, text) => setState((s) => ({ ...s, notes: { ...s.notes, [t]: text } })),
     startWizard: (priorityId) => setState((s) => ({ ...s, wizard: s.wizard?.priority === priorityId ? s.wizard : defaultWizard(priorityId), campaigns: { ...s.campaigns, [priorityId]: s.campaigns[priorityId] ?? 'draft' } })),
     setWizard: (patch) => setState((s) => ({ ...s, wizard: { ...(s.wizard ?? defaultWizard('onion-croptek')), ...patch } })),
+    saveAction: (unitId, o) => setState((s) => ({ ...s, units: { ...s.units, [unitId]: o } })),
+    addEvidence: (unitId, file) => setState((s) => ({ ...s, evidence: { ...s.evidence, [unitId]: [...(s.evidence[unitId] ?? []), file] } })),
+    ask: (q) => setState((s) => ({ ...s, asked: [q, ...s.asked.filter((x) => x !== q)].slice(0, 5) })),
     launchCampaign: () => setState((s) => (s.wizard ? { ...s, campaigns: { ...s.campaigns, [s.wizard.priority]: 'launched' } } : s)),
   }), [state]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

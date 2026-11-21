@@ -63,6 +63,10 @@ cards, donut and category counts use `interventionCounts()` (tested in `bh.test.
 | 1 | Data (`src/data/fsm.ts`, tested in `fsm.test.ts`): cluster, Ambad outlets, crop plan, priorities, campaign budget / scenarios / funnel, 13 execution units, impact. Ambad figures read from `bh.ts`. BH West now Ambad · Ghansawangi · Badnapur · Aurangabad · Nashik (West ₹16.0 Cr ABP, ₹14.2 Cr sales unchanged) | Done |
 | 2 | Screens 1–5 (My Plan): performance (filters, Value / Growth views, Plan territory), territory network (geography explorer, outlet drawer), outlet targets (editable, live reconciliation, CSV import / template), village onion plan (calculator, inline edit), plan review (validation, submit). Shared `StepTabs` and `FilterRows` in `src/ui/core.tsx` | Done |
 | 3 | Screens 6–10: business priority (prefills the wizard), objective & targeting (village / retailer multi-select, required-field checks), activity & budget mix (add / edit / remove, live budget mix), scenarios (selectable, editable funnel assumptions), review & submit (readiness, rationale, attachment; submit launches the campaign). Wizard state in the FSM store (sessionStorage); reached steps can be revisited | Done |
-| 4 | Screens 11–15, verification, deploy | Next |
+| 4 | Screens 11–15: live control tower (week / activity views, calendar and exceptions open the activity), corrective action (owner + reason required; saving reschedules or escalates and clears the exception), campaign impact, village diagnostic (BH village figures), AI Copilot workspace (prepared and typed questions answered from the data). Verified at 1440×900: no console errors or overflow, Next/Back chain, cross-persona Ambad and West figures identical | Done |
 
 The active persona follows the route (`/bh/…` or `/fsm/…`); a non-master login is kept to its own workspace.
+
+**Next steps (Field Sales Manager):** Ghansawangi and Badnapur dealer networks and crop plans are generated to reconcile
+with their ABPs (the mockups only detail Ambad); replace them when the client shares outlet masters. Zonal Manager and
+Marketing Head personas follow the same pattern (persona id `pm` / `mh`, mockups already in `docs/mockups/`).

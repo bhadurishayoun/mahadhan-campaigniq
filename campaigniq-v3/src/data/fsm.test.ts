@@ -5,6 +5,7 @@ import {
   ACTIVITY_UNITS, acresFor, budgetMix, CAMPAIGN_ACTIVITIES, clusterRows, clusterTotal, cropPlan, DEALERS, executionCounts, FARMERS_REACHED,
   funnel, impactSummary, objectiveCoverage, ONION_VILLAGE_PLAN, outletSummary, RETAILERS, scenarioOutcome, SCENARIOS, targetReconciliation,
   coverageCalc, dealersOf, lastYearMix, onionPlanOf, perfRows, retailersOf, defaultWizard, wizardScenarios, objectiveErrors, activityErrors,
+  villagePerformance, campaignFunnel, unitsWith, statusAfter, interventionEffectiveness,
 } from './fsm';
 
 const r1 = (v: number) => Math.round(v * 10) / 10;
@@ -141,5 +142,26 @@ describe('campaign wizard', () => {
     const w = { ...defaultWizard('maize-expansion'), name: ' ', villages: [], retailers: [] };
     expect(Object.keys(objectiveErrors(w)).sort()).toEqual(['name', 'retailers', 'villages']);
     expect(activityErrors({ ...w, activities: [] })).toHaveProperty('list');
+  });
+});
+
+describe('execution, impact and diagnostics', () => {
+  it('village performance equals the Business Head villages', () => {
+    const vp = villagePerformance();
+    expect([sum(vp, (v) => v.trials), sum(vp, (v) => v.adopters)]).toEqual([160, 72]);
+    expect(r1(sum(vp, (v) => v.sales))).toBe(AMBAD.campaignLinkedSales);
+    const d = vp.find((v) => v.name === 'Dhanora')!;
+    const w = vp.find((v) => v.name === 'Wadi Gaon')!;
+    expect([r1(d.conversionPct), r1(w.conversionPct), r1(w.conversionPct - d.conversionPct)]).toEqual([38.7, 49, 10.3]);
+    expect(sum(vp, (v) => v.atRisk.length)).toBe(2);
+  });
+  it('campaign funnel uses the campaign villages', () => {
+    expect(campaignFunnel()).toMatchObject({ reached: 640, trials: 80, adopters: 36 });
+  });
+  it('corrective actions clear exceptions', () => {
+    const units = unitsWith({ [ACTIVITY_UNITS.find((u) => u.status === 'at_risk')!.id]: { status: statusAfter('Propose reschedule') } });
+    expect(executionCounts(units)).toEqual({ planned: 13, completed: 9, scheduled: 3, atRisk: 1 });
+    expect(statusAfter('Escalate issue')).toBe('escalated');
+    expect(sum(interventionEffectiveness(), (e) => e.completed)).toBe(9);
   });
 });

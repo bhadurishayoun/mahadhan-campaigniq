@@ -278,3 +278,25 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 .scenarios > button { display: flex; flex-direction: column; gap: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); text-align: left; color: var(--ink); font-size: 13px; }
 .scenarios > button.on { border: 2px solid var(--brand); background: var(--tint); }
 .scenarios .list-row { font-size: 13px; }
+/* Control tower calendar cells */
+.cal-cell { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid var(--line); background: var(--neutral); color: var(--ink); }
+.cal-cell.completed { background: var(--tint); color: var(--dark); border-color: var(--light); }
+.cal-cell.at_risk { background: var(--amber-soft); color: var(--amber-ink); border-color: var(--amber); }
+.cal-cell.rescheduled { background: var(--card); color: var(--dark); border-color: var(--brand); }
+.cal-cell.escalated { background: var(--risk-soft); color: var(--risk); border-color: var(--risk); }
+/* Corrective action choices */
+.action-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.action-grid button { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); font-size: 13px; font-weight: 600; color: var(--ink); text-align: center; }
+.action-grid button.on { background: var(--tint); border: 2px solid var(--brand); color: var(--dark); }
+/* Conversion funnel */
+.funnel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.1fr); gap: 10px; align-items: stretch; }
+.funnel > div { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; padding: 16px 8px; border-radius: 10px; background: var(--tint); }
+.funnel > div span { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+.funnel > div b { font-size: 26px; color: var(--dark); font-variant-numeric: tabular-nums; }
+.funnel > div.on { background: var(--brand); }
+.funnel > div.on span, .funnel > div.on b { color: var(--card); }
+.funnel > .rates { background: var(--canvas); gap: 10px; }
+.funnel > .rates span b { font-size: 18px; display: block; text-align: center; }
+/* Question box */
+.ask-box { display: flex; gap: 8px; margin-top: 14px; }
+.ask-box .input { flex: 1; }
