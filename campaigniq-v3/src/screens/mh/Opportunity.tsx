@@ -1,7 +1,7 @@
 /** Marketing Head screens 1–5: national overview, regional opportunity and business & crop plan reviews. */
 import {
   ArrowRight, ChartColumn, CircleCheck, ClipboardCheck, Eye, FileSearch, Flag, Layers, ListChecks, MapPin, MessageSquare, Send, ShieldCheck, Sprout, Target,
-  TrendingUp,
+  Lightbulb, TrendingUp,
 } from 'lucide-react';
 import { useState } from 'react';
 import { NATIONAL, planCampaignsOf, mixBy, type Season } from '../../data/bh';
@@ -207,6 +207,9 @@ export function RegionalOpportunity() {
   const camps = planCampaignsOf(r).filter((c) => (crop === ALL || c.crop === crop || true) && (product === ALL || c.product === product || true));
   const prev = r === 'west' ? PREVIOUS_CAMPAIGNS : themeEffectiveness().slice(0, 3).map((t) => ({ intervention: t.short, engagementPct: Math.round((t.engagement[0] + t.engagement[1]) / 2), evidence: `${crore(t.sales)} validated at ${times(t.roi)}`, confidence: t.confidence === 'Verified' ? 'High' as const : 'Moderate' as const }));
   const trendData = o.trend.map((v, i) => ({ q: `Q${i + 1}`, v }));
+  const [q1, q2, q3, q4] = o.trend;
+  const firstHalf = q1 + q2;
+  const secondHalf = q3 + q4;
   const total = r === 'west' ? westSalesTotal() : o.trendTotal;
   const maxMarket = Math.max(...states.map((s) => s.market[1]));
   const src: Evidence = { title: `Source analysis: ${o.name} region · ${o.crop} · ${o.product}`, owner: 'Market sizing, secondary sales and campaign records', facts: [
@@ -237,10 +240,20 @@ export function RegionalOpportunity() {
         <Card title={view === 'trend' ? `Product sales trend: ${o.product} (${o.crop}), ${r === 'west' ? 'Maharashtra' : `${o.name} region`}` : view === 'market' ? `Market opportunity vs product penetration (${o.name} region)` : `${o.name} region campaigns`} icon={TrendingUp}
           flush={view !== 'trend'} right={<Button small icon={FileSearch} onClick={() => setEvidence(src)}>View source analysis</Button>}>
           {view === 'trend' ? (
+            <>
             <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 170px', alignItems: 'center' }}>
               <TrendLine data={trendData} x="q" y="v" height={250} format={(v) => `₹${v} L`} tooltip={(d) => `${d.q} · secondary sales ₹${d.v} L`} />
               <div className="recon compact" style={{ gridTemplateColumns: '1fr' }}><div><span>Four-quarter total</span><b>{crore(total)}</b></div></div>
             </div>
+            <div className="list-row" style={{ marginTop: 'auto', borderTop: '1px solid var(--line)' }}>
+              <Lightbulb size={18} aria-hidden="true" />
+              <div>
+                <b>Second-half sales</b>
+                <div>Combined Q3 and Q4 sales reached {lakh(secondHalf)}, compared with {lakh(firstHalf)} in Q1 and Q2.
+                  {' '}The second half accounted for {pct(secondHalf / total * 100, 0)} of four-quarter sales.</div>
+              </div>
+            </div>
+            </>
           ) : view === 'market' ? (
             <DataTable rows={stateRows} rowKey={(s) => s.state}
               columns={[
