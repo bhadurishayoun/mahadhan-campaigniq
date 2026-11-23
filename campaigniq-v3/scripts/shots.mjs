@@ -119,8 +119,17 @@ await send('Page.enable'); await send('Runtime.enable');
 await send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: false });
 await send('Page.navigate', { url: BASE });
 await wait(1500);
-await ev(`localStorage.setItem('campaigniq.session.v2', JSON.stringify({name:'Review',persona:'strategy',userId:'MASTER001',master:true})); localStorage.removeItem('campaigniq.v3.bh'); true`);
-await send('Page.reload'); await wait(1500);
+await ev(`(() => {
+  const fields = document.querySelectorAll('.login-field input');
+  const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+  ['Review', 'MASTER001', 'Mahadhan@2026'].forEach((value, i) => {
+    set.call(fields[i], value);
+    fields[i].dispatchEvent(new Event('input', { bubbles: true }));
+  });
+})()`);
+await ev("document.querySelector('.login-cta').click()");
+await wait(1500);
+if (!await ev("!!document.querySelector('main')")) throw new Error('Screenshot sign-in failed');
 // Optional: pick top-bar menu items by label, e.g. PICK="Q3 · Oct–Dec 2026|West region" (opens each top-bar menu and clicks the item).
 for (const label of (process.env.PICK || '').split('|').filter(Boolean)) {
   await ev(`(async () => { for (const t of document.querySelectorAll('.tb-select')) { t.click(); await new Promise(r => setTimeout(r, 150)); const b = [...document.querySelectorAll('.menu button')].find(x => x.textContent.trim() === ${JSON.stringify(label)}); if (b) { b.click(); return true; } t.click(); } return false; })()`);

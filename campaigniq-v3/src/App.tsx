@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { createHashRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { LoginPage } from './auth/login';
 import { isBuilt } from './auth/nav';
-import { loadSession, saveSession, type Session } from './auth/session';
+import type { Session } from './auth/session';
 import { Shell } from './shell/Shell';
 import { BhStoreProvider } from './store/bhStore';
 import { FsmStoreProvider } from './store/fsmStore';
@@ -37,13 +37,10 @@ import { ActionTracker, DecisionAssistant, PortfolioLearning } from './screens/I
 const canOpen = (s: Session | null) => !!s && (s.master || isBuilt(s.persona));
 
 export function App() {
-  const [session, setSession] = useState<Session | null>(() => {
-    const s = loadSession();
-    return canOpen(s) ? s : null;
-  });
+  const [session, setSession] = useState<Session | null>(null);
   const [loginKey, setLoginKey] = useState(0);
 
-  const router = useMemo(() => (session ? buildRouter(session, () => { saveSession(null); setSession(null); }) : null), [session]);
+  const router = useMemo(() => (session ? buildRouter(session, () => setSession(null)) : null), [session]);
 
   if (!session || !router) {
     return (
@@ -53,7 +50,6 @@ export function App() {
         onLogin={(p) => {
           const s: Session = { name: p.name, persona: p.persona, userId: p.userId, master: p.master };
           if (!canOpen(s)) { setLoginKey((k) => k + 1); return; }
-          saveSession(s);
           setSession(s);
         }}
       />
