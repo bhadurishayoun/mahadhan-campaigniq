@@ -106,6 +106,31 @@ export const EVIDENCE_REQUESTS: { id: string; title: string; owner: string; due:
   { id: 'awareness', title: 'Awareness and call outcomes', owner: 'Field Sales Manager · Ambad', due: '22 Feb 2027', requirements: ['Reached farmer list', 'Call outcome codes', 'Consent status'], checklist: ['Reach list reconciled', 'Outcome codes complete', 'Consent recorded'] },
   { id: 'retailer', title: 'Retailer recommendation evidence', owner: 'Retail operations', due: '24 Feb 2027', requirements: ['Retailers briefed', 'Recommendation logs', 'Stock on hand'], checklist: ['Retailer list matches the mapped outlets', 'Recommendation logs present', 'Stock confirmed'] },
 ];
+/** Evidence readiness before the investigation; items linked to a request change once that request is validated. */
+export const EVIDENCE_READINESS: { item: string; source: string; status: string; tone: 'ok' | 'warn' | 'risk'; request?: string }[] = [
+  { item: 'CRM farmer cohort', source: 'CRM', status: 'Partial', tone: 'warn' },
+  { item: 'Call-centre contact records', source: 'Call centre', status: 'Available, matching pending', tone: 'ok', request: 'awareness' },
+  { item: 'Field trial records', source: 'Field app', status: 'Partial', tone: 'warn' },
+  { item: 'Farmer awareness', source: 'Call centre / survey', status: 'Unavailable', tone: 'risk', request: 'awareness' },
+  { item: 'Farmer-linked purchase', source: 'DMS / channel', status: 'Unavailable', tone: 'risk', request: 'purchases' },
+  { item: 'Retailer influence', source: 'DMS / channel', status: 'Awaiting validation', tone: 'warn', request: 'retailer' },
+  { item: 'Stock readiness', source: 'DMS / channel', status: 'Awaiting validation', tone: 'warn', request: 'retailer' },
+  { item: 'Historical campaigns', source: 'Campaign records', status: 'Partially available', tone: 'warn' },
+];
+export const ANALYSIS_MODULES = ['Farmer awareness and conversion', 'Historical intervention effectiveness', 'Retailer influence', 'Repeat adoption'];
+export const SOURCE_SYSTEMS: { system: string; status: string; tone: 'ok' | 'warn' }[] = [
+  { system: 'CRM / call centre', status: 'Availability to check', tone: 'warn' },
+  { system: 'Field records', status: 'Partially available', tone: 'ok' },
+  { system: 'Channel sales', status: 'Requires validation', tone: 'warn' },
+  { system: 'Historical campaign records', status: 'Availability to check', tone: 'warn' },
+];
+export const ANALYSIS_CHECKS = ['Comparable time period confirmed', 'Reporting basis confirmed (secondary sales)', 'Audience eligibility data checked', 'Campaign history complete'];
+export const ANALYSIS_OWNERS = ['Marketing analytics', 'CRM team', 'Call centre operations', 'Regional marketing lead'];
+export const INVESTIGATION_QUESTION = 'What explains low Croptek penetration despite rising secondary sales?';
+/** Owners and due dates offered for the evidence requests. */
+export const REQUEST_OWNERS = ['Zonal analyst', 'CRM / sales operations', 'CRM / call centre', 'Field Sales Manager · Ambad', 'Retail operations', 'Regional sales team'];
+/** Status of each request right after creation (purchases and awareness evidence come back first). */
+export const STATUS_AFTER_CREATE: Record<string, RequestStatus> = { purchases: 'received', awareness: 'received', retailer: 'requested' };
 /** Status progression when the Marketing Head requests and reviews evidence. */
 export const nextRequestStatus = (s: RequestStatus): RequestStatus => (s === 'draft' ? 'requested' : s === 'requested' ? 'received' : 'validated');
 

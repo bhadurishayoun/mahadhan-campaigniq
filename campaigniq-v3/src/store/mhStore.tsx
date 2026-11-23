@@ -3,7 +3,7 @@
  * Kept in sessionStorage, like the Field Sales Manager and Zonal Manager stores.
  */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { MhPlanStatus } from '../data/mh';
+import type { MhPlanStatus, RequestStatus } from '../data/mh';
 
 export type MhScope = 'national' | 'west' | 'south' | 'north' | 'east';
 export const MH_SCOPES: { id: MhScope; label: string }[] = [
@@ -21,10 +21,16 @@ export interface MhState {
   endorsed: string[];
   shortlist: string[];
   flagged: boolean;
+  /** Investigation: the further-analysis request, evidence requests, chosen recommendation (initial and refreshed). */
+  analysis: { question: string; modules: string[]; mode: 'available' | 'missing'; owner: string; checks: string[] } | null;
+  requests: Record<string, { status: RequestStatus; owner: string; due: string }> | null;
+  recommendation: string;
+  refreshed: string;
 }
 
-const KEY = 'campaigniq.v3.mh.2';
-const INITIAL: MhState = { scope: 'national', planStatus: {}, endorsed: [], shortlist: [], flagged: false };
+const KEY = 'campaigniq.v3.mh.3';
+const INITIAL: MhState = { scope: 'national', planStatus: {}, endorsed: [], shortlist: [], flagged: false,
+  analysis: null, requests: null, recommendation: 'croptek-conversion', refreshed: 'croptek-conversion' };
 
 function load(): MhState {
   try {
@@ -39,6 +45,11 @@ interface MhStore extends MhState {
   endorse: (id: string) => void;
   addShortlist: (id: string) => void;
   flag: () => void;
+  setAnalysis: (a: NonNullable<MhState['analysis']>) => void;
+  setRequests: (r: NonNullable<MhState['requests']>) => void;
+  setRequestStatus: (id: string, st: RequestStatus) => void;
+  setRecommendation: (id: string) => void;
+  setRefreshed: (id: string) => void;
 }
 
 const Ctx = createContext<MhStore | null>(null);
@@ -55,6 +66,11 @@ export function MhStoreProvider({ children }: { children: ReactNode }) {
     endorse: (id) => setState((s) => ({ ...s, endorsed: s.endorsed.includes(id) ? s.endorsed : [...s.endorsed, id] })),
     addShortlist: (id) => setState((s) => ({ ...s, shortlist: s.shortlist.includes(id) ? s.shortlist : [...s.shortlist, id] })),
     flag: () => setState((s) => ({ ...s, flagged: true })),
+    setAnalysis: (analysis) => setState((s) => ({ ...s, analysis })),
+    setRequests: (requests) => setState((s) => ({ ...s, requests })),
+    setRequestStatus: (id, st) => setState((s) => (s.requests && s.requests[id] ? { ...s, requests: { ...s.requests, [id]: { ...s.requests[id], status: st } } } : s)),
+    setRecommendation: (recommendation) => setState((s) => ({ ...s, recommendation })),
+    setRefreshed: (refreshed) => setState((s) => ({ ...s, refreshed })),
   }), [state]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

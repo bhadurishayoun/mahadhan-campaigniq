@@ -20,6 +20,7 @@ import { AssignedThemes, ConceptComparison, ConceptStudio, PropositionDesigner }
 import { ConsolidatedPlans, PlanValidation, RevisedPlan, SkuReconciliation, ZmPerformance } from './screens/zm/Plans';
 import { ZmStoreProvider } from './store/zmStore';
 import { MhBlank } from './screens/mh/Blank';
+import { Diagnosis, EvidenceTracking, Investigation, Recommendations as MhRecommendations, RefreshedRecommendations, UpdatedInvestigation } from './screens/mh/Strategy';
 import { NationalOverview, PlanAlignment, RegionalOpportunity, RegionalPlanDetail, TerritoryPlanDetail } from './screens/mh/Opportunity';
 import { MhStoreProvider } from './store/mhStore';
 import { CommandCentre } from './screens/CommandCentre';
@@ -140,12 +141,12 @@ function buildRouter(session: Session, signOut: () => void) {
         { path: 'mh/plans', element: <PlanAlignment /> },
         { path: 'mh/plans/:region/:crop', element: <RegionalPlanDetail /> },
         { path: 'mh/plans/territory/:territory', element: <TerritoryPlanDetail /> },
-        { path: 'mh/studio/diagnosis', element: <MhBlank n={6} /> },
-        { path: 'mh/studio/recommendations', element: <MhBlank n={7} /> },
-        { path: 'mh/studio/investigation', element: <MhBlank n={8} /> },
-        { path: 'mh/studio/evidence', element: <MhBlank n={9} /> },
-        { path: 'mh/studio/investigation/updated', element: <MhBlank n={10} /> },
-        { path: 'mh/studio/recommendations/refreshed', element: <MhBlank n={11} /> },
+        { path: 'mh/studio/diagnosis', element: <Diagnosis /> },
+        { path: 'mh/studio/recommendations', element: <MhRecommendations /> },
+        { path: 'mh/studio/investigation', element: <Investigation /> },
+        { path: 'mh/studio/evidence', element: <EvidenceTracking /> },
+        { path: 'mh/studio/investigation/updated', element: <UpdatedInvestigation /> },
+        { path: 'mh/studio/recommendations/refreshed', element: <RefreshedRecommendations /> },
         { path: 'mh/studio/theme-brief', element: <MhBlank n={12} /> },
         { path: 'mh/studio/themes', element: <MhBlank n={13} /> },
         { path: 'mh/approvals/proposals', element: <MhBlank n={14} /> },
