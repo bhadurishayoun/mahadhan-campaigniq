@@ -1,0 +1,116 @@
+import { describe, expect, it } from 'vitest';
+import { AMBAD, ambadMetrics, businessCase, territoriesOf } from './bh';
+import { sum } from './format';
+import { budgetMix, CAMPAIGN_ACTIVITIES, cropPlan, defaultWizard, ONION_VILLAGE_PLAN } from './fsm';
+import {
+  ambadOnionGrowth, approvalQueue, businessCaseC1, businessCaseC2, CATEGORIES, driverBridge, nextSeason, planStatus, portfolioByTerritory,
+  portfolioRows, portfolioTotal, revisedPlan, SCENARIO_SALES, scenarioRow, territoryPlan, territoryPlans, trialToPurchasePct, zmImpact,
+  ZM_TERRITORY_IDS, zoneTerritories, zoneTotal,
+} from './zm';
+
+const r1 = (x: number) => Math.round(x * 10) / 10;
+const r2 = (x: number) => Math.round(x * 100) / 100;
+
+describe('zone', () => {
+  it('territories match BH and sum to the zone', () => {
+    const z = zoneTerritories();
+    expect(z.map((t) => [t.abp, t.ytdSales])).toEqual([[420, 362], [340, 295], [240, 210], [180, 166], [160, 148]]);
+    expect(zoneTotal().abp).toBe(1340);
+    expect(zoneTotal().ytdSales).toBe(sum(z, (t) => t.ytdSales));
+  });
+  it('BH West = zone + Aurangabad = ₹16.0 Cr / ₹14.2 Cr', () => {
+    const w = territoriesOf('west');
+    const rest = w.filter((t) => !ZM_TERRITORY_IDS.includes(t.id as never));
+    expect(rest.map((t) => [t.id, t.abp, t.ytdSales])).toEqual([['aurangabad', 260, 239]]);
+    expect([sum(w, (t) => t.abp), sum(w, (t) => t.ytdSales)]).toEqual([1600, 1420]);
+  });
+});
+
+describe('crop nutrition portfolio', () => {
+  it('category totals and growth', () => {
+    expect(portfolioRows().map((r) => [r.lastYear, r.abp, r1(r.growthPct)])).toEqual([[240, 320, 33.3], [150, 180, 20], [90, 100, 11.1]]);
+    const t = portfolioTotal();
+    expect([t.lastYear, t.abp, r1(t.growthPct)]).toEqual([480, 600, 25]);
+  });
+  it('territory split sums to each category and to the total', () => {
+    for (const c of CATEGORIES) {
+      const zone = portfolioRows().find((r) => r.id === c.id)!;
+      expect(sum(ZM_TERRITORY_IDS, (t) => portfolioRows(t).find((r) => r.id === c.id)!.abp)).toBe(zone.abp);
+      expect(sum(ZM_TERRITORY_IDS, (t) => portfolioRows(t).find((r) => r.id === c.id)!.lastYear)).toBe(zone.lastYear);
+    }
+    expect(sum(portfolioByTerritory(), (t) => t.abp)).toBe(600);
+  });
+});
+
+describe('territory plans', () => {
+  it('Ambad plan equals the FSM plan: ₹3.80 Cr vs ₹4.20 Cr, onion ₹1.65 Cr', () => {
+    const p = territoryPlan('ambad');
+    expect([p.plan, p.abp, p.gap, p.croptekSku]).toEqual([380, 420, 40, 190]);
+    expect(p.crops.map((c) => c.proposed)).toEqual(cropPlan('ambad').map((c) => c.proposed));
+    expect(p.crops.map((c) => c.proposed)).toEqual([165, 110, 105]);
+    expect(r1(ambadOnionGrowth().growthPct)).toBe(26.9);
+  });
+  it('statuses: Ambad received from FSM, one endorsed, one pending, two awaiting', () => {
+    const st = ZM_TERRITORY_IDS.map((t) => planStatus(t, ['ambad']));
+    expect(st).toEqual(['submitted', 'awaiting', 'awaiting', 'endorsed', 'submitted']);
+    expect(planStatus('ghansawangi', ['ambad', 'ghansawangi'])).toBe('submitted');
+    expect(planStatus('ambad', [], { ambad: 'endorsed' })).toBe('endorsed');
+    expect(territoryPlans().every((p) => p.plan > 0 && p.plan <= p.abp)).toBe(true);
+  });
+  it('revised plan v2 adds ₹7 L of onion at the same realisation', () => {
+    const r = revisedPlan();
+    expect([r.v1.onion, r.v2.onion, r.v1.plan, r.v2.plan, r.v2.gap]).toEqual([165, 172, 380, 387, 33]);
+    expect(sum(r.villages, (v) => v.v2 - v.v1)).toBe(7);
+    expect(r.v1.acres).toBe(sum(ONION_VILLAGE_PLAN, (v) => v.plan) * 50);
+  });
+});
+
+describe('business case and scenarios', () => {
+  it('C1 equals the BH Croptek business case', () => {
+    const c = businessCaseC1();
+    const bh = businessCase('croptek');
+    expect([c.investment, c.forecastSales, r1(c.contribution), r2(c.netRoi)]).toEqual([12, 48, 16.8, 0.4]);
+    expect(c.netRoi).toBeCloseTo(bh.netRoi, 10);
+  });
+  it('driver bridge gives the ₹48.0 L forecast', () => {
+    const d = driverBridge();
+    expect([d.buyers, r2(d.volumeMt), r1(d.sales), r1(d.contribution), r2(d.netRoi)]).toEqual([240, 48, 48, 16.8, 0.4]);
+  });
+  it('scenario ROI = (sales × 35% − investment) ÷ investment', () => {
+    expect(SCENARIO_SALES.map((s) => { const x = scenarioRow(s.sales); return [x.sales, r1(x.contribution), r2(x.netRoi)]; }))
+      .toEqual([[36, 12.6, 0.05], [48, 16.8, 0.4], [60, 21, 0.75]]);
+  });
+  it('C2: ₹8.0 L → ₹28.0 L, contribution ₹9.8 L, ROI +0.23×', () => {
+    const c = businessCaseC2();
+    expect([c.investment, c.forecastSales, r1(c.contribution), r2(c.netRoi)]).toEqual([8, 28, 9.8, 0.23]);
+  });
+  it('trial-to-purchase is 36%', () => expect(trialToPurchasePct()).toBe(36));
+});
+
+describe('activity plan and approvals', () => {
+  it('Ambad activity plan is 13 units and ₹3.00 L, same as the FSM planner default', () => {
+    expect(CAMPAIGN_ACTIVITIES.map((a) => [a.units, a.cost])).toEqual([[4, 1], [3, 0.75], [3, 0.6], [1, 0.35], [2, 0.3]]);
+    expect([sum(CAMPAIGN_ACTIVITIES, (a) => a.units), budgetMix().total]).toEqual([13, 3]);
+    const w = defaultWizard('onion-croptek');
+    expect([sum(w.activities, (a) => a.units), budgetMix(w.activities).total]).toEqual([13, 3]);
+    const q = approvalQueue();
+    expect([q[0].units, q[0].budget]).toEqual([13, 3]);
+    expect(new Set(q.map((x) => x.status))).toEqual(new Set(['pending', 'approved', 'returned', 'awaiting']));
+  });
+});
+
+describe('impact', () => {
+  it('equals BH and FSM', () => {
+    const i = zmImpact();
+    const a = ambadMetrics();
+    expect([i.reached, i.trials, i.adopters, r1(i.trialToAdoptionPct)]).toEqual([640, 160, 72, 45]);
+    expect([i.activitiesDone, i.activitiesPlanned, r1(i.activityPct), i.campaignLinkedSales]).toEqual([9, 13, 69.2, AMBAD.campaignLinkedSales]);
+    expect(i.activityProgress.map((p) => `${p.completed}/${p.planned}`)).toEqual(['3/4', '2/3', '2/3', '1/1', '1/2']);
+    expect([r1(i.villageGap), i.regionalValidatedSales, r2(i.regionalRoi)]).toEqual([r1(a.villageGap), 40, 0.56]);
+  });
+  it('next-season findings use the computed figures', () => {
+    const n = nextSeason();
+    expect(n).toHaveLength(5);
+    expect(n[0].finding).toContain('10.3 pp');
+  });
+});

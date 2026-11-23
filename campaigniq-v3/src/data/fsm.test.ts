@@ -83,7 +83,7 @@ describe('campaign', () => {
   it('budget mix sums to ₹3.00 L and 100%', () => {
     const b = budgetMix();
     expect(b.total).toBe(3);
-    expect(b.rows.map((r) => Math.round(r.sharePct))).toEqual([35, 25, 20, 10, 10]);
+    expect(b.rows.map((r) => Math.round(r.sharePct))).toEqual([33, 25, 20, 12, 10]);
     expect(r2(sum(b.rows, (r) => r.sharePct))).toBe(100);
   });
   it('scenario ROI follows the formula', () => {
@@ -168,12 +168,13 @@ describe('execution, impact and diagnostics', () => {
 });
 
 describe('calculated activity budget', () => {
-  it('defaults to 12 units and ₹3.00 L; budget = units × unit cost', () => {
+  it('defaults to 13 units and ₹3.00 L; budget = units × unit cost', () => {
     const w = defaultWizard('onion-croptek');
-    expect([sum(w.activities, (a) => a.units), budgetMix(w.activities).total]).toEqual([12, 3]);
-    const four = w.activities.map((a) => (a.type === 'demonstration' ? planActivity(a.id, a.type, 4, a) : a));
-    expect(four[0].cost).toBe(1.4);
-    expect(budgetMix(four).total).toBe(3.35);
+    expect([sum(w.activities, (a) => a.units), budgetMix(w.activities).total]).toEqual([13, 3]);
+    expect(w.activities.map((a) => [a.units, a.cost])).toEqual([[4, 1], [3, 0.75], [3, 0.6], [1, 0.35], [2, 0.3]]);
+    const five = w.activities.map((a) => (a.type === 'demonstration' ? planActivity(a.id, a.type, 5, a) : a));
+    expect(five[0].cost).toBe(1.25);
+    expect(budgetMix(five).total).toBe(3.25);
   });
 });
 

@@ -75,6 +75,7 @@ Marketing Head personas follow the same pattern (persona id `pm` / `mh`, mockups
 | Phase | Scope | Status |
 |---|---|---|
 | 0 | Mockups (`docs/mockups/zonal-manager/`, 45), routes (`Z` in `src/routes.ts`), 7-item sidebar, persona switch, top bar (Marathwada zone scope, Crop nutrition portfolio), 26 screens with titles, Campaign Studio tabs, collateral steps and the Back/Next chain (`src/screens/zm/Blank.tsx`) | Done |
-| 1 | Data and tests: zone territories, portfolio, plans, themes, concepts, business case, activity plan (13 units, ₹3.00 L, shared with FSM), impact; BH West alignment | Next |
-| 2–7 | Screens 1–5, 6–9, 10–14, 15–19, 20–21, 22–26 with drawers and modals; verification and deploy | Planned |
+| 1 | Data (`src/data/zm.ts`, tested in `zm.test.ts`): zone territories (₹13.40 Cr ABP, read from BH), crop nutrition portfolio by category and territory (₹4.80 Cr → ₹6.00 Cr), territory plans (Ambad = FSM plan ₹3.80 Cr; statuses follow the FSM store), revised Ambad plan v2, Marketing Head questions, themes, Croptek evidence, concepts, proposition and claims, collateral, business case (C1 = BH Croptek; driver bridge; scenarios; C2), approval queue, impact, next-season findings. BH West now Ambad · Ghansawangi · Badnapur · Jafrabad · Bhokardan · Aurangabad (₹16.0 Cr / ₹14.2 Cr unchanged). FSM activity plan aligned to 13 units / ₹3.00 L (demonstrations ₹0.25 L, digital ₹0.35 L); the FSM store now starts with the Ambad plan submitted | Done |
+| 2 | Screens 1–5 (Territory Plan Reviews) with drawers | Next |
+| 3–7 | Screens 6–9, 10–14, 15–19, 20–21, 22–26 with drawers and modals; verification and deploy | Planned |
 

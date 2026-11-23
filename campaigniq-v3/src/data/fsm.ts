@@ -267,10 +267,10 @@ export const CAMPAIGN_VILLAGES = Object.keys(VILLAGE_FARMERS);
 
 export interface CampaignActivity { id: string; name: string; units: number; unitLabel: string; cost: number }
 export const CAMPAIGN_ACTIVITIES: CampaignActivity[] = [
-  { id: 'demonstration', name: 'Field demonstrations', units: 4, unitLabel: 'units', cost: 1.05 },
+  { id: 'demonstration', name: 'Field demonstrations', units: 4, unitLabel: 'units', cost: 1.0 },
   { id: 'retailer', name: 'Retailer activation', units: 3, unitLabel: 'sessions', cost: 0.75 },
   { id: 'meeting', name: 'Farmer meetings', units: 3, unitLabel: 'meetings', cost: 0.6 },
-  { id: 'digital', name: 'Opt-in digital advisory', units: 1, unitLabel: 'wave', cost: 0.3 },
+  { id: 'digital', name: 'Opt-in digital advisory', units: 1, unitLabel: 'wave', cost: 0.35 },
   { id: 'followup', name: 'Farmer follow-ups', units: 2, unitLabel: 'rounds', cost: 0.3 },
 ];
 
@@ -392,7 +392,7 @@ export const phaseDetails = (acts: { cost: number; timing: string; owner: string
 export interface WizardActivity extends CampaignActivity { type: string; channel: string; timing: string; owner: string }
 
 /** Unit cost per activity type (₹ L); a planned activity's budget is units × unit cost. */
-export const UNIT_COST: Record<string, number> = { demonstration: 0.35, retailer: 0.25, meeting: 0.2, digital: 0.3, followup: 0.15 };
+export const UNIT_COST: Record<string, number> = { demonstration: 0.25, retailer: 0.25, meeting: 0.2, digital: 0.35, followup: 0.15 };
 export const ACTIVITY_TYPES = CAMPAIGN_ACTIVITIES.map((a) => ({ id: a.id, name: a.name, unitLabel: a.unitLabel, unitCost: UNIT_COST[a.id] }));
 const round2 = (v: number) => Math.round(v * 100) / 100;
 /** A planned activity row of a given type; budget = units × unit cost. */
