@@ -229,3 +229,26 @@ export const INTERVENTION_PERFORMANCE: { id: string; name: string; planned: numb
 ];
 export const territoryImpact = () => impactRows();
 export const ambadSummary = () => ambadMetrics();
+
+// ---------------------------------------------------------------- approval, release and performance drivers
+export const APPROVAL_LABEL = { pending: 'Marketing approval pending', approved: 'Approved', returned: 'Returned to Zonal Manager', escalated: 'Escalated to Business Head' } as const;
+export const ROLLOUT_READINESS = [
+  { id: 'eligibility', label: 'Territory eligibility confirmed (approved-plan match)' },
+  { id: 'ownership', label: 'Recipient ownership confirmed (Field Sales Manager assignment)' },
+  { id: 'channel', label: 'Local channel validation within approved guardrails' },
+];
+export const PLAYBOOK = [
+  { label: 'Campaign proposition', value: 'Retailer-led Croptek conversion' },
+  { label: 'Priority audience', value: 'Eligible conventional nutrition and trial-interest farmers' },
+  { label: 'Approved messaging', value: 'Authorised collateral versions only' },
+  { label: 'Intervention channels', value: 'Retailer education, conversion conversations, field demonstrations' },
+  { label: 'Scope and guardrails', value: 'Local budgets and activities within the regional envelope' },
+];
+export type DriverTone = 'ok' | 'warn' | 'neutral';
+export const PERFORMANCE_DRIVERS: { id: string; driver: string; status: string; tone: DriverTone; implication: string }[] = [
+  { id: 'activation', driver: 'Local activation (plan → run)', status: 'Workflow gap observed', tone: 'warn', implication: 'Slower activation than plan' },
+  { id: 'retailer', driver: 'Retailer engagement', status: 'Evidence incomplete', tone: 'warn', implication: 'Needs retailer participation records' },
+  { id: 'followup', driver: 'Field follow-up completion', status: 'Evidence incomplete', tone: 'warn', implication: 'Needs field and CRM follow-up data' },
+  { id: 'stock', driver: 'Stock availability', status: 'Not verified', tone: 'neutral', implication: 'Check stock records if required' },
+];
+export const OPTIMISATION_FOCUS = ['Farmer follow-up completion', 'Retailer activation', 'Local plan approval speed', 'Stock readiness'];

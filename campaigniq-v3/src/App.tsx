@@ -19,7 +19,7 @@ import { CollateralApprovals, CollateralEditor, CollateralTemplates, PlaybookRel
 import { AssignedThemes, ConceptComparison, ConceptStudio, PropositionDesigner } from './screens/zm/Studio';
 import { ConsolidatedPlans, PlanValidation, RevisedPlan, SkuReconciliation, ZmPerformance } from './screens/zm/Plans';
 import { ZmStoreProvider } from './store/zmStore';
-import { MhBlank } from './screens/mh/Blank';
+import { ApprovalDecision, MhAssistant, PerformanceDrivers, PortfolioPerformance, ProgrammePerformance, ReleaseRollout } from './screens/mh/Rollout';
 import { MhProposalReview, ProposalCompare, ProposalDetail, ThemeBriefScreen, ThemeTracker } from './screens/mh/Themes';
 import { Diagnosis, EvidenceTracking, Investigation, Recommendations as MhRecommendations, RefreshedRecommendations, UpdatedInvestigation } from './screens/mh/Strategy';
 import { NationalOverview, PlanAlignment, RegionalOpportunity, RegionalPlanDetail, TerritoryPlanDetail } from './screens/mh/Opportunity';
@@ -153,12 +153,12 @@ function buildRouter(session: Session, signOut: () => void) {
         { path: 'mh/approvals/proposals', element: <MhProposalReview /> },
         { path: 'mh/approvals/proposals/:id', element: <ProposalDetail /> },
         { path: 'mh/approvals/compare', element: <ProposalCompare /> },
-        { path: 'mh/approvals/:id/decision', element: <MhBlank n={17} /> },
-        { path: 'mh/approvals/:id/rollout', element: <MhBlank n={18} /> },
-        { path: 'mh/performance', element: <MhBlank n={19} /> },
-        { path: 'mh/performance/:region', element: <MhBlank n={20} /> },
-        { path: 'mh/performance/:region/drivers', element: <MhBlank n={21} /> },
-        { path: 'mh/assistant', element: <MhBlank n={22} /> },
+        { path: 'mh/approvals/:id/decision', element: <ApprovalDecision /> },
+        { path: 'mh/approvals/:id/rollout', element: <ReleaseRollout /> },
+        { path: 'mh/performance', element: <PortfolioPerformance /> },
+        { path: 'mh/performance/:region', element: <ProgrammePerformance /> },
+        { path: 'mh/performance/:region/drivers', element: <PerformanceDrivers /> },
+        { path: 'mh/assistant', element: <MhAssistant /> },
         { path: '*', element: <Navigate to={home} replace /> },
       ],
     },

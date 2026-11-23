@@ -145,7 +145,7 @@ export function Diagnosis() {
   const st = WEST_STATES[0];
   const sales = CROPTEK_EVIDENCE.secondarySales;
   const tiles: { t: string; v: string; chip: string; tone: Tone }[] = [
-    { t: 'Historical campaigns', v: `Conversion theme ${times(themeRoi('conversion'))}`, chip: 'Indicative evidence', tone: 'ok' },
+    { t: 'Historical campaigns', v: `Conversion theme ${times(themeRoi('conversion'))}`, chip: 'Historical evidence', tone: 'ok' },
     { t: 'Business plan support', v: `${lakh(ambadPlan().growthObjective)} conversion objective in the Ambad ABP`, chip: 'Zonal Manager endorsed', tone: 'ok' },
     { t: 'Farmer awareness', v: 'Market-level awareness', chip: inv.statusOf('awareness') === 'validated' ? 'Validated' : 'Awaiting validation', tone: inv.statusOf('awareness') === 'validated' ? 'ok' : 'warn' },
     { t: 'Trial-to-adoption (Ambad)', v: `${pct(a.trialToAdoptionPct)} (${a.adopters} of ${a.trials})`, chip: 'Recorded', tone: 'ok' },

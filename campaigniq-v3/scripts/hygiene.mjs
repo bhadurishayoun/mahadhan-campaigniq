@@ -33,6 +33,13 @@ for (const f of files) {
     for (const w of WORDS) if (new RegExp(`\\b${w.replace(/ /g, '\\s+')}\\b`, 'i').test(text)) hits.push(`${where}  banned word "${w}"`);
     if (CODE.test(text)) hits.push(`${where}  screen code`);
     if (line.includes('—')) hits.push(`${where}  long dash in UI text`);
+    // Apply the Marketing Head-specific copy rules across every MH screen and drawer.
+    if (/[\\/]screens[\\/]mh[\\/]/i.test(f)) {
+      if (/\b(?:illustrative|indicative|read-only|hypothetical|placeholder)\b|not real Mahadhan data|this page is read-only|recommendation is not yet approved|these are forecasts, not actuals|sources?\s*&\s*measure notes|data\s*&\s*source/i.test(text)) {
+        hits.push(`${where}  Marketing Head placeholder / disclaimer text`);
+      }
+      if (/\b(?:MH|TM|PM)\.[0-9]/.test(text)) hits.push(`${where}  Marketing Head screen code`);
+    }
     if (/Sources?:|READ-ONLY|Recommended next|double count|Not an actual/i.test(text)) hits.push(`${where}  sources / read-only label`);
     if (!f.endsWith('theme.ts') && /#[0-9a-fA-F]{3,8}\b/.test(line) && !/var\(--/.test(line)) hits.push(`${where}  hex colour outside theme.ts`);
     for (const ic of ICONS) if (new RegExp(`\\b${ic}\\b`).test(line)) hits.push(`${where}  banned icon ${ic}`);
