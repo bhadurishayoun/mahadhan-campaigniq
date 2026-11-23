@@ -140,6 +140,9 @@ export function SelectPriority() {
             playbook.length
               ? { icon: CircleCheck, label: `Approved content · ${playbook.length} playbook asset${playbook.length === 1 ? '' : 's'} released`, value: playbook.map((t) => t.name).join(', ') }
               : { icon: CircleAlert, tone: 'warn' as const, label: 'Approved content' },
+            zm.approvalStatus.ambad === 'approved'
+              ? { icon: CircleCheck, label: 'Activity plan approved by the Zonal Manager', value: 'Approved' }
+              : { icon: CircleAlert, tone: 'warn' as const, label: 'Zonal Manager activity plan approval', value: zm.approvalStatus.ambad === 'returned' ? 'Returned for changes' : 'Pending review' },
             { icon: CircleAlert, tone: 'warn', label: 'Stock readiness' },
           ]} />
         </Card>

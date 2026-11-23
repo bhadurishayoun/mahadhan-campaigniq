@@ -6,6 +6,7 @@ import {
   ambadOnionGrowth, approvalQueue, businessCaseC1, businessCaseC2, CATEGORIES, driverBridge, nextSeason, planStatus, portfolioByTerritory,
   portfolioRows, portfolioTotal, revisedPlan, SCENARIO_SALES, scenarioRow, territoryPlan, territoryPlans, trialToPurchasePct, zmImpact,
   ZM_TERRITORY_IDS, zoneTerritories, zoneTotal, planContribution, planPortfolio, planCrops, mappingStatus, BASE_CHECKS, MAPPING_CHECKS,
+  territoryActivityPlan, PLAN_EXCEPTIONS, ACTIVITY_CHECKS, REGIONAL_ENVELOPE,
   scenariosFor, reconciliation, DRIVER_ROWS, MH_RETURN, SUBMISSION_CHECKS, DRIVERS,
   REVIEW_ITEMS, REWRITES, SEED_VERSIONS, TEMPLATES, versionChanges, BASE_ASSET_STATUS,
   CLAIMS, CONCEPTS, conceptRationale, CROP_STAGES, INTERVENTION_KPIS, JOURNEY, secondaryTrend, ZM_THEMES, AUDIENCE,
@@ -187,5 +188,25 @@ describe('business case and proposals (screens 15–19)', () => {
     expect([DRIVER_ROWS.length, DRIVER_ROWS.filter((d) => d.input).length]).toEqual([9, 6]);
     expect(SUBMISSION_CHECKS).toHaveLength(5);
     expect([MH_RETURN.params.length, MH_RETURN.observations.length]).toEqual([3, 4]);
+  });
+});
+
+describe('activity approvals (screens 20–21)', () => {
+  it('Ambad plan equals FSM: 13 units, ₹3.00 L, villages from the execution units', () => {
+    const p = territoryActivityPlan('ambad');
+    expect([sum(p, (a) => a.units), r2(sum(p, (a) => a.budget))]).toEqual([13, 3]);
+    expect(p[0].villages).toEqual([{ village: 'Dhanora', units: 2 }, { village: 'Wadi Gaon', units: 2 }]);
+  });
+  it('other territories split their totals exactly', () => {
+    for (const q of approvalQueue().filter((x) => x.territory !== 'ambad')) {
+      const p = territoryActivityPlan(q.territory);
+      expect([sum(p, (a) => a.units), r2(sum(p, (a) => a.budget))]).toEqual([q.units, q.budget]);
+      expect(p.every((a) => a.units >= 1)).toBe(true);
+    }
+  });
+  it('local budgets stay within the ₹12.0 L regional envelope; 7 checks, 3 exception types', () => {
+    expect(REGIONAL_ENVELOPE()).toBe(12);
+    expect(sum(approvalQueue(), (q) => q.budget)).toBeLessThanOrEqual(12);
+    expect([ACTIVITY_CHECKS.length, PLAN_EXCEPTIONS.length]).toEqual([7, 3]);
   });
 });

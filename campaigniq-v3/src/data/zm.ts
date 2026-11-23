@@ -6,7 +6,7 @@
 import type { ZmTerritoryId } from '../routes';
 import { AMBAD, ambadMetrics, businessCase, campaignById, CONTRIBUTION_MARGIN, netRoi, territoryById } from './bh';
 import { ratio, sum } from './format';
-import { budgetMix, CAMPAIGN_ACTIVITIES, campaignFunnel, cropLastYear, cropPlan, FSM_CROPS, impactSummary, interventionEffectiveness, ONION_VILLAGE_PLAN } from './fsm';
+import { ACTIVITY_DEFAULTS, ACTIVITY_UNITS, budgetMix, CAMPAIGN_ACTIVITIES, campaignFunnel, cropLastYear, cropPlan, FSM_CROPS, impactSummary, interventionEffectiveness, ONION_VILLAGE_PLAN } from './fsm';
 
 export type ZmScope = 'zone' | ZmTerritoryId;
 
@@ -533,6 +533,45 @@ export const approvalQueue = () => {
     { territory: 'bhokardan' as ZmTerritoryId, campaign: 'Bhokardan onion Croptek farmer meetings', owner: 'Field Sales Manager · Bhokardan', units: 6, budget: 1.2, submitted: '14 Feb 2027', status: 'pending' as ApprovalStatus },
   ];
 };
+/** Regional campaign envelope (C1 investment) that local plans draw on. */
+export const REGIONAL_ENVELOPE = () => businessCaseC1().investment;
+
+export interface PlanActivity { id: string; name: string; units: number; unitLabel: string; budget: number; villages: { village: string; units: number }[]; timing: string; owner: string; ownerReady: boolean }
+/** Ambad reads the FSM activity plan and units; other territories split their totals in the same activity mix. */
+export const territoryActivityPlan = (t: ZmTerritoryId): PlanActivity[] => {
+  const q = approvalQueue().find((x) => x.territory === t)!;
+  // Largest-remainder split so units (at least 1 each) and budgets (to ₹0.01 L) add up to the submission totals.
+  const split = (total: number, weights: number[], step: number, min: number) => {
+    const raw = weights.map((w) => Math.max(min, (w / sum(weights, (x) => x)) * total));
+    const base = raw.map((r) => Math.max(min, Math.floor(r / step + 1e-9) * step));
+    let left = Math.round((total - sum(base, (x) => x)) / step);
+    const order = raw.map((r, i) => [r - base[i], i] as const).sort((x, y) => y[0] - x[0]);
+    for (let k = 0; left > 0; k = (k + 1) % order.length, left--) base[order[k][1]] += step;
+    return base.map((b) => Math.round(b / step) * step);
+  };
+  const unitSplit = split(q.units, CAMPAIGN_ACTIVITIES.map((a) => a.units), 1, 1);
+  const budgetSplit = split(Math.round(q.budget * 100), CAMPAIGN_ACTIVITIES.map((a) => a.cost), 1, 1).map((x) => x / 100);
+  return CAMPAIGN_ACTIVITIES.map((a, i) => {
+    const def = ACTIVITY_DEFAULTS[a.id];
+    if (t === 'ambad') {
+      const mine = ACTIVITY_UNITS.filter((u) => u.activity === a.id);
+      const counts = new Map<string, number>();
+      mine.forEach((u) => counts.set(u.village, (counts.get(u.village) ?? 0) + 1));
+      return { id: a.id, name: a.name, units: a.units, unitLabel: a.unitLabel, budget: a.cost, villages: [...counts].map(([village, units]) => ({ village, units })), timing: def.timing, owner: def.owner, ownerReady: a.id !== 'demonstration' && a.id !== 'meeting' };
+    }
+    const units = unitSplit[i];
+    return { id: a.id, name: a.name, units, unitLabel: a.unitLabel, budget: budgetSplit[i], villages: [{ village: `${zmTerritoryName(t)} HQ`, units }], timing: def.timing, owner: `${zmTerritoryName(t)} field team`, ownerReady: false };
+  });
+};
+export const ACTIVITY_CHECKS = [
+  'Product / crop / region scope', 'Crop-stage / agronomy timing', 'Activity owner confirmation', 'Stock availability (Croptek)',
+  'Venue and farmer mobilisation', 'Collateral: approved version', 'Budget allocation within the local plan',
+];
+export const PLAN_EXCEPTIONS: { id: string; category: string; activity: string; deviation: string; authority: string; correction: boolean }[] = [
+  { id: 'allocation', category: 'Local allocation availability', activity: 'All activities', deviation: 'Validate within the approved regional envelope', authority: 'Finance / Marketing Head', correction: false },
+  { id: 'crop-stage', category: 'Crop-stage deviation', activity: 'Field demonstrations', deviation: 'Proposed timing to validate against the agronomy window', authority: 'Agronomy (technical)', correction: false },
+  { id: 'stock-owner', category: 'Stock and activity owner', activity: 'Field demonstrations / retailer activation', deviation: 'Confirm product stock and responsible owner', authority: 'Field Sales Manager correction', correction: true },
+];
 
 // ---------------------------------------------------------------- impact (same figures as BH and FSM)
 export const zmImpact = () => {
