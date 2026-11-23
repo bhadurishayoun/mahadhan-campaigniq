@@ -5,7 +5,7 @@ import { budgetMix, CAMPAIGN_ACTIVITIES, cropPlan, defaultWizard, ONION_VILLAGE_
 import {
   ambadOnionGrowth, approvalQueue, businessCaseC1, businessCaseC2, CATEGORIES, driverBridge, nextSeason, planStatus, portfolioByTerritory,
   portfolioRows, portfolioTotal, revisedPlan, SCENARIO_SALES, scenarioRow, territoryPlan, territoryPlans, trialToPurchasePct, zmImpact,
-  ZM_TERRITORY_IDS, zoneTerritories, zoneTotal,
+  ZM_TERRITORY_IDS, zoneTerritories, zoneTotal, planContribution, planPortfolio, planCrops, mappingStatus, BASE_CHECKS, MAPPING_CHECKS,
 } from './zm';
 
 const r1 = (x: number) => Math.round(x * 10) / 10;
@@ -57,11 +57,11 @@ describe('territory plans', () => {
     expect(planStatus('ambad', [], { ambad: 'endorsed' })).toBe('endorsed');
     expect(territoryPlans().every((p) => p.plan > 0 && p.plan <= p.abp)).toBe(true);
   });
-  it('revised plan v2 adds ₹7 L of onion at the same realisation', () => {
+  it('revised plan rev adds ₹7 L of onion at the same realisation', () => {
     const r = revisedPlan();
-    expect([r.v1.onion, r.v2.onion, r.v1.plan, r.v2.plan, r.v2.gap]).toEqual([165, 172, 380, 387, 33]);
-    expect(sum(r.villages, (v) => v.v2 - v.v1)).toBe(7);
-    expect(r.v1.acres).toBe(sum(ONION_VILLAGE_PLAN, (v) => v.plan) * 50);
+    expect([r.orig.onion, r.rev.onion, r.orig.plan, r.rev.plan, r.rev.gap]).toEqual([165, 172, 380, 387, 33]);
+    expect(sum(r.villages, (v) => v.rev - v.orig)).toBe(7);
+    expect(r.orig.acres).toBe(sum(ONION_VILLAGE_PLAN, (v) => v.plan) * 50);
   });
 });
 
@@ -112,5 +112,22 @@ describe('impact', () => {
     const n = nextSeason();
     expect(n).toHaveLength(5);
     expect(n[0].finding).toContain('10.3 pp');
+  });
+});
+
+describe('plan reviews (screens 1–5)', () => {
+  it('plan portfolio contributions stay within each category ABP and total ₹5.70 Cr', () => {
+    for (const t of ZM_TERRITORY_IDS) for (const c of planPortfolio(t)) expect(c.contribution).toBeLessThanOrEqual(c.abp);
+    expect(sum(ZM_TERRITORY_IDS, planContribution)).toBe(570);
+    expect(planPortfolio('ambad')[0].contribution).toBe(territoryPlan('ambad').croptekSku);
+  });
+  it('crop growth uses last-year sales per crop', () => {
+    expect(planCrops('ambad').map((c) => [c.lastYear, c.proposed, r1(c.growthPct)])).toEqual([[144, 165, 14.6], [80, 110, 37.5], [96, 105, 9.4]]);
+  });
+  it('mapping: Jafrabad validated with all checks, Ambad needs review', () => {
+    expect(mappingStatus('jafrabad')).toBe('validated');
+    expect(BASE_CHECKS.jafrabad).toHaveLength(MAPPING_CHECKS.length);
+    expect(mappingStatus('ambad')).toBe('needs_review');
+    expect(mappingStatus('ambad', { ambad: 'validated' })).toBe('validated');
   });
 });

@@ -6,7 +6,7 @@
 import type { ZmTerritoryId } from '../routes';
 import { AMBAD, ambadMetrics, businessCase, campaignById, CONTRIBUTION_MARGIN, netRoi, territoryById } from './bh';
 import { ratio, sum } from './format';
-import { budgetMix, CAMPAIGN_ACTIVITIES, campaignFunnel, cropPlan, FSM_CROPS, impactSummary, interventionEffectiveness, ONION_VILLAGE_PLAN } from './fsm';
+import { budgetMix, CAMPAIGN_ACTIVITIES, campaignFunnel, cropLastYear, cropPlan, FSM_CROPS, impactSummary, interventionEffectiveness, ONION_VILLAGE_PLAN } from './fsm';
 
 export type ZmScope = 'zone' | ZmTerritoryId;
 
@@ -107,10 +107,39 @@ export const PLAN_STATUS_LABEL: Record<PlanStatus, string> = {
 };
 
 /** Crop split of each territory plan (Onion, Maize, Other crops). FSM territories read the FSM crop plan. */
-const OTHER_CROP_PLAN: Record<'jafrabad' | 'bhokardan', { abp: number[]; proposed: number[] }> = {
-  jafrabad: { abp: [65, 55, 60], proposed: [60, 52, 60] },
-  bhokardan: { abp: [50, 52, 58], proposed: [45, 50, 55] },
+const OTHER_CROP_PLAN: Record<'jafrabad' | 'bhokardan', { lastYear: number[]; abp: number[]; proposed: number[] }> = {
+  jafrabad: { lastYear: [54, 46, 50], abp: [65, 55, 60], proposed: [60, 52, 60] },
+  bhokardan: { lastYear: [42, 44, 49], abp: [50, 52, 58], proposed: [45, 50, 55] },
 };
+/** Portfolio contribution inside each plan (Croptek, Water Soluble, Specialty Nutrition). */
+const PLAN_PORTFOLIO: Record<ZmTerritoryId, number[]> = {
+  ambad: [190, 40, 22], ghansawangi: [48, 46, 23], badnapur: [33, 32, 18], jafrabad: [25, 26, 15], bhokardan: [19, 20, 13],
+};
+export const planPortfolio = (t: ZmTerritoryId) => CATEGORIES.map((c, i) => ({ ...c, abp: portfolioCell(c.id, t).abp, contribution: PLAN_PORTFOLIO[t][i] }));
+export const planContribution = (t: ZmTerritoryId) => sum(PLAN_PORTFOLIO[t], (x) => x);
+
+/** SKU mapping: base validation status and SKU lines without a portfolio category (₹ L). */
+export type MappingStatus = 'validated' | 'needs_review' | 'awaiting' | 'requested';
+export const MAPPING_STATUS_LABEL: Record<MappingStatus, string> = { validated: 'Validated', needs_review: 'Review required', awaiting: 'Awaiting submission', requested: 'Mapping correction requested' };
+const BASE_MAPPING: Record<ZmTerritoryId, MappingStatus> = { ambad: 'needs_review', ghansawangi: 'awaiting', badnapur: 'awaiting', jafrabad: 'validated', bhokardan: 'needs_review' };
+export const UNMAPPED_SKU: Record<ZmTerritoryId, number> = { ambad: 6, ghansawangi: 0, badnapur: 0, jafrabad: 0, bhokardan: 3 };
+export const mappingStatus = (t: ZmTerritoryId, overrides: Partial<Record<ZmTerritoryId, MappingStatus>> = {}): MappingStatus => overrides[t] ?? BASE_MAPPING[t];
+export const MAPPING_CHECKS: { id: string; label: string }[] = [
+  { id: 'sku-ids', label: 'SKU identifiers present' },
+  { id: 'category', label: 'SKU-to-portfolio category mapping' },
+  { id: 'basis', label: 'Primary sales basis' },
+  { id: 'dates', label: 'Validity dates in FY 2026–27' },
+  { id: 'duplicates', label: 'No duplicate SKU lines' },
+  { id: 'complete', label: 'Source submission complete' },
+];
+/** Checks already passed before review (by territory). */
+export const BASE_CHECKS: Record<ZmTerritoryId, string[]> = {
+  ambad: ['basis', 'dates', 'complete'], ghansawangi: [], badnapur: [], jafrabad: MAPPING_CHECKS.map((c) => c.id), bhokardan: ['sku-ids', 'basis', 'dates'],
+};
+
+/** Crop and season shares of portfolio sales (%), used by the My Performance filters. */
+export const PORTFOLIO_CROP_SHARE: Record<string, number> = { Onion: 45, Maize: 25, 'Other crops': 30 };
+export const PORTFOLIO_SEASON_SHARE: Record<string, number> = { Kharif: 55, Rabi: 45 };
 /** Croptek SKU contribution inside each plan. */
 const CROPTEK_SKU: Record<ZmTerritoryId, number> = { ambad: 190, ghansawangi: 48, badnapur: 33, jafrabad: 25, bhokardan: 19 };
 /** Status before any action in this session; FSM territories follow the FSM store once submitted there. */
@@ -118,8 +147,9 @@ const BASE_STATUS: Record<ZmTerritoryId, PlanStatus> = { ambad: 'submitted', gha
 const FSM_PLAN_TERRITORIES: ZmTerritoryId[] = ['ambad', 'ghansawangi', 'badnapur'];
 
 export const planCrops = (t: ZmTerritoryId) => (t === 'jafrabad' || t === 'bhokardan'
-  ? FSM_CROPS.map((crop, i) => ({ crop, abp: OTHER_CROP_PLAN[t].abp[i], proposed: OTHER_CROP_PLAN[t].proposed[i] }))
-  : cropPlan(t));
+  ? FSM_CROPS.map((crop, i) => ({ crop, lastYear: OTHER_CROP_PLAN[t].lastYear[i], abp: OTHER_CROP_PLAN[t].abp[i], proposed: OTHER_CROP_PLAN[t].proposed[i] }))
+  : cropPlan(t).map((c, i) => ({ ...c, lastYear: cropLastYear(t)[i] })))
+  .map((c) => ({ ...c, growthPct: ratio(c.proposed - c.lastYear, c.lastYear) }));
 
 /** Plan status: ZM decisions win; otherwise an FSM submission marks it received; otherwise the base status. */
 export const planStatus = (t: ZmTerritoryId, fsmSubmitted: string[], decisions: Partial<Record<ZmTerritoryId, PlanStatus>> = {}): PlanStatus => {
@@ -150,25 +180,25 @@ export const ambadOnionGrowth = () => {
   return { lastYear, plan, growthPct: ratio(plan - lastYear, lastYear) };
 };
 
-// ---------------------------------------------------------------- revised plan (v2) for Ambad
-export interface PlanChange { item: string; v1: string; v2: string; changed: boolean }
+// ---------------------------------------------------------------- revised plan (rev) for Ambad
+export interface PlanChange { item: string; orig: string; rev: string; changed: boolean }
 /** Version 2 raises the onion plan by ₹7 L (Wadi Gaon +₹4 L, Dhanora +₹3 L) at the same ₹100/kg realisation. */
-export const REVISED_ONION = { v1: 165, v2: 172, rupeesPerKg: 100, kgPerAcre: 20 };
+export const REVISED_ONION = { orig: 165, rev: 172, rupeesPerKg: 100, kgPerAcre: 20 };
 export const revisedPlan = () => {
-  const v1 = territoryPlan('ambad');
-  const delta = REVISED_ONION.v2 - REVISED_ONION.v1;
-  const v2Plan = v1.plan + delta;
+  const orig = territoryPlan('ambad');
+  const delta = REVISED_ONION.rev - REVISED_ONION.orig;
+  const v2Plan = orig.plan + delta;
   const mt = (l: number) => (l * 100000) / REVISED_ONION.rupeesPerKg / 1000;
   const acres = (l: number) => Math.round((mt(l) * 1000) / REVISED_ONION.kgPerAcre);
   return {
-    v1: { plan: v1.plan, gap: v1.abp - v1.plan, onion: REVISED_ONION.v1, onionMt: mt(REVISED_ONION.v1), acres: acres(REVISED_ONION.v1) },
-    v2: { plan: v2Plan, gap: v1.abp - v2Plan, onion: REVISED_ONION.v2, onionMt: mt(REVISED_ONION.v2), acres: acres(REVISED_ONION.v2) },
+    orig: { plan: orig.plan, gap: orig.abp - orig.plan, onion: REVISED_ONION.orig, onionMt: mt(REVISED_ONION.orig), acres: acres(REVISED_ONION.orig) },
+    rev: { plan: v2Plan, gap: orig.abp - v2Plan, onion: REVISED_ONION.rev, onionMt: mt(REVISED_ONION.rev), acres: acres(REVISED_ONION.rev) },
     villages: [
-      { village: 'Wadi Gaon', v1: 18, v2: 22 },
-      { village: 'Dhanora', v1: 15, v2: 18 },
+      { village: 'Wadi Gaon', orig: 18, rev: 22 },
+      { village: 'Dhanora', orig: 15, rev: 18 },
     ],
-    applicationRate: { v1: 'Validation pending', v2: 'Validated' },
-    abp: v1.abp,
+    applicationRate: { orig: 'Validation pending', rev: 'Validated' },
+    abp: orig.abp,
   };
 };
 

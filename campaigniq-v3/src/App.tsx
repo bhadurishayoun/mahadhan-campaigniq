@@ -13,6 +13,7 @@ import { ActivityExecution, ControlTower } from './screens/fsm/Execution';
 import { CampaignImpact, VillageDiagnostic } from './screens/fsm/Impact';
 import { FsmAssistant } from './screens/fsm/Assistant';
 import { ZmBlank } from './screens/zm/Blank';
+import { ConsolidatedPlans, PlanValidation, RevisedPlan, SkuReconciliation, ZmPerformance } from './screens/zm/Plans';
 import { ZmStoreProvider } from './store/zmStore';
 import { CommandCentre } from './screens/CommandCentre';
 import { Portfolio } from './screens/Portfolio';
@@ -99,11 +100,11 @@ function buildRouter(session: Session, signOut: () => void) {
         { path: 'fsm/impact', element: <CampaignImpact /> },
         { path: 'fsm/impact/diagnostic', element: <VillageDiagnostic /> },
         { path: 'fsm/assistant', element: <FsmAssistant /> },
-        { path: 'zm/performance', element: <ZmBlank n={1} /> },
-        { path: 'zm/plans', element: <ZmBlank n={2} /> },
-        { path: 'zm/plans/reconciliation', element: <ZmBlank n={3} /> },
-        { path: 'zm/plans/:territory/review', element: <ZmBlank n={4} /> },
-        { path: 'zm/plans/:territory/revised', element: <ZmBlank n={5} /> },
+        { path: 'zm/performance', element: <ZmPerformance /> },
+        { path: 'zm/plans', element: <ConsolidatedPlans /> },
+        { path: 'zm/plans/reconciliation', element: <SkuReconciliation /> },
+        { path: 'zm/plans/:territory/review', element: <PlanValidation /> },
+        { path: 'zm/plans/:territory/revised', element: <RevisedPlan /> },
         { path: 'zm/themes', element: <ZmBlank n={6} /> },
         { path: 'zm/studio/concepts', element: <ZmBlank n={7} /> },
         { path: 'zm/studio/compare', element: <ZmBlank n={8} /> },

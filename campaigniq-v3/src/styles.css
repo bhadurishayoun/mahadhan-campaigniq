@@ -348,3 +348,5 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 /* Recommendation rows that open their workspace */
 .row-link { text-align: left; color: inherit; font: inherit; padding: 0; cursor: pointer; }
 .row-link:hover { color: var(--brand); text-decoration: underline; }
+/* Compact figure strip (planning detail) */
+.recon.compact b { font-size: 16px; text-align: center; }

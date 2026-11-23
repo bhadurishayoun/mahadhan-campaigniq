@@ -45,6 +45,8 @@ const CROP_SPLIT: Record<FsmTerritoryId, { lastYear: number[]; abp: number[] }> 
   ghansawangi: { lastYear: [98, 77, 105], abp: [119, 94, 127] },
   badnapur: { lastYear: [62, 51, 87], abp: [75, 61, 104] },
 };
+/** Last-year sales per crop (Onion, Maize, Other crops) for a territory. */
+export const cropLastYear = (t: FsmTerritoryId) => CROP_SPLIT[t].lastYear;
 /** Product and season shares of sales (%), same across the cluster. */
 export const PRODUCT_SHARE: Record<string, number> = { Croptek: 56, 'Other products': 44 };
 export const SEASON_SHARE: Record<string, number> = { Kharif: 60, Rabi: 40 };
