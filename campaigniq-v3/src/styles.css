@@ -363,3 +363,47 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 .choice { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
 .choice input { accent-color: var(--brand); margin-top: 3px; }
 .choice.on { border: 2px solid var(--brand); background: var(--tint); }
+/* Collateral page (rendered from a version) */
+.cpage { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px 14px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+.cpage::before { content: ''; position: absolute; right: -40px; top: -60px; width: 260px; height: 120px; border-radius: 50%; border-bottom: 6px solid var(--amber); }
+.cpage-brand { display: flex; flex-direction: column; line-height: 1; }
+.cpage-brand small { font-size: 12px; font-weight: 700; color: var(--brand); }
+.cpage-brand b { font-size: 26px; font-weight: 800; font-style: italic; color: var(--brand); }
+.cpage-main { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.layout-1 .cpage-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+.layout-1 .cpage-img { order: -1; }
+.layout-2 .cpage-main { grid-template-columns: 1fr; }
+.layout-2 .cpage-img { order: -1; height: 150px; }
+.cpage-text { display: flex; flex-direction: column; gap: 8px; }
+.cpage-headline { margin: 0; font-size: 24px; line-height: 1.15; font-weight: 800; color: var(--dark); }
+.cpage-body { margin: 0; font-size: 13px; color: var(--ink); }
+.cpage-pack { width: 80px; }
+.cpage-img { width: 100%; height: 210px; object-fit: cover; border-radius: 8px; }
+.cpage-icons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding-top: 10px; border-top: 4px solid var(--light); }
+.cpage-icons span { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; text-align: center; color: var(--ink); }
+.cpage-icons svg { color: var(--brand); }
+.cpage-points { margin: 0; padding-left: 18px; font-size: 13px; display: flex; flex-direction: column; gap: 6px; }
+.cpage.fixed { width: 560px; flex: none; }
+.cpage .marked { outline: 2px dashed var(--amber); outline-offset: 3px; border-radius: 4px; }
+.canvas { background: var(--canvas); border-radius: 8px; padding: 16px; min-height: 420px; flex: 1; }
+.page-thumb { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); width: 100%; }
+.page-thumb.on { border: 2px solid var(--brand); }
+.page-thumb small { font-size: 12px; color: var(--ink-soft); }
+/* Template gallery, picker, playbook assets */
+.tpl { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 12px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; }
+.tpl.on { border: 2px solid var(--brand); background: var(--tint); }
+.tpl img { width: 160px; border-radius: 6px; }
+.tpl-thumb { width: 84px; border-radius: 6px; }
+.tpl-large { width: 100%; max-width: 520px; display: block; margin: 0 auto 10px; border-radius: 8px; }
+.img-pick { display: flex; flex-direction: column; gap: 6px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); font-size: 13px; }
+.img-pick.on { border: 2px solid var(--brand); }
+.img-pick img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; }
+.asset-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; text-align: center; cursor: pointer; }
+.asset-card.on { border: 2px solid var(--brand); background: var(--tint); }
+.asset-card input { position: absolute; top: 8px; right: 8px; accent-color: var(--brand); }
+.asset-card img { width: 100%; height: 170px; object-fit: contain; background: var(--canvas); border-radius: 6px; }
+.asset-card b { font-size: 13px; color: var(--dark); }
+.switch { width: 38px; height: 22px; border-radius: 11px; background: var(--neutral); border: 1px solid var(--line); position: relative; padding: 0; }
+.switch span { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--card); box-shadow: 0 1px 2px var(--line); transition: left .15s; }
+.switch.on { background: var(--brand); border-color: var(--brand); }
+.switch.on span { left: 18px; }

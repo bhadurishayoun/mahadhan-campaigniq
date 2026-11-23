@@ -363,26 +363,63 @@ export const CLAIMS: Claim[] = [
 ];
 
 // ---------------------------------------------------------------- collateral
-export const TEMPLATES: { id: string; name: string; format: string; audience: string }[] = [
-  { id: 'detailer', name: 'Retailer product detailer', format: 'A4 two-page', audience: 'Mapped retailers' },
-  { id: 'leaflet', name: 'Farmer education leaflet', format: 'A5 leaflet', audience: 'Onion growers' },
-  { id: 'whatsapp', name: 'Marathi WhatsApp education creative', format: '1080 × 1080 image', audience: 'Opt-in farmers' },
-  { id: 'poster', name: 'Field demonstration poster', format: 'A3 poster', audience: 'Demonstration visitors' },
+/** Artwork cropped from the approved mockups (src/assets/collateral/<key>.png). */
+export type ImageKey = 'onion-bulbs' | 'onion-field' | 'onion-rows' | 'onion-harvest';
+export const IMAGE_LABEL: Record<ImageKey, string> = { 'onion-bulbs': 'Onion bulbs (close-up)', 'onion-field': 'Young onion crop', 'onion-rows': 'Onion rows in field', 'onion-harvest': 'Harvested onion' };
+export type TemplateId = 'detailer' | 'leaflet' | 'whatsapp' | 'poster';
+export interface CollateralTemplate { id: TemplateId; name: string; format: string; audience: string; language: string; highlights: string[]; version: string; languages: string; headline: string }
+export const TEMPLATES: CollateralTemplate[] = [
+  { id: 'detailer', name: 'Retailer product detailer', format: 'English / PPT', audience: 'Retailer', language: 'English / Marathi', highlights: ['Key features at a glance', 'Use in the crop programme', 'Farmer discussion points'], version: 'v0.3', languages: 'English, Marathi', headline: 'Complete Crop Nutrition for Onion' },
+  { id: 'leaflet', name: 'Farmer education leaflet', format: 'English / PDF', audience: 'Farmer', language: 'English / Marathi', highlights: ['Crop information', 'Healthy crop care', 'Discussion with retailer'], version: 'v0.1', languages: 'English, Marathi', headline: 'Onion Crop Education' },
+  { id: 'whatsapp', name: 'Marathi WhatsApp education creative', format: 'Marathi / Image', audience: 'Farmer', language: 'Marathi', highlights: ['Share information', 'Crop care', 'Talk to farmers'], version: 'v0.1', languages: 'Marathi', headline: 'Crop Care Information with Croptek' },
+  { id: 'poster', name: 'Field demonstration poster', format: 'English / PDF', audience: 'Retailer / Farmer', language: 'English / Marathi', highlights: ['On-field discussion', 'Crop observation', 'Key takeaways'], version: 'v0.1', languages: 'Marathi', headline: 'Field Demonstration and Crop Discussion' },
 ];
-export const VERSIONS: { id: string; label: string; changes: string[] }[] = [
-  { id: 'v0.1', label: 'Version 0.1', changes: ['First draft from the Retailer product detailer template'] },
-  { id: 'v0.2', label: 'Version 0.2', changes: ['Headline shortened', 'Bulb-initiation dose added', 'Marathi body text added'] },
-  { id: 'v0.3', label: 'Version 0.3', changes: ['Claim wording aligned to validated claims', 'Retailer contact block added'] },
+export const SOURCE_INPUTS = ['Product master', 'Draft claims', 'Intervention design', 'Authorised imagery library', 'Supporting evidence status'];
+
+export interface CollateralVersion {
+  id: string; template: TemplateId; date: string; description: string; source: string;
+  headline: string; body: string; image: ImageKey; layout: number; marathi: string; points: string[];
+}
+const POINTS = ['Product education for retailers', 'Key features and crop usage', 'Discussion support for farmers'];
+/** Retailer product detailer history (versions 0.1 to 0.3). */
+export const SEED_VERSIONS: CollateralVersion[] = [
+  { id: 'v0.1', template: 'detailer', date: '22 Jan 2027, 10:18', description: 'Initial draft', source: 'Draft generator', headline: 'Croptek Product Overview', body: 'For retailer education and farmer discussion.', image: 'onion-harvest', layout: 0, marathi: '', points: POINTS },
+  { id: 'v0.2', template: 'detailer', date: '24 Jan 2027, 16:32', description: 'Content and visual update', source: 'Zonal Manager workspace', headline: 'Croptek Product Overview', body: 'Helps in overall crop development in onion.', image: 'onion-harvest', layout: 0, marathi: '', points: POINTS },
+  { id: 'v0.3', template: 'detailer', date: '26 Jan 2027, 11:24', description: 'Current draft', source: 'Draft generator', headline: 'Complete Crop Nutrition for Onion', body: 'A balanced nutrition approach for healthy crop growth and better bulb development.', image: 'onion-bulbs', layout: 0, marathi: 'कांदा पिकासाठी संतुलित पोषण', points: POINTS },
 ];
-export type ReviewStatus = 'approved' | 'pending' | 'changes_requested';
-export const REVIEW_ITEMS: { id: string; item: string; reviewer: string; status: ReviewStatus }[] = [
-  { id: 'r-claims', item: 'Product claims', reviewer: 'Agronomy lead', status: 'approved' },
-  { id: 'r-dose', item: 'Dose and crop stage', reviewer: 'Agronomy lead', status: 'approved' },
-  { id: 'r-brand', item: 'Brand guidelines', reviewer: 'Brand manager', status: 'approved' },
-  { id: 'r-language', item: 'Marathi translation', reviewer: 'Regional language reviewer', status: 'pending' },
-  { id: 'r-regulatory', item: 'Regulatory statements', reviewer: 'Regulatory affairs', status: 'pending' },
-  { id: 'r-legal', item: 'Legal disclaimer', reviewer: 'Legal', status: 'changes_requested' },
+/** Prepared rewrites offered by "Rewrite text" (cycled in order). */
+export const REWRITES: { headline: string; body: string }[] = [
+  { headline: 'Balanced Nutrition for Better Onion Bulbs', body: 'Croptek supports uniform bulb size when applied at bulb initiation.' },
+  { headline: 'Croptek for a Healthier Onion Crop', body: 'Ask your retailer how Croptek fits your onion crop-stage programme.' },
+  { headline: 'Grow Stronger Onions with Croptek', body: 'Crop-stage nutrition for healthy growth, stronger roots and bulb development.' },
 ];
+/** Change items between two versions (headline, body, image, layout, Marathi variant). */
+export const versionChanges = (a: CollateralVersion, b: CollateralVersion) => {
+  const out: { item: string; change: string; validation: string }[] = [];
+  if (a.headline !== b.headline) out.push({ item: 'Headline', change: 'Revised', validation: 'Technical review pending' });
+  if (a.body !== b.body) out.push({ item: 'Product claim copy', change: 'Changed', validation: 'Agronomy approval pending' });
+  if (a.image !== b.image) out.push({ item: 'Onion image', change: 'Replaced', validation: 'Brand / rights review pending' });
+  if (a.layout !== b.layout) out.push({ item: 'Layout', change: 'Adjusted', validation: 'Brand review pending' });
+  if (a.marathi !== b.marathi) out.push({ item: 'Marathi variant', change: a.marathi ? 'Revised' : 'Created', validation: 'Translation review pending' });
+  return out;
+};
+
+export type ReviewStatus = 'under_review' | 'evidence_pending' | 'not_validated' | 'review_pending' | 'approved';
+export const REVIEW_STATUS_LABEL: Record<ReviewStatus, string> = { under_review: 'Under review', evidence_pending: 'Evidence pending', not_validated: 'Not validated', review_pending: 'Review pending', approved: 'Approved' };
+export interface ReviewItem { id: string; element: string; kind: 'Claim' | 'Imagery' | 'Language'; evidence: string; owner: string; stage: string; observation: string; status: ReviewStatus }
+export const REVIEW_ITEMS: ReviewItem[] = [
+  { id: 'r-claim-1', element: 'Complete crop nutrition for onion', kind: 'Claim', evidence: 'Authorised product information and label / technical reference', owner: 'Agronomy / technical', stage: 'Technical review', observation: 'Awaiting reviewer findings', status: 'under_review' },
+  { id: 'r-claim-2', element: 'Supports healthy crop growth', kind: 'Claim', evidence: 'Product master and agronomy evidence', owner: 'Agronomy / technical', stage: 'Technical review', observation: 'Evidence verification pending', status: 'evidence_pending' },
+  { id: 'r-claim-3', element: 'Promotes stronger roots', kind: 'Claim', evidence: 'Product master and agronomy evidence', owner: 'Agronomy / technical', stage: 'Technical review', observation: 'Not yet validated', status: 'not_validated' },
+  { id: 'r-claim-4', element: 'Aids bulb development', kind: 'Claim', evidence: 'Product master and crop-stage evidence', owner: 'Agronomy / technical', stage: 'Technical review', observation: 'Technical review pending', status: 'not_validated' },
+  { id: 'r-imagery', element: 'Onion imagery and brand layout', kind: 'Imagery', evidence: 'Authorised imagery library and brand guidelines', owner: 'Brand / content', stage: 'Brand review', observation: 'Brand and asset-rights review pending', status: 'review_pending' },
+  { id: 'r-marathi', element: 'Marathi translation variant', kind: 'Language', evidence: 'Approved content base and language guidelines', owner: 'Language reviewer', stage: 'Language review', observation: 'Translation review pending', status: 'review_pending' },
+];
+
+/** Playbook assets other than the detailer, whose status follows its review items. */
+export type AssetStatus = 'approved' | 'technical_review' | 'approval_pending' | 'not_selected';
+export const ASSET_STATUS_LABEL: Record<AssetStatus, string> = { approved: 'Approved', technical_review: 'Technical review pending', approval_pending: 'Approval pending', not_selected: 'Not selected' };
+export const BASE_ASSET_STATUS: Record<TemplateId, AssetStatus> = { detailer: 'technical_review', leaflet: 'approval_pending', whatsapp: 'approval_pending', poster: 'not_selected' };
 /** Collateral effectiveness per asset in the Ambad campaign. */
 export const COLLATERAL_EFFECTIVENESS: { id: string; asset: string; reach: number; engaged: number; trials: number }[] = [
   { id: 'detailer', asset: 'Retailer product detailer', reach: 74, engaged: 52, trials: 38 },

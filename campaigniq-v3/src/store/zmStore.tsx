@@ -3,7 +3,7 @@
  * plus the studio and approval records added phase by phase. Kept in sessionStorage, like the Field Sales Manager store.
  */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { Claim, Concept, MappingStatus, PlanStatus, PropositionField, QuestionStatus, ThemeStatus, ZmPortfolio, ZmScope } from '../data/zm';
+import type { AssetStatus, Claim, CollateralVersion, Concept, ReviewStatus, TemplateId, MappingStatus, PlanStatus, PropositionField, QuestionStatus, ThemeStatus, ZmPortfolio, ZmScope } from '../data/zm';
 import type { ZmTerritoryId } from '../routes';
 
 export interface ZmState {
@@ -35,15 +35,27 @@ export interface ZmState {
   interventions: Record<string, InterventionConfig>;
   readinessChecks: string[];
   claims: Record<string, Partial<Claim>>;
+  /** Collateral: chosen template, draft setup, version history (null = the seeded detailer history), reviews and playbook. */
+  template: TemplateId;
+  draftSetup: DraftSetup | null;
+  versions: CollateralVersion[] | null;
+  reviews: Record<string, ReviewStatus>;
+  submittedForReview: boolean;
+  assetStatus: Partial<Record<TemplateId, AssetStatus>>;
+  playbookIncluded: TemplateId[];
+  released: boolean;
 }
+
+export interface DraftSetup { audience: string; language: string; objective: string; sources: string[]; style: string; format: string; regional: string }
 
 export interface InterventionConfig { objective: string; behaviour: string; participants: string; types: string[]; channel: string; crop: string; geography: string; window: string; resources: string }
 
-const KEY = 'campaigniq.v3.zm.3';
+const KEY = 'campaigniq.v3.zm.4';
 const INITIAL: ZmState = { scope: 'zone', portfolio: 'crop-nutrition', planDecisions: {}, mapping: {}, mappingChecks: {}, comments: {}, cropValidated: {}, questions: {}, responses: {},
   themeStatus: {}, acknowledgements: {}, clarifications: [], concepts: null, selectedConcepts: ['c1'],
   workspace: { intent: 'Drive eligible first-purchase conversion under Croptek.', behaviour: 'Move from recommendation or trial to first purchase.', notes: '' },
-  compareDecision: 'separate', proposition: {}, interventions: {}, readinessChecks: [], claims: {} };
+  compareDecision: 'separate', proposition: {}, interventions: {}, readinessChecks: [], claims: {},
+  template: 'detailer', draftSetup: null, versions: null, reviews: {}, submittedForReview: false, assetStatus: {}, playbookIncluded: ['detailer'], released: false };
 
 function load(): ZmState {
   try {
@@ -72,6 +84,14 @@ interface ZmStore extends ZmState {
   setIntervention: (stageId: string, c: InterventionConfig) => void;
   setReadinessChecks: (ids: string[]) => void;
   setClaim: (id: string, patch: Partial<Claim>) => void;
+  setTemplate: (t: TemplateId) => void;
+  setDraftSetup: (d: DraftSetup) => void;
+  setVersions: (v: CollateralVersion[]) => void;
+  setReview: (id: string, st: ReviewStatus) => void;
+  submitForReview: () => void;
+  setAssetStatus: (t: TemplateId, st: AssetStatus) => void;
+  setPlaybookIncluded: (ids: TemplateId[]) => void;
+  release: () => void;
 }
 
 const Ctx = createContext<ZmStore | null>(null);
@@ -101,6 +121,14 @@ export function ZmStoreProvider({ children }: { children: ReactNode }) {
     setIntervention: (id, c) => setState((s) => ({ ...s, interventions: { ...s.interventions, [id]: c } })),
     setReadinessChecks: (ids) => setState((s) => ({ ...s, readinessChecks: ids })),
     setClaim: (id, patch) => setState((s) => ({ ...s, claims: { ...s.claims, [id]: { ...s.claims[id], ...patch } } })),
+    setTemplate: (template) => setState((s) => ({ ...s, template })),
+    setDraftSetup: (draftSetup) => setState((s) => ({ ...s, draftSetup })),
+    setVersions: (versions) => setState((s) => ({ ...s, versions })),
+    setReview: (id, st) => setState((s) => ({ ...s, reviews: { ...s.reviews, [id]: st } })),
+    submitForReview: () => setState((s) => ({ ...s, submittedForReview: true })),
+    setAssetStatus: (t, st) => setState((s) => ({ ...s, assetStatus: { ...s.assetStatus, [t]: st } })),
+    setPlaybookIncluded: (ids) => setState((s) => ({ ...s, playbookIncluded: ids })),
+    release: () => setState((s) => ({ ...s, released: true })),
     answer: (qid, response) => setState((s) => ({ ...s, questions: { ...s.questions, [qid]: 'responded' }, responses: { ...s.responses, [qid]: response } })),
   }), [state]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

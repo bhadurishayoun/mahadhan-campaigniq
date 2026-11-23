@@ -5,6 +5,8 @@ import {
 } from 'lucide-react';
 import { useRef, useState, type ReactNode } from 'react';
 import { useBlocker } from 'react-router-dom';
+import { TEMPLATES } from '../../data/zm';
+import { useZmStore } from '../../store/zmStore';
 import { Modal } from '../../ui/overlay';
 import { CONTRIBUTION_MARGIN, netRoi, territoryById } from '../../data/bh';
 import { crore, lakh, num, pct, rupees, sum, times } from '../../data/format';
@@ -81,6 +83,9 @@ function CampaignKpis({ w, extra }: { w: WizardState; extra?: ReactNode }) {
 export function SelectPriority() {
   const go = useGo();
   const fsm = useFsmStore();
+  const zm = useZmStore();
+  // Collateral released by the Zonal Manager to eligible Field Sales Managers.
+  const playbook = zm.released ? TEMPLATES.filter((t) => zm.playbookIncluded.includes(t.id)) : [];
   const [sel, setSel] = useState(fsm.wizard?.priority ?? BUSINESS_PRIORITIES[0].id);
   const p = priorityById(sel);
   const ambad = clusterRows().find((r) => r.id === 'ambad')!;
@@ -132,7 +137,9 @@ export function SelectPriority() {
           <div className="card-sub">Checks before activation</div>
           <List items={[
             { icon: CircleAlert, tone: 'warn', label: 'Audience eligibility' },
-            { icon: CircleAlert, tone: 'warn', label: 'Approved content' },
+            playbook.length
+              ? { icon: CircleCheck, label: `Approved content · ${playbook.length} playbook asset${playbook.length === 1 ? '' : 's'} released`, value: playbook.map((t) => t.name).join(', ') }
+              : { icon: CircleAlert, tone: 'warn' as const, label: 'Approved content' },
             { icon: CircleAlert, tone: 'warn', label: 'Stock readiness' },
           ]} />
         </Card>

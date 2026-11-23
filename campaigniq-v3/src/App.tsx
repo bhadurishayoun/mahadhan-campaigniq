@@ -13,6 +13,7 @@ import { ActivityExecution, ControlTower } from './screens/fsm/Execution';
 import { CampaignImpact, VillageDiagnostic } from './screens/fsm/Impact';
 import { FsmAssistant } from './screens/fsm/Assistant';
 import { ZmBlank } from './screens/zm/Blank';
+import { CollateralApprovals, CollateralEditor, CollateralTemplates, PlaybookRelease, VersionComparison } from './screens/zm/Collateral';
 import { AssignedThemes, ConceptComparison, ConceptStudio, PropositionDesigner } from './screens/zm/Studio';
 import { ConsolidatedPlans, PlanValidation, RevisedPlan, SkuReconciliation, ZmPerformance } from './screens/zm/Plans';
 import { ZmStoreProvider } from './store/zmStore';
@@ -110,11 +111,11 @@ function buildRouter(session: Session, signOut: () => void) {
         { path: 'zm/studio/concepts', element: <ConceptStudio /> },
         { path: 'zm/studio/compare', element: <ConceptComparison /> },
         { path: 'zm/studio/proposition', element: <PropositionDesigner /> },
-        { path: 'zm/studio/collateral', element: <ZmBlank n={10} /> },
-        { path: 'zm/studio/collateral/edit', element: <ZmBlank n={11} /> },
-        { path: 'zm/studio/collateral/versions', element: <ZmBlank n={12} /> },
-        { path: 'zm/studio/collateral/approvals', element: <ZmBlank n={13} /> },
-        { path: 'zm/studio/playbook', element: <ZmBlank n={14} /> },
+        { path: 'zm/studio/collateral', element: <CollateralTemplates /> },
+        { path: 'zm/studio/collateral/edit', element: <CollateralEditor /> },
+        { path: 'zm/studio/collateral/versions', element: <VersionComparison /> },
+        { path: 'zm/studio/collateral/approvals', element: <CollateralApprovals /> },
+        { path: 'zm/studio/playbook', element: <PlaybookRelease /> },
         { path: 'zm/studio/business-case', element: <ZmBlank n={15} /> },
         { path: 'zm/studio/scenarios', element: <ZmBlank n={16} /> },
         { path: 'zm/studio/reconciliation', element: <ZmBlank n={17} /> },

@@ -6,6 +6,7 @@ import {
   ambadOnionGrowth, approvalQueue, businessCaseC1, businessCaseC2, CATEGORIES, driverBridge, nextSeason, planStatus, portfolioByTerritory,
   portfolioRows, portfolioTotal, revisedPlan, SCENARIO_SALES, scenarioRow, territoryPlan, territoryPlans, trialToPurchasePct, zmImpact,
   ZM_TERRITORY_IDS, zoneTerritories, zoneTotal, planContribution, planPortfolio, planCrops, mappingStatus, BASE_CHECKS, MAPPING_CHECKS,
+  REVIEW_ITEMS, REWRITES, SEED_VERSIONS, TEMPLATES, versionChanges, BASE_ASSET_STATUS,
   CLAIMS, CONCEPTS, conceptRationale, CROP_STAGES, INTERVENTION_KPIS, JOURNEY, secondaryTrend, ZM_THEMES, AUDIENCE,
 } from './zm';
 
@@ -153,5 +154,20 @@ describe('themes, concepts and proposition (screens 6–9)', () => {
     expect(INTERVENTION_KPIS.map((k) => k.target)).toEqual(['3 retailer sessions', '640 farmers', '160 trials', '72 adopters', '₹48.0 L']);
     expect(CLAIMS).toHaveLength(4);
     expect(CLAIMS.every((c) => c.stages.every((st) => (CROP_STAGES as readonly string[]).includes(st)))).toBe(true);
+  });
+});
+
+describe('collateral (screens 10–14)', () => {
+  it('4 templates, detailer history v0.1 to v0.3, 3 prepared rewrites, 6 review items', () => {
+    expect(TEMPLATES.map((t) => t.id)).toEqual(['detailer', 'leaflet', 'whatsapp', 'poster']);
+    expect(SEED_VERSIONS.map((v) => v.id)).toEqual(['v0.1', 'v0.2', 'v0.3']);
+    expect(REWRITES).toHaveLength(3);
+    expect(REVIEW_ITEMS).toHaveLength(6);
+    expect(REVIEW_ITEMS.some((r) => r.status === 'approved')).toBe(false);
+    expect(BASE_ASSET_STATUS.detailer).toBe('technical_review');
+  });
+  it('v0.2 → v0.3 changes: headline, claim copy, image and the Marathi variant', () => {
+    expect(versionChanges(SEED_VERSIONS[1], SEED_VERSIONS[2]).map((c) => c.item)).toEqual(['Headline', 'Product claim copy', 'Onion image', 'Marathi variant']);
+    expect(versionChanges(SEED_VERSIONS[2], SEED_VERSIONS[2])).toEqual([]);
   });
 });
