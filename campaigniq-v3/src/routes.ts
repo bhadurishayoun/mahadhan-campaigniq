@@ -115,6 +115,47 @@ export function zmNavKeyOf(path: string): ZmNavKey {
   return 'performance';
 }
 
-export type PathPersona = 'strategy' | 'tm' | 'pm';
-export const personaOfPath = (path: string): PathPersona => (path.startsWith('/fsm') ? 'tm' : path.startsWith('/zm') ? 'pm' : 'strategy');
-export const LANDING: Record<string, string> = { strategy: R.command, tm: F.plan, pm: Z.performance };
+// ---------------------------------------------------------------- Marketing Head (mockups: docs/mockups/marketing-head/<file>)
+export type MhRegionId = 'west' | 'south' | 'north' | 'east';
+export const M = {
+  overview: '/mh/overview', // 1  MH.1.png
+  opportunity: (r: MhRegionId = 'west') => `/mh/opportunity/${r}`, // 2  MH.2.png
+  plans: '/mh/plans', // 3  MH.3.png
+  planDetail: (r: MhRegionId = 'west', crop = 'onion') => `/mh/plans/${r}/${crop}`, // 4  MH.3a.png
+  planTerritory: (t = 'ambad') => `/mh/plans/territory/${t}`, // 5  MH.3b.png
+  diagnosis: '/mh/studio/diagnosis', // 6  MH.4.png (drawer MH.4b)
+  recommendations: '/mh/studio/recommendations', // 7  MH.4a.png
+  investigation: '/mh/studio/investigation', // 8  MH.4c.png (drawer MH.4d)
+  evidence: '/mh/studio/evidence', // 9  MH.4e.png
+  updated: '/mh/studio/investigation/updated', // 10 MH.4f.png
+  refreshed: '/mh/studio/recommendations/refreshed', // 11 MH.4g.png
+  themeBrief: '/mh/studio/theme-brief', // 12 MH.5.png
+  themes: '/mh/studio/themes', // 13 MH.6.png
+  proposals: '/mh/approvals/proposals', // 14 MH.7.png
+  proposal: (id = 'c1') => `/mh/approvals/proposals/${id}`, // 15 MH.7a.png
+  compare: '/mh/approvals/compare', // 16 MH.7b.png
+  decision: (id = 'c1') => `/mh/approvals/${id}/decision`, // 17 MH.8.png
+  rollout: (id = 'c1') => `/mh/approvals/${id}/rollout`, // 18 MH.8a.png
+  performance: '/mh/performance', // 19 MH.9.png
+  programme: (r: MhRegionId = 'west') => `/mh/performance/${r}`, // 20 MH.9a.png
+  drivers: (r: MhRegionId = 'west') => `/mh/performance/${r}/drivers`, // 21 MH.9b.png (drawers MH.9c, MH.9d)
+  assistant: '/mh/assistant', // 22 MH.10.png
+} as const;
+
+export type MhNavKey = 'overview' | 'opportunity' | 'mh-plans' | 'mh-studio' | 'mh-approvals' | 'mh-performance' | 'mh-assistant';
+
+/** Which Marketing Head sidebar item a path belongs to. */
+export function mhNavKeyOf(path: string): MhNavKey {
+  if (path.startsWith('/mh/opportunity')) return 'opportunity';
+  if (path.startsWith('/mh/plans')) return 'mh-plans';
+  if (path.startsWith('/mh/studio')) return 'mh-studio';
+  if (path.startsWith('/mh/approvals')) return 'mh-approvals';
+  if (path.startsWith('/mh/performance')) return 'mh-performance';
+  if (path.startsWith('/mh/assistant')) return 'mh-assistant';
+  return 'overview';
+}
+
+export type PathPersona = 'strategy' | 'tm' | 'pm' | 'mh';
+export const personaOfPath = (path: string): PathPersona =>
+  (path.startsWith('/fsm') ? 'tm' : path.startsWith('/zm') ? 'pm' : path.startsWith('/mh') ? 'mh' : 'strategy');
+export const LANDING: Record<string, string> = { strategy: R.command, tm: F.plan, pm: Z.performance, mh: M.overview };

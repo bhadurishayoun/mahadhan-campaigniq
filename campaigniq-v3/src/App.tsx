@@ -19,6 +19,8 @@ import { CollateralApprovals, CollateralEditor, CollateralTemplates, PlaybookRel
 import { AssignedThemes, ConceptComparison, ConceptStudio, PropositionDesigner } from './screens/zm/Studio';
 import { ConsolidatedPlans, PlanValidation, RevisedPlan, SkuReconciliation, ZmPerformance } from './screens/zm/Plans';
 import { ZmStoreProvider } from './store/zmStore';
+import { MhBlank } from './screens/mh/Blank';
+import { MhStoreProvider } from './store/mhStore';
 import { CommandCentre } from './screens/CommandCentre';
 import { Portfolio } from './screens/Portfolio';
 import { RegionalPerformance } from './screens/RegionalPerformance';
@@ -59,7 +61,9 @@ export function App() {
     <BhStoreProvider>
       <FsmStoreProvider>
         <ZmStoreProvider>
-          <RouterProvider router={router} />
+          <MhStoreProvider>
+            <RouterProvider router={router} />
+          </MhStoreProvider>
         </ZmStoreProvider>
       </FsmStoreProvider>
     </BhStoreProvider>
@@ -130,6 +134,28 @@ function buildRouter(session: Session, signOut: () => void) {
         { path: 'zm/impact/diagnostics', element: <CampaignDiagnostics /> },
         { path: 'zm/impact/recommendations', element: <Recommendations /> },
         { path: 'zm/assistant', element: <ZmAssistant /> },
+        { path: 'mh/overview', element: <MhBlank n={1} /> },
+        { path: 'mh/opportunity/:region', element: <MhBlank n={2} /> },
+        { path: 'mh/plans', element: <MhBlank n={3} /> },
+        { path: 'mh/plans/:region/:crop', element: <MhBlank n={4} /> },
+        { path: 'mh/plans/territory/:territory', element: <MhBlank n={5} /> },
+        { path: 'mh/studio/diagnosis', element: <MhBlank n={6} /> },
+        { path: 'mh/studio/recommendations', element: <MhBlank n={7} /> },
+        { path: 'mh/studio/investigation', element: <MhBlank n={8} /> },
+        { path: 'mh/studio/evidence', element: <MhBlank n={9} /> },
+        { path: 'mh/studio/investigation/updated', element: <MhBlank n={10} /> },
+        { path: 'mh/studio/recommendations/refreshed', element: <MhBlank n={11} /> },
+        { path: 'mh/studio/theme-brief', element: <MhBlank n={12} /> },
+        { path: 'mh/studio/themes', element: <MhBlank n={13} /> },
+        { path: 'mh/approvals/proposals', element: <MhBlank n={14} /> },
+        { path: 'mh/approvals/proposals/:id', element: <MhBlank n={15} /> },
+        { path: 'mh/approvals/compare', element: <MhBlank n={16} /> },
+        { path: 'mh/approvals/:id/decision', element: <MhBlank n={17} /> },
+        { path: 'mh/approvals/:id/rollout', element: <MhBlank n={18} /> },
+        { path: 'mh/performance', element: <MhBlank n={19} /> },
+        { path: 'mh/performance/:region', element: <MhBlank n={20} /> },
+        { path: 'mh/performance/:region/drivers', element: <MhBlank n={21} /> },
+        { path: 'mh/assistant', element: <MhBlank n={22} /> },
         { path: '*', element: <Navigate to={home} replace /> },
       ],
     },

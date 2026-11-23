@@ -85,3 +85,10 @@ Marketing Head personas follow the same pattern (persona id `pm` / `mh`, mockups
 
 **Next steps (Zonal Manager):** the Marketing Head persona is not built yet, so its return of the C1 proposal is represented by the ZM notification "Marketing Head returned C1 for revision" (after submission) and its review notes in the data; wire it to the Marketing Head screens when that persona is built. Village figures follow the shared Ambad data (9 villages), not the older mockup values. Collateral artwork is cropped from the approved mockups; replace it with brand-approved files when available.
 
+## Marketing Head (persona `mh`, login MH001 / Marketing@123 or the master login)
+| Phase | Scope | Status |
+|---|---|---|
+| 0 | Mockups (`docs/mockups/marketing-head/`, 26), routes (`M` in `src/routes.ts`), 7-item sidebar, persona switch (all four personas built), top bar (National portfolio · West · South · North · East), 22 screens with titles, Campaign Strategy Studio tabs and the Back/Next chain (`src/screens/mh/Blank.tsx`) | Done |
+| 1 | Data and tests (regions, opportunity, plans, diagnosis and investigation, recommendations, theme lifecycle shared with BH and ZM, proposals, rollout, performance); BH theme-queue alignment | Next |
+| 2–6 | Screens 1–5, 6–11, 12–16, 17–21, 22; cross-persona verification and deploy | Planned |
+

@@ -5,7 +5,7 @@ export const PERSONAS: { id: PersonaId; label: string; initials: string; availab
   { id: 'strategy', label: 'Business Head', initials: 'BH', available: true, built: true },
   { id: 'pm', label: 'Zonal Manager', initials: 'ZM', available: true, built: true },
   { id: 'tm', label: 'Field Sales Manager', initials: 'FSM', available: true, built: true },
-  { id: 'mh', label: 'Marketing Head', initials: 'MH', available: true, built: false },
+  { id: 'mh', label: 'Marketing Head', initials: 'MH', available: true, built: true },
 ];
 
 export const isBuilt = (p: PersonaId) => PERSONAS.find((x) => x.id === p)?.built ?? false;

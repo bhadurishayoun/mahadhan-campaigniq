@@ -1,4 +1,4 @@
-import { AlertCircle, ArrowLeftRight, Bell, BriefcaseBusiness, Calendar, CalendarCheck, ChartColumn, ChartColumnBig, ClipboardCheck, Palette, ChartColumnIncreasing, ChevronDown, CircleHelp, ClipboardList, Flag, Layers, LogOut, BotMessageSquare, Megaphone, ShieldCheck, Sprout, TrendingUp, UserRound, type LucideIcon } from 'lucide-react';
+import { AlertCircle, ArrowLeftRight, Lightbulb, LayoutDashboard, Bell, BriefcaseBusiness, Calendar, CalendarCheck, ChartColumn, ChartColumnBig, ClipboardCheck, Palette, ChartColumnIncreasing, ChevronDown, CircleHelp, ClipboardList, Flag, Layers, LogOut, BotMessageSquare, Megaphone, ShieldCheck, Sprout, TrendingUp, UserRound, type LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { PERSONAS } from '../auth/nav';
@@ -7,8 +7,9 @@ import { FSM_SCOPES } from '../data/fsm';
 import { useFsmStore } from '../store/fsmStore';
 import { ZM_PORTFOLIOS, ZM_SCOPES } from '../data/zm';
 import { useZmStore } from '../store/zmStore';
+import { MH_SCOPES, useMhStore } from '../store/mhStore';
 import { FY, PERIODS, SCOPES } from '../data/bh';
-import { F, fsmNavKeyOf, LANDING, navKeyOf, personaOfPath, R, Z, zmNavKeyOf } from '../routes';
+import { F, fsmNavKeyOf, LANDING, M, mhNavKeyOf, navKeyOf, personaOfPath, R, Z, zmNavKeyOf } from '../routes';
 import { useBhData, useBhStore, type Scope } from '../store/bhStore';
 import { Toasts } from '../ui/core';
 import { attentionItems } from './attention';
@@ -39,6 +40,16 @@ const NAV_ZM: NavItem[] = [
   { key: 'approvals', label: 'Activity Approvals', icon: ShieldCheck, to: Z.approvals },
   { key: 'zm-impact', label: 'Impact & Learning', icon: TrendingUp, to: Z.impact },
   { key: 'zm-assistant', label: 'AI Copilot workspace', icon: BotMessageSquare, to: Z.assistant },
+];
+
+const NAV_MH: NavItem[] = [
+  { key: 'overview', label: 'National Marketing Overview', icon: LayoutDashboard, to: M.overview },
+  { key: 'opportunity', label: 'Market Opportunity', icon: TrendingUp, to: M.opportunity('west') },
+  { key: 'mh-plans', label: 'Business & Crop Plan Reviews', icon: ClipboardCheck, to: M.plans },
+  { key: 'mh-studio', label: 'Campaign Strategy Studio', icon: Lightbulb, to: M.diagnosis },
+  { key: 'mh-approvals', label: 'Approvals & Rollout', icon: Flag, to: M.proposals },
+  { key: 'mh-performance', label: 'Portfolio Performance & Learning', icon: ChartColumn, to: M.performance },
+  { key: 'mh-assistant', label: 'AI Copilot workspace', icon: BotMessageSquare, to: M.assistant },
 ];
 
 function useOutside(onClose: () => void) {
@@ -72,14 +83,16 @@ export function Shell({ session, onSignOut }: { session: Session; onSignOut: () 
   const zm = useZmStore();
   const isFsm = persona === 'tm';
   const isZm = persona === 'pm';
+  const mh = useMhStore();
+  const isMh = persona === 'mh';
   const me = PERSONAS.find((p) => p.id === persona)!;
-  const nav_ = isFsm ? NAV_FSM : isZm ? NAV_ZM : NAV;
-  const active = isFsm ? fsmNavKeyOf(pathname) : isZm ? zmNavKeyOf(pathname) : navKeyOf(pathname);
+  const nav_ = isFsm ? NAV_FSM : isZm ? NAV_ZM : isMh ? NAV_MH : NAV;
+  const active = isFsm ? fsmNavKeyOf(pathname) : isZm ? zmNavKeyOf(pathname) : isMh ? mhNavKeyOf(pathname) : navKeyOf(pathname);
   const zmAlerts = zm.proposalStatus.c1 === 'submitted' ? [{ id: 'mh-return-c1', text: 'Marketing Head returned C1 for revision', to: Z.revise('c1') }] : [];
-  const alerts = isFsm ? [] : isZm ? zmAlerts : attentionItems(store.themeStatus);
-  const scopes: { id: string; label: string }[] = isFsm ? FSM_SCOPES : isZm ? ZM_SCOPES : SCOPES;
-  const scopeId: string = isFsm ? fsm.scope : isZm ? zm.scope : store.scope;
-  const setScope = (id: string) => (isFsm ? fsm.setScope(id as typeof fsm.scope) : isZm ? zm.setScope(id as typeof zm.scope) : store.setScope(id as Scope));
+  const alerts = isFsm || isMh ? [] : isZm ? zmAlerts : attentionItems(store.themeStatus);
+  const scopes: { id: string; label: string }[] = isFsm ? FSM_SCOPES : isZm ? ZM_SCOPES : isMh ? MH_SCOPES : SCOPES;
+  const scopeId: string = isFsm ? fsm.scope : isZm ? zm.scope : isMh ? mh.scope : store.scope;
+  const setScope = (id: string) => (isFsm ? fsm.setScope(id as typeof fsm.scope) : isZm ? zm.setScope(id as typeof zm.scope) : isMh ? mh.setScope(id as typeof mh.scope) : store.setScope(id as Scope));
   const scopeLabel = scopes.find((s) => s.id === scopeId)?.label ?? scopes[0].label;
   /** Personas this session may open: all built ones for the master login, otherwise its own. */
   const canOpen = (id: string) => !!PERSONAS.find((p) => p.id === id)?.built && !!LANDING[id] && (!!session.master || id === session.persona);
@@ -124,7 +137,7 @@ export function Shell({ session, onSignOut }: { session: Session; onSignOut: () 
           {(close) => PERIODS.map((p) => <button key={p.id} type="button" className={p.id === data.period ? 'on' : ''} onClick={() => { store.setPeriod(p.id); close(); }}>{p.label}</button>)}
         </Dropdown>
         <div className="tb-right">
-          <button type="button" className="icon-btn" aria-label="Help" title="AI Copilot workspace" onClick={() => nav(isFsm ? F.assistant : isZm ? Z.assistant : R.assistant)}><CircleHelp size={19} /></button>
+          <button type="button" className="icon-btn" aria-label="Help" title="AI Copilot workspace" onClick={() => nav(isFsm ? F.assistant : isZm ? Z.assistant : isMh ? M.assistant : R.assistant)}><CircleHelp size={19} /></button>
           <Dropdown right trigger={(_o, t) => <button type="button" className="icon-btn" aria-label="Notifications" onClick={t}><Bell size={19} />{alerts.length > 0 && <span className="dot" />}</button>}>
             {(close) => alerts.map((a) => <button key={a.id} type="button" onClick={() => { nav(a.to); close(); }}><AlertCircle size={15} color="var(--amber)" />{a.text}</button>)}
           </Dropdown>
