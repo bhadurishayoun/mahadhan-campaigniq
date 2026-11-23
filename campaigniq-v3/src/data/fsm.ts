@@ -366,7 +366,17 @@ export const PHASE_OF: Record<string, 'Preparation' | 'Crop-stage window' | 'Fol
   'Pre-activation': 'Preparation', 'Crop-stage window': 'Crop-stage window', 'Follow-up support': 'Follow-up', 'Post-activity': 'Follow-up',
 };
 
-export interface WizardActivity extends CampaignActivity { channel: string; timing: string; owner: string }
+export interface WizardActivity extends CampaignActivity { type: string; channel: string; timing: string; owner: string }
+
+/** Unit cost per activity type (₹ L); a planned activity's budget is units × unit cost. */
+export const UNIT_COST: Record<string, number> = { demonstration: 0.35, retailer: 0.25, meeting: 0.2, digital: 0.3, followup: 0.15 };
+export const ACTIVITY_TYPES = CAMPAIGN_ACTIVITIES.map((a) => ({ id: a.id, name: a.name, unitLabel: a.unitLabel, unitCost: UNIT_COST[a.id] }));
+const round2 = (v: number) => Math.round(v * 100) / 100;
+/** A planned activity row of a given type; budget = units × unit cost. */
+export const planActivity = (rowId: string, type: string, units: number, rest: { channel: string; timing: string; owner: string }): WizardActivity => {
+  const t = ACTIVITY_TYPES.find((x) => x.id === type) ?? ACTIVITY_TYPES[0];
+  return { id: rowId, type: t.id, name: t.name, unitLabel: t.unitLabel, units, cost: round2(units * t.unitCost), channel: rest.channel, timing: rest.timing, owner: rest.owner };
+};
 export interface WizardState {
   priority: string;
   name: string;
@@ -385,7 +395,7 @@ export interface WizardState {
   readinessResolved: boolean;
 }
 
-const ACTIVITY_DEFAULTS: Record<string, { channel: string; timing: string; owner: string }> = {
+export const ACTIVITY_DEFAULTS: Record<string, { channel: string; timing: string; owner: string }> = {
   demonstration: { channel: 'Dhanora / Wadi Gaon', timing: 'Crop-stage window', owner: 'R. Jadhav' },
   retailer: { channel: 'Retailer channel', timing: 'Pre-activation', owner: 'S. Pawar' },
   meeting: { channel: 'Village meetings', timing: 'Crop-stage window', owner: 'M. Shinde' },
@@ -404,7 +414,7 @@ export const defaultWizard = (priorityId: string): WizardState => {
     retailers: RETAILERS.filter((r) => r.active && p.villages.includes(r.village)).slice(0, 3).map((r) => r.id),
     audience: AUDIENCES[0],
     campaignType: p.campaignType,
-    activities: CAMPAIGN_ACTIVITIES.map((a) => ({ ...a, ...ACTIVITY_DEFAULTS[a.id] })),
+    activities: CAMPAIGN_ACTIVITIES.map((a) => planActivity(a.id, a.id, Math.round(a.cost / UNIT_COST[a.id]), ACTIVITY_DEFAULTS[a.id])),
     scenario: 'base',
     assumptions: { ...FUNNEL_DEFAULTS },
     rationale: '',

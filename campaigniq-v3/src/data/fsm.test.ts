@@ -5,7 +5,7 @@ import {
   ACTIVITY_UNITS, acresFor, budgetMix, CAMPAIGN_ACTIVITIES, clusterRows, clusterTotal, cropPlan, DEALERS, executionCounts, FARMERS_REACHED,
   funnel, impactSummary, objectiveCoverage, ONION_VILLAGE_PLAN, outletSummary, RETAILERS, scenarioOutcome, SCENARIOS, targetReconciliation,
   coverageCalc, dealersOf, lastYearMix, onionPlanOf, perfRows, retailersOf, defaultWizard, wizardScenarios, objectiveErrors, activityErrors,
-  villagePerformance, campaignFunnel, unitsWith, statusAfter, interventionEffectiveness,
+  villagePerformance, campaignFunnel, unitsWith, statusAfter, interventionEffectiveness, planActivity,
 } from './fsm';
 
 const r1 = (v: number) => Math.round(v * 10) / 10;
@@ -163,5 +163,15 @@ describe('execution, impact and diagnostics', () => {
     expect(executionCounts(units)).toEqual({ planned: 13, completed: 9, scheduled: 3, atRisk: 1 });
     expect(statusAfter('Escalate issue')).toBe('escalated');
     expect(sum(interventionEffectiveness(), (e) => e.completed)).toBe(9);
+  });
+});
+
+describe('calculated activity budget', () => {
+  it('defaults to 12 units and ₹3.00 L; budget = units × unit cost', () => {
+    const w = defaultWizard('onion-croptek');
+    expect([sum(w.activities, (a) => a.units), budgetMix(w.activities).total]).toEqual([12, 3]);
+    const four = w.activities.map((a) => (a.type === 'demonstration' ? planActivity(a.id, a.type, 4, a) : a));
+    expect(four[0].cost).toBe(1.4);
+    expect(budgetMix(four).total).toBe(3.35);
   });
 });

@@ -28,7 +28,7 @@ export interface FsmState {
   asked: string[];
 }
 
-const KEY = 'campaigniq.v3.fsm.4';
+const KEY = 'campaigniq.v3.fsm.5';
 const INITIAL: FsmState = { scope: 'cluster', submitted: [], targets: {}, onionPlan: {}, notes: {}, wizard: null, campaigns: {}, units: {}, evidence: {}, asked: [] };
 
 function load(): FsmState {

@@ -1,13 +1,15 @@
 /** Screens 6–10 — My Campaigns: business priority, then the 4-step campaign wizard. */
 import {
-  CalendarDays, ChartColumn, CircleAlert, CircleCheck, ClipboardList, Coins, Filter, Lightbulb, ListChecks, Paperclip, Plus, Save, Settings2,
+  Check, CalendarDays, ChartColumn, TriangleAlert, CircleAlert, CircleCheck, ClipboardList, Coins, Filter, Lightbulb, ListChecks, Paperclip, Plus, Save, Settings2,
   SlidersHorizontal, Sprout, Target, Trash2, type LucideIcon,
 } from 'lucide-react';
 import { useRef, useState, type ReactNode } from 'react';
+import { useBlocker } from 'react-router-dom';
+import { Modal } from '../../ui/overlay';
 import { territoryById } from '../../data/bh';
 import { crore, lakh, num, pct, sum, times } from '../../data/format';
 import {
-  activityErrors, AUDIENCES, budgetMix, BUSINESS_PRIORITIES, CAMPAIGN_TYPES, CAMPAIGN_VILLAGES, CHANNELS, cropPlan, defaultWizard, funnel, objectiveCoverage,
+  activityErrors, ACTIVITY_DEFAULTS, ACTIVITY_TYPES, planActivity, AUDIENCES, budgetMix, BUSINESS_PRIORITIES, CAMPAIGN_TYPES, CAMPAIGN_VILLAGES, CHANNELS, cropPlan, defaultWizard, funnel, objectiveCoverage,
   objectiveErrors, OBJECTIVES, OWNERS, PHASE_OF, priorityById, RETAILERS, TIMINGS, VILLAGE_FARMERS, wizardScenarios, type WizardActivity, type WizardState,
   DEALERS, clusterRows, type BusinessPriority,
 } from '../../data/fsm';
@@ -221,19 +223,44 @@ export function WizardActivities() {
   const bh = useBhStore();
   const { w, set } = useWizard();
   const [tried, setTried] = useState(false);
-  const errors = tried ? activityErrors(w) : {};
-  const mix = budgetMix(w.activities);
-  const upd = (id: string, patch: Partial<WizardActivity>) => set({ activities: w.activities.map((a) => (a.id === id ? { ...a, ...patch } : a)) });
-  const add = () => set({ activities: [...w.activities, { id: `activity-${Date.now()}`, name: 'New activity', units: 1, unitLabel: 'units', cost: 0.1, channel: CHANNELS[0], timing: TIMINGS[1], owner: '' }] });
-  const remove = (id: string) => set({ activities: w.activities.filter((a) => a.id !== id) });
-  const unassigned = w.activities.filter((a) => !a.owner).length;
+  // Edits go to a draft; the saved plan lives in the FSM store.
+  const [draft, setDraft] = useState<WizardActivity[]>(w.activities);
+  const saved = w.activities;
+  const errors = tried ? activityErrors({ ...w, activities: draft }) : {};
+  const mix = budgetMix(saved);
+  const draftTotal = budgetMix(draft).total;
+  const savedOf = (id: string) => saved.find((s) => s.id === id);
+  const changedFields = (a: WizardActivity) => {
+    const s = savedOf(a.id);
+    if (!s) return new Set(['type', 'units', 'channel', 'timing', 'owner', 'cost']);
+    return new Set((['type', 'units', 'channel', 'timing', 'owner', 'cost'] as const).filter((k) => a[k] !== s[k]));
+  };
+  const removed = saved.filter((s) => !draft.some((d) => d.id === s.id)).length;
+  const changedRows = draft.filter((a) => changedFields(a).size > 0).length + removed;
+  const dirty = changedRows > 0;
+  const upd = (id: string, patch: Partial<WizardActivity>) => setDraft((d) => d.map((a) => {
+    if (a.id !== id) return a;
+    const n = { ...a, ...patch };
+    return planActivity(n.id, n.type, n.units, { channel: n.channel, timing: n.timing, owner: n.owner });
+  }));
+  const add = () => {
+    const type = ACTIVITY_TYPES.find((t) => !draft.some((a) => a.type === t.id))?.id ?? ACTIVITY_TYPES[0].id;
+    setDraft((d) => [...d, planActivity(`activity-${Date.now()}`, type, 1, ACTIVITY_DEFAULTS[type])]);
+  };
+  const remove = (id: string) => setDraft((d) => d.filter((a) => a.id !== id));
+  const saveDraft = () => set({ activities: draft });
+  const cancel = () => setDraft(saved);
+  const unassigned = saved.filter((a) => !a.owner).length;
+  const blocker = useBlocker(({ currentLocation, nextLocation }) => dirty && currentLocation.pathname !== nextLocation.pathname);
   const next = () => {
     setTried(true);
-    if (Object.keys(activityErrors(w)).length) { bh.toast('Each activity needs a name, units, an owner and a budget'); return; }
+    if (Object.keys(activityErrors({ ...w, activities: draft })).length) { bh.toast('Each activity needs a type, units and an owner'); return; }
     set({ maxStep: Math.max(w.maxStep, 2) });
     go(F.scenario);
   };
   const phases = ['Preparation', 'Crop-stage window', 'Follow-up'] as const;
+  const delta = draftTotal - mix.total;
+  const cell = (a: WizardActivity, k: string, node: ReactNode) => <span className={changedFields(a).has(k) ? 'chg' : undefined}>{node}</span>;
 
   return (
     <FsmPage section={SECTION} sectionTo={F.campaigns} trail={w.name} title="Activity & Budget Mix" back={F.objective} next={next}>
@@ -241,21 +268,43 @@ export function WizardActivities() {
       <CampaignKpis w={w} />
         <Card title="Campaign activity planner" icon={ClipboardList} flush right={<>
           <Button small icon={Plus} onClick={add}>Add activity</Button>
-          <Button small icon={Save} onClick={() => bh.toast(`Activity plan saved · ${lakh(mix.total, 2)}`)}>Save draft</Button>
+          <Button small icon={Save} onClick={() => { saveDraft(); bh.toast(`Campaign draft saved · ${lakh(draftTotal, 2)}`); }}>Save draft</Button>
         </>}>
-          <DataTable rows={w.activities} rowKey={(a) => a.id}
+          <DataTable rows={draft} rowKey={(a) => a.id}
             columns={[
-              { key: 'n', header: 'Activity', render: (a) => <input className="input" style={{ minWidth: 150 }} aria-label={`Activity name ${a.id}`} value={a.name} onChange={(e) => upd(a.id, { name: e.target.value })} /> },
-              { key: 'u', header: 'Planned units', align: 'center', render: (a) => <span className="row" style={{ justifyContent: 'center' }}><input className="num-input" style={{ width: 56 }} type="number" min={0} aria-label={`Units ${a.name}`} value={a.units} onChange={(e) => upd(a.id, { units: Math.max(0, Number(e.target.value) || 0) })} /><small>{a.unitLabel}</small></span> },
-              { key: 'c', header: 'Village / channel', render: (a) => <Select label={`Channel ${a.name}`} value={a.channel} options={CHANNELS.map(opt)} onChange={(v) => upd(a.id, { channel: v })} /> },
-              { key: 't', header: 'Timing', render: (a) => <Select label={`Timing ${a.name}`} value={a.timing} options={TIMINGS.map(opt)} onChange={(v) => upd(a.id, { timing: v })} /> },
-              { key: 'o', header: 'Owner', render: (a) => <Select label={`Owner ${a.name}`} value={a.owner} options={[{ value: '', label: 'Select owner' }, ...OWNERS.map(opt)]} onChange={(v) => upd(a.id, { owner: v })} /> },
-              { key: 'b', header: 'Budget (₹ L)', align: 'center', render: (a) => <input className="num-input" style={{ width: 70 }} type="number" min={0} step={0.05} aria-label={`Budget ${a.name}`} value={a.cost} onChange={(e) => upd(a.id, { cost: Math.max(0, Number(e.target.value) || 0) })} /> },
+              { key: 'n', header: 'Activity', render: (a) => <span className={changedFields(a).size ? 'chg-row' : undefined}>{cell(a, 'type', <Select label={`Activity ${a.id}`} value={a.type} options={ACTIVITY_TYPES.map((t) => ({ value: t.id, label: t.name }))} onChange={(v) => upd(a.id, { type: v })} />)}</span> },
+              { key: 'u', header: 'Planned units', align: 'center', render: (a) => <span className="row" style={{ justifyContent: 'center' }}>{cell(a, 'units', <input className="num-input" style={{ width: 56 }} type="number" min={1} step={1} aria-label={`Units ${a.name}`} value={a.units} onChange={(e) => upd(a.id, { units: Math.max(1, Math.round(Number(e.target.value)) || 1) })} />)}<small>{a.unitLabel}</small></span> },
+              { key: 'c', header: 'Village / channel', render: (a) => cell(a, 'channel', <Select label={`Channel ${a.name}`} value={a.channel} options={CHANNELS.map(opt)} onChange={(v) => upd(a.id, { channel: v })} />) },
+              { key: 't', header: 'Timing', render: (a) => cell(a, 'timing', <Select label={`Timing ${a.name}`} value={a.timing} options={TIMINGS.map(opt)} onChange={(v) => upd(a.id, { timing: v })} />) },
+              { key: 'o', header: 'Owner', render: (a) => cell(a, 'owner', <Select label={`Owner ${a.name}`} value={a.owner} options={[{ value: '', label: 'Select owner' }, ...OWNERS.map(opt)]} onChange={(v) => upd(a.id, { owner: v })} />) },
+              { key: 'uc', header: 'Unit cost', align: 'right', render: (a) => lakh(ACTIVITY_TYPES.find((t) => t.id === a.type)!.unitCost, 2) },
+              { key: 'b', header: 'Budget (₹ L)', align: 'right', render: (a) => { const s = savedOf(a.id); return <span className="stack" style={{ gap: 0, alignItems: 'center' }}><b aria-label={`Budget ${a.name}`}>{lakh(a.cost, 2)}</b>{s && s.cost !== a.cost && <small className="was">was {lakh(s.cost, 2)}</small>}</span>; } },
               { key: 'x', header: 'Remove', align: 'center', render: (a) => <><Button small icon={Trash2} title={`Remove ${a.name}`} onClick={() => remove(a.id)}>{''}</Button>{errors[a.id] && <small className="err">{errors[a.id]}</small>}</> },
             ]}
-            total={{ n: 'Total', u: num(sum(w.activities, (a) => a.units)), b: <b>{lakh(mix.total, 2)}</b> }} />
+            total={{ n: 'Total', u: num(sum(draft, (a) => a.units)), b: <b>{lakh(draftTotal, 2)}</b> }} />
           {errors.list && <small className="err" style={{ padding: 12 }}>{errors.list}</small>}
+          {dirty && (
+            <div className="unsaved-bar">
+              <TriangleAlert size={17} />
+              <b>{changedRows} row{changedRows === 1 ? '' : 's'} changed</b>
+              <span>Budget {lakh(mix.total, 2)} → {lakh(draftTotal, 2)} ({delta >= 0 ? '+' : '–'}{lakh(Math.abs(Math.round(delta * 100) / 100), 2)})</span>
+              <span className="sp" />
+              <Button small onClick={cancel}>Cancel</Button>
+              <Button small primary icon={Check} onClick={() => { saveDraft(); bh.toast('Activity plan saved'); }}>Save changes</Button>
+            </div>
+          )}
         </Card>
+      {blocker.state === 'blocked' && (
+        <Modal title="Save changes before leaving?" onClose={() => blocker.reset()}
+          footer={<>
+            <Button onClick={() => blocker.reset()}>Stay</Button>
+            <span className="sp" />
+            <Button onClick={() => { cancel(); blocker.proceed(); }}>Discard</Button>
+            <Button primary icon={Check} onClick={() => { saveDraft(); bh.toast('Activity plan saved'); blocker.proceed(); }}>Save</Button>
+          </>}>
+          <p style={{ margin: 0 }}>{changedRows} row{changedRows === 1 ? '' : 's'} changed · budget {lakh(mix.total, 2)} → {lakh(draftTotal, 2)}.</p>
+        </Modal>
+      )}
       <div className="grid g2">
         <div className="stack">
           <Card title="Crop-stage campaign calendar" icon={CalendarDays}>
