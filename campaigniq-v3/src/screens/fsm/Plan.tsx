@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import { useRef, useState, type ReactNode } from 'react';
 import { territoryById } from '../../data/bh';
-import { crore, lakh, num, pct, sum } from '../../data/format';
+import { crore, lakh, num, pct, ratio, sum } from '../../data/format';
 import {
   clusterRows, coverageCalc, cropPlan, dealersOf, FSM_CROPS, FSM_TERRITORY_IDS, FUNNEL_DEFAULTS, GROWTH_DRIVERS, LAST_YEAR_SNAPSHOT, lastYearMix,
   onionPlanOf, perfRows, retailerDemand, PRODUCT_SHARE, retailersOf, SEASON_SHARE, TERRITORY_DISTRICT, territoryName, villagesOf,
@@ -29,10 +29,11 @@ function List({ items }: { items: { icon?: typeof Target; label: ReactNode; valu
   return <>{items.map((i, k) => <div key={k} className="list-row">{i.icon && <i.icon size={16} color={i.tone === 'warn' ? 'var(--amber)' : undefined} />}<span>{i.label}</span>{i.value !== undefined && <b className="right">{i.value}</b>}</div>)}</>;
 }
 
-function Notes({ title, items }: { title: string; items: ReactNode[] }) {
+function Notes({ title, items, fill }: { title: string; items: ReactNode[]; fill?: boolean }) {
+  const list = <List items={items.map((t) => ({ label: t }))} />;
   return (
-    <Card title={title} icon={Lightbulb}>
-      <List items={items.map((t) => ({ label: t }))} />
+    <Card title={title} icon={Lightbulb} style={fill ? { flex: 1 } : undefined}>
+      {fill ? <div className="notes-fill">{list}</div> : list}
     </Card>
   );
 }
@@ -446,6 +447,27 @@ export function CropPlanning() {
   const rowCov = (v: VillageOnionPlan) => coverageResult(savedCov(v));
   const totals = { lastYear: sum(op.rows, (v) => v.lastYear), prev: sum(op.rows, (v) => savedCov(v).prev), req: sum(op.rows, (v) => rowCov(v).required) };
   const realisationOk = FUNNEL_DEFAULTS.rupeesPerKg >= 100;
+  // Planning notes: computed from the village rows and the saved calculator values.
+  const growthPct = (a: number, b: number) => `${b >= a ? '+' : '–'}${pct(Math.abs(ratio(b - a, a)))}`;
+  const addedTotal = totals.req - totals.prev;
+  const top2 = [...op.rows].sort((a, b) => rowCov(b).growth - rowCov(a).growth).filter((v) => v.village !== 'Other villages' && rowCov(v).growth > 0).slice(0, 2);
+  const top2Added = sum(top2, (v) => rowCov(v).growth);
+  const sameAdd = top2.length === 2 && Math.round(rowCov(top2[0]).growth) === Math.round(rowCov(top2[1]).growth);
+  const kgPerAcre = totals.req > 0 ? (sum(op.rows, (v) => savedCov(v).volume) * 1000) / totals.req : 0;
+  const rateDiff = ratio(kgPerAcre - saved.rate, saved.rate);
+  const others = op.rows.find((v) => v.village === 'Other villages');
+  const othersShare = others && op.total > 0 ? ratio(others.plan, op.total) : 0;
+  const planNotes: string[] = [
+    `Realisation check: plan uses ₹${FUNNEL_DEFAULTS.rupeesPerKg}/kg${realisationOk ? ', in line with last year' : ''}.`,
+    `Coverage: ${sel.village} needs ${num(savedRes.eligible)} eligible new acres on top of ${num(savedRes.retained)} retained acres.`,
+    op.total === onionCrop.proposed
+      ? `Plan matches the onion allocation: villages total ${crore(op.total)} = onion budget ${crore(onionCrop.proposed)}.`
+      : `Villages total ${crore(op.total)} vs onion allocation ${crore(onionCrop.proposed)} (gap ${crore(Math.abs(op.total - onionCrop.proposed))}).`,
+    `Growth vs last year: ${crore(totals.lastYear)} → ${crore(op.total)} (${growthPct(totals.lastYear, op.total)}); coverage ${num(totals.prev)} → ${num(totals.req)} acres (${growthPct(totals.prev, totals.req)}).`,
+    ...(top2.length && addedTotal > 0 ? [`Largest coverage additions: ${top2.map((v) => v.village).join(' and ')} (${sameAdd ? `+${num(rowCov(top2[0]).growth)} acres each` : top2.map((v) => `+${num(rowCov(v).growth)}`).join(' and ') + ' acres'}), ${pct(ratio(top2Added, addedTotal), 0)} of the +${num(addedTotal)} acres.`] : []),
+    `Plan implies ${num(kgPerAcre)} kg/acre across ${num(totals.req)} acres, ${Math.abs(rateDiff) <= 5 ? 'in line with' : rateDiff > 0 ? 'above' : 'below'} the assumed seasonal rate.`,
+    ...(others && othersShare > 25 ? [`Other villages carry ${pct(othersShare, 0)} of the onion plan (${lakh(others.plan)}); split them into named villages for tracking.`] : []),
+  ];
 
   return (
     <FsmPage section={SECTION} sectionTo={F.plan} trail={territoryName(t)} title="Village-wise Crop, Product & Coverage Planning" back={F.outlets(t)} next={F.review(t)} nextLabel="Review business & crop plan">
@@ -458,7 +480,7 @@ export function CropPlanning() {
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 320px' }}>
         <div className="stack">
-        <Card title="Village-wise onion growth plan" icon={Sprout} flush right={<>
+        <Card title="Village-wise onion growth plan" icon={Sprout} flush style={{ flex: 'none' }} right={<>
           <Button small icon={CircleCheck} onClick={() => bh.toast(op.total === onionCrop.proposed ? `Assumptions valid · village plans reconcile to ${crore(onionCrop.proposed)}` : `Village plans total ${crore(op.total)} vs onion plan ${crore(onionCrop.proposed)}`)}>Validate assumptions</Button>
           <Button small icon={RefreshCw} onClick={() => go(F.outlets(t))}>Update linked outlet plan</Button>
         </>}>
@@ -476,10 +498,7 @@ export function CropPlanning() {
             ]}
             total={{ v: 'Total', ly: lakh(totals.lastYear), pa: num(totals.prev), p: <b>{crore(op.total)}</b>, ra: num(totals.req), g: <StatusChip tone="ok">{`+${num(totals.req - totals.prev)} acres`}</StatusChip> }} />
         </Card>
-          <Notes title="Planning notes" items={[
-            `Realisation check: plan uses ₹${FUNNEL_DEFAULTS.rupeesPerKg}/kg${realisationOk ? ', in line with last year' : ''}.`,
-            `Coverage: ${sel.village} needs ${num(savedRes.eligible)} eligible new acres on top of ${num(savedRes.retained)} retained acres.`,
-          ]} />
+          <Notes title="Planning notes" fill items={planNotes} />
         </div>
         <div className="stack">
           <Card title={`${sel.village} coverage & volume calculator`} icon={Calculator}
