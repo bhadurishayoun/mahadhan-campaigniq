@@ -493,13 +493,16 @@ export function TerritoryPlanDetail() {
   const a = ambadPlan();
   const villages = ambadVillages();
   const additionalVillages = AMBAD.villages.filter((record) => !villages.some((plan) => plan.village === record.name));
+  const namedRows = villages.filter((x) => x.village !== 'Other villages');
+  const tableRows = [...namedRows, ...additionalVillages.map((x) => ({ village: x.name, calc: null, lastYear: null, plan: null })), ...villages.filter((x) => x.village === 'Other villages')];
   const [sel, setSel] = useState('Dhanora');
   const [clar, setClar] = useState(false);
   const [evidence, setEvidence] = useState<Evidence | null>(null);
   const onionOk = (zm.cropValidated.ambad ?? []).includes('Onion');
   const vstatus = (v: string): MhPlanStatus => (onionOk ? 'reviewed' : VILLAGE_REVIEW[v] ?? 'under_review');
-  const v = villages.find((x) => x.village === sel)!;
-  const volGrowth = ((v.calc.volumeMt - v.calc.lastVolumeMt) / v.calc.lastVolumeMt) * 100;
+  const v = villages.find((x) => x.village === sel);
+  const activity = additionalVillages.find((x) => x.name === sel);
+  const volGrowth = v ? ((v.calc.volumeMt - v.calc.lastVolumeMt) / v.calc.lastVolumeMt) * 100 : 0;
   const tp = otherMaharashtra().find((p) => p.id === t);
   const name = t === 'ambad' ? 'Ambad' : tp!.name;
   const flag = () => { mh.flag(); bh.toast(`Marketing opportunity flagged: ${name} onion conversion`); go(M.diagnosis); };
@@ -518,24 +521,16 @@ export function TerritoryPlanDetail() {
           <Button small icon={MessageSquare} onClick={() => setClar(true)}>Request clarification</Button>
         </>}>
           {t === 'ambad' ? (
-            <>
-            <DataTable selectable rows={villages} rowKey={(x) => x.village} selected={sel} onRowClick={(x) => setSel(x.village)}
+            <DataTable selectable rows={tableRows} rowKey={(x) => x.village} selected={sel} onRowClick={(x) => setSel(x.village)}
               columns={[
                 { key: 'v', header: 'Village', render: (x) => <b>{x.village}</b> },
-                { key: 'l', header: 'Last year (value / volume)', align: 'right', render: (x) => `${lakh(x.lastYear)} / ${num(x.calc.lastVolumeMt)} MT` },
-                { key: 't', header: 'Current-year target', align: 'right', render: (x) => `${lakh(x.plan)} / ${num(x.calc.volumeMt)} MT` },
-                { key: 'c', header: 'Coverage (acres)', align: 'right', render: (x) => `${num(x.calc.previousAcres)} → ${num(x.calc.requiredAcres)}` },
-                { key: 's', header: 'Zonal Manager validation', align: 'center', render: (x) => <StatusChip tone={PLAN_TONE[vstatus(x.village)]}>{VILLAGE_LABEL[vstatus(x.village)]}</StatusChip> },
+                { key: 'l', header: 'Last year (value / volume)', align: 'right', render: (x) => x.calc ? `${lakh(x.lastYear)} / ${num(x.calc.lastVolumeMt)} MT` : <span className="na">NA</span> },
+                { key: 't', header: 'Current-year target', align: 'right', render: (x) => x.calc ? `${lakh(x.plan)} / ${num(x.calc.volumeMt)} MT` : <span className="na">NA</span> },
+                { key: 'c', header: 'Coverage (acres)', align: 'right', render: (x) => x.calc ? `${num(x.calc.previousAcres)} → ${num(x.calc.requiredAcres)}` : <span className="na">NA</span> },
+                { key: 's', header: 'Zonal Manager validation', align: 'center', render: (x) => x.calc ? <StatusChip tone={PLAN_TONE[vstatus(x.village)]}>{VILLAGE_LABEL[vstatus(x.village)]}</StatusChip> : <StatusChip tone="neutral">No separate plan</StatusChip> },
                 { key: 'd', header: 'View', align: 'center', render: (x) => <Button small onClick={() => setSel(x.village)}>View details</Button> },
               ]}
               total={{ v: 'Total', l: lakh(villages.reduce((s, x) => s + x.lastYear, 0)), t: lakh(villages.reduce((s, x) => s + x.plan, 0)), c: `${num(villages.reduce((s, x) => s + x.calc.previousAcres, 0))} → ${num(villages.reduce((s, x) => s + x.calc.requiredAcres, 0))}` }} />
-            {additionalVillages.length > 0 && <DataTable rows={additionalVillages} rowKey={(x) => x.name} columns={[
-              { key: 'village', header: 'Additional Ambad villages', render: (x) => <b>{x.name}</b> },
-              { key: 'trials', header: 'Documented trials', render: (x) => num(x.trials) },
-              { key: 'adopters', header: 'Recorded adopters', render: (x) => num(x.adopters) },
-              { key: 'rate', header: 'Trial-to-adoption', render: (x) => pct(x.adopters / x.trials * 100) },
-            ]} />}
-            </>
           ) : (
             <DataTable rows={tp!.crops} rowKey={(c) => c.crop}
               columns={[
@@ -547,7 +542,15 @@ export function TerritoryPlanDetail() {
               ]} />
           )}
         </Card>
-        {t === 'ambad' ? (
+        {t === 'ambad' && activity ? (
+          <Card title={activity.name + ': village activity'} icon={Target}>
+            <List items={[
+              { label: 'Documented trials', value: num(activity.trials) },
+              { label: 'Recorded adopters', value: num(activity.adopters) },
+              { label: 'Trial-to-adoption', value: pct(activity.adopters / activity.trials * 100) },
+            ]} />
+          </Card>
+        ) : t === 'ambad' && v ? (
           <div className="stack">
             <Card title={`${sel}: plan detail and observations`} icon={Target} right={<StatusChip tone="ok">Selected village</StatusChip>}>
               <div className="recon compact" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
@@ -578,7 +581,7 @@ export function TerritoryPlanDetail() {
       </div>
       <Card title={`Marketing intervention assessment: ${t === 'ambad' ? `${sel} / Ambad` : name} (Onion · Croptek)`} icon={Flag}>
         <div className="grid g3">
-          <List items={[{ icon: ChartColumn, label: 'Growth requirement', value: t === 'ambad' ? `${signed(volGrowth).replace('.0%', '%')} volume, +${num(v.calc.requiredAcres - v.calc.previousAcres)} acres` : crore(tp!.plan) }]} />
+          <List items={[{ icon: ChartColumn, label: 'Growth requirement', value: t === 'ambad' && activity ? 'No separate target' : t === 'ambad' && v ? `${signed(volGrowth).replace('.0%', '%')} volume, +${num(v.calc.requiredAcres - v.calc.previousAcres)} acres` : crore(tp!.plan) }]} />
           <List items={[{ icon: Sprout, label: 'Eligible opportunity', value: 'New farmer conversion and expansion of Croptek users' }]} />
           <List items={[{ icon: ArrowRight, label: 'Proposed intervention', value: 'Retailer-led Croptek conversion with farmer education' }]} />
         </div>
