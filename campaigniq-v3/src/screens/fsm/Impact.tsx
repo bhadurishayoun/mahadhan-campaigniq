@@ -4,7 +4,7 @@ import { useState, type ReactNode } from 'react';
 import { netRoi } from '../../data/bh';
 import { lakh, num, pct, ratio, times } from '../../data/format';
 import {
-  activityName, AT_RISK_ACTIVITY, campaignFunnel, executionCounts, FSM_CAMPAIGN, impactSummary, interventionEffectiveness, scenarioOutcome, SCENARIOS, spendToDate,
+  activityName, allUnitsWith, AT_RISK_ACTIVITY, campaignFunnel, executionCounts, FSM_CAMPAIGN, impactSummary, interventionEffectiveness, scenarioOutcome, SCENARIOS, spendToDate,
   villagePerformance, BUSINESS_PRIORITIES,
 } from '../../data/fsm';
 import { F } from '../../routes';
@@ -13,6 +13,7 @@ import { HBars } from '../../ui/charts';
 import { Button, Card, FilterRows, KpiCard, StatusChip } from '../../ui/core';
 import { DataTable, type Column } from '../../ui/DataTable';
 import { ALL, useGo } from '../common';
+import { useFsmStore } from '../../store/fsmStore';
 import { useUnits } from './Execution';
 import { FsmPage } from './frame';
 
@@ -155,6 +156,11 @@ export function VillageDiagnostic() {
   const atRisk = units.filter((u) => u.status === 'at_risk');
   const eff = interventionEffectiveness(units);
   const followUp = eff.find((e) => e.id === 'followup')!;
+  // "What to investigate": other at-risk Ambad units, villages below the territory average, and the sales gap.
+  const fsm = useFsmStore();
+  const otherAtRisk = allUnitsWith(fsm.units).filter((u) => u.status === 'at_risk' && !atRisk.some((a) => a.id === u.id)).slice(0, 2);
+  const belowAvg = [...sorted].reverse().slice(1).filter((v) => v.conversionPct < s.trialToAdoptionPct).slice(0, 2);
+  const salesGap = Math.round((s.forecast - s.tracked) * 10) / 10;
   // "What worked": each point is shown only when its condition holds.
   const done = eff.filter((e) => e.planned > 0 && e.completed === e.planned);
   const aboveAvg = sorted.slice(1).filter((v) => v.conversionPct > s.trialToAdoptionPct).slice(0, 2);
@@ -194,11 +200,17 @@ export function VillageDiagnostic() {
           </div>
         </Card>
         <Card title="What to investigate" icon={Search}>
-          <List items={[
-            ...atRisk.map((u) => ({ icon: TriangleAlert, tone: 'warn' as const, label: `${u.village} ${activityName(u.activity).toLowerCase()}: ${u.issue?.toLowerCase()}.` })),
-            { icon: CircleAlert, tone: 'warn', label: `Follow-up completion for trial farmers (${followUp.completed} of ${followUp.planned} rounds).` },
-            { icon: CircleAlert, tone: 'warn', label: `Retailer advocacy and contact quality in ${lo.name}.` },
-          ]} />
+          <div className="notes-fill">
+            <List items={[
+              ...atRisk.map((u) => ({ icon: TriangleAlert, tone: 'warn' as const, label: `${u.village} ${activityName(u.activity).toLowerCase()}: ${u.issue?.toLowerCase()}.` })),
+              { icon: CircleAlert, tone: 'warn', label: `Follow-up completion for trial farmers (${followUp.completed} of ${followUp.planned} rounds).` },
+              { icon: CircleAlert, tone: 'warn', label: `Retailer advocacy and contact quality in ${lo.name}.` },
+              ...otherAtRisk.map((u) => ({ icon: TriangleAlert, tone: 'warn' as const, label: `${u.village} ${activityName(u.activity).replace(/s$/, '').toLowerCase()}: ${u.issue ? u.issue[0].toLowerCase() + u.issue.slice(1) : 'at risk'} (${u.owner}, week ${u.week}).` })),
+              { icon: CircleAlert, tone: 'warn', label: `${lo.name} converts at ${pct(lo.conversionPct)}, ${(s.trialToAdoptionPct - lo.conversionPct).toFixed(1)} pp below the ${pct(s.trialToAdoptionPct)} territory average.` },
+              ...(belowAvg.length ? [{ icon: CircleAlert, tone: 'warn' as const, label: `${belowAvg.map((v) => `${v.name} (${pct(v.conversionPct)})`).join(' and ')} ${belowAvg.length === 1 ? 'is' : 'are'} also below average.` }] : []),
+              ...(salesGap > 0 ? [{ icon: CircleAlert, tone: 'warn' as const, label: `Tracked sales ${lakh(s.tracked, 1)} are ${lakh(salesGap, 1)} behind the ${lakh(s.forecast, 1)} base case at this checkpoint.` }] : []),
+            ]} />
+          </div>
         </Card>
         <Card title="What to change" icon={Lightbulb} right={<>
           <Button small icon={Wrench} onClick={() => go(F.activity(atRisk[0]?.id ?? AT_RISK_ACTIVITY))}>Create corrective action</Button>
