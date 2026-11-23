@@ -6,6 +6,7 @@ import {
   ambadOnionGrowth, approvalQueue, businessCaseC1, businessCaseC2, CATEGORIES, driverBridge, nextSeason, planStatus, portfolioByTerritory,
   portfolioRows, portfolioTotal, revisedPlan, SCENARIO_SALES, scenarioRow, territoryPlan, territoryPlans, trialToPurchasePct, zmImpact,
   ZM_TERRITORY_IDS, zoneTerritories, zoneTotal, planContribution, planPortfolio, planCrops, mappingStatus, BASE_CHECKS, MAPPING_CHECKS,
+  CLAIMS, CONCEPTS, conceptRationale, CROP_STAGES, INTERVENTION_KPIS, JOURNEY, secondaryTrend, ZM_THEMES, AUDIENCE,
 } from './zm';
 
 const r1 = (x: number) => Math.round(x * 10) / 10;
@@ -129,5 +130,28 @@ describe('plan reviews (screens 1–5)', () => {
     expect(BASE_CHECKS.jafrabad).toHaveLength(MAPPING_CHECKS.length);
     expect(mappingStatus('ambad')).toBe('needs_review');
     expect(mappingStatus('ambad', { ambad: 'validated' })).toBe('validated');
+  });
+});
+
+describe('themes, concepts and proposition (screens 6–9)', () => {
+  it('three assigned themes; Croptek awaits acknowledgement', () => {
+    expect(ZM_THEMES.map((t) => [t.crop, t.status])).toEqual([['Onion', 'acknowledgement_pending'], ['Soybean', 'under_review'], ['Cotton', 'planned']]);
+    expect(secondaryTrend()).toBe('₹40 L → ₹43 L → ₹45 L → ₹48 L');
+  });
+  it('C1 rationale: 3 observed market items and 4 suitability items', () => {
+    const r = conceptRationale('c1');
+    expect(r.filter((x) => x.assessment === 'Observed')).toHaveLength(3);
+    expect(r.filter((x) => x.group === 'Intervention suitability')).toHaveLength(4);
+    expect(r[2].finding).toBe('150 trials / 54 purchases = 36%');
+  });
+  it('concept audiences and overlap', () => {
+    expect(CONCEPTS.map((c) => c.eligibleFarmers)).toEqual([AUDIENCE.c1, AUDIENCE.c2]);
+    expect(AUDIENCE.overlap).toBeLessThanOrEqual(AUDIENCE.c2);
+  });
+  it('proposition: 4 journey stages, 5 KPIs matching the plan, 4 claims on the 4 onion stages', () => {
+    expect(JOURNEY.map((j) => j.stage)).toEqual(['Retailer enablement', 'Farmer engagement', 'Trial / consideration', 'Verified first purchase']);
+    expect(INTERVENTION_KPIS.map((k) => k.target)).toEqual(['3 retailer sessions', '640 farmers', '160 trials', '72 adopters', '₹48.0 L']);
+    expect(CLAIMS).toHaveLength(4);
+    expect(CLAIMS.every((c) => c.stages.every((st) => (CROP_STAGES as readonly string[]).includes(st)))).toBe(true);
   });
 });

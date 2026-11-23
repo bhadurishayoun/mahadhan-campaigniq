@@ -1,9 +1,9 @@
 /** Zonal Manager screens 1–5: My Performance and Territory Plan Reviews, with their drawers. */
 import {
-  ArrowRight, ChartColumn, Check, CircleCheck, ClipboardCheck, Eye, FileSearch, FileText, ListChecks, MessageSquare, Paperclip,
+  ArrowRight, ChartColumn, Check, CircleCheck, ClipboardCheck, Eye, FileSearch, FileText, ListChecks, MessageSquare,
   RefreshCw, Save, Scale, Send, ShieldCheck, Sprout, Target, TriangleAlert,
 } from 'lucide-react';
-import { useRef, useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import { crore, lakh, num, pct, sum } from '../../data/format';
 import { coverageCalc, FSM_CROPS, FUNNEL_DEFAULTS, onionPlanOf } from '../../data/fsm';
 import {
@@ -21,7 +21,7 @@ import { Bar, Button, Card, FilterRows, KpiCard, PanelFooter, Select, StatusChip
 import { Drawer, EvidenceDrawer, type Evidence } from '../../ui/overlay';
 import { ALL, opt, useGo } from '../common';
 import { useZmTerritory, ZmPage, ZM_SECTION } from './frame';
-import { CategoryChip, List, Notes, useZmStatus } from './parts';
+import { Attach, CategoryChip, Field, List, Notes, useZmStatus } from './parts';
 
 const signed = (p: number, dp = 1) => `${p >= 0 ? '+' : '–'}${Math.abs(p).toFixed(dp)}%`;
 const FSM_TERRITORIES: ZmTerritoryId[] = ['ambad', 'ghansawangi', 'badnapur'];
@@ -29,21 +29,6 @@ const ownerOf = (t: ZmTerritoryId) => `Field Sales Manager · ${zmTerritoryName(
 const TERRITORY_OPTIONS = [opt(ALL, 'All territories'), ...ZM_TERRITORY_IDS.map((t) => opt(t, zmTerritoryName(t)))];
 const CATEGORY_OPTIONS = [opt(ALL, 'All product categories'), ...CATEGORIES.map((c) => opt(c.id, c.name))];
 const CROP_OPTIONS = [opt(ALL, 'All crops'), ...FSM_CROPS.map((c) => opt(c, c))];
-
-function Field({ label, children, error }: { label: string; children: ReactNode; error?: string }) {
-  return <label className="field"><span>{label}</span>{children}{error && <small className="err">{error}</small>}</label>;
-}
-function Attach({ label }: { label: string }) {
-  const ref = useRef<HTMLInputElement>(null);
-  const [file, setFile] = useState('');
-  return (
-    <div className="row">
-      <input ref={ref} type="file" hidden aria-label={label} onChange={(e) => setFile(e.target.files?.[0]?.name ?? '')} />
-      <Button small icon={Paperclip} onClick={() => ref.current?.click()}>Attach file</Button>
-      <small className="muted">{file || 'No file attached'}</small>
-    </div>
-  );
-}
 
 // ================================================================ 1 My Performance and Product Portfolio ABP
 type PerfView = 'value' | 'growth';

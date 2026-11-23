@@ -214,10 +214,49 @@ export type ThemeStatus = 'acknowledgement_pending' | 'acknowledged' | 'under_re
 export const ZM_THEME_STATUS_LABEL: Record<ThemeStatus, string> = {
   acknowledgement_pending: 'Assigned · acknowledgement pending', acknowledged: 'Acknowledged', under_review: 'Under review', planned: 'Planned', clarification_requested: 'Clarification requested',
 };
-export const ZM_THEMES: { id: string; name: string; crop: string; product: string; geography: string; status: ThemeStatus; assignedBy: string; due: string }[] = [
-  { id: 'croptek-conversion', name: 'Croptek conversion', crop: 'Onion', product: 'Croptek', geography: 'Maharashtra · West region', status: 'acknowledgement_pending', assignedBy: 'Marketing Head', due: '15 Mar 2027' },
-  { id: 'nutrient-adoption', name: 'Nutrient programme adoption', crop: 'Soybean', product: 'Water Soluble', geography: 'Marathwada zone', status: 'under_review', assignedBy: 'Marketing Head', due: '30 Apr 2027' },
-  { id: 'balanced-nutrition', name: 'Balanced nutrition awareness', crop: 'Cotton', product: 'Specialty Nutrition', geography: 'Marathwada zone', status: 'planned', assignedBy: 'Marketing Head', due: '31 May 2027' },
+export interface ZmTheme {
+  id: string; name: string; crop: string; product: string; geography: string; region: string; status: ThemeStatus; assignedBy: string; due: string;
+  objective: string; scope: string; audience: string; openPoints: string;
+}
+export const ZM_THEMES: ZmTheme[] = [
+  {
+    id: 'croptek-conversion', name: 'Croptek conversion', crop: 'Onion', product: 'Croptek', geography: 'Maharashtra', region: 'West region', status: 'acknowledgement_pending', assignedBy: 'Marketing Head', due: '15 Mar 2027',
+    objective: 'Strengthen eligible farmer conversion and Croptek adoption.',
+    scope: 'Maharashtra · Onion (initial focus); other West region markets after eligibility checks.',
+    audience: 'Conventional nutrition and trial-interest farmers who meet eligibility and consent.',
+    openPoints: 'Retailer influence, historical comparator, stock readiness and technical applicability.',
+  },
+  {
+    id: 'nutrient-adoption', name: 'Nutrient programme adoption', crop: 'Soybean', product: 'Water Soluble', geography: 'Marathwada zone', region: 'West region', status: 'under_review', assignedBy: 'Marketing Head', due: '30 Apr 2027',
+    objective: 'Grow repeat use of the soybean nutrient programme among last-season buyers.',
+    scope: 'Marathwada zone · Soybean (kharif).',
+    audience: 'Last-season Water Soluble buyers in soybean villages.',
+    openPoints: 'Kharif stock plan and dealer credit terms.',
+  },
+  {
+    id: 'balanced-nutrition', name: 'Balanced nutrition awareness', crop: 'Cotton', product: 'Specialty Nutrition', geography: 'Marathwada zone', region: 'West region', status: 'planned', assignedBy: 'Marketing Head', due: '31 May 2027',
+    objective: 'Raise awareness of balanced nutrition practice in cotton.',
+    scope: 'Marathwada zone · Cotton.',
+    audience: 'Cotton growers in mapped retailer catchments.',
+    openPoints: 'Agronomy content and season timing.',
+  },
+];
+export const themeById = (id: string) => ZM_THEMES.find((t) => t.id === id) ?? ZM_THEMES[0];
+
+/** Zonal Manager deliverables once a theme is acknowledged. */
+export const DELIVERABLES = [
+  'Develop one or more campaign concepts under the theme',
+  'Validate the product proposition and technical claims',
+  'Define target audiences and the intervention approach',
+  'Develop collateral for farmers, retailers and field use',
+  'Model investments and the business case',
+  'Submit campaign proposals to the Marketing Head',
+];
+export const CLARIFICATION_TOPICS = [
+  { id: 'benchmark', topic: 'Historical benchmark for the trial-to-purchase rate', question: 'Please share a historical benchmark for the observed trial-to-purchase rate so a realistic conversion target can be set.' },
+  { id: 'retailer', topic: 'Retailer influence and channel availability', question: 'Please confirm the evidence on retailer influence and channel stock availability for Croptek in onion.' },
+  { id: 'eligibility', topic: 'Maharashtra vs broader West region eligibility', question: 'Please confirm whether other West region markets are in scope once Maharashtra eligibility is validated.' },
+  { id: 'guardrails', topic: 'Deliverables and strategic guardrails', question: 'Please confirm the deliverables and any budget or brand guardrails for this theme.' },
 ];
 
 /** Croptek conversion evidence behind the strategic brief. */
@@ -229,48 +268,98 @@ export const CROPTEK_EVIDENCE = {
   planLinkage: 25,
 };
 export const trialToPurchasePct = () => ratio(CROPTEK_EVIDENCE.purchases, CROPTEK_EVIDENCE.trials);
+export const secondaryTrend = () => CROPTEK_EVIDENCE.secondarySales.map((s) => `₹${s.v} L`).join(' → ');
 
 // ---------------------------------------------------------------- concepts
-export interface Concept { id: string; code: string; name: string; objective: string; audience: string; journeyStage: string; direction: string; confidence: 'High' | 'Medium' | 'Low'; readiness: 'Ready' | 'Review required' | 'Draft' }
+export type Confidence = 'High' | 'Medium' | 'Medium-low' | 'Low';
+export interface Concept {
+  id: string; code: string; name: string; objective: string; audience: string; journeyStage: string; direction: string; confidence: Confidence; note: string;
+  evidence: string; channelReadiness: string; technical: string; nextAction: string; eligibleFarmers: number;
+}
 export const CONCEPTS: Concept[] = [
-  { id: 'c1', code: 'C1', name: 'Retailer-led Croptek conversion', objective: 'Convert conventional nutrition users to Croptek through retailer advocacy', audience: 'Onion growers buying from mapped retailers', journeyStage: 'Consideration to first purchase', direction: 'Retailer enablement, field demonstrations and verified first purchase', confidence: 'High', readiness: 'Ready' },
-  { id: 'c2', code: 'C2', name: 'Trial-to-purchase farmer nurture', objective: 'Turn last-season trial farmers into repeat Croptek buyers', audience: 'Last-year Croptek trial farmers', journeyStage: 'Trial to repeat purchase', direction: 'Follow-up visits, opt-in digital advisory and farmer meetings', confidence: 'Medium', readiness: 'Review required' },
+  {
+    id: 'c1', code: 'C1', name: 'Retailer-led Croptek conversion', objective: 'Improve first purchase through retailer education and recommendation.',
+    audience: 'Eligible farmers influenced through retailer interactions.', journeyStage: 'Recommendation to first purchase',
+    direction: 'Retailer education, channel activation, assisted conversion.', confidence: 'Medium-low', note: 'Retailer influence needs validation.',
+    evidence: 'Retailer influence and channel stock evidence still to be verified.', channelReadiness: 'Retailer network available; activation readiness to be confirmed.',
+    technical: 'None identified at this stage.', nextAction: 'Develop as a draft campaign with retailer influence and channel stock validation.', eligibleFarmers: 2400,
+  },
+  {
+    id: 'c2', code: 'C2', name: 'Trial-to-purchase farmer nurture', objective: 'Improve first purchase for verified trial or interest cohorts through structured follow-up.',
+    audience: 'Verified trial and interest farmer cohorts.', journeyStage: 'Trial to first purchase',
+    direction: 'Follow-up, education, consent-based communication.', confidence: 'Medium-low', note: 'Conversion benchmark and eligibility / consent validation pending.',
+    evidence: '54 purchases among 150 trials (36%); CRM matching and contact evidence to validate.', channelReadiness: 'Nurture flow feasible; CRM contact readiness to be validated.',
+    technical: 'None identified at this stage.', nextAction: 'Develop as a draft campaign with CRM matching and contact consent validation.', eligibleFarmers: 150,
+  },
 ];
-export const C1_RATIONALE: { evidence: string; figure: string; assessment: 'Supports' | 'Partly supports' | 'Gap' }[] = [
-  { evidence: 'Croptek penetration in onion', figure: '14–18%', assessment: 'Supports' },
-  { evidence: 'Secondary sales trend (Q1–Q4)', figure: '₹40 L → ₹48 L', assessment: 'Supports' },
-  { evidence: 'Trial-to-purchase', figure: '36%', assessment: 'Partly supports' },
-  { evidence: 'Ambad onion growth objective', figure: '₹25 L', assessment: 'Supports' },
-  { evidence: 'Retailer mapping coverage', figure: '6 retailers unmapped', assessment: 'Gap' },
+export const COMPARE_DIMENSIONS: { key: keyof Concept; label: string }[] = [
+  { key: 'objective', label: 'Strategic objective' },
+  { key: 'audience', label: 'Priority audience' },
+  { key: 'journeyStage', label: 'Journey stage' },
+  { key: 'direction', label: 'Intervention direction' },
+  { key: 'evidence', label: 'Supporting evidence' },
+  { key: 'channelReadiness', label: 'Channel readiness' },
+  { key: 'technical', label: 'Technical / agronomy dependencies' },
+  { key: 'nextAction', label: 'Next development action' },
 ];
+export type Assessment = 'Observed' | 'Unverified' | 'Awaiting validation' | 'Unavailable' | 'Pending';
+/** Evidence behind a concept, grouped as market attractiveness and intervention suitability. */
+export const conceptRationale = (id: string): { group: 'Market attractiveness' | 'Intervention suitability'; item: string; source: string; finding: string; assessment: Assessment }[] => {
+  const market = [
+    { group: 'Market attractiveness' as const, item: 'Onion Croptek penetration', source: 'Market landscape · Maharashtra onion', finding: `${CROPTEK_EVIDENCE.penetrationRange[0]}–${CROPTEK_EVIDENCE.penetrationRange[1]}%`, assessment: 'Observed' as Assessment },
+    { group: 'Market attractiveness' as const, item: 'Secondary sales trend (Q1–Q4)', source: 'Commercial trend · Maharashtra', finding: secondaryTrend(), assessment: 'Observed' as Assessment },
+    { group: 'Market attractiveness' as const, item: 'Pilot farmer conversion', source: 'Farmer investigation', finding: `${CROPTEK_EVIDENCE.trials} trials / ${CROPTEK_EVIDENCE.purchases} purchases = ${Math.round(trialToPurchasePct())}%`, assessment: 'Observed' as Assessment },
+  ];
+  const suit = id === 'c2' ? [
+    { item: 'Historical comparable benchmark', source: 'Past programmes', finding: 'No comparable programme on record', assessment: 'Unavailable' as Assessment },
+    { item: 'CRM matching of trial farmers', source: 'CRM records', finding: `${CROPTEK_EVIDENCE.trials} trial farmers to match`, assessment: 'Awaiting validation' as Assessment },
+    { item: 'Contact consent', source: 'Programme eligibility', finding: 'Consent status per farmer', assessment: 'Pending' as Assessment },
+  ] : [
+    { item: 'Historical comparable benchmark', source: 'Past programmes', finding: 'No comparable programme on record', assessment: 'Unavailable' as Assessment },
+    { item: 'Retailer recommendation influence', source: 'Retailer survey', finding: 'Influence share not measured', assessment: 'Unverified' as Assessment },
+    { item: 'Stock / channel readiness', source: 'Theme brief · supply check', finding: 'Stock at mapped retailers', assessment: 'Awaiting validation' as Assessment },
+    { item: 'Cohort eligibility / consent', source: 'Evidence review', finding: 'Eligibility rules per cohort', assessment: 'Pending' as Assessment },
+  ];
+  return [...market, ...suit.map((s) => ({ group: 'Intervention suitability' as const, ...s }))];
+};
+/** Audience overlap between C1 and C2 (eligible farmers). */
+export const AUDIENCE = { c1: 2400, c2: 150, overlap: 54 };
 
 // ---------------------------------------------------------------- proposition (C1)
 export const PROPOSITION = {
-  valueProposition: 'Croptek at bulb initiation gives uniform bulb size and better marketable yield for onion growers.',
-  targetBenefit: 'Uniform bulb size and higher marketable yield',
-  positioning: 'Crop-stage nutrition recommended by the trusted local retailer',
-  journey: [
-    { id: 'retailer', stage: 'Retailer enablement', detail: 'Product training, demonstration kits and stock readiness at mapped retailers' },
-    { id: 'engagement', stage: 'Farmer engagement', detail: 'Village meetings and field demonstrations at the bulb-initiation window' },
-    { id: 'trial', stage: 'Trial / consideration', detail: 'Demonstration plots and trial packs for engaged farmers' },
-    { id: 'purchase', stage: 'Verified first purchase', detail: 'Retailer-verified first purchase within the crop-stage window' },
-  ],
-  kpis: [
-    { kpi: 'Retailers activated', target: 3 },
-    { kpi: 'Farmers reached', target: 640 },
-    { kpi: 'Trials', target: 160 },
-    { kpi: 'Verified first purchases', target: 72 },
-    { kpi: 'Campaign-linked sales (₹ L)', target: 48 },
-  ],
+  valueProposition: 'Enable more farmers to try and adopt the Croptek solution through retailer-led recommendation.',
+  targetBenefit: 'Support crop performance and crop health, in line with Croptek positioning.',
+  positioning: 'Retailer-recommended, trusted Croptek solution with local support and a trial pathway.',
 };
-export type ClaimStatus = 'validated' | 'review_requested' | 'needs_evidence' | 'draft';
-export const CLAIM_STATUS_LABEL: Record<ClaimStatus, string> = { validated: 'Validated', review_requested: 'Technical review requested', needs_evidence: 'Needs evidence', draft: 'Draft' };
-export const CROP_STAGES = ['Vegetative', 'Early growth', 'Bulb initiation', 'Bulb development'] as const;
-export const CLAIMS: { id: string; text: string; status: ClaimStatus; stages: (typeof CROP_STAGES)[number][] }[] = [
-  { id: 'claim-1', text: 'Supports uniform bulb size when applied at bulb initiation', status: 'validated', stages: ['Bulb initiation', 'Bulb development'] },
-  { id: 'claim-2', text: 'Improves nutrient uptake in early growth', status: 'validated', stages: ['Vegetative', 'Early growth'] },
-  { id: 'claim-3', text: 'Higher marketable yield than conventional nutrition', status: 'needs_evidence', stages: ['Bulb development'] },
-  { id: 'claim-4', text: 'Compatible with standard onion spray schedules', status: 'draft', stages: ['Early growth', 'Bulb initiation'] },
+export type PropositionField = keyof typeof PROPOSITION;
+export interface JourneyStage { id: string; stage: string; summary: string; objective: string; participants: string; channels: string; expectedAction: string; collateral: string; kpi: string }
+export const JOURNEY: JourneyStage[] = [
+  { id: 'retailer', stage: 'Retailer enablement', summary: 'Retailer product education and recommendation', objective: 'Build retailer readiness to recommend Croptek to eligible farmers.', participants: 'Mapped retailers in the selected onion territories.', channels: 'Retailer meetings, product briefing and enablement sessions.', expectedAction: 'Retailers understand, are confident in and recommend Croptek to eligible farmers.', collateral: 'Retailer product detailer, key talking points and recommendation guide.', kpi: 'Retailers trained against retailers assigned.' },
+  { id: 'engagement', stage: 'Farmer engagement', summary: 'Eligible farmer product discussion', objective: 'Reach eligible onion farmers with the Croptek crop-stage message.', participants: 'Eligible onion farmers in campaign villages.', channels: 'Village meetings and opt-in digital advisory.', expectedAction: 'Farmers discuss Croptek with their retailer before bulb initiation.', collateral: 'Farmer education leaflet and Marathi WhatsApp creative.', kpi: 'Farmers reached in campaign villages.' },
+  { id: 'trial', stage: 'Trial / consideration', summary: 'Approved demonstration or trial support', objective: 'Let farmers see Croptek results on demonstration plots.', participants: 'Engaged farmers and demonstration hosts.', channels: 'Field demonstrations at the bulb-initiation window.', expectedAction: 'Farmers take a trial pack or visit a demonstration plot.', collateral: 'Field demonstration poster.', kpi: 'Trials recorded.' },
+  { id: 'purchase', stage: 'Verified first purchase', summary: 'Farmer purchase verification and follow-up', objective: 'Convert trials into verified first purchases.', participants: 'Trial farmers and their retailers.', channels: 'Field follow-ups and retailer purchase verification.', expectedAction: 'Farmers make a retailer-verified first purchase.', collateral: 'Follow-up script and purchase verification slip.', kpi: 'Verified first purchases.' },
+];
+/** KPI configuration for the intervention (targets match the Ambad plan and the C1 business case). */
+export const INTERVENTION_KPIS: { id: string; kpi: string; measure: string; source: string; target: string; status: 'Pending' | 'Conditional' | 'Defined' }[] = [
+  { id: 'trained', kpi: 'Retailer training completion', measure: 'Retailers trained ÷ eligible retailers assigned', source: 'Field app / CRM', target: '3 retailer sessions', status: 'Pending' },
+  { id: 'reach', kpi: 'Farmers reached', measure: 'Distinct eligible farmers with a qualified interaction', source: 'CRM / field app', target: '640 farmers', status: 'Pending' },
+  { id: 'trials', kpi: 'Trials', measure: 'Farmers recorded at a demonstration or with a trial pack', source: 'Field app', target: '160 trials', status: 'Defined' },
+  { id: 'purchases', kpi: 'Verified first purchases', measure: 'Farmer-linked purchase records matched to trials', source: 'Linked sales / CRM', target: '72 adopters', status: 'Pending' },
+  { id: 'sales', kpi: 'Attributable incremental sales', measure: 'Campaign-linked sales against comparable cohorts', source: 'Validated sales', target: '₹48.0 L', status: 'Conditional' },
+];
+export const READINESS_CHECKS = ['Historical benchmark', 'Retailer influence', 'Stock / channel readiness', 'Technical claims', 'Purchase linkage'];
+export const INTERVENTION_TYPES = ['Retailer briefing', 'Product education', 'Field demonstration support', 'Authorised material distribution', 'Farmer follow-up'];
+
+export type ClaimStatus = 'pending' | 'unvalidated' | 'review_requested' | 'validated';
+export const CLAIM_STATUS_LABEL: Record<ClaimStatus, string> = { pending: 'Pending', unvalidated: 'Unvalidated', review_requested: 'Technical review requested', validated: 'Validated' };
+export const CROP_STAGES = ['Early growth', 'Vegetative', 'Bulb initiation', 'Bulb development'] as const;
+export type CropStage = (typeof CROP_STAGES)[number];
+export interface Claim { id: string; text: string; category: string; evidence: string; stages: CropStage[]; reviewer: string; status: ClaimStatus; substantiation: string }
+export const CLAIMS: Claim[] = [
+  { id: 'claim-1', text: 'Complete crop nutrition for onion', category: 'Crop nutrition', evidence: 'Authorised product composition and label positioning', stages: ['Vegetative', 'Bulb initiation', 'Bulb development'], reviewer: 'Agronomy reviewer (onion)', status: 'pending', substantiation: 'Authorised product composition, nutrient role reference and label positioning.' },
+  { id: 'claim-2', text: 'Supports healthy crop growth', category: 'Crop health', evidence: 'Product master nutrient profile and label claim', stages: ['Early growth', 'Vegetative'], reviewer: 'Agronomy reviewer (onion)', status: 'unvalidated', substantiation: 'Nutrient profile from the product master and the approved label claim.' },
+  { id: 'claim-3', text: 'Promotes stronger roots', category: 'Root development', evidence: 'Product formulation and technical reference', stages: ['Early growth'], reviewer: 'Agronomy reviewer (onion)', status: 'pending', substantiation: 'Formulation sheet and internal technical reference.' },
+  { id: 'claim-4', text: 'Aids bulb development', category: 'Bulb development', evidence: 'Product master nutrient role and label positioning', stages: ['Bulb initiation', 'Bulb development'], reviewer: 'Agronomy reviewer (onion)', status: 'unvalidated', substantiation: 'Nutrient role at bulb initiation from the product master.' },
 ];
 
 // ---------------------------------------------------------------- collateral
@@ -329,8 +418,6 @@ export const scenarioRow = (sales: number, investment = DRIVERS.investment, marg
 export const C2_CASE = { investment: 8, forecastSales: 28 };
 /** C2 ROI is exactly 0.225×; rounded half-up to 2 decimals so it reads +0.23× (floating point would give 0.22). */
 export const businessCaseC2 = () => ({ ...C2_CASE, contribution: C2_CASE.forecastSales * CONTRIBUTION_MARGIN, netRoi: Math.round(netRoi(C2_CASE.forecastSales, C2_CASE.investment) * 100 + 1e-6) / 100 });
-/** Audience overlap between C1 and C2 (eligible farmers). */
-export const AUDIENCE = { c1: 2400, c2: 150, overlap: 54 };
 
 // ---------------------------------------------------------------- activity approvals
 export type ApprovalStatus = 'pending' | 'returned' | 'approved' | 'awaiting';

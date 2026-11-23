@@ -13,6 +13,7 @@ import { ActivityExecution, ControlTower } from './screens/fsm/Execution';
 import { CampaignImpact, VillageDiagnostic } from './screens/fsm/Impact';
 import { FsmAssistant } from './screens/fsm/Assistant';
 import { ZmBlank } from './screens/zm/Blank';
+import { AssignedThemes, ConceptComparison, ConceptStudio, PropositionDesigner } from './screens/zm/Studio';
 import { ConsolidatedPlans, PlanValidation, RevisedPlan, SkuReconciliation, ZmPerformance } from './screens/zm/Plans';
 import { ZmStoreProvider } from './store/zmStore';
 import { CommandCentre } from './screens/CommandCentre';
@@ -105,10 +106,10 @@ function buildRouter(session: Session, signOut: () => void) {
         { path: 'zm/plans/reconciliation', element: <SkuReconciliation /> },
         { path: 'zm/plans/:territory/review', element: <PlanValidation /> },
         { path: 'zm/plans/:territory/revised', element: <RevisedPlan /> },
-        { path: 'zm/themes', element: <ZmBlank n={6} /> },
-        { path: 'zm/studio/concepts', element: <ZmBlank n={7} /> },
-        { path: 'zm/studio/compare', element: <ZmBlank n={8} /> },
-        { path: 'zm/studio/proposition', element: <ZmBlank n={9} /> },
+        { path: 'zm/themes', element: <AssignedThemes /> },
+        { path: 'zm/studio/concepts', element: <ConceptStudio /> },
+        { path: 'zm/studio/compare', element: <ConceptComparison /> },
+        { path: 'zm/studio/proposition', element: <PropositionDesigner /> },
         { path: 'zm/studio/collateral', element: <ZmBlank n={10} /> },
         { path: 'zm/studio/collateral/edit', element: <ZmBlank n={11} /> },
         { path: 'zm/studio/collateral/versions', element: <ZmBlank n={12} /> },
