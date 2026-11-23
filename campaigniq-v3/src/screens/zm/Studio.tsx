@@ -10,7 +10,7 @@ import { campaignFunnel, defaultWizard, phaseDetails } from '../../data/fsm';
 import {
   AUDIENCE, businessCaseC1, CLAIM_STATUS_LABEL, CLAIMS, CLARIFICATION_TOPICS, COMPARE_DIMENSIONS, CONCEPTS, conceptRationale, CROP_STAGES, CROPTEK_EVIDENCE,
   DELIVERABLES, INTERVENTION_KPIS, INTERVENTION_TYPES, JOURNEY, PROPOSITION, READINESS_CHECKS, secondaryTrend, themeById, trialToPurchasePct,
-  ZM_THEME_STATUS_LABEL, ZM_THEMES, type Assessment, type Claim, type ClaimStatus, type Concept, type JourneyStage, type PropositionField, type ThemeStatus,
+  ZM_THEME_STATUS_LABEL, allZmThemes, type Assessment, type Claim, type ClaimStatus, type Concept, type JourneyStage, type PropositionField, type ThemeStatus,
 } from '../../data/zm';
 import { Z } from '../../routes';
 import { useBhStore } from '../../store/bhStore';
@@ -59,7 +59,7 @@ export function AssignedThemes() {
   const bh = useBhStore();
   const zm = useZmStore();
   const statusOf = useThemeStatus();
-  const [sel, setSel] = useState(ZM_THEMES[0].id);
+  const [sel, setSel] = useState(allZmThemes()[0].id);
   const [brief, setBrief] = useState<string | null>(null);
   const [clar, setClar] = useState<string | null>(null);
   const [ack, setAck] = useState<string | null>(null);
@@ -67,7 +67,7 @@ export function AssignedThemes() {
   const status = statusOf(sel);
   const savedNotes = zm.comments[`theme:${sel}`] ?? '';
   const [notes, setNotes] = useState(savedNotes);
-  const pending = ZM_THEMES.filter((t) => statusOf(t.id) === 'acknowledgement_pending' || statusOf(t.id) === 'clarification_requested').length;
+  const pending = allZmThemes().filter((t) => statusOf(t.id) === 'acknowledgement_pending' || statusOf(t.id) === 'clarification_requested').length;
   const history = zm.clarifications.filter((c) => c.themeId === sel);
   const next = () => (status === 'acknowledged' ? go(Z.concepts) : setAck(sel));
   const ambad = territoryById('ambad')!;
@@ -77,13 +77,13 @@ export function AssignedThemes() {
       nextLabel={status === 'acknowledged' ? 'Develop campaign concepts' : 'Acknowledge and develop concepts'}
       right={<StatusChip tone={THEME_TONE[status]}>{ZM_THEME_STATUS_LABEL[status]}</StatusChip>}>
       <div className="kpis">
-        <KpiCard label="Themes assigned" value={num(ZM_THEMES.length)} />
+        <KpiCard label="Themes assigned" value={num(allZmThemes().length)} />
         <KpiCard label="Awaiting acknowledgement" value={num(pending)} />
         <KpiCard label="Croptek penetration in onion" value={`${CROPTEK_EVIDENCE.penetrationRange[0]}–${CROPTEK_EVIDENCE.penetrationRange[1]}%`} />
         <KpiCard label="Trial-to-purchase" value={pct(trialToPurchasePct(), 0)} />
       </div>
       <Card title="My assigned marketing themes" icon={Layers} flush>
-        <DataTable selectable rows={ZM_THEMES} rowKey={(t) => t.id} selected={sel} onRowClick={(t) => { setSel(t.id); setNotes(zm.comments[`theme:${t.id}`] ?? ''); }}
+        <DataTable selectable rows={allZmThemes()} rowKey={(t) => t.id} selected={sel} onRowClick={(t) => { setSel(t.id); setNotes(zm.comments[`theme:${t.id}`] ?? ''); }}
           columns={[
             { key: 'n', header: 'Theme', render: (t) => <b>{t.name}</b> },
             { key: 'c', header: 'Priority crop / product', render: (t) => `${t.crop} · ${t.product}` },
@@ -121,7 +121,7 @@ export function AssignedThemes() {
             sel === 'croptek-conversion' ? `Ambad onion growth objective ${lakh(CROPTEK_EVIDENCE.planLinkage)} already sits inside the ₹${(ambad.abp / 100).toFixed(2)} Cr Ambad ABP.` : `${theme.name} focuses on ${theme.crop.toLowerCase()} with ${theme.product}.`,
             `Acknowledgement due ${theme.due}; ${DELIVERABLES.length} deliverables follow.`,
             history.length ? `${history.length} clarification request${history.length === 1 ? '' : 's'} sent to the Marketing Head.` : 'No clarification requested yet.',
-            `${pending} of ${ZM_THEMES.length} themes still awaiting acknowledgement.`,
+            `${pending} of ${allZmThemes().length} themes still awaiting acknowledgement.`,
           ]} />
         </div>
       </div>

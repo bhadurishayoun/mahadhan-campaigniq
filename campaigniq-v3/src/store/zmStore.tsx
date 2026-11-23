@@ -3,7 +3,8 @@
  * plus the studio and approval records added phase by phase. Kept in sessionStorage, like the Field Sales Manager store.
  */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { Priority, ApprovalStatus, Drivers, ProposalStatus, ScenarioKey, AssetStatus, Claim, CollateralVersion, Concept, ReviewStatus, TemplateId, MappingStatus, PlanStatus, PropositionField, QuestionStatus, ThemeStatus, ZmPortfolio, ZmScope } from '../data/zm';
+import { setAssignedThemes } from '../data/zm';
+import type { ZmTheme, Priority, ApprovalStatus, Drivers, ProposalStatus, ScenarioKey, AssetStatus, Claim, CollateralVersion, Concept, ReviewStatus, TemplateId, MappingStatus, PlanStatus, PropositionField, QuestionStatus, ThemeStatus, ZmPortfolio, ZmScope } from '../data/zm';
 import type { ZmTerritoryId } from '../routes';
 
 export interface ZmState {
@@ -68,6 +69,8 @@ export interface ZmState {
   asked: string[];
   /** Questions the Marketing Head adds (plan clarification requests), shown with the seeded questions. */
   extraQuestions: { id: string; question: string; topic: string; status: QuestionStatus }[];
+  /** Themes the Marketing Head has assigned (after the seeded three). */
+  assignedThemes: ZmTheme[];
 }
 
 export interface DraftSetup { audience: string; language: string; objective: string; sources: string[]; style: string; format: string; regional: string }
@@ -83,7 +86,7 @@ const INITIAL: ZmState = { scope: 'zone', portfolio: 'crop-nutrition', planDecis
   drivers: null, scenario: 'base', financeRequested: false, reconDecision: 'separate',
   proposalStatus: { c1: 'submitted', c2: 'submitted' }, selectedProposals: ['c1'], submissionChecks: [], revision: null,
   approvalStatus: {}, accepted: {}, activityChecks: {}, escalated: {},
-  learningSaved: false, recSelected: null, recPriority: {}, recOption: 'submit', recStatus: 'draft', asked: [], extraQuestions: [] };
+  learningSaved: false, recSelected: null, recPriority: {}, recOption: 'submit', recStatus: 'draft', asked: [], extraQuestions: [], assignedThemes: [] };
 
 function load(): ZmState {
   try {
@@ -139,12 +142,14 @@ interface ZmStore extends ZmState {
   submitRecommendations: () => void;
   ask: (q: string) => void;
   addQuestion: (q: { id: string; question: string; topic: string }) => void;
+  assignTheme: (t: ZmTheme) => void;
 }
 
 const Ctx = createContext<ZmStore | null>(null);
 
 export function ZmStoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<ZmState>(load);
+  setAssignedThemes(state.assignedThemes ?? []);
   useEffect(() => {
     try { window.sessionStorage.setItem(KEY, JSON.stringify(state)); } catch { /* storage unavailable */ }
   }, [state]);
@@ -194,6 +199,7 @@ export function ZmStoreProvider({ children }: { children: ReactNode }) {
     setRecOption: (recOption) => setState((s) => ({ ...s, recOption })),
     submitRecommendations: () => setState((s) => ({ ...s, recStatus: 'submitted' })),
     ask: (q) => setState((s) => ({ ...s, asked: [q, ...s.asked.filter((x) => x !== q)].slice(0, 5) })),
+    assignTheme: (t) => setState((s) => (s.assignedThemes?.some((x) => x.id === t.id) ? s : { ...s, assignedThemes: [...(s.assignedThemes ?? []), t] })),
     addQuestion: (q) => setState((s) => ({ ...s, extraQuestions: [...s.extraQuestions.filter((x) => x.id !== q.id), { ...q, status: 'open' }] })),
     answer: (qid, response) => setState((s) => ({ ...s, questions: { ...s.questions, [qid]: 'responded' }, responses: { ...s.responses, [qid]: response } })),
   }), [state]);

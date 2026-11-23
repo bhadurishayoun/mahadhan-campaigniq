@@ -318,6 +318,12 @@ export const THEME_QUEUE: ThemeProposal[] = [
   { id: 'paddy-south', name: 'Paddy nutrition programme', geography: 'South', state: 'South region', region: 'south', cropProduct: 'Paddy / Croptek', crop: 'Paddy', product: 'Croptek', proposedBy: 'Marketing Head', priority: 'Medium', status: 'review_pending', objective: 'Nutrition programme adoption', cohort: 'Paddy growers in mapped retailer catchments', focus: 'Conversion & adoption' },
 ];
 
+/** Themes the Marketing Head sends after the seeded queue (set from the BH store, like applyPeriod). */
+let EXTRA_QUEUE: ThemeProposal[] = [];
+export const setExtraThemes = (t: ThemeProposal[]) => { EXTRA_QUEUE = t; };
+/** The theme approval queue: seeded themes plus themes the Marketing Head has sent for approval. */
+export const themeQueue = (): ThemeProposal[] => [...THEME_QUEUE, ...EXTRA_QUEUE];
+
 /** Theme candidates surfaced by the market opportunity view (Ambad / Onion / Croptek evidence). */
 export const themeCandidates = () => {
   const a = ambadMetrics();

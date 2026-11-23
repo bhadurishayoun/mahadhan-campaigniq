@@ -20,6 +20,7 @@ import { AssignedThemes, ConceptComparison, ConceptStudio, PropositionDesigner }
 import { ConsolidatedPlans, PlanValidation, RevisedPlan, SkuReconciliation, ZmPerformance } from './screens/zm/Plans';
 import { ZmStoreProvider } from './store/zmStore';
 import { MhBlank } from './screens/mh/Blank';
+import { MhProposalReview, ProposalCompare, ProposalDetail, ThemeBriefScreen, ThemeTracker } from './screens/mh/Themes';
 import { Diagnosis, EvidenceTracking, Investigation, Recommendations as MhRecommendations, RefreshedRecommendations, UpdatedInvestigation } from './screens/mh/Strategy';
 import { NationalOverview, PlanAlignment, RegionalOpportunity, RegionalPlanDetail, TerritoryPlanDetail } from './screens/mh/Opportunity';
 import { MhStoreProvider } from './store/mhStore';
@@ -147,11 +148,11 @@ function buildRouter(session: Session, signOut: () => void) {
         { path: 'mh/studio/evidence', element: <EvidenceTracking /> },
         { path: 'mh/studio/investigation/updated', element: <UpdatedInvestigation /> },
         { path: 'mh/studio/recommendations/refreshed', element: <RefreshedRecommendations /> },
-        { path: 'mh/studio/theme-brief', element: <MhBlank n={12} /> },
-        { path: 'mh/studio/themes', element: <MhBlank n={13} /> },
-        { path: 'mh/approvals/proposals', element: <MhBlank n={14} /> },
-        { path: 'mh/approvals/proposals/:id', element: <MhBlank n={15} /> },
-        { path: 'mh/approvals/compare', element: <MhBlank n={16} /> },
+        { path: 'mh/studio/theme-brief', element: <ThemeBriefScreen /> },
+        { path: 'mh/studio/themes', element: <ThemeTracker /> },
+        { path: 'mh/approvals/proposals', element: <MhProposalReview /> },
+        { path: 'mh/approvals/proposals/:id', element: <ProposalDetail /> },
+        { path: 'mh/approvals/compare', element: <ProposalCompare /> },
         { path: 'mh/approvals/:id/decision', element: <MhBlank n={17} /> },
         { path: 'mh/approvals/:id/rollout', element: <MhBlank n={18} /> },
         { path: 'mh/performance', element: <MhBlank n={19} /> },

@@ -143,6 +143,52 @@ export const RECOMMENDATIONS: Recommendation[] = [
 ];
 export const themeRoi = (t: ThemeId) => { const x = THEMES.find((y) => y.id === t)!; return netRoi(x.sales, x.investment); };
 
+// ---------------------------------------------------------------- theme lifecycle links (one record across BH, MH and ZM)
+/** Each recommendation maps to the Business Head queue id and the Zonal Manager theme id of the same theme. */
+export const THEME_LINKS: Record<string, { bhId: string; zmId: string }> = {
+  'croptek-conversion': { bhId: 'croptek-next', zmId: 'croptek-conversion' },
+  'retailer-advocacy': { bhId: 'retailer-advocacy', zmId: 'retailer-advocacy' },
+  'product-awareness': { bhId: 'product-awareness', zmId: 'product-awareness' },
+};
+export interface ThemeBrief { name: string; objective: string; market: string; scope: string; audience: string; owner: string; due: string; deliverables: string[] }
+export const BRIEF_DELIVERABLES = [
+  'Validate product / crop application and technical claims',
+  'Create one or more campaign proposals under this theme',
+  'Develop the value proposition and marketing materials',
+  'Define eligible farmer cohorts and channel interventions',
+  'Draft the activity plan and investment assumptions',
+  'Build the forecast and business case for Marketing review',
+];
+export const BRIEF_GUARDRAILS = ['Technical claims (validation)', 'Audience definition and consent', 'Comparable benchmark (historical)', 'Channel availability and engagement', 'ABP alignment and scope'];
+export const briefDefaults = (recId: string): ThemeBrief => {
+  const r = RECOMMENDATIONS.find((x) => x.id === recId) ?? RECOMMENDATIONS[0];
+  const objective: Record<string, string> = {
+    'croptek-conversion': 'Strengthen eligible farmer conversion and Croptek adoption.',
+    'retailer-advocacy': 'Strengthen retailer recommendation of Croptek at mapped outlets.',
+    'product-awareness': 'Raise Croptek awareness and crop-stage understanding among eligible onion farmers.',
+  };
+  return {
+    name: r.name, objective: objective[r.id], market: 'Maharashtra · Onion', scope: 'West region · eligibility to validate',
+    audience: 'Eligible conventional nutrition and trial-interest farmers', owner: 'Zonal Manager · Marathwada zone', due: r.id === 'croptek-conversion' ? '2027-03-15' : '2027-03-31', deliverables: [...BRIEF_DELIVERABLES],
+  };
+};
+
+export const BRIEF_OWNERS = ['Zonal Manager · Marathwada zone', 'Zonal Manager · Vidarbha zone', 'Zonal Manager · Western Maharashtra zone'];
+/** ISO date to the display form used across personas (15 Mar 2027). */
+export const displayDate = (iso: string) => {
+  const d = new Date(`${iso}T00:00:00`);
+  return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+};
+export const PROPOSAL_LABEL: Record<'draft' | 'submitted' | 'returned' | 'resubmitted' | 'approved', string> = {
+  draft: 'Draft with Zonal Manager', submitted: 'Submitted for Marketing review', returned: 'Returned for revision', resubmitted: 'Resubmitted for Marketing review', approved: 'Approved',
+};
+export const REVIEW_DECISIONS = [
+  { id: 'a' as const, label: 'Shortlist Proposal A', meaning: 'Take the retailer-led proposal to approval review' },
+  { id: 'b' as const, label: 'Shortlist Proposal B', meaning: 'Take the trial-to-purchase proposal to approval review' },
+  { id: 'both' as const, label: 'Consider both', meaning: 'Review both with distinct cohorts and each farmer counted once' },
+  { id: 'consolidated' as const, label: 'Request consolidated revision', meaning: 'Ask the Zonal Manager for one combined proposal' },
+];
+
 // ---------------------------------------------------------------- proposals (equal to the Zonal Manager figures)
 export const proposals = () => {
   const c1 = businessCaseC1();

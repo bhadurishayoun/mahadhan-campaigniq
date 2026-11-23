@@ -1,7 +1,7 @@
 import { CheckCircle2, Eye } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CAMPAIGNS, REGIONS, THEME_QUEUE, THEMES, type RegionId } from '../data/bh';
+import { CAMPAIGNS, REGIONS, themeQueue, THEMES, type RegionId } from '../data/bh';
 import { R } from '../routes';
 import { Button, FilterRows } from '../ui/core';
 import { useBhStore } from '../store/bhStore';
@@ -52,7 +52,7 @@ export function useGo() {
 export function useApproveTheme(match?: { region?: RegionId; crop?: string; product?: string }) {
   const store = useBhStore();
   const nav = useNavigate();
-  const pending = THEME_QUEUE.filter((t) => store.themeStatus[t.id] === 'review_pending');
+  const pending = themeQueue().filter((t) => store.themeStatus[t.id] === 'review_pending');
   const hit = match && pending.find((t) => (!match.region || t.region === match.region) && (!match.crop || t.crop === match.crop) && (!match.product || t.product === match.product));
   const theme = hit ?? pending[0];
   return theme

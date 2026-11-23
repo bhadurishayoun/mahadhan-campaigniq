@@ -3,7 +3,7 @@
  * Kept in sessionStorage, like the Field Sales Manager and Zonal Manager stores.
  */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { MhPlanStatus, RequestStatus } from '../data/mh';
+import type { MhPlanStatus, RequestStatus, ThemeBrief } from '../data/mh';
 
 export type MhScope = 'national' | 'west' | 'south' | 'north' | 'east';
 export const MH_SCOPES: { id: MhScope; label: string }[] = [
@@ -26,11 +26,15 @@ export interface MhState {
   requests: Record<string, { status: RequestStatus; owner: string; due: string }> | null;
   recommendation: string;
   refreshed: string;
+  /** Theme briefs by recommendation, review notes by proposal, and the comparison decision. */
+  briefs: Record<string, ThemeBrief>;
+  reviewNotes: Record<string, string>;
+  decision: 'a' | 'b' | 'both' | 'consolidated' | null;
 }
 
-const KEY = 'campaigniq.v3.mh.3';
+const KEY = 'campaigniq.v3.mh.4';
 const INITIAL: MhState = { scope: 'national', planStatus: {}, endorsed: [], shortlist: [], flagged: false,
-  analysis: null, requests: null, recommendation: 'croptek-conversion', refreshed: 'croptek-conversion' };
+  analysis: null, requests: null, recommendation: 'croptek-conversion', refreshed: 'croptek-conversion', briefs: {}, reviewNotes: {}, decision: null };
 
 function load(): MhState {
   try {
@@ -50,6 +54,9 @@ interface MhStore extends MhState {
   setRequestStatus: (id: string, st: RequestStatus) => void;
   setRecommendation: (id: string) => void;
   setRefreshed: (id: string) => void;
+  setBrief: (id: string, b: ThemeBrief) => void;
+  setReviewNote: (id: string, text: string) => void;
+  setDecision: (d: NonNullable<MhState['decision']>) => void;
 }
 
 const Ctx = createContext<MhStore | null>(null);
@@ -71,6 +78,9 @@ export function MhStoreProvider({ children }: { children: ReactNode }) {
     setRequestStatus: (id, st) => setState((s) => (s.requests && s.requests[id] ? { ...s, requests: { ...s.requests, [id]: { ...s.requests[id], status: st } } } : s)),
     setRecommendation: (recommendation) => setState((s) => ({ ...s, recommendation })),
     setRefreshed: (refreshed) => setState((s) => ({ ...s, refreshed })),
+    setBrief: (id, b) => setState((s) => ({ ...s, briefs: { ...s.briefs, [id]: b } })),
+    setReviewNote: (id, text) => setState((s) => ({ ...s, reviewNotes: { ...s.reviewNotes, [id]: text } })),
+    setDecision: (decision) => setState((s) => ({ ...s, decision })),
   }), [state]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

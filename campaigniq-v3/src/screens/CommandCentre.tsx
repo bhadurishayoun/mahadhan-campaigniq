@@ -1,7 +1,7 @@
 /** Screen 1 — Marketing and Command Centre (mockup BH.1.png). */
 import { AlertCircle, ChartColumn, ClipboardCheck, ExternalLink, Layers, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
-import { CAMPAIGNS, netRoi, REGIONS, regionMetrics, regionRoi, THEME_QUEUE, THEME_STATUS, type ThemeId } from '../data/bh';
+import { CAMPAIGNS, netRoi, REGIONS, regionMetrics, regionRoi, themeQueue, THEME_STATUS, type ThemeId } from '../data/bh';
 import { crore, num, pct, pp, ratio, sum, times } from '../data/format';
 import { R } from '../routes';
 import { attentionItems } from '../shell/attention';
@@ -99,7 +99,7 @@ export function CommandCentre() {
         </Card>
         <Card title="Strategic theme approval queue" icon={ClipboardCheck} flush>
           <DataTable
-            rows={THEME_QUEUE}
+            rows={themeQueue()}
             rowKey={(q) => q.id}
             onRowClick={(q) => go(R.review(q.id))}
             columns={[

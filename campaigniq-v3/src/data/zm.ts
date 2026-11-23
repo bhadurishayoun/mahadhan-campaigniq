@@ -241,7 +241,11 @@ export const ZM_THEMES: ZmTheme[] = [
     openPoints: 'Agronomy content and season timing.',
   },
 ];
-export const themeById = (id: string) => ZM_THEMES.find((t) => t.id === id) ?? ZM_THEMES[0];
+/** Themes the Marketing Head assigns after the seeded three (set from the ZM store). */
+let EXTRA_THEMES: ZmTheme[] = [];
+export const setAssignedThemes = (t: ZmTheme[]) => { EXTRA_THEMES = t; };
+export const allZmThemes = (): ZmTheme[] => [...ZM_THEMES, ...EXTRA_THEMES];
+export const themeById = (id: string) => allZmThemes().find((t) => t.id === id) ?? ZM_THEMES[0];
 
 /** Zonal Manager deliverables once a theme is acknowledged. */
 export const DELIVERABLES = [

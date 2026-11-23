@@ -3,7 +3,7 @@
  * Holds what users change: scope, theme decisions, interventions, scenarios, learning priorities.
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { applyPeriod, initialInterventions, periodLabel, THEME_QUEUE, type Intervention, type PeriodId, type RegionId, type ThemeStatus } from '../data/bh';
+import { applyPeriod, initialInterventions, periodLabel, setExtraThemes, THEME_QUEUE, type Intervention, type PeriodId, type RegionId, type ThemeProposal, type ThemeStatus } from '../data/bh';
 
 export type Scope = RegionId | 'national';
 
@@ -32,6 +32,8 @@ interface State {
   interventions: Intervention[];
   scenarios: Scenario[];
   learningSubmitted: boolean;
+  /** Themes the Marketing Head has sent for approval (after the seeded queue). */
+  extraThemes: ThemeProposal[];
 }
 
 const KEY = 'campaigniq.v3.bh.4'; // bumped when the stored shape or seeded records change
@@ -44,6 +46,7 @@ const initial = (): State => ({
   interventions: initialInterventions(),
   scenarios: [],
   learningSubmitted: false,
+  extraThemes: [],
 });
 
 function load(): State {
@@ -67,6 +70,7 @@ interface Ctx extends State {
   updateIntervention: (id: string, patch: Partial<Intervention>) => void;
   saveScenario: (s: Scenario) => void;
   submitLearning: () => void;
+  sendTheme: (t: ThemeProposal) => void;
   reset: () => void;
   toast: (text: string) => void;
   toasts: Toast[];
@@ -94,12 +98,14 @@ export function BhStoreProvider({ children }: { children: ReactNode }) {
 
   // The selected period rewrites the data module before any screen renders (see applyPeriod in data/bh.ts).
   applyPeriod(state.period);
+  setExtraThemes(state.extraThemes ?? []);
 
   const value = useMemo<Ctx>(() => ({
     ...state,
     toasts,
     toast,
     setScope: (scope) => setState((s) => (s.scope === scope ? s : { ...s, scope })),
+    sendTheme: (t) => setState((s) => (s.extraThemes?.some((x) => x.id === t.id) ? s : { ...s, extraThemes: [...(s.extraThemes ?? []), t], themeStatus: { ...s.themeStatus, [t.id]: 'review_pending' } })),
     setPeriod: (period) => setState((s) => (s.period === period ? s : { ...s, period })),
     decideTheme: (d) => setState((s) => ({
       ...s,

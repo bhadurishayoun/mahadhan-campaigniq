@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   AMBAD, ambadMetrics, campaignById, netRoi, campaignMetrics, MARKET, NATIONAL, NATIONAL_METRICS, READINESS_ITEMS, READINESS_STATUS,
-  REGIONS, regionById, regionMetrics, THEME_QUEUE, THEME_STATUS, themeCandidates, themeDirections, themeEvidence, TERRITORIES,
+  REGIONS, regionById, regionMetrics, THEME_QUEUE, themeQueue, THEME_STATUS, themeCandidates, themeDirections, themeEvidence, TERRITORIES,
   type RegionId, type ThemeProposal,
 } from '../data/bh';
 import { crore, lakh, num, pct, times } from '../data/format';
@@ -132,13 +132,13 @@ export function ThemeInbox() {
   const [crop, setCrop] = useState(ALL);
   const [product, setProduct] = useState(ALL);
   const [status, setStatus] = useState(ALL);
-  const queue = THEME_QUEUE.filter((t) => (region === ALL || t.region === region || t.region === 'multi')
+  const queue = themeQueue().filter((t) => (region === ALL || t.region === region || t.region === 'multi')
     && (crop === ALL || t.crop === crop) && (product === ALL || t.product === product)
     && (status === ALL || store.themeStatus[t.id] === status));
   const [params, setParams] = useSearchParams();
-  const [selId, setSelId] = useState(params.get('theme') ?? THEME_QUEUE[0].id);
+  const [selId, setSelId] = useState(params.get('theme') ?? themeQueue()[0].id);
   const [evidence, setEvidence] = useState<Evidence | null>(null);
-  const modalTheme = params.get('modal') === 'decision' ? THEME_QUEUE.find((t) => t.id === params.get('theme')) : undefined;
+  const modalTheme = params.get('modal') === 'decision' ? themeQueue().find((t) => t.id === params.get('theme')) : undefined;
   const sel = queue.find((t) => t.id === selId) ?? queue[0] ?? null;
   const st = Object.values(store.themeStatus);
   const open = st.filter((s) => s === 'review_pending' || s === 'clarification_requested').length;
@@ -209,7 +209,7 @@ export function ThemeReview() {
   const { themeId = '' } = useParams();
   const [params, setParams] = useSearchParams();
   const [evidence, setEvidence] = useState<Evidence | null>(null);
-  const t = THEME_QUEUE.find((x) => x.id === themeId) ?? THEME_QUEUE[0];
+  const t = themeQueue().find((x) => x.id === themeId) ?? themeQueue()[0];
   const s = THEME_STATUS[store.themeStatus[t.id]];
   const west = regionById('west');
   const c = campaignById('croptek');
