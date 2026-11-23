@@ -167,7 +167,7 @@ export function VillageDiagnostic() {
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.4fr)' }}>
         <Card title="Trial-to-adoption by village" icon={ChartColumn}>
-          <HBars rows={sorted.map((v) => ({ label: v.name, values: [v.conversionPct] }))} series={[{ key: 'c', label: 'Trial-to-adoption', color: SERIES.planned }]} max={60} format={(v) => pct(v)} labelWidth={110} />
+          <HBars fill rows={sorted.map((v) => ({ label: v.name, values: [v.conversionPct], title: `${v.name} · Trials ${num(v.trials)} · Adopters ${num(v.adopters)} · ${pct(v.conversionPct)}` }))} series={[{ key: 'c', label: 'Trial-to-adoption', color: SERIES.planned }]} max={60} format={(v) => pct(v)} labelWidth={110} />
         </Card>
         <Card title={f.view === 'villages' ? 'Comparative conversion metrics' : 'Intervention effectiveness'} icon={Target} flush>
           {f.view === 'villages' ? <VillageTable compact rows={f.rows} /> : <ActivityTable />}

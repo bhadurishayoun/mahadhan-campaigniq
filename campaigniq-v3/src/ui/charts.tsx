@@ -49,17 +49,19 @@ export function Legend({ series }: { series: Series[] }) {
 }
 
 /** Horizontal bars; one or two series per row, value label at the bar end. */
-export function HBars({ rows, series, max, format, labelWidth = 170 }: {
-  rows: { label: string; values: number[]; highlight?: number }[];
+export function HBars({ rows, series, max, format, labelWidth = 170, fill }: {
+  rows: { label: string; values: number[]; highlight?: number; title?: string }[];
+  /** Spread the rows evenly over the card height. */
+  fill?: boolean;
   series: Series[];
   max: number;
   format: (v: number) => string;
   labelWidth?: number;
 }) {
   return (
-    <div className="hbars" style={{ ['--label-w' as string]: `${labelWidth}px` }}>
+    <div className={`hbars${fill ? ' fill' : ''}`} style={{ ['--label-w' as string]: `${labelWidth}px` }}>
       {rows.map((r) => (
-        <div key={r.label} className="hbar">
+        <div key={r.label} className="hbar" title={r.title}>
           <span>{r.label}</span>
           <div className="tracks">
             {r.values.map((v, i) => (

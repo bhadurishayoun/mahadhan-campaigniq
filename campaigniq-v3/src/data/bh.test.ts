@@ -92,7 +92,8 @@ describe('territories and Ambad', () => {
     const a = ambadMetrics();
     expect([a.activitiesDone, a.activitiesPlanned, r1(a.activityPct)]).toEqual([9, 13, 69.2]);
     expect([a.trials, a.adopters, r1(a.trialToAdoptionPct)]).toEqual([160, 72, 45]);
-    expect(a.villagesSorted.map((v) => r1(v.pct))).toEqual([49, 47.4, 45.5, 45, 42.1, 38.7]);
+    expect(a.villagesSorted.map((v) => r1(v.pct))).toEqual([49, 47.4, 46.2, 45.5, 45.5, 44.4, 42.9, 40, 38.7]);
+    expect(AMBAD.villages.length).toBe(9);
     expect([a.highest.name, a.lowest.name]).toEqual(['Wadi Gaon', 'Dhanora']);
     expect([sum(AMBAD.villages, (v) => v.adopters), sum(AMBAD.villages, (v) => v.trials)]).toEqual([72, 160]);
     expect(r1(a.villageGap)).toBe(10.3);

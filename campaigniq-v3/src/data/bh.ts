@@ -236,9 +236,12 @@ export const AMBAD = {
   villages: [
     { name: 'Wadi Gaon', adopters: 24, trials: 49 },
     { name: 'Pimpalgaon', adopters: 9, trials: 19 },
-    { name: 'Kumbhephal', adopters: 10, trials: 22 },
-    { name: 'Shahagad', adopters: 9, trials: 20 },
-    { name: 'Rohilagad', adopters: 8, trials: 19 },
+    { name: 'Ambad HQ', adopters: 6, trials: 13 },
+    { name: 'Kumbhephal', adopters: 5, trials: 11 },
+    { name: 'Kingaon', adopters: 5, trials: 11 },
+    { name: 'Shahagad', adopters: 4, trials: 9 },
+    { name: 'Jamkhed', adopters: 3, trials: 7 },
+    { name: 'Rohilagad', adopters: 4, trials: 10 },
     { name: 'Dhanora', adopters: 12, trials: 31 },
   ],
   interventions: [
