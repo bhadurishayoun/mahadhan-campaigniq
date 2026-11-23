@@ -6,8 +6,8 @@ import {
 import { useRef, useState, type ReactNode } from 'react';
 import { useBlocker } from 'react-router-dom';
 import { Modal } from '../../ui/overlay';
-import { territoryById } from '../../data/bh';
-import { crore, lakh, num, pct, sum, times } from '../../data/format';
+import { CONTRIBUTION_MARGIN, netRoi, territoryById } from '../../data/bh';
+import { crore, lakh, num, pct, rupees, sum, times } from '../../data/format';
 import {
   activityErrors, ACTIVITY_DEFAULTS, ACTIVITY_TYPES, planActivity, AUDIENCES, budgetMix, BUSINESS_PRIORITIES, CAMPAIGN_TYPES, CAMPAIGN_VILLAGES, CHANNELS, cropPlan, defaultWizard, funnel, objectiveCoverage,
   objectiveErrors, OBJECTIVES, OWNERS, PHASE_OF, priorityById, RETAILERS, TIMINGS, VILLAGE_FARMERS, wizardScenarios, type WizardActivity, type WizardState,
@@ -410,10 +410,37 @@ export function WizardScenario() {
             </div>
           </div>
         </Card>
-        <Notes title="Scenario notes" items={[
-          `${chosen.name} case gives ${times(chosen.netRoi)} net ROI and covers ${pct(Math.min(100, cov.coveredPct), 0)} of the ${lakh(objective)} plan-linked objective.`,
-          `At the current assumptions the funnel reaches ${num(f.adopters)} adopters and ${num(f.volumeMt)} MT (${lakh(f.sales, 1)}).`,
-        ]} />
+        {(() => {
+          // Every note is computed from the selected scenario, the funnel assumptions and the saved activity budget.
+          const budget = chosen.budget;
+          const l1 = (v: number) => lakh(Math.round(Math.abs(v) * 10) / 10, 1);
+          const breakEven = budget / CONTRIBUTION_MARGIN;
+          const breakEvenMt = (breakEven * 100000) / a.rupeesPerKg / 1000;
+          const clear = chosen.sales - breakEven;
+          const lo = scen.reduce((x, y) => (y.sales < x.sales ? y : x));
+          const hi = scen.reduce((x, y) => (y.sales > x.sales ? y : x));
+          const f5 = funnel({ ...a, adoptionPct: a.adoptionPct + 5 }, farmers);
+          const dSales = f5.sales - f.sales;
+          const dRoi = netRoi(chosen.sales + dSales, budget) - chosen.netRoi;
+          const notes = [
+            `${chosen.name} case gives ${times(chosen.netRoi)} net ROI and covers ${pct(Math.min(100, cov.coveredPct), 0)} of the ${lakh(objective)} plan-linked objective.`,
+            `At the current assumptions the funnel reaches ${num(f.adopters)} adopters and ${num(f.volumeMt)} MT (${lakh(f.sales, 1)}).`,
+            objective - chosen.sales > 0
+              ? `${l1(objective - chosen.sales)} of the ${lakh(objective)} objective still needs other approved interventions.`
+              : `The ${chosen.name.toLowerCase()} case covers the full ${lakh(objective)} objective.`,
+            `Break-even needs ${l1(breakEven)} sales (about ${breakEvenMt.toLocaleString('en-IN', { maximumFractionDigits: 1 })} MT); the ${chosen.name.toLowerCase()} case ${clear >= 0 ? 'clears it' : 'falls short'} by ${l1(clear)}.`,
+            `Outcomes range from ${l1(lo.sales)} (${times(lo.netRoi)}) to ${l1(hi.sales)} (${times(hi.netRoi)})${lo.netRoi < 0 ? `; the ${lo.name.toLowerCase()} case does not recover the budget` : ''}.`,
+            `Each +5 pp in adoption rate adds about ${num(f5.adopters - f.adopters)} adopters and ${l1(dSales)} sales (${times(dRoi)} ROI).`,
+          ];
+          return (
+            <Card title="Scenario notes" icon={Lightbulb}>
+              <div className="notes-fill">
+                {notes.map((t) => <div key={t} className="list-row">{t}</div>)}
+                <small className="muted">Cost per adopter: {f.adopters ? rupees((budget * 100000) / f.adopters) : '–'}</small>
+              </div>
+            </Card>
+          );
+        })()}
       </div>
     </FsmPage>
   );
