@@ -2,7 +2,7 @@
 import { BotMessageSquare, ChartColumn, CircleAlert, CircleCheck, Coins, Filter, Lightbulb, ListChecks, Search, Sprout, Target, TriangleAlert, Wrench, type LucideIcon } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { netRoi } from '../../data/bh';
-import { lakh, num, pct, times } from '../../data/format';
+import { lakh, num, pct, ratio, times } from '../../data/format';
 import {
   activityName, AT_RISK_ACTIVITY, campaignFunnel, executionCounts, FSM_CAMPAIGN, impactSummary, interventionEffectiveness, scenarioOutcome, SCENARIOS, spendToDate,
   villagePerformance, BUSINESS_PRIORITIES,
@@ -155,6 +155,20 @@ export function VillageDiagnostic() {
   const atRisk = units.filter((u) => u.status === 'at_risk');
   const eff = interventionEffectiveness(units);
   const followUp = eff.find((e) => e.id === 'followup')!;
+  // "What worked": each point is shown only when its condition holds.
+  const done = eff.filter((e) => e.planned > 0 && e.completed === e.planned);
+  const aboveAvg = sorted.slice(1).filter((v) => v.conversionPct > s.trialToAdoptionPct).slice(0, 2);
+  const best = eff.filter((e) => e.planned > 0 && e.completed > 0 && !done.includes(e))
+    .sort((a, b) => b.completed / b.planned - a.completed / a.planned)[0];
+  const fn = campaignFunnel();
+  const worked = [
+    `Higher trial-to-adoption in ${hi.name} (${pct(hi.conversionPct)}).`,
+    ...done.map((e) => `${e.name} completed (${e.completed} of ${e.planned}).`),
+    ...(aboveAvg.length ? [`${aboveAvg.map((v) => `${v.name} (${pct(v.conversionPct)})`).join(' and ')} also converted above the ${pct(s.trialToAdoptionPct)} territory average.`] : []),
+    ...(best ? [`${best.name}: ${best.completed} of ${best.planned} completed (${pct(ratio(best.completed, best.planned), 0)}), the strongest in-field driver.`] : []),
+    ...(fn.reached > 0 ? [`${num(fn.reached)} farmers reached across ${FSM_CAMPAIGN.villages.join(' and ')}, with ${num(fn.trials)} trials (${pct(fn.reachToTrialPct)} reach-to-trial).`] : []),
+    ...(s.tracked > 0 && s.forecast > 0 ? [`${lakh(s.tracked, 1)} campaign-linked sales tracked by the checkpoint, ${pct(ratio(s.tracked, s.forecast), 0)} of the ${lakh(s.forecast, 1)} base case.`] : []),
+  ];
 
   return (
     <FsmPage section={SECTION} sectionTo={F.impact} trail={FSM_CAMPAIGN.name} title="Village-wise Conversion Diagnostic" back={F.impact} next={F.assistant}>
@@ -175,10 +189,9 @@ export function VillageDiagnostic() {
       </div>
       <div className="grid g3">
         <Card title="What worked" icon={CircleCheck}>
-          <List items={[
-            { icon: CircleCheck, label: `Higher trial-to-adoption in ${hi.name} (${pct(hi.conversionPct)}).` },
-            ...eff.filter((e) => e.completed === e.planned).map((e) => ({ icon: CircleCheck, label: `${e.name} completed (${e.completed} of ${e.planned}).` })),
-          ]} />
+          <div className="notes-fill">
+            <List items={worked.map((label) => ({ icon: CircleCheck, label }))} />
+          </div>
         </Card>
         <Card title="What to investigate" icon={Search}>
           <List items={[
