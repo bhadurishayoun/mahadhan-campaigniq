@@ -6,7 +6,7 @@ import {
   ambadOnionGrowth, approvalQueue, businessCaseC1, businessCaseC2, CATEGORIES, driverBridge, nextSeason, planStatus, portfolioByTerritory,
   portfolioRows, portfolioTotal, revisedPlan, SCENARIO_SALES, scenarioRow, territoryPlan, territoryPlans, trialToPurchasePct, zmImpact,
   ZM_TERRITORY_IDS, zoneTerritories, zoneTotal, planContribution, planPortfolio, planCrops, mappingStatus, BASE_CHECKS, MAPPING_CHECKS,
-  territoryActivityPlan, PLAN_EXCEPTIONS, ACTIVITY_CHECKS, REGIONAL_ENVELOPE,
+  impactRows, territoryActivityPlan, PLAN_EXCEPTIONS, ACTIVITY_CHECKS, REGIONAL_ENVELOPE,
   scenariosFor, reconciliation, DRIVER_ROWS, MH_RETURN, SUBMISSION_CHECKS, DRIVERS,
   REVIEW_ITEMS, REWRITES, SEED_VERSIONS, TEMPLATES, versionChanges, BASE_ASSET_STATUS,
   CLAIMS, CONCEPTS, conceptRationale, CROP_STAGES, INTERVENTION_KPIS, JOURNEY, secondaryTrend, ZM_THEMES, AUDIENCE,
@@ -208,5 +208,15 @@ describe('activity approvals (screens 20–21)', () => {
     expect(REGIONAL_ENVELOPE()).toBe(12);
     expect(sum(approvalQueue(), (q) => q.budget)).toBeLessThanOrEqual(12);
     expect([ACTIVITY_CHECKS.length, PLAN_EXCEPTIONS.length]).toEqual([7, 3]);
+  });
+});
+
+describe('impact rows (screens 22–26)', () => {
+  it('Ambad row equals the shared impact; non-started campaigns carry no outcome figures', () => {
+    const rows = impactRows();
+    const a = rows[0];
+    expect([a.reached, a.trials, a.adopters, a.sales, a.done, a.planned, a.abp]).toEqual([640, 160, 72, AMBAD.campaignLinkedSales, 9, 13, 190]);
+    expect(rows.filter((r) => r.done === null).map((r) => r.territory)).toEqual(['bhokardan', 'badnapur', 'jafrabad']);
+    expect(rows.every((r) => r.planned === approvalQueue().find((q) => q.territory === r.territory)!.units)).toBe(true);
   });
 });

@@ -12,7 +12,7 @@ import { SelectPriority, WizardActivities, WizardObjective, WizardReview, Wizard
 import { ActivityExecution, ControlTower } from './screens/fsm/Execution';
 import { CampaignImpact, VillageDiagnostic } from './screens/fsm/Impact';
 import { FsmAssistant } from './screens/fsm/Assistant';
-import { ZmBlank } from './screens/zm/Blank';
+import { CampaignDiagnostics, CampaignPerformance, PerformanceDetail, Recommendations, ZmAssistant } from './screens/zm/Impact';
 import { ApprovalInbox, TerritoryActivityReview } from './screens/zm/Approvals';
 import { AudienceReconciliation, BusinessCase, ProposalReview, ProposalRevision, ScenarioSimulator } from './screens/zm/Business';
 import { CollateralApprovals, CollateralEditor, CollateralTemplates, PlaybookRelease, VersionComparison } from './screens/zm/Collateral';
@@ -125,11 +125,11 @@ function buildRouter(session: Session, signOut: () => void) {
         { path: 'zm/studio/proposals/:id/revise', element: <ProposalRevision /> },
         { path: 'zm/approvals', element: <ApprovalInbox /> },
         { path: 'zm/approvals/:territory', element: <TerritoryActivityReview /> },
-        { path: 'zm/impact', element: <ZmBlank n={22} /> },
-        { path: 'zm/impact/detail', element: <ZmBlank n={23} /> },
-        { path: 'zm/impact/diagnostics', element: <ZmBlank n={24} /> },
-        { path: 'zm/impact/recommendations', element: <ZmBlank n={25} /> },
-        { path: 'zm/assistant', element: <ZmBlank n={26} /> },
+        { path: 'zm/impact', element: <CampaignPerformance /> },
+        { path: 'zm/impact/detail', element: <PerformanceDetail /> },
+        { path: 'zm/impact/diagnostics', element: <CampaignDiagnostics /> },
+        { path: 'zm/impact/recommendations', element: <Recommendations /> },
+        { path: 'zm/assistant', element: <ZmAssistant /> },
         { path: '*', element: <Navigate to={home} replace /> },
       ],
     },

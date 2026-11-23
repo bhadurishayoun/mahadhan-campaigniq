@@ -3,7 +3,7 @@
  * plus the studio and approval records added phase by phase. Kept in sessionStorage, like the Field Sales Manager store.
  */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { ApprovalStatus, Drivers, ProposalStatus, ScenarioKey, AssetStatus, Claim, CollateralVersion, Concept, ReviewStatus, TemplateId, MappingStatus, PlanStatus, PropositionField, QuestionStatus, ThemeStatus, ZmPortfolio, ZmScope } from '../data/zm';
+import type { Priority, ApprovalStatus, Drivers, ProposalStatus, ScenarioKey, AssetStatus, Claim, CollateralVersion, Concept, ReviewStatus, TemplateId, MappingStatus, PlanStatus, PropositionField, QuestionStatus, ThemeStatus, ZmPortfolio, ZmScope } from '../data/zm';
 import type { ZmTerritoryId } from '../routes';
 
 export interface ZmState {
@@ -59,13 +59,20 @@ export interface ZmState {
   accepted: Partial<Record<ZmTerritoryId, string[]>>;
   activityChecks: Record<string, string[]>;
   escalated: Partial<Record<ZmTerritoryId, string[]>>;
+  /** Impact and learning: saved learning, recommendation selection / priorities / option / status, Copilot questions. */
+  learningSaved: boolean;
+  recSelected: string[] | null;
+  recPriority: Record<string, Priority>;
+  recOption: 'submit' | 'concept';
+  recStatus: 'draft' | 'submitted';
+  asked: string[];
 }
 
 export interface DraftSetup { audience: string; language: string; objective: string; sources: string[]; style: string; format: string; regional: string }
 
 export interface InterventionConfig { objective: string; behaviour: string; participants: string; types: string[]; channel: string; crop: string; geography: string; window: string; resources: string }
 
-const KEY = 'campaigniq.v3.zm.6';
+const KEY = 'campaigniq.v3.zm.7';
 const INITIAL: ZmState = { scope: 'zone', portfolio: 'crop-nutrition', planDecisions: {}, mapping: {}, mappingChecks: {}, comments: {}, cropValidated: {}, questions: {}, responses: {},
   themeStatus: {}, acknowledgements: {}, clarifications: [], concepts: null, selectedConcepts: ['c1'],
   workspace: { intent: 'Drive eligible first-purchase conversion under Croptek.', behaviour: 'Move from recommendation or trial to first purchase.', notes: '' },
@@ -73,7 +80,8 @@ const INITIAL: ZmState = { scope: 'zone', portfolio: 'crop-nutrition', planDecis
   template: 'detailer', draftSetup: null, versions: null, reviews: {}, submittedForReview: false, assetStatus: {}, playbookIncluded: ['detailer'], released: false,
   drivers: null, scenario: 'base', financeRequested: false, reconDecision: 'separate',
   proposalStatus: { c1: 'draft', c2: 'draft' }, selectedProposals: ['c1'], submissionChecks: [], revision: null,
-  approvalStatus: {}, accepted: {}, activityChecks: {}, escalated: {} };
+  approvalStatus: {}, accepted: {}, activityChecks: {}, escalated: {},
+  learningSaved: false, recSelected: null, recPriority: {}, recOption: 'submit', recStatus: 'draft', asked: [] };
 
 function load(): ZmState {
   try {
@@ -122,6 +130,12 @@ interface ZmStore extends ZmState {
   setAccepted: (t: ZmTerritoryId, ids: string[]) => void;
   setActivityChecks: (key: string, ids: string[]) => void;
   setEscalated: (t: ZmTerritoryId, ids: string[]) => void;
+  saveLearning: () => void;
+  setRecSelected: (ids: string[]) => void;
+  setRecPriority: (id: string, p: Priority) => void;
+  setRecOption: (o: ZmState['recOption']) => void;
+  submitRecommendations: () => void;
+  ask: (q: string) => void;
 }
 
 const Ctx = createContext<ZmStore | null>(null);
@@ -171,6 +185,12 @@ export function ZmStoreProvider({ children }: { children: ReactNode }) {
     setAccepted: (t, ids) => setState((s) => ({ ...s, accepted: { ...s.accepted, [t]: ids } })),
     setActivityChecks: (key, ids) => setState((s) => ({ ...s, activityChecks: { ...s.activityChecks, [key]: ids } })),
     setEscalated: (t, ids) => setState((s) => ({ ...s, escalated: { ...s.escalated, [t]: ids } })),
+    saveLearning: () => setState((s) => ({ ...s, learningSaved: true })),
+    setRecSelected: (recSelected) => setState((s) => ({ ...s, recSelected })),
+    setRecPriority: (id, p) => setState((s) => ({ ...s, recPriority: { ...s.recPriority, [id]: p } })),
+    setRecOption: (recOption) => setState((s) => ({ ...s, recOption })),
+    submitRecommendations: () => setState((s) => ({ ...s, recStatus: 'submitted' })),
+    ask: (q) => setState((s) => ({ ...s, asked: [q, ...s.asked.filter((x) => x !== q)].slice(0, 5) })),
     answer: (qid, response) => setState((s) => ({ ...s, questions: { ...s.questions, [qid]: 'responded' }, responses: { ...s.responses, [qid]: response } })),
   }), [state]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

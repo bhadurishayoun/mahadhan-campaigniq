@@ -32,7 +32,7 @@ import { opt, useGo } from '../common';
 import { CollateralSteps, StudioTabs, ZmPage, ZM_SECTION } from './frame';
 import { EditBar, Field, LeaveGuard, List, Notes } from './parts';
 
-const TEMPLATE_IMG: Record<TemplateId, string> = { detailer: imgDetailer, leaflet: imgLeaflet, whatsapp: imgWhatsapp, poster: imgPoster };
+export const TEMPLATE_IMG: Record<TemplateId, string> = { detailer: imgDetailer, leaflet: imgLeaflet, whatsapp: imgWhatsapp, poster: imgPoster };
 const PLAYBOOK_IMG: Record<TemplateId, string> = { detailer: pbDetailer, leaflet: pbLeaflet, whatsapp: pbWhatsapp, poster: pbPoster };
 export const IMAGES: Record<ImageKey, string> = { 'onion-bulbs': imgBulbs, 'onion-field': imgField, 'onion-rows': imgRows, 'onion-harvest': imgHarvest };
 const REVIEW_TONE: Record<ReviewStatus, Tone> = { under_review: 'warn', evidence_pending: 'warn', not_validated: 'risk', review_pending: 'neutral', approved: 'ok' };

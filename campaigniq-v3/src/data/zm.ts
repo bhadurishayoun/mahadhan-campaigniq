@@ -591,6 +591,29 @@ export const zmImpact = () => {
   };
 };
 
+/** Crop × product × geography rows: Ambad reads the shared impact; Ghansawangi's approved campaign has started; the rest have not. */
+export interface ImpactRow {
+  id: string; territory: ZmTerritoryId; crop: string; product: string; category: CategoryId; campaign: string;
+  lastYear: number; abp: number; reached: number | null; trials: number | null; adopters: number | null; sales: number | null;
+  done: number | null; planned: number; confidence: 'Medium' | 'Low' | 'Not started';
+}
+export const impactRows = (): ImpactRow[] => {
+  const i = zmImpact();
+  const row = (id: string, t: ZmTerritoryId, crop: string, product: string, category: CategoryId, campaign: string, rest: Partial<ImpactRow>, planned: number): ImpactRow => {
+    const cell = portfolioCell(category, t);
+    return { id, territory: t, crop, product, category, campaign, lastYear: cell.lastYear, abp: cell.abp, reached: null, trials: null, adopters: null, sales: null, done: null, planned, confidence: 'Not started', ...rest };
+  };
+  const q = approvalQueue();
+  const units = (t: ZmTerritoryId) => q.find((x) => x.territory === t)!.units;
+  return [
+    row('ambad-onion', 'ambad', 'Onion', 'Croptek', 'croptek', 'Retailer-led Croptek conversion', { reached: i.reached, trials: i.trials, adopters: i.adopters, sales: i.campaignLinkedSales, done: i.activitiesDone, confidence: 'Medium' }, i.activitiesPlanned),
+    row('ghansawangi-maize', 'ghansawangi', 'Maize', 'Water Soluble', 'water-soluble', q[1].campaign, { reached: 220, trials: 48, adopters: 18, sales: 1.8, done: 4, confidence: 'Low' }, units('ghansawangi')),
+    row('bhokardan-onion', 'bhokardan', 'Onion', 'Croptek', 'croptek', q[4].campaign, {}, units('bhokardan')),
+    row('badnapur-soybean', 'badnapur', 'Soybean', 'Water Soluble', 'water-soluble', q[2].campaign, {}, units('badnapur')),
+    row('jafrabad-cotton', 'jafrabad', 'Cotton', 'Specialty Nutrition', 'specialty', q[3].campaign, {}, units('jafrabad')),
+  ];
+};
+
 // ---------------------------------------------------------------- next-season recommendations
 export type Priority = 'High' | 'Medium' | 'Low';
 /** Findings are computed from the Ambad results; actions and priorities are the Zonal Manager's proposal. */
