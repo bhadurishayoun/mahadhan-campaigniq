@@ -399,7 +399,10 @@ export function EvidenceTracking() {
           </Card>
           <Card title={`Selected request: ${r.title}`} icon={FileSearch} right={<StatusChip tone={REQ_TONE[status]}>{REQUEST_STATUS_LABEL[status]}</StatusChip>}>
             <div className="grid g3">
-              <List items={[{ label: 'Owner', value: rec?.owner ?? r.owner }, { label: 'Due date', value: rec?.due ?? r.due }]} />
+              <div>
+                <div className="calc-label">Request information</div>
+                <List items={[{ label: 'Owner', value: rec?.owner ?? r.owner }, { label: 'Due date', value: rec?.due ?? r.due }]} />
+              </div>
               <div>
                 <div className="calc-label">Validation checklist</div>
                 <List items={r.checklist.map((c) => ({ icon: status === 'validated' ? CircleCheck : CircleAlert, tone: status === 'validated' ? undefined : 'warn' as const, label: c }))} />
@@ -407,6 +410,8 @@ export function EvidenceTracking() {
               <div>
                 <div className="calc-label">Evidence requirements</div>
                 <List items={r.requirements.map((q) => ({ label: q }))} />
+                <div className="calc-label" style={{ marginTop: 12 }}>Source systems</div>
+                <List items={[...new Set(EVIDENCE_READINESS.filter((item) => item.request === r.id).map((item) => item.source))].map((label) => ({ label }))} />
               </div>
             </div>
           </Card>
