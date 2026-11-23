@@ -57,7 +57,8 @@ export function ActionTracker() {
         <div className="register-scroll">
         <DataTable rows={list} rowKey={(i) => i.id} selected={sel?.id} onRowClick={(i) => setP({ selected: i.id })}
           columns={[
-            { key: 'n', header: 'Intervention', render: (i) => { const I = CATEGORY_ICON[i.category]; return <span className="row"><I size={17} color="var(--brand)" /><b>{i.name}</b></span>; } },
+            { key: 'ic', header: '', width: 44, render: (i) => { const I = CATEGORY_ICON[i.category]; return <I size={18} color="var(--brand)" style={{ display: 'block', margin: '0 auto' }} />; } },
+            { key: 'n', header: 'Intervention', render: (i) => <b>{i.name}</b> },
             { key: 'c', header: 'Category', align: 'center', render: (i) => <StatusChip tone="info">{i.category}</StatusChip> },
             { key: 'g', header: 'Geography', render: (i) => i.geography },
             { key: 't', header: 'Business trigger', render: (i) => i.trigger },
