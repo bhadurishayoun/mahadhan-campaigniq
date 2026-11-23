@@ -112,7 +112,7 @@ export const PRODUCT_MIX: MixRow[] = [];
 // ---------------------------------------------------------------- theme status labels
 export const THEME_STATUS: Record<ThemeStatus, { mh: string; bh: string; tone: 'ok' | 'warn' | 'risk' | 'neutral' }> = {
   review_pending: { mh: 'Submitted', bh: 'Review pending', tone: 'warn' },
-  clarification_requested: { mh: 'Clarification requested', bh: '—', tone: 'risk' },
+  clarification_requested: { mh: 'Clarification requested', bh: 'NA', tone: 'risk' },
   approved: { mh: 'Submitted', bh: 'Approved', tone: 'ok' },
   returned: { mh: 'Returned for changes', bh: 'Returned', tone: 'neutral' },
   rejected: { mh: 'Submitted', bh: 'Rejected', tone: 'risk' },

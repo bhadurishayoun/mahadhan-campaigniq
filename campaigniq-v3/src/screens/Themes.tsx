@@ -157,7 +157,7 @@ export function ThemeInbox() {
         { key: 'region', label: 'Region', value: region, options: REGION_OPTIONS, onChange: setRegion },
         { key: 'crop', label: 'Crop', value: crop, options: CROP_OPTIONS, onChange: setCrop },
         { key: 'product', label: 'Product', value: product, options: PRODUCT_OPTIONS, onChange: setProduct },
-        { key: 'status', label: 'Status', value: status, options: [opt(ALL, 'All statuses'), ...Object.entries(THEME_STATUS).map(([k, v]) => opt(k, v.bh === '—' ? v.mh : v.bh))], onChange: setStatus },
+        { key: 'status', label: 'Status', value: status, options: [opt(ALL, 'All statuses'), ...Object.entries(THEME_STATUS).map(([k, v]) => opt(k, v.bh === 'NA' ? v.mh : v.bh))], onChange: setStatus },
       ]} />
       <Card title="Strategic theme approval queue" icon={FileText} flush right={<Button small primary icon={CheckCircle2} onClick={sel && store.themeStatus[sel.id] !== 'clarification_requested' ? () => go(`${R.decision(sel.id)}&choice=approve`) : undefined}>Approve theme</Button>}>
         {queue.length ? (
@@ -168,7 +168,7 @@ export function ThemeInbox() {
               { key: 'c', header: 'Priority crop / product', render: (t) => t.cropProduct },
               { key: 'p', header: 'Proposed by', render: (t) => t.proposedBy },
               { key: 'pr', header: 'Priority', align: 'center', render: (t) => <StatusChip tone={t.priority === 'High' ? 'warn' : 'ok'}>{t.priority}</StatusChip> },
-              { key: 's', header: 'Review status', align: 'center', render: (t) => { const s = THEME_STATUS[store.themeStatus[t.id]]; return <StatusChip tone={s.tone}>{s.bh === '—' ? s.mh : s.bh}</StatusChip>; } },
+              { key: 's', header: 'Review status', align: 'center', render: (t) => { const s = THEME_STATUS[store.themeStatus[t.id]]; return <StatusChip tone={s.tone}>{s.bh === 'NA' ? s.mh : s.bh}</StatusChip>; } },
             ]} />
         ) : <div style={{ padding: '6px 16px 10px' }}><StatusChip tone="neutral">No themes match the filters</StatusChip></div>}
       </Card>
@@ -193,7 +193,7 @@ export function ThemeInbox() {
         </div>
       )}
       <FooterBar onBack={back} onNext={sel ? () => go(R.review(sel.id)) : undefined} />
-      {modalTheme && <DecisionModal t={modalTheme} initialChoice={params.get('choice') as ThemeDecision['choice'] | null} onClose={() => setParams({})} onShowOriginal={() => setEvidence({ title: `Original proposal — ${modalTheme.name}`, owner: 'Marketing Head and Zonal Manager records', facts: [
+      {modalTheme && <DecisionModal t={modalTheme} initialChoice={params.get('choice') as ThemeDecision['choice'] | null} onClose={() => setParams({})} onShowOriginal={() => setEvidence({ title: `Original proposal: ${modalTheme.name}`, owner: 'Marketing Head and Zonal Manager records', facts: [
         { label: 'Proposed by', value: modalTheme.proposedBy }, { label: 'Geography', value: modalTheme.geography }, { label: 'Crop / product', value: modalTheme.cropProduct },
         { label: 'Objective', value: modalTheme.objective }, { label: 'Target cohort', value: modalTheme.cohort }, { label: 'Priority', value: modalTheme.priority },
       ] })} />}
@@ -229,7 +229,7 @@ export function ThemeReview() {
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Strategic themes & approvals', onClick: () => go(R.inbox) }, { label: 'Theme approval inbox', onClick: () => go(R.inbox) }, { label: 'Detailed review' }]} />
-      <PageHeader title="Strategic Theme Business Alignment & Detailed Review" right={<StatusChip tone={s.tone}>{s.bh === '—' ? s.mh : `Business Head: ${s.bh.toLowerCase()}`}</StatusChip>} />
+      <PageHeader title="Strategic Theme Business Alignment & Detailed Review" right={<StatusChip tone={s.tone}>{s.bh === 'NA' ? s.mh : `Business Head: ${s.bh.toLowerCase()}`}</StatusChip>} />
       <Card>
         <div className="row" style={{ gap: 24, flexWrap: 'wrap' }}>
           <span className="row"><Layers size={20} color="var(--amber)" /><span><div className="kpi-label">Selected theme (Marketing Head)</div><b className="strong">{t.name}</b></span></span>
@@ -257,7 +257,7 @@ export function ThemeReview() {
           </Card>
         </div>
         <div className="stack">
-          <Card title="Strategic theme review" icon={FileText} right={<><Button small icon={FileSearch} onClick={() => showEvidence(`Source evidence — ${t.name}`, themeEvidence(t.id).map((e) => ({ label: e.label, value: e.value })))}>Source evidence</Button><Button small primary onClick={() => setParams({ modal: 'decision' })}>Theme decision</Button></>}>
+          <Card title="Strategic theme review" icon={FileText} right={<><Button small icon={FileSearch} onClick={() => showEvidence(`Source evidence: ${t.name}`, themeEvidence(t.id).map((e) => ({ label: e.label, value: e.value })))}>Source evidence</Button><Button small primary onClick={() => setParams({ modal: 'decision' })}>Theme decision</Button></>}>
             <div className="kv">
               <span>Strategic objective</span><b>{t.objective}</b>
               <span>Priority geography</span><b>{t.state}</b>
@@ -273,7 +273,7 @@ export function ThemeReview() {
         </div>
       </div>
       <FooterBar onBack={back} onNext={() => go(R.tracker)} />
-      {params.get('modal') === 'decision' && <DecisionModal t={t} initialChoice={params.get('choice') as ThemeDecision['choice'] | null} onClose={() => setParams({})} onShowOriginal={() => showEvidence(`Original proposal — ${t.name}`, [
+      {params.get('modal') === 'decision' && <DecisionModal t={t} initialChoice={params.get('choice') as ThemeDecision['choice'] | null} onClose={() => setParams({})} onShowOriginal={() => showEvidence(`Original proposal: ${t.name}`, [
         { label: 'Proposed by', value: t.proposedBy }, { label: 'Geography', value: t.geography }, { label: 'Crop / product', value: t.cropProduct },
         { label: 'Objective', value: t.objective }, { label: 'Target cohort', value: t.cohort }, { label: 'Priority', value: t.priority },
       ])} />}

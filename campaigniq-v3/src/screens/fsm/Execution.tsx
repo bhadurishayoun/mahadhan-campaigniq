@@ -116,7 +116,7 @@ export function ControlTower() {
             {exceptions.length === 0 && <List items={[{ icon: CircleCheck, label: 'All at-risk activities have a corrective action' }]} />}
             <List items={exceptions.map((u) => ({
               icon: TriangleAlert, tone: 'warn' as const,
-              label: <span className="stack" style={{ gap: 0 }}><b>{u.village} — {activityName(u.activity).replace(/s$/, '')}</b><small>Week {u.week} · {u.issue}</small></span>,
+              label: <span className="stack" style={{ gap: 0 }}><b>{u.village} · {activityName(u.activity).replace(/s$/, '')}</b><small>Week {u.week} · {u.issue}</small></span>,
               value: <Button small onClick={() => go(F.activity(u.id))}>Take action</Button>,
             }))} />
           </Card>
@@ -226,7 +226,7 @@ function ActivityWorkspace({ unit, all, choices, village, onPick }: { unit: Acti
   };
 
   return (
-    <FsmPage section={SECTION} sectionTo={F.execution} trail="Activity workspace" title={`${village} — ${act.name}`}
+    <FsmPage section={SECTION} sectionTo={F.execution} trail="Activity workspace" title={`${village} · ${act.name}`}
       right={<StatusChip tone={TONE[unit.status]}>{UNIT_STATUS_LABEL[unit.status]}</StatusChip>}
       back={F.execution} next={save} nextLabel={needsAction ? 'Save and assign corrective action' : 'Next'}>
       <div className="kpis">
@@ -276,7 +276,7 @@ function ActivityWorkspace({ unit, all, choices, village, onPick }: { unit: Acti
           </Card>
           <Card title={`Related exceptions (${related.length})`} icon={TriangleAlert}>
             {related.length === 0 && <List items={[{ icon: CircleCheck, label: 'No other at-risk activity' }]} />}
-            <List items={related.map((u) => ({ icon: TriangleAlert, tone: 'warn' as const, label: `${u.village} — ${activityName(u.activity)} · ${u.issue}`, value: <Button small onClick={() => go(F.activity(u.id))}>View details</Button> }))} />
+            <List items={related.map((u) => ({ icon: TriangleAlert, tone: 'warn' as const, label: `${u.village} · ${activityName(u.activity)}: ${u.issue}`, value: <Button small onClick={() => go(F.activity(u.id))}>View details</Button> }))} />
           </Card>
         </div>
         <div className="stack">

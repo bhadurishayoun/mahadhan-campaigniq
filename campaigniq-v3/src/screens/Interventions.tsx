@@ -201,7 +201,7 @@ export function PortfolioLearning() {
             { key: 'd', header: 'Proposed review direction', align: 'center', render: (t) => <StatusChip tone={t.direction === 'Redesign' ? 'warn' : t.direction === 'Assess' ? 'neutral' : 'ok'}>{t.direction}</StatusChip> },
             { key: 's', header: 'Select', align: 'center', render: (t) => checkbox(themesSel.includes(t.id)) },
           ]}
-          total={{ n: 'Total', c: NATIONAL.campaigns, i: lakh(NATIONAL.actual), a: num(NATIONAL.adopters), r: '—', d: '—' }}
+          total={{ n: 'Total', c: NATIONAL.campaigns, i: lakh(NATIONAL.actual), a: num(NATIONAL.adopters), r: <span className="na">NA</span>, d: <span className="na">NA</span> }}
         />
       </Card>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.5fr)' }}>

@@ -32,6 +32,7 @@ for (const f of files) {
     const text = text0.replace(/AI Copilot workspace/g, '');
     for (const w of WORDS) if (new RegExp(`\\b${w.replace(/ /g, '\\s+')}\\b`, 'i').test(text)) hits.push(`${where}  banned word "${w}"`);
     if (CODE.test(text)) hits.push(`${where}  screen code`);
+    if (line.includes('—')) hits.push(`${where}  long dash in UI text`);
     if (/Sources?:|READ-ONLY|Recommended next|double count|Not an actual/i.test(text)) hits.push(`${where}  sources / read-only label`);
     if (!f.endsWith('theme.ts') && /#[0-9a-fA-F]{3,8}\b/.test(line) && !/var\(--/.test(line)) hits.push(`${where}  hex colour outside theme.ts`);
     for (const ic of ICONS) if (new RegExp(`\\b${ic}\\b`).test(line)) hits.push(`${where}  banned icon ${ic}`);

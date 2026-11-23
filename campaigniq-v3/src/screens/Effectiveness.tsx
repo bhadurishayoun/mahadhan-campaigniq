@@ -32,7 +32,7 @@ export function Effectiveness() {
   const sel = selectedId ? campaignById(selectedId) : null;
 
   const attributionEvidence = (c: Campaign): Evidence => ({
-    title: `Attribution evidence — ${c.name}`,
+    title: `Attribution evidence: ${c.name}`,
     owner: 'Zonal Manager attribution record',
     status: <StatusChip tone="ok">Complete</StatusChip>,
     facts: [
@@ -154,7 +154,7 @@ function Diagnostics({ c, onClose }: { c: Campaign; onClose: () => void }) {
   ];
   return (
     <Drawer
-      title={`${c.name} — performance diagnostics`}
+      title={`Performance diagnostics: ${c.name}`}
       onClose={onClose}
       footer={<PanelFooter onBack={onClose} action={<Button small primary onClick={requestIntervention}>Request strategic intervention</Button>} />}
     >

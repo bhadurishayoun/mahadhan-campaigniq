@@ -115,7 +115,7 @@ export function InvestmentRoi() {
         <PerAdopterCard scope={region === ALL ? null : (region as RegionId)} rowOf={regionRow} overall={group('all', 'All', tagged)} />
         <Card title="Financial status" note={region === ALL ? 'National' : undefined} icon={ShieldCheck} right={
 <Button small icon={FileSearch} onClick={() => setEvidence({
-          title: 'ROI evidence — national portfolio', owner: 'Zonal Manager attribution records',
+          title: 'ROI evidence: national portfolio', owner: 'Zonal Manager attribution records',
           status: <StatusChip tone="ok">Attribution complete</StatusChip>,
           facts: [
             { label: 'Campaigns with a business case', value: `${CAMPAIGNS.filter((c) => businessCase(c.id)).length} of ${NATIONAL.campaigns}` },
@@ -253,7 +253,7 @@ export function CommercialReturns() {
       </Card>
       {sel && (
         <div className="grid" style={{ gridTemplateColumns: '1.3fr .9fr 1fr' }}>
-          <Card title={`${sel.name} — financial forecast`} note="₹ lakh" icon={ChartColumn} right={bc ? <StatusChip tone="warn">Forecast</StatusChip> : undefined}>
+          <Card title={`Financial forecast: ${sel.name}`} note="₹ lakh" icon={ChartColumn} right={bc ? <StatusChip tone="warn">Forecast</StatusChip> : undefined}>
             {bc ? (
               <Waterfall steps={[
                 { label: 'Forecast sales', value: bc.forecastSales, total: true },
@@ -266,7 +266,7 @@ export function CommercialReturns() {
           </Card>
           <Card title="Business case metrics" icon={Scale} right={
           <Button small icon={FileSearch} onClick={() => setEvidence({
-            title: `Business case — ${sel.name}`, owner: 'Zonal Manager campaign business case',
+            title: `Business case: ${sel.name}`, owner: 'Zonal Manager campaign business case',
             status: <StatusChip tone="ok">{bc.forecastSales === Math.round((sel.sales * sel.approved) / sel.actual) ? 'Projected from validated sales' : 'Approved'}</StatusChip>,
             facts: bc ? [
               { label: 'Approved investment', value: lakh(bc.investment) },
@@ -286,7 +286,7 @@ export function CommercialReturns() {
           </Card>
           <Card title="Attribution readiness" icon={ShieldCheck} right={
           <Button small icon={ShieldCheck} onClick={() => setEvidence({
-            title: `Attribution evidence — ${sel.name}`, owner: 'Zonal Manager attribution record',
+            title: `Attribution evidence: ${sel.name}`, owner: 'Zonal Manager attribution record',
             status: <StatusChip tone="ok">Attribution complete</StatusChip>,
             facts: [{ label: 'Recorded adopters', value: num(sel.adopters) }, { label: 'Purchase matching', value: 'Complete' }, { label: 'Validated incremental sales', value: lakh(sel.sales) }, { label: 'Actual net ROI', value: times(netRoi(sel.sales, sel.actual)) }],
           })}>Attribution evidence</Button>

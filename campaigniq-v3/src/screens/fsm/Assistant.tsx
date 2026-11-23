@@ -58,14 +58,14 @@ export function FsmAssistant() {
     },
     risks: {
       summary: atRisk.length ? `${atRisk.length} of ${k.planned} activity units are at risk; both need a corrective action before the next checkpoint.` : `No activity is at risk; ${k.completed} of ${k.planned} units are completed.`,
-      rows: atRisk.length ? atRisk.map((u) => ({ n: `${u.village} — ${activityName(u.activity)}`, what: `Week ${u.week} · ${u.owner} · ${u.issue}`, figure: 'At risk', to: F.activity(u.id) }))
+      rows: atRisk.length ? atRisk.map((u) => ({ n: `${u.village} · ${activityName(u.activity)}`, what: `Week ${u.week} · ${u.owner} · ${u.issue}`, figure: 'At risk', to: F.activity(u.id) }))
         : [{ n: 'Execution', what: `${k.completed} completed · ${k.scheduled} scheduled`, figure: `${k.completed} / ${k.planned}`, to: F.execution }],
     },
     diagnostics: {
       summary: `${lo.name}'s trial-to-adoption is ${pct(lo.conversionPct)} (${lo.adopters} adopters / ${lo.trials} trials), ${s.villageGap.toFixed(1)} pp below ${hi.name} (${pct(hi.conversionPct)}).`,
       rows: [
         ...[hi, lo].map((v) => ({ n: v.name, what: `${v.adopters} adopters / ${v.trials} trials`, figure: pct(v.conversionPct), to: F.diagnostic })),
-        ...atRisk.filter((u) => u.village === lo.name).map((u) => ({ n: `${u.village} — ${activityName(u.activity)}`, what: u.issue ?? '', figure: 'At risk', to: F.activity(u.id) })),
+        ...atRisk.filter((u) => u.village === lo.name).map((u) => ({ n: `${u.village} · ${activityName(u.activity)}`, what: u.issue ?? '', figure: 'At risk', to: F.activity(u.id) })),
       ],
     },
   };
@@ -116,7 +116,7 @@ export function FsmAssistant() {
         <div className="stack">
           <Card title="Next best actions" icon={Lightbulb}>
             <List items={[
-              ...atRisk.map((u) => ({ label: `${u.issue} — ${u.village} ${activityName(u.activity).toLowerCase()} (${u.owner}).` })),
+              ...atRisk.map((u) => ({ label: `${u.issue}: ${u.village} ${activityName(u.activity).toLowerCase()} (${u.owner}).` })),
               { label: `Validate follow-up records with ${lo.name} trial farmers.` },
             ]} />
           </Card>

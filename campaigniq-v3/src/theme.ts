@@ -26,6 +26,7 @@ export const C = {
   changedBg: '#FFFBF0',
   changedInk: '#9A6A12',
   changedLine: '#EFD9A6',
+  na: '#5C6963',
 } as const;
 
 /** Chart series mapping, fixed across the workspace. */
@@ -40,7 +41,7 @@ const CSS_NAMES: Record<keyof typeof C, string> = {
   amberInk: '--amber-ink', risk: '--risk', riskSoft: '--risk-soft', neutral: '--neutral', ink: '--ink',
   inkSoft: '--ink-soft', muted: '--muted', line: '--line', canvas: '--canvas', card: '--card', overlay: '--overlay',
   amberDark: '--amber-dark', kpiBg: '--kpi-bg', kpiLine: '--kpi-line', kpiInk: '--kpi-ink', panelBg: '--panel-bg', okInk: '--ok-ink',
-  changedBg: '--changed-bg', changedInk: '--changed-ink', changedLine: '--changed-line',
+  changedBg: '--changed-bg', changedInk: '--changed-ink', changedLine: '--changed-line', na: '--na',
 };
 
 export function applyTheme() {

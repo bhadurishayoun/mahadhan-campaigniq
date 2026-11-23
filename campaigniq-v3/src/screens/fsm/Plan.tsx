@@ -269,7 +269,7 @@ export function TerritoryNetwork() {
             ))}
           </div>
         </Card>
-        <Card title={`Mapped outlets — ${place}`} icon={Store} flush right={<Button small icon={RefreshCw} onClick={() => bh.toast(`Outlet master refreshed for ${territoryName(t)}`)}>Refresh outlet master</Button>}>
+        <Card title={`Mapped outlets: ${place}`} icon={Store} flush right={<Button small icon={RefreshCw} onClick={() => bh.toast(`Outlet master refreshed for ${territoryName(t)}`)}>Refresh outlet master</Button>}>
           <div className="register-scroll">
           <DataTable rows={rows} rowKey={key}
             columns={[
@@ -286,7 +286,7 @@ export function TerritoryNetwork() {
           </div>
         </Card>
         <div className="stack">
-          <Card title={`${place} — summary`} icon={Network}>
+          <Card title={`Summary: ${place}`} icon={Network}>
             <List items={[
               { label: 'Mapped dealers', value: num(scoped.dealers) },
               { label: 'Mapped retailers', value: num(scoped.retailers) },

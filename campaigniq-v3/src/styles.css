@@ -336,3 +336,5 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 .status-ok, .status-ok b { color: var(--ok-ink); }
 .status-ok > svg { color: var(--brand); }
 .hbars.fill { flex: 1; justify-content: space-between; }
+/* Not-applicable placeholder value */
+.na { color: var(--na); }
