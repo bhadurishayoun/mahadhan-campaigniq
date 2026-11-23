@@ -456,6 +456,69 @@ export const C2_CASE = { investment: 8, forecastSales: 28 };
 /** C2 ROI is exactly 0.225×; rounded half-up to 2 decimals so it reads +0.23× (floating point would give 0.22). */
 export const businessCaseC2 = () => ({ ...C2_CASE, contribution: C2_CASE.forecastSales * CONTRIBUTION_MARGIN, netRoi: Math.round(netRoi(C2_CASE.forecastSales, C2_CASE.investment) * 100 + 1e-6) / 100 });
 
+/** Assumption rows on the business case: inputs are editable, derived rows follow the bridge. */
+export type DriverKey = keyof Drivers;
+export const DRIVER_ROWS: { key: DriverKey | 'buyers' | 'volumeMt' | 'sales'; label: string; unit: string; logic: string; source: string; validation: string; input: boolean; step?: number }[] = [
+  { key: 'eligibleFarmers', label: 'Eligible target farmers', unit: 'farmers', logic: 'Eligible farmers in the C1 cohort', source: 'CRM', validation: 'Pending', input: true, step: 50 },
+  { key: 'conversionUpliftPct', label: 'Incremental conversion', unit: '%', logic: 'Uplift over a comparable baseline', source: 'Concept evidence', validation: 'Benchmark pending', input: true, step: 1 },
+  { key: 'buyers', label: 'Incremental purchasers', unit: 'buyers', logic: 'Eligible farmers × incremental conversion', source: 'Derived', validation: 'Derived', input: false },
+  { key: 'volumePerBuyerMt', label: 'Volume per buyer', unit: 'MT', logic: 'Average quantity per first purchase', source: 'Product master', validation: 'Pending', input: true, step: 0.05 },
+  { key: 'volumeMt', label: 'Incremental volume', unit: 'MT', logic: 'Incremental purchasers × volume per buyer', source: 'Derived', validation: 'Derived', input: false },
+  { key: 'realisationPerMt', label: 'Net realisation', unit: '₹/MT', logic: 'Weighted average realisation', source: 'Sales / ERP', validation: 'Pending', input: true, step: 5000 },
+  { key: 'sales', label: 'Incremental sales', unit: '₹ L', logic: 'Incremental volume × net realisation', source: 'Derived', validation: 'Not yet reconciled', input: false },
+  { key: 'marginPct', label: 'Contribution margin', unit: '%', logic: 'Product P&L guidance', source: 'Finance / P&L', validation: 'Finance validation', input: true, step: 1 },
+  { key: 'investment', label: 'Campaign investment', unit: '₹ L', logic: 'Regional envelope (not additive to territory budgets)', source: 'Business case', validation: 'Draft', input: true, step: 0.5 },
+];
+/** Scenario sales scale the bridge's base sales: conservative 75%, optimistic 125% (₹36 / 48 / 60 L at the defaults). */
+export const SCENARIO_FACTOR: Record<'conservative' | 'base' | 'optimistic', number> = { conservative: 0.75, base: 1, optimistic: 1.25 };
+export type ScenarioKey = keyof typeof SCENARIO_FACTOR;
+export const scenariosFor = (d: Drivers = DRIVERS) => {
+  const base = driverBridge(d).sales;
+  return SCENARIO_SALES.map((s) => ({ id: s.id as ScenarioKey, name: s.name, ...scenarioRow(base * SCENARIO_FACTOR[s.id as ScenarioKey], d.investment, d.marginPct), investment: d.investment, marginPct: d.marginPct }));
+};
+
+/** C1 / C2 audience reconciliation: overlap farmers converting at the C2 trial-to-purchase rate would be counted twice. */
+export const reconciliation = (d: Drivers = DRIVERS) => {
+  const c1 = driverBridge(d);
+  const c2 = businessCaseC2();
+  const overlapBuyers = AUDIENCE.overlap * (CROPTEK_EVIDENCE.purchases / CROPTEK_EVIDENCE.trials);
+  const doubleCount = (overlapBuyers * d.volumePerBuyerMt * d.realisationPerMt) / 100000;
+  return {
+    unique: AUDIENCE.c1 + AUDIENCE.c2 - AUDIENCE.overlap, overlapBuyers, doubleCount,
+    combinedSales: c1.sales + c2.forecastSales, combinedNet: c1.sales + c2.forecastSales - doubleCount,
+    combinedInvestment: d.investment + c2.investment,
+  };
+};
+
+// ---------------------------------------------------------------- proposals and revision
+export type ProposalStatus = 'draft' | 'submitted' | 'resubmitted';
+export const PROPOSALS: { id: 'c1' | 'c2'; label: string; focus: string }[] = [
+  { id: 'c1', label: 'Proposal A', focus: 'Convert conventional nutrition users through retailer influence' },
+  { id: 'c2', label: 'Proposal B', focus: 'Drive trials and nurture to purchase in target villages' },
+];
+export const SUBMISSION_CHECKS = [
+  'Technical / agronomy claims validation, including the Croptek collateral',
+  'Collateral approval (content, brand, legal if required)',
+  'Eligible audience definition, consent and data readiness',
+  'Financial incrementality and ABP reconciliation',
+  'Proposal A / B audience overlap assessment',
+];
+/** Marketing Head notes on the returned C1 submission (version 1). */
+export const MH_RETURN = {
+  date: '06 Feb 2027', priority: 'High',
+  params: [
+    { key: 'investment' as const, label: 'Proposed investment', comment: 'Reassess scale and deployment mix.' },
+    { key: 'sales' as const, label: 'Forecast incremental sales', comment: 'Clarify baseline and attribution method.' },
+    { key: 'marginPct' as const, label: 'Contribution margin', comment: 'Reconfirm the margin assumption.' },
+  ],
+  observations: [
+    { id: 'baseline', label: 'Incremental sales baseline and attribution method', comment: 'Specify the baseline and attribution approach.' },
+    { id: 'retailer', label: 'Retailer participation / stock assumptions', comment: 'Confirm retailer count, participation plan and stock norms.' },
+    { id: 'overlap', label: 'Cohort overlap with the C2 proposal', comment: 'Ensure clear, non-overlapping cohorts with C2.' },
+    { id: 'claims', label: 'Technical claims and authorised collateral versions', comment: 'Use only approved claims and the latest authorised collateral versions.' },
+  ],
+};
+
 // ---------------------------------------------------------------- activity approvals
 export type ApprovalStatus = 'pending' | 'returned' | 'approved' | 'awaiting';
 export const APPROVAL_STATUS_LABEL: Record<ApprovalStatus, string> = { pending: 'Pending review', returned: 'Returned', approved: 'Approved', awaiting: 'Awaiting submission' };

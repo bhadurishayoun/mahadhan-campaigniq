@@ -6,6 +6,7 @@ import {
   ambadOnionGrowth, approvalQueue, businessCaseC1, businessCaseC2, CATEGORIES, driverBridge, nextSeason, planStatus, portfolioByTerritory,
   portfolioRows, portfolioTotal, revisedPlan, SCENARIO_SALES, scenarioRow, territoryPlan, territoryPlans, trialToPurchasePct, zmImpact,
   ZM_TERRITORY_IDS, zoneTerritories, zoneTotal, planContribution, planPortfolio, planCrops, mappingStatus, BASE_CHECKS, MAPPING_CHECKS,
+  scenariosFor, reconciliation, DRIVER_ROWS, MH_RETURN, SUBMISSION_CHECKS, DRIVERS,
   REVIEW_ITEMS, REWRITES, SEED_VERSIONS, TEMPLATES, versionChanges, BASE_ASSET_STATUS,
   CLAIMS, CONCEPTS, conceptRationale, CROP_STAGES, INTERVENTION_KPIS, JOURNEY, secondaryTrend, ZM_THEMES, AUDIENCE,
 } from './zm';
@@ -169,5 +170,22 @@ describe('collateral (screens 10–14)', () => {
   it('v0.2 → v0.3 changes: headline, claim copy, image and the Marathi variant', () => {
     expect(versionChanges(SEED_VERSIONS[1], SEED_VERSIONS[2]).map((c) => c.item)).toEqual(['Headline', 'Product claim copy', 'Onion image', 'Marathi variant']);
     expect(versionChanges(SEED_VERSIONS[2], SEED_VERSIONS[2])).toEqual([]);
+  });
+});
+
+describe('business case and proposals (screens 15–19)', () => {
+  it('scenarios scale the bridge: ₹36 / 48 / 60 L at +0.05× / +0.40× / +0.75×', () => {
+    expect(scenariosFor().map((x) => [r1(x.sales), r1(x.contribution), r2(x.netRoi)])).toEqual([[36, 12.6, 0.05], [48, 16.8, 0.4], [60, 21, 0.75]]);
+    const more = scenariosFor({ ...DRIVERS, conversionUpliftPct: 12 });
+    expect(r1(more[1].sales)).toBe(57.6);
+  });
+  it('C1 / C2 reconciliation: 2,496 unique farmers, ₹76.0 L combined, ₹3.9 L double count', () => {
+    const r = reconciliation();
+    expect([r.unique, r1(r.combinedSales), r1(r.doubleCount), r1(r.combinedNet), r.combinedInvestment]).toEqual([2496, 76, 3.9, 72.1, 20]);
+  });
+  it('9 driver rows (6 inputs), 5 readiness checks, 3 + 4 Marketing Head return items', () => {
+    expect([DRIVER_ROWS.length, DRIVER_ROWS.filter((d) => d.input).length]).toEqual([9, 6]);
+    expect(SUBMISSION_CHECKS).toHaveLength(5);
+    expect([MH_RETURN.params.length, MH_RETURN.observations.length]).toEqual([3, 4]);
   });
 });

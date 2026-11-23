@@ -13,6 +13,7 @@ import { ActivityExecution, ControlTower } from './screens/fsm/Execution';
 import { CampaignImpact, VillageDiagnostic } from './screens/fsm/Impact';
 import { FsmAssistant } from './screens/fsm/Assistant';
 import { ZmBlank } from './screens/zm/Blank';
+import { AudienceReconciliation, BusinessCase, ProposalReview, ProposalRevision, ScenarioSimulator } from './screens/zm/Business';
 import { CollateralApprovals, CollateralEditor, CollateralTemplates, PlaybookRelease, VersionComparison } from './screens/zm/Collateral';
 import { AssignedThemes, ConceptComparison, ConceptStudio, PropositionDesigner } from './screens/zm/Studio';
 import { ConsolidatedPlans, PlanValidation, RevisedPlan, SkuReconciliation, ZmPerformance } from './screens/zm/Plans';
@@ -116,11 +117,11 @@ function buildRouter(session: Session, signOut: () => void) {
         { path: 'zm/studio/collateral/versions', element: <VersionComparison /> },
         { path: 'zm/studio/collateral/approvals', element: <CollateralApprovals /> },
         { path: 'zm/studio/playbook', element: <PlaybookRelease /> },
-        { path: 'zm/studio/business-case', element: <ZmBlank n={15} /> },
-        { path: 'zm/studio/scenarios', element: <ZmBlank n={16} /> },
-        { path: 'zm/studio/reconciliation', element: <ZmBlank n={17} /> },
-        { path: 'zm/studio/proposals', element: <ZmBlank n={18} /> },
-        { path: 'zm/studio/proposals/:id/revise', element: <ZmBlank n={19} /> },
+        { path: 'zm/studio/business-case', element: <BusinessCase /> },
+        { path: 'zm/studio/scenarios', element: <ScenarioSimulator /> },
+        { path: 'zm/studio/reconciliation', element: <AudienceReconciliation /> },
+        { path: 'zm/studio/proposals', element: <ProposalReview /> },
+        { path: 'zm/studio/proposals/:id/revise', element: <ProposalRevision /> },
         { path: 'zm/approvals', element: <ZmBlank n={20} /> },
         { path: 'zm/approvals/:territory', element: <ZmBlank n={21} /> },
         { path: 'zm/impact', element: <ZmBlank n={22} /> },

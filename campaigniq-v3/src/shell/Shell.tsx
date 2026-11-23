@@ -75,7 +75,8 @@ export function Shell({ session, onSignOut }: { session: Session; onSignOut: () 
   const me = PERSONAS.find((p) => p.id === persona)!;
   const nav_ = isFsm ? NAV_FSM : isZm ? NAV_ZM : NAV;
   const active = isFsm ? fsmNavKeyOf(pathname) : isZm ? zmNavKeyOf(pathname) : navKeyOf(pathname);
-  const alerts = isFsm || isZm ? [] : attentionItems(store.themeStatus);
+  const zmAlerts = zm.proposalStatus.c1 === 'submitted' ? [{ id: 'mh-return-c1', text: 'Marketing Head returned C1 for revision', to: Z.revise('c1') }] : [];
+  const alerts = isFsm ? [] : isZm ? zmAlerts : attentionItems(store.themeStatus);
   const scopes: { id: string; label: string }[] = isFsm ? FSM_SCOPES : isZm ? ZM_SCOPES : SCOPES;
   const scopeId: string = isFsm ? fsm.scope : isZm ? zm.scope : store.scope;
   const setScope = (id: string) => (isFsm ? fsm.setScope(id as typeof fsm.scope) : isZm ? zm.setScope(id as typeof zm.scope) : store.setScope(id as Scope));

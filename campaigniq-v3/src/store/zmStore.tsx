@@ -3,7 +3,7 @@
  * plus the studio and approval records added phase by phase. Kept in sessionStorage, like the Field Sales Manager store.
  */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { AssetStatus, Claim, CollateralVersion, Concept, ReviewStatus, TemplateId, MappingStatus, PlanStatus, PropositionField, QuestionStatus, ThemeStatus, ZmPortfolio, ZmScope } from '../data/zm';
+import type { Drivers, ProposalStatus, ScenarioKey, AssetStatus, Claim, CollateralVersion, Concept, ReviewStatus, TemplateId, MappingStatus, PlanStatus, PropositionField, QuestionStatus, ThemeStatus, ZmPortfolio, ZmScope } from '../data/zm';
 import type { ZmTerritoryId } from '../routes';
 
 export interface ZmState {
@@ -44,18 +44,30 @@ export interface ZmState {
   assetStatus: Partial<Record<TemplateId, AssetStatus>>;
   playbookIncluded: TemplateId[];
   released: boolean;
+  /** Business case: saved driver inputs, chosen scenario basis, reconciliation decision. */
+  drivers: Drivers | null;
+  scenario: ScenarioKey;
+  financeRequested: boolean;
+  reconDecision: 'separate' | 'coordinate' | 'defer';
+  /** Proposals: status, selection, readiness checks, review comment, revision of the returned C1. */
+  proposalStatus: Record<string, ProposalStatus>;
+  selectedProposals: string[];
+  submissionChecks: string[];
+  revision: { investment: number; sales: number; marginPct: number; observations: Record<string, string>; response: string } | null;
 }
 
 export interface DraftSetup { audience: string; language: string; objective: string; sources: string[]; style: string; format: string; regional: string }
 
 export interface InterventionConfig { objective: string; behaviour: string; participants: string; types: string[]; channel: string; crop: string; geography: string; window: string; resources: string }
 
-const KEY = 'campaigniq.v3.zm.4';
+const KEY = 'campaigniq.v3.zm.5';
 const INITIAL: ZmState = { scope: 'zone', portfolio: 'crop-nutrition', planDecisions: {}, mapping: {}, mappingChecks: {}, comments: {}, cropValidated: {}, questions: {}, responses: {},
   themeStatus: {}, acknowledgements: {}, clarifications: [], concepts: null, selectedConcepts: ['c1'],
   workspace: { intent: 'Drive eligible first-purchase conversion under Croptek.', behaviour: 'Move from recommendation or trial to first purchase.', notes: '' },
   compareDecision: 'separate', proposition: {}, interventions: {}, readinessChecks: [], claims: {},
-  template: 'detailer', draftSetup: null, versions: null, reviews: {}, submittedForReview: false, assetStatus: {}, playbookIncluded: ['detailer'], released: false };
+  template: 'detailer', draftSetup: null, versions: null, reviews: {}, submittedForReview: false, assetStatus: {}, playbookIncluded: ['detailer'], released: false,
+  drivers: null, scenario: 'base', financeRequested: false, reconDecision: 'separate',
+  proposalStatus: { c1: 'draft', c2: 'draft' }, selectedProposals: ['c1'], submissionChecks: [], revision: null };
 
 function load(): ZmState {
   try {
@@ -92,6 +104,14 @@ interface ZmStore extends ZmState {
   setAssetStatus: (t: TemplateId, st: AssetStatus) => void;
   setPlaybookIncluded: (ids: TemplateId[]) => void;
   release: () => void;
+  setDrivers: (d: Drivers) => void;
+  setScenario: (s: ScenarioKey) => void;
+  requestFinance: () => void;
+  setReconDecision: (d: ZmState['reconDecision']) => void;
+  setProposalStatus: (ids: string[], st: ProposalStatus) => void;
+  setSelectedProposals: (ids: string[]) => void;
+  setSubmissionChecks: (ids: string[]) => void;
+  setRevision: (r: NonNullable<ZmState['revision']>) => void;
 }
 
 const Ctx = createContext<ZmStore | null>(null);
@@ -129,6 +149,14 @@ export function ZmStoreProvider({ children }: { children: ReactNode }) {
     setAssetStatus: (t, st) => setState((s) => ({ ...s, assetStatus: { ...s.assetStatus, [t]: st } })),
     setPlaybookIncluded: (ids) => setState((s) => ({ ...s, playbookIncluded: ids })),
     release: () => setState((s) => ({ ...s, released: true })),
+    setDrivers: (drivers) => setState((s) => ({ ...s, drivers })),
+    setScenario: (scenario) => setState((s) => ({ ...s, scenario })),
+    requestFinance: () => setState((s) => ({ ...s, financeRequested: true })),
+    setReconDecision: (reconDecision) => setState((s) => ({ ...s, reconDecision })),
+    setProposalStatus: (ids, st) => setState((s) => ({ ...s, proposalStatus: { ...s.proposalStatus, ...Object.fromEntries(ids.map((i) => [i, st])) } })),
+    setSelectedProposals: (selectedProposals) => setState((s) => ({ ...s, selectedProposals })),
+    setSubmissionChecks: (submissionChecks) => setState((s) => ({ ...s, submissionChecks })),
+    setRevision: (revision) => setState((s) => ({ ...s, revision })),
     answer: (qid, response) => setState((s) => ({ ...s, questions: { ...s.questions, [qid]: 'responded' }, responses: { ...s.responses, [qid]: response } })),
   }), [state]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
