@@ -71,5 +71,50 @@ export function fsmNavKeyOf(path: string): FsmNavKey {
 }
 
 /** Persona whose workspace a path belongs to, and each persona's landing page. */
-export const personaOfPath = (path: string): 'strategy' | 'tm' => (path.startsWith('/fsm') ? 'tm' : 'strategy');
-export const LANDING: Record<string, string> = { strategy: R.command, tm: F.plan };
+// ---------------------------------------------------------------- Zonal Manager (mockups: docs/mockups/zonal-manager/<file>)
+export type ZmTerritoryId = 'ambad' | 'ghansawangi' | 'badnapur' | 'jafrabad' | 'bhokardan';
+export const Z = {
+  performance: '/zm/performance', // 1  ZM.1.png
+  plans: '/zm/plans', // 2  ZM.1a.png
+  reconciliation: '/zm/plans/reconciliation', // 3  ZM.2.png (drawer ZM.2a)
+  planReview: (t: ZmTerritoryId = 'ambad') => `/zm/plans/${t}/review`, // 4  ZM.3.png (drawer ZM.3a)
+  revised: (t: ZmTerritoryId = 'ambad') => `/zm/plans/${t}/revised`, // 5  ZM.3b.png (drawer ZM.3c)
+  themes: '/zm/themes', // 6  ZM.4.png (drawers ZM.4a, ZM.4b; modal ZM.4c = ZM.5a)
+  concepts: '/zm/studio/concepts', // 7  ZM.5.png (drawer ZM.5b)
+  compare: '/zm/studio/compare', // 8  ZM.5c.png
+  proposition: '/zm/studio/proposition', // 9  ZM.6.png (drawers ZM.6a, ZM.6b)
+  collateral: '/zm/studio/collateral', // 10 ZM.7a.png
+  editor: '/zm/studio/collateral/edit', // 11 ZM.7b.png
+  versions: '/zm/studio/collateral/versions', // 12 ZM.7c.png
+  collateralApprovals: '/zm/studio/collateral/approvals', // 13 ZM.8.png
+  playbook: '/zm/studio/playbook', // 14 ZM.8a.png
+  businessCase: '/zm/studio/business-case', // 15 ZM.8c.png
+  scenarios: '/zm/studio/scenarios', // 16 ZM.8d.png
+  reconcile: '/zm/studio/reconciliation', // 17 ZM.8e.png
+  proposals: '/zm/studio/proposals', // 18 ZM.8b.png (modal ZM.8f)
+  revise: (id = 'c1') => `/zm/studio/proposals/${id}/revise`, // 19 ZM.8g.png
+  approvals: '/zm/approvals', // 20 ZM.9b.png
+  approval: (t: ZmTerritoryId = 'ambad') => `/zm/approvals/${t}`, // 21 ZM.9.png (drawers ZM.9a, 9c, 9d; modal ZM.9e)
+  impact: '/zm/impact', // 22 ZM.10.png
+  detail: '/zm/impact/detail', // 23 ZM.10a.png (drawers ZM.10b, ZM.10c)
+  diagnostics: '/zm/impact/diagnostics', // 24 ZM.11a.png (drawers ZM.11b, ZM.11c)
+  recommendations: '/zm/impact/recommendations', // 25 ZM.12.png
+  assistant: '/zm/assistant', // 26 ZM.13.png
+} as const;
+
+export type ZmNavKey = 'performance' | 'plans' | 'themes' | 'studio' | 'approvals' | 'zm-impact' | 'zm-assistant';
+
+/** Which Zonal Manager sidebar item a path belongs to. */
+export function zmNavKeyOf(path: string): ZmNavKey {
+  if (path.startsWith('/zm/plans')) return 'plans';
+  if (path.startsWith('/zm/themes')) return 'themes';
+  if (path.startsWith('/zm/studio')) return 'studio';
+  if (path.startsWith('/zm/approvals')) return 'approvals';
+  if (path.startsWith('/zm/impact')) return 'zm-impact';
+  if (path.startsWith('/zm/assistant')) return 'zm-assistant';
+  return 'performance';
+}
+
+export type PathPersona = 'strategy' | 'tm' | 'pm';
+export const personaOfPath = (path: string): PathPersona => (path.startsWith('/fsm') ? 'tm' : path.startsWith('/zm') ? 'pm' : 'strategy');
+export const LANDING: Record<string, string> = { strategy: R.command, tm: F.plan, pm: Z.performance };

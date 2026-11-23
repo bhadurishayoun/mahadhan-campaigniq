@@ -65,8 +65,16 @@ cards, donut and category counts use `interventionCounts()` (tested in `bh.test.
 | 3 | Screens 6–10: business priority (prefills the wizard), objective & targeting (village / retailer multi-select, required-field checks), activity & budget mix (add / edit / remove, live budget mix), scenarios (selectable, editable funnel assumptions), review & submit (readiness, rationale, attachment; submit launches the campaign). Wizard state in the FSM store (sessionStorage); reached steps can be revisited | Done |
 | 4 | Screens 11–15: live control tower (week / activity views, calendar and exceptions open the activity), corrective action (owner + reason required; saving reschedules or escalates and clears the exception), campaign impact, village diagnostic (BH village figures), AI Copilot workspace (prepared and typed questions answered from the data). Verified at 1440×900: no console errors or overflow, Next/Back chain, cross-persona Ambad and West figures identical | Done |
 
-The active persona follows the route (`/bh/…` or `/fsm/…`); a non-master login is kept to its own workspace.
+The active persona follows the route (`/bh/…`, `/fsm/…` or `/zm/…`); a non-master login is kept to its own workspace.
 
 **Next steps (Field Sales Manager):** Ghansawangi and Badnapur dealer networks and crop plans are generated to reconcile
 with their ABPs (the mockups only detail Ambad); replace them when the client shares outlet masters. Zonal Manager and
 Marketing Head personas follow the same pattern (persona id `pm` / `mh`, mockups already in `docs/mockups/`).
+
+## Zonal Manager (persona `pm`, login PM001 / Product@123 or the master login)
+| Phase | Scope | Status |
+|---|---|---|
+| 0 | Mockups (`docs/mockups/zonal-manager/`, 45), routes (`Z` in `src/routes.ts`), 7-item sidebar, persona switch, top bar (Marathwada zone scope, Crop nutrition portfolio), 26 screens with titles, Campaign Studio tabs, collateral steps and the Back/Next chain (`src/screens/zm/Blank.tsx`) | Done |
+| 1 | Data and tests: zone territories, portfolio, plans, themes, concepts, business case, activity plan (13 units, ₹3.00 L, shared with FSM), impact; BH West alignment | Next |
+| 2–7 | Screens 1–5, 6–9, 10–14, 15–19, 20–21, 22–26 with drawers and modals; verification and deploy | Planned |
+

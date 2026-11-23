@@ -12,6 +12,8 @@ import { SelectPriority, WizardActivities, WizardObjective, WizardReview, Wizard
 import { ActivityExecution, ControlTower } from './screens/fsm/Execution';
 import { CampaignImpact, VillageDiagnostic } from './screens/fsm/Impact';
 import { FsmAssistant } from './screens/fsm/Assistant';
+import { ZmBlank } from './screens/zm/Blank';
+import { ZmStoreProvider } from './store/zmStore';
 import { CommandCentre } from './screens/CommandCentre';
 import { Portfolio } from './screens/Portfolio';
 import { RegionalPerformance } from './screens/RegionalPerformance';
@@ -51,7 +53,9 @@ export function App() {
   return (
     <BhStoreProvider>
       <FsmStoreProvider>
-        <RouterProvider router={router} />
+        <ZmStoreProvider>
+          <RouterProvider router={router} />
+        </ZmStoreProvider>
       </FsmStoreProvider>
     </BhStoreProvider>
   );
@@ -95,6 +99,32 @@ function buildRouter(session: Session, signOut: () => void) {
         { path: 'fsm/impact', element: <CampaignImpact /> },
         { path: 'fsm/impact/diagnostic', element: <VillageDiagnostic /> },
         { path: 'fsm/assistant', element: <FsmAssistant /> },
+        { path: 'zm/performance', element: <ZmBlank n={1} /> },
+        { path: 'zm/plans', element: <ZmBlank n={2} /> },
+        { path: 'zm/plans/reconciliation', element: <ZmBlank n={3} /> },
+        { path: 'zm/plans/:territory/review', element: <ZmBlank n={4} /> },
+        { path: 'zm/plans/:territory/revised', element: <ZmBlank n={5} /> },
+        { path: 'zm/themes', element: <ZmBlank n={6} /> },
+        { path: 'zm/studio/concepts', element: <ZmBlank n={7} /> },
+        { path: 'zm/studio/compare', element: <ZmBlank n={8} /> },
+        { path: 'zm/studio/proposition', element: <ZmBlank n={9} /> },
+        { path: 'zm/studio/collateral', element: <ZmBlank n={10} /> },
+        { path: 'zm/studio/collateral/edit', element: <ZmBlank n={11} /> },
+        { path: 'zm/studio/collateral/versions', element: <ZmBlank n={12} /> },
+        { path: 'zm/studio/collateral/approvals', element: <ZmBlank n={13} /> },
+        { path: 'zm/studio/playbook', element: <ZmBlank n={14} /> },
+        { path: 'zm/studio/business-case', element: <ZmBlank n={15} /> },
+        { path: 'zm/studio/scenarios', element: <ZmBlank n={16} /> },
+        { path: 'zm/studio/reconciliation', element: <ZmBlank n={17} /> },
+        { path: 'zm/studio/proposals', element: <ZmBlank n={18} /> },
+        { path: 'zm/studio/proposals/:id/revise', element: <ZmBlank n={19} /> },
+        { path: 'zm/approvals', element: <ZmBlank n={20} /> },
+        { path: 'zm/approvals/:territory', element: <ZmBlank n={21} /> },
+        { path: 'zm/impact', element: <ZmBlank n={22} /> },
+        { path: 'zm/impact/detail', element: <ZmBlank n={23} /> },
+        { path: 'zm/impact/diagnostics', element: <ZmBlank n={24} /> },
+        { path: 'zm/impact/recommendations', element: <ZmBlank n={25} /> },
+        { path: 'zm/assistant', element: <ZmBlank n={26} /> },
         { path: '*', element: <Navigate to={home} replace /> },
       ],
     },
