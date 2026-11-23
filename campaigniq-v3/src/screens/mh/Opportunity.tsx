@@ -4,7 +4,7 @@ import {
   Lightbulb, TrendingUp,
 } from 'lucide-react';
 import { useState } from 'react';
-import { NATIONAL, planCampaignsOf, mixBy, type Season } from '../../data/bh';
+import { AMBAD, NATIONAL, planCampaignsOf, mixBy, type Season } from '../../data/bh';
 import { crore, lakh, num, pct, times } from '../../data/format';
 import { FUNNEL_DEFAULTS } from '../../data/fsm';
 import { planCrops, planStatus as zmPlanStatus } from '../../data/zm';
@@ -492,6 +492,7 @@ export function TerritoryPlanDetail() {
   const t = (['ambad', 'ghansawangi', 'badnapur', 'jafrabad', 'bhokardan'].includes(territory ?? '') ? territory : 'ambad') as ZmTerritoryId;
   const a = ambadPlan();
   const villages = ambadVillages();
+  const additionalVillages = AMBAD.villages.filter((record) => !villages.some((plan) => plan.village === record.name));
   const [sel, setSel] = useState('Dhanora');
   const [clar, setClar] = useState(false);
   const [evidence, setEvidence] = useState<Evidence | null>(null);
@@ -517,6 +518,7 @@ export function TerritoryPlanDetail() {
           <Button small icon={MessageSquare} onClick={() => setClar(true)}>Request clarification</Button>
         </>}>
           {t === 'ambad' ? (
+            <>
             <DataTable selectable rows={villages} rowKey={(x) => x.village} selected={sel} onRowClick={(x) => setSel(x.village)}
               columns={[
                 { key: 'v', header: 'Village', render: (x) => <b>{x.village}</b> },
@@ -527,6 +529,13 @@ export function TerritoryPlanDetail() {
                 { key: 'd', header: 'View', align: 'center', render: (x) => <Button small onClick={() => setSel(x.village)}>View details</Button> },
               ]}
               total={{ v: 'Total', l: lakh(villages.reduce((s, x) => s + x.lastYear, 0)), t: lakh(villages.reduce((s, x) => s + x.plan, 0)), c: `${num(villages.reduce((s, x) => s + x.calc.previousAcres, 0))} → ${num(villages.reduce((s, x) => s + x.calc.requiredAcres, 0))}` }} />
+            {additionalVillages.length > 0 && <DataTable rows={additionalVillages} rowKey={(x) => x.name} columns={[
+              { key: 'village', header: 'Additional Ambad villages', render: (x) => <b>{x.name}</b> },
+              { key: 'trials', header: 'Documented trials', render: (x) => num(x.trials) },
+              { key: 'adopters', header: 'Recorded adopters', render: (x) => num(x.adopters) },
+              { key: 'rate', header: 'Trial-to-adoption', render: (x) => pct(x.adopters / x.trials * 100) },
+            ]} />}
+            </>
           ) : (
             <DataTable rows={tp!.crops} rowKey={(c) => c.crop}
               columns={[
