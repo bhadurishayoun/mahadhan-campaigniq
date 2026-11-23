@@ -6,6 +6,7 @@ import {
   funnel, impactSummary, objectiveCoverage, ONION_VILLAGE_PLAN, outletSummary, RETAILERS, scenarioOutcome, SCENARIOS, targetReconciliation,
   coverageCalc, dealersOf, lastYearMix, onionPlanOf, perfRows, retailersOf, defaultWizard, wizardScenarios, objectiveErrors, activityErrors,
   villagePerformance, campaignFunnel, unitsWith, statusAfter, interventionEffectiveness, planActivity, coverageDefaults, coverageResult, coverageError,
+  OTHER_UNITS, allUnitsWith, villageChoices,
 } from './fsm';
 
 const r1 = (v: number) => Math.round(v * 10) / 10;
@@ -186,5 +187,22 @@ describe('coverage & volume calculator', () => {
     expect([r18.required, r18.retained, r18.newAcres, r18.eligible]).toEqual([900, 400, 500, 834]);
     expect(coverageResult({ ...d, volume: 5 }).eligible).toBe(0);
     expect([coverageError('retention', '120'), coverageError('rate', ''), coverageError('volume', '0.5')]).toEqual(['Maximum 100', 'Enter a number', '']);
+  });
+});
+
+describe('activity units across Ambad', () => {
+  it('other campaigns add units without touching the Croptek figures', () => {
+    expect(OTHER_UNITS.length).toBe(25);
+    expect(OTHER_UNITS.filter((u) => u.status === 'at_risk').length).toBe(2);
+    expect(OTHER_UNITS.filter((u) => u.status === 'scheduled').length).toBe(1);
+    expect(executionCounts()).toEqual({ planned: 13, completed: 9, scheduled: 2, atRisk: 2 });
+    expect(budgetMix().total).toBe(3);
+  });
+  it('farmer meeting selector lists 7 villages in 3 campaign groups', () => {
+    const all = allUnitsWith();
+    const meeting = all.find((u) => u.id === 'wadi-gaon-farmer-meeting')!;
+    const g = villageChoices(all, 'meeting', meeting);
+    expect(g.map((x) => x.options.length)).toEqual([2, 2, 3]);
+    expect(g.find((x) => x.options.some((o) => o.village === 'Wadi Gaon'))!.options.find((o) => o.village === 'Wadi Gaon')!.unit.id).toBe('wadi-gaon-farmer-meeting');
   });
 });

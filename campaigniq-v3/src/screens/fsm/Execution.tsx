@@ -1,10 +1,10 @@
 /** Screens 11–12 — Campaign Execution: live control tower and activity corrective action. */
-import { CalendarCheck, CalendarDays, Camera, CircleAlert, CircleCheck, ClipboardCheck, ClipboardList, FileText, Lightbulb, ListChecks, TriangleAlert, Upload, Users, Wrench, type LucideIcon } from 'lucide-react';
-import { useRef, useState, type ReactNode } from 'react';
-import { useParams } from 'react-router-dom';
-import { lakh, num } from '../../data/format';
+import { CalendarCheck, CalendarDays, ChevronDown, Camera, CircleAlert, CircleCheck, ClipboardCheck, ClipboardList, FileText, Lightbulb, ListChecks, TriangleAlert, Upload, Users, Wrench, type LucideIcon } from 'lucide-react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { lakh, num, sum } from '../../data/format';
 import {
-  ACTION_REASONS, activityName, AT_RISK_ACTIVITY, budgetMix, CAMPAIGN_ACTIVITIES, CORRECTIVE_ACTIONS, executionCounts, FSM_CAMPAIGN, OWNERS, READINESS,
+  ACTION_REASONS, activityName, allUnitsWith, UNIT_COST, villageChoices, villageId, AT_RISK_ACTIVITY, budgetMix, CAMPAIGN_ACTIVITIES, CORRECTIVE_ACTIONS, executionCounts, FSM_CAMPAIGN, OWNERS, READINESS,
   statusAfter, UNIT_STATUS_LABEL, unitsWith, type ActivityUnit, type UnitStatus,
 } from '../../data/fsm';
 import { F } from '../../routes';
@@ -17,8 +17,8 @@ import { FsmPage } from './frame';
 
 const SECTION = 'Campaign execution';
 const opt = (value: string, label = value) => ({ value, label });
-const TONE: Record<UnitStatus, Tone> = { completed: 'ok', scheduled: 'neutral', at_risk: 'warn', rescheduled: 'info', escalated: 'risk' };
-const ICON: Record<UnitStatus, LucideIcon> = { completed: CircleCheck, scheduled: CalendarDays, at_risk: TriangleAlert, rescheduled: CalendarCheck, escalated: CircleAlert };
+const TONE: Record<UnitStatus, Tone> = { on_track: 'ok', completed: 'ok', scheduled: 'neutral', at_risk: 'warn', rescheduled: 'info', escalated: 'risk' };
+const ICON: Record<UnitStatus, LucideIcon> = { on_track: CircleCheck, completed: CircleCheck, scheduled: CalendarDays, at_risk: TriangleAlert, rescheduled: CalendarCheck, escalated: CircleAlert };
 
 function List({ items }: { items: { icon?: LucideIcon; label: ReactNode; value?: ReactNode; tone?: 'warn' }[] }) {
   return <>{items.map((i, k) => <div key={k} className="list-row">{i.icon && <i.icon size={16} color={i.tone === 'warn' ? 'var(--amber)' : undefined} />}<span>{i.label}</span>{i.value !== undefined && <b className="right">{i.value}</b>}</div>)}</>;
@@ -134,14 +134,61 @@ export function ControlTower() {
 
 // ================================================================ 12 Activity Execution & Corrective Action
 export function ActivityExecution() {
+  const fsm = useFsmStore();
+  const { activityId } = useParams();
+  const [params, setParams] = useSearchParams();
+  const all = allUnitsWith(fsm.units);
+  const base = all.find((u) => u.id === activityId) ?? all.find((u) => u.id === AT_RISK_ACTIVITY)!;
+  const choices = villageChoices(all, base.activity, base);
+  const wanted = params.get('village');
+  const unit = (wanted && choices.flatMap((g) => g.options).find((o) => villageId(o.village) === wanted)?.unit) || base;
+  const pick = (village: string) => setParams((p) => { const n = new URLSearchParams(p); n.set('village', villageId(village)); return n; }, { replace: true });
+  return <ActivityWorkspace key={unit.id} unit={unit} all={all} choices={villageChoices(all, unit.activity, unit)} village={wanted ? choices.flatMap((g) => g.options).find((o) => villageId(o.village) === wanted)?.village ?? unit.village.split(', ')[0] : base.village.split(', ')[0]} onPick={pick} />;
+}
+
+/** Custom select (shared select look) that can show a status chip on every option, grouped by campaign. */
+function VillageSelect({ value, groups, onPick }: { value: string; groups: ReturnType<typeof villageChoices>; onPick: (village: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
+  const current = groups.flatMap((g) => g.options).find((o) => o.village === value);
+  const chip = (s: UnitStatus) => <StatusChip tone={s === 'at_risk' ? 'warn' : s === 'scheduled' ? 'neutral' : s === 'escalated' ? 'risk' : 'ok'}>{UNIT_STATUS_LABEL[s]}</StatusChip>;
+  return (
+    <div ref={ref} className="vsel">
+      <button type="button" className="vsel-btn" aria-haspopup="listbox" aria-expanded={open} aria-label="Village" onClick={() => setOpen((o) => !o)}>
+        <span>{value}</span>{current && chip(current.unit.status)}<ChevronDown size={15} />
+      </button>
+      {open && (
+        <div className="vsel-menu" role="listbox">
+          {groups.map((g) => (
+            <div key={g.campaign}>
+              <div className="vsel-group">{g.campaign}</div>
+              {g.options.map((o) => (
+                <button key={o.village} type="button" role="option" aria-selected={o.village === value} className={o.village === value ? 'on' : ''} onClick={() => { onPick(o.village); setOpen(false); }}>
+                  <span>{o.village}</span>{chip(o.unit.status)}
+                </button>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ActivityWorkspace({ unit, all, choices, village, onPick }: { unit: ActivityUnit; all: ActivityUnit[]; choices: ReturnType<typeof villageChoices>; village: string; onPick: (v: string) => void }) {
   const go = useGo();
   const bh = useBhStore();
   const fsm = useFsmStore();
-  const { activityId } = useParams();
-  const units = useUnits();
-  const unit = units.find((u) => u.id === activityId) ?? units.find((u) => u.id === AT_RISK_ACTIVITY)!;
   const act = CAMPAIGN_ACTIVITIES.find((a) => a.id === unit.activity)!;
-  const siblings = units.filter((u) => u.activity === unit.activity);
+  const inCampaign = all.filter((u) => u.campaign === unit.campaign);
+  const siblings = inCampaign.filter((u) => u.activity === unit.activity);
+  const croptek = unit.campaign === FSM_CAMPAIGN.name;
+  const activityBudget = croptek ? act.cost : UNIT_COST[unit.activity] * siblings.length;
   const saved = fsm.units[unit.id];
   const [action, setAction] = useState(saved?.action ?? CORRECTIVE_ACTIONS[0]);
   const [owner, setOwner] = useState(saved?.owner ?? unit.owner);
@@ -152,14 +199,21 @@ export function ActivityExecution() {
   const files = useRef<HTMLInputElement>(null);
   const [evKind, setEvKind] = useState('Photos');
   const needsAction = unit.status === 'at_risk';
+  const done = unit.status === 'completed' || unit.status === 'on_track';
   const errors = {
     owner: !owner ? 'Choose an owner' : '',
     reason: !reason ? 'Choose a reason' : '',
     date: action === 'Propose reschedule' && !date ? 'Choose the new date' : '',
   };
-  const related = units.filter((u) => u.status === 'at_risk' && u.id !== unit.id);
+  const sameCampaign = inCampaign.filter((u) => u.status === 'at_risk' && u.id !== unit.id);
+  const related = sameCampaign.length ? sameCampaign : all.filter((u) => u.status === 'at_risk' && u.id !== unit.id);
   const checklist = READINESS[unit.activity] ?? READINESS.default;
   const evidence = fsm.evidence[unit.id] ?? [];
+  const nextActions = needsAction
+    ? [`${unit.issue}: confirm with ${unit.owner} today.`, `If not resolved within 2 days, propose a reschedule or escalate to the Zonal Manager.`]
+    : unit.status === 'completed'
+      ? [`Upload photos and attendance for the ${unit.village} ${act.name.toLowerCase()}.`, `Record trial farmers for follow-up in week ${Math.min(4, unit.week + 1)}.`]
+      : [`Keep week ${unit.week} with ${unit.owner}; confirm inputs two days before.`, 'Upload field evidence after execution.'];
 
   const save = () => {
     if (!needsAction) { go(F.impact); return; }
@@ -172,32 +226,35 @@ export function ActivityExecution() {
   };
 
   return (
-    <FsmPage section={SECTION} sectionTo={F.execution} trail={`${unit.village} — ${act.name}`} title="Activity Execution & Corrective Action"
+    <FsmPage section={SECTION} sectionTo={F.execution} trail="Activity workspace" title={`${village} — ${act.name}`}
       right={<StatusChip tone={TONE[unit.status]}>{UNIT_STATUS_LABEL[unit.status]}</StatusChip>}
       back={F.execution} next={save} nextLabel={needsAction ? 'Save and assign corrective action' : 'Next'}>
       <div className="kpis">
         <KpiCard label="Planned week" value={`Week ${unit.week}`} />
-        <KpiCard label={`${act.name} completed`} value={`${siblings.filter((u) => u.status === 'completed').length} / ${act.units}`} />
-        <KpiCard label="Campaign activity units" value={num(units.length)} />
-        <KpiCard label="Activity budget" value={lakh(act.cost, 2)} />
+        <KpiCard label={`${act.name} completed`} value={`${siblings.filter((u) => u.status === 'completed').length} / ${siblings.length}`} />
+        <KpiCard label="Campaign activity units" value={num(inCampaign.length)} />
+        <KpiCard label="Activity budget" value={lakh(activityBudget, 2)} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr) 360px' }}>
         <div className="stack">
-          <Card title="Activity unit" icon={ClipboardCheck}>
+          <Card title="Activity unit" icon={ClipboardCheck} right={<StatusChip tone={TONE[unit.status]}>{UNIT_STATUS_LABEL[unit.status]}</StatusChip>}>
+            <div className="list-row"><span>Village</span><span className="right"><VillageSelect value={village} groups={choices} onPick={onPick} /></span></div>
             <List items={[
-              { label: 'Village', value: unit.village },
+              { label: 'Activity', value: act.name },
               { label: 'Assigned owner', value: unit.owner },
               { label: 'Planned window', value: `Week ${unit.week}` },
-              { label: 'Campaign', value: FSM_CAMPAIGN.name },
-              ...(unit.issue ? [{ icon: TriangleAlert, tone: 'warn' as const, label: 'Execution blocker', value: unit.issue }] : []),
+              { label: 'Campaign', value: unit.campaign },
             ]} />
+            {unit.issue && unit.status === 'at_risk'
+              ? <div className="list-row"><TriangleAlert size={16} color="var(--amber)" /><span>Execution blocker</span><b className="right">{unit.issue}</b></div>
+              : <div className="list-row status-ok"><CircleCheck size={16} /><span>Execution status</span><b className="right">{unit.note ?? (saved ? `${saved.action} · ${UNIT_STATUS_LABEL[unit.status]}` : UNIT_STATUS_LABEL[unit.status])}</b></div>}
           </Card>
           <Card title="Execution readiness checklist" icon={ListChecks}>
-            <List items={[...checklist, { item: 'Field evidence', sub: 'Photos, attendance and notes after execution', status: evidence.length ? `${evidence.length} uploaded` : 'Not submitted' }].map((c) => ({
-              icon: c.status === 'Pending' || c.status === 'Not submitted' ? CircleAlert : CircleCheck, tone: c.status === 'Pending' || c.status === 'Not submitted' ? 'warn' as const : undefined,
-              label: <span className="stack" style={{ gap: 0 }}><b>{c.item}</b><small>{c.sub}</small></span>,
-              value: <StatusChip tone={c.status === 'Pending' || c.status === 'Not submitted' ? 'warn' : 'neutral'}>{unit.status === 'completed' && c.item !== 'Field evidence' ? 'Done' : c.status}</StatusChip>,
-            }))} />
+            <List items={[...checklist, { item: 'Field evidence', sub: 'Photos, attendance and notes after execution', status: evidence.length ? `${evidence.length} uploaded` : unit.status === 'completed' ? 'Submitted' : 'Not submitted' }].map((c) => {
+              const st = done && c.item !== 'Field evidence' ? 'Done' : c.status;
+              const warn = st === 'Pending' || st === 'Not submitted';
+              return { icon: warn ? CircleAlert : CircleCheck, tone: warn ? 'warn' as const : undefined, label: <span className="stack" style={{ gap: 0 }}><b>{c.item}</b><small>{c.sub}</small></span>, value: <StatusChip tone={warn ? 'warn' : st === 'Done' || st === 'Submitted' ? 'ok' : 'neutral'}>{st}</StatusChip> };
+            })} />
           </Card>
         </div>
         <div className="stack">
@@ -205,10 +262,10 @@ export function ActivityExecution() {
             <List items={[
               { icon: CircleCheck, label: `Planned · week ${unit.week}`, value: 'Scheduled' },
               { icon: unit.issue ? TriangleAlert : CircleCheck, tone: unit.issue ? 'warn' : undefined, label: unit.issue ? `Risk identified · ${unit.issue.toLowerCase()}` : 'No risk raised', value: unit.issue ? 'Flagged' : '–' },
-              { icon: unit.status === 'at_risk' ? CircleAlert : CircleCheck, tone: unit.status === 'at_risk' ? 'warn' : undefined, label: unit.status === 'at_risk' ? 'Awaiting corrective action' : saved ? `${saved.action} · ${saved.reason}` : 'On track', value: UNIT_STATUS_LABEL[unit.status] },
+              { icon: unit.status === 'at_risk' ? CircleAlert : CircleCheck, tone: unit.status === 'at_risk' ? 'warn' : undefined, label: unit.status === 'at_risk' ? 'Awaiting corrective action' : saved ? `${saved.action} · ${saved.reason}` : unit.note ?? 'On track', value: UNIT_STATUS_LABEL[unit.status] },
             ]} />
           </Card>
-          <Card title="Field evidence" icon={Camera} right={<StatusChip tone={evidence.length ? 'ok' : 'warn'}>{evidence.length ? `${evidence.length} uploaded` : 'Not submitted'}</StatusChip>}>
+          <Card title="Field evidence" icon={Camera} right={<StatusChip tone={evidence.length || unit.status === 'completed' ? 'ok' : 'warn'}>{evidence.length ? `${evidence.length} uploaded` : unit.status === 'completed' ? 'Submitted' : 'Not submitted'}</StatusChip>}>
             <input ref={files} type="file" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) { fsm.addEvidence(unit.id, `${evKind}: ${f.name}`); bh.toast(`${evKind} uploaded`); } e.target.value = ''; }} />
             <div className="row" style={{ gap: 8, flexWrap: 'wrap' }}>
               {[['Photos', Camera], ['Attendance', Users], ['Completion notes', FileText]].map(([k, I]) => (
@@ -222,25 +279,30 @@ export function ActivityExecution() {
             <List items={related.map((u) => ({ icon: TriangleAlert, tone: 'warn' as const, label: `${u.village} — ${activityName(u.activity)} · ${u.issue}`, value: <Button small onClick={() => go(F.activity(u.id))}>View details</Button> }))} />
           </Card>
         </div>
-        <Card title="Corrective action" icon={Wrench}>
-          {needsAction ? (
-            <div className="stack" style={{ gap: 12 }}>
-              <div className="action-grid">
-                {CORRECTIVE_ACTIONS.map((a) => <button key={a} type="button" className={a === action ? 'on' : ''} aria-pressed={a === action} onClick={() => setAction(a)}>{a === action && <CircleCheck size={15} />}{a}</button>)}
+        <div className="stack">
+          <Card title="Corrective action" icon={Wrench}>
+            {needsAction ? (
+              <div className="stack" style={{ gap: 12 }}>
+                <div className="action-grid">
+                  {CORRECTIVE_ACTIONS.map((a) => <button key={a} type="button" className={a === action ? 'on' : ''} aria-pressed={a === action} onClick={() => setAction(a)}>{a === action && <CircleCheck size={15} />}{a}</button>)}
+                </div>
+                <label className="field"><span>Assigned owner *</span><Select label="Assigned owner" value={owner} options={[opt('', 'Select owner'), ...OWNERS.map((o) => opt(o))]} onChange={setOwner} />{tried && errors.owner && <small className="err">{errors.owner}</small>}</label>
+                <label className="field"><span>Proposed new date{action === 'Propose reschedule' ? ' *' : ''}</span><input className="input" type="date" aria-label="Proposed new date" value={date} onChange={(e) => setDate(e.target.value)} />{tried && errors.date && <small className="err">{errors.date}</small>}</label>
+                <label className="field"><span>Reason *</span><Select label="Reason" value={reason} options={[opt('', 'Select reason'), ...[...new Set([...(unit.issue ? [unit.issue] : []), ...ACTION_REASONS])].map((r) => opt(r))]} onChange={setReason} />{tried && errors.reason && <small className="err">{errors.reason}</small>}</label>
+                <label className="field"><span>Action notes</span><textarea className="input" rows={3} maxLength={300} aria-label="Action notes" value={notes} onChange={(e) => setNotes(e.target.value)} /><small>{notes.length} / 300</small></label>
               </div>
-              <label className="field"><span>Assigned owner *</span><Select label="Assigned owner" value={owner} options={[opt('', 'Select owner'), ...OWNERS.map((o) => opt(o))]} onChange={setOwner} />{tried && errors.owner && <small className="err">{errors.owner}</small>}</label>
-              <label className="field"><span>Proposed new date{action === 'Propose reschedule' ? ' *' : ''}</span><input className="input" type="date" aria-label="Proposed new date" value={date} onChange={(e) => setDate(e.target.value)} />{tried && errors.date && <small className="err">{errors.date}</small>}</label>
-              <label className="field"><span>Reason *</span><Select label="Reason" value={reason} options={[opt('', 'Select reason'), ...ACTION_REASONS.map((r) => opt(r))]} onChange={setReason} />{tried && errors.reason && <small className="err">{errors.reason}</small>}</label>
-              <label className="field"><span>Action notes</span><textarea className="input" rows={3} maxLength={300} aria-label="Action notes" value={notes} onChange={(e) => setNotes(e.target.value)} /><small>{notes.length} / 300</small></label>
-            </div>
-          ) : (
-            <List items={[
-              { icon: CircleCheck, label: 'Status', value: UNIT_STATUS_LABEL[unit.status] },
-              ...(saved ? [{ label: 'Action', value: saved.action }, { label: 'Owner', value: saved.owner }, { label: 'Reason', value: saved.reason }, ...(saved.date ? [{ label: 'New date', value: saved.date }] : [])] : []),
-              { label: 'Campaign budget', value: lakh(budgetMix().total, 2) },
-            ]} />
-          )}
-        </Card>
+            ) : (
+              <List items={[
+                { icon: CircleCheck, label: 'Status', value: UNIT_STATUS_LABEL[unit.status] },
+                ...(saved ? [{ label: 'Action', value: saved.action }, { label: 'Owner', value: saved.owner }, { label: 'Reason', value: saved.reason }, ...(saved.date ? [{ label: 'New date', value: saved.date }] : [])] : [{ label: 'Owner', value: unit.owner }]),
+                { label: 'Campaign budget', value: croptek ? lakh(budgetMix().total, 2) : lakh(sum(inCampaign, (u) => UNIT_COST[u.activity]), 2) },
+              ]} />
+            )}
+          </Card>
+          <Card title="Next best actions" icon={Lightbulb}>
+            <List items={nextActions.map((t) => ({ label: t }))} />
+          </Card>
+        </div>
       </div>
     </FsmPage>
   );

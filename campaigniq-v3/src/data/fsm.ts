@@ -311,8 +311,8 @@ export const funnel = (a = FUNNEL_DEFAULTS, farmers = sum(Object.values(FARMERS_
 };
 
 // ---------------------------------------------------------------- execution (13 activity units)
-export type UnitStatus = 'completed' | 'scheduled' | 'at_risk' | 'rescheduled' | 'escalated';
-export interface ActivityUnit { id: string; activity: string; village: string; week: 1 | 2 | 3 | 4; owner: string; status: UnitStatus; issue?: string }
+export type UnitStatus = 'on_track' | 'completed' | 'scheduled' | 'at_risk' | 'rescheduled' | 'escalated';
+export interface ActivityUnit { id: string; activity: string; village: string; week: 1 | 2 | 3 | 4; owner: string; status: UnitStatus; issue?: string; campaign?: string; note?: string }
 
 export const OWNERS = ['R. Jadhav', 'S. Pawar', 'M. Shinde', 'P. Kale'];
 
@@ -454,7 +454,7 @@ export const activityErrors = (w: WizardState) => {
 };
 
 // ---------------------------------------------------------------- execution detail, impact and diagnostics
-export const UNIT_STATUS_LABEL: Record<UnitStatus, string> = { completed: 'Completed', scheduled: 'Scheduled', at_risk: 'At risk', rescheduled: 'Rescheduled', escalated: 'Escalated' };
+export const UNIT_STATUS_LABEL: Record<UnitStatus, string> = { on_track: 'On track', completed: 'Completed', scheduled: 'Scheduled', at_risk: 'At risk', rescheduled: 'Rescheduled', escalated: 'Escalated' };
 export const activityName = (id: string) => CAMPAIGN_ACTIVITIES.find((a) => a.id === id)?.name ?? id;
 
 export interface UnitOverride { status: UnitStatus; owner?: string; date?: string; reason?: string; notes?: string; action?: string }
@@ -560,4 +560,51 @@ export const coverageError = (k: keyof CoverageInputs, raw: string) => {
   if (v < lim.min) return `Minimum ${lim.min}`;
   if (lim.max !== undefined && v > lim.max) return `Maximum ${lim.max}`;
   return '';
+};
+
+// ---------------------------------------------------------------- activity units in the other Ambad campaigns
+/** Campaigns running in the other Ambad villages (they do not change the Croptek campaign figures). */
+export const OTHER_CAMPAIGNS: { name: string; villages: string[] }[] = [
+  { name: 'Ambad Maize portfolio expansion', villages: ['Ambad HQ', 'Pimpalgaon'] },
+  { name: 'Ambad retailer engagement', villages: ['Kumbhephal', 'Shahagad', 'Rohilagad'] },
+];
+export const villageId = (v: string) => v.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const OTHER_BLOCKERS: Record<string, string> = {
+  'pimpalgaon-demonstration': 'Demonstration plot not yet confirmed by the host farmer',
+  'shahagad-retailer': 'Retailer stock of Croptek not replenished',
+};
+const OTHER_SCHEDULED = ['rohilagad-followup'];
+
+/** One unit per activity type in each village of the other campaigns: mostly on track or completed, two at risk, one scheduled. */
+export const OTHER_UNITS: ActivityUnit[] = OTHER_CAMPAIGNS.flatMap((c, ci) => c.villages.flatMap((v, vi) => CAMPAIGN_ACTIVITIES.map((a, ti) => {
+  const id = `${villageId(v)}-${a.id}`;
+  const week = (((ci * 2 + vi + ti + 1) % 4) + 1) as 1 | 2 | 3 | 4;
+  const status: UnitStatus = OTHER_BLOCKERS[id] ? 'at_risk' : OTHER_SCHEDULED.includes(id) ? 'scheduled' : week <= 2 ? 'completed' : 'on_track';
+  return {
+    id, activity: a.id, village: v, week, owner: OWNERS[(ci + vi + ti + 1) % OWNERS.length], status, campaign: c.name,
+    issue: OTHER_BLOCKERS[id],
+    note: status === 'completed' ? 'Completed with field evidence' : status === 'scheduled' ? `Scheduled for week ${week}` : status === 'on_track' ? 'Inputs and participants confirmed' : undefined,
+  };
+})));
+
+/** Every Ambad activity unit (Croptek campaign first), with corrective-action overrides applied. */
+export const allUnitsWith = (overrides: Record<string, UnitOverride> = {}): ActivityUnit[] => [
+  ...unitsWith(overrides).map((u) => ({ ...u, campaign: FSM_CAMPAIGN.name, note: u.note ?? (u.status === 'completed' ? 'Completed with field evidence' : u.status === 'scheduled' ? `Scheduled for week ${u.week}` : undefined) })),
+  ...OTHER_UNITS.map((u) => (overrides[u.id] ? { ...u, status: overrides[u.id].status, owner: overrides[u.id].owner ?? u.owner } : u)),
+];
+
+/** Villages (grouped by campaign) with a unit of the given activity type; prefers the current unit, then an at-risk one. */
+export const villageChoices = (units: ActivityUnit[], activity: string, current: ActivityUnit) => {
+  const groups: { campaign: string; options: { village: string; unit: ActivityUnit }[] }[] = [];
+  for (const u of units.filter((x) => x.activity === activity)) {
+    for (const v of u.village.split(', ')) {
+      let g = groups.find((x) => x.campaign === u.campaign);
+      if (!g) { g = { campaign: u.campaign!, options: [] }; groups.push(g); }
+      const existing = g.options.find((o) => o.village === v);
+      const better = (x: ActivityUnit) => (x.id === current.id ? 2 : x.status === 'at_risk' ? 1 : 0);
+      if (!existing) g.options.push({ village: v, unit: u });
+      else if (better(u) > better(existing.unit)) existing.unit = u;
+    }
+  }
+  return groups;
 };
