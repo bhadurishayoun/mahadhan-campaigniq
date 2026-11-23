@@ -66,14 +66,16 @@ export interface ZmState {
   recOption: 'submit' | 'concept';
   recStatus: 'draft' | 'submitted';
   asked: string[];
+  /** Questions the Marketing Head adds (plan clarification requests), shown with the seeded questions. */
+  extraQuestions: { id: string; question: string; topic: string; status: QuestionStatus }[];
 }
 
 export interface DraftSetup { audience: string; language: string; objective: string; sources: string[]; style: string; format: string; regional: string }
 
 export interface InterventionConfig { objective: string; behaviour: string; participants: string; types: string[]; channel: string; crop: string; geography: string; window: string; resources: string }
 
-const KEY = 'campaigniq.v3.zm.8';
-const INITIAL: ZmState = { scope: 'zone', portfolio: 'crop-nutrition', planDecisions: {}, mapping: {}, mappingChecks: {}, comments: {}, cropValidated: {}, questions: {}, responses: {},
+const KEY = 'campaigniq.v3.zm.9';
+const INITIAL: ZmState = { scope: 'zone', portfolio: 'crop-nutrition', planDecisions: { ambad: 'endorsed' }, mapping: {}, mappingChecks: {}, comments: {}, cropValidated: {}, questions: {}, responses: {},
   themeStatus: {}, acknowledgements: {}, clarifications: [], concepts: null, selectedConcepts: ['c1'],
   workspace: { intent: 'Drive eligible first-purchase conversion under Croptek.', behaviour: 'Move from recommendation or trial to first purchase.', notes: '' },
   compareDecision: 'separate', proposition: {}, interventions: {}, readinessChecks: [], claims: {},
@@ -81,7 +83,7 @@ const INITIAL: ZmState = { scope: 'zone', portfolio: 'crop-nutrition', planDecis
   drivers: null, scenario: 'base', financeRequested: false, reconDecision: 'separate',
   proposalStatus: { c1: 'submitted', c2: 'submitted' }, selectedProposals: ['c1'], submissionChecks: [], revision: null,
   approvalStatus: {}, accepted: {}, activityChecks: {}, escalated: {},
-  learningSaved: false, recSelected: null, recPriority: {}, recOption: 'submit', recStatus: 'draft', asked: [] };
+  learningSaved: false, recSelected: null, recPriority: {}, recOption: 'submit', recStatus: 'draft', asked: [], extraQuestions: [] };
 
 function load(): ZmState {
   try {
@@ -136,6 +138,7 @@ interface ZmStore extends ZmState {
   setRecOption: (o: ZmState['recOption']) => void;
   submitRecommendations: () => void;
   ask: (q: string) => void;
+  addQuestion: (q: { id: string; question: string; topic: string }) => void;
 }
 
 const Ctx = createContext<ZmStore | null>(null);
@@ -191,6 +194,7 @@ export function ZmStoreProvider({ children }: { children: ReactNode }) {
     setRecOption: (recOption) => setState((s) => ({ ...s, recOption })),
     submitRecommendations: () => setState((s) => ({ ...s, recStatus: 'submitted' })),
     ask: (q) => setState((s) => ({ ...s, asked: [q, ...s.asked.filter((x) => x !== q)].slice(0, 5) })),
+    addQuestion: (q) => setState((s) => ({ ...s, extraQuestions: [...s.extraQuestions.filter((x) => x.id !== q.id), { ...q, status: 'open' }] })),
     answer: (qid, response) => setState((s) => ({ ...s, questions: { ...s.questions, [qid]: 'responded' }, responses: { ...s.responses, [qid]: response } })),
   }), [state]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

@@ -1,5 +1,5 @@
 /** Chart wrappers. Series colours come from theme.ts (planned = brand, observed/actual = amber). */
-import { Bar, BarChart, CartesianGrid, Cell, LabelList, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, LabelList, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { C } from '../theme';
 
 const AXIS = { fontSize: 12, fill: C.inkSoft };
@@ -148,5 +148,42 @@ export function HeatGrid({ rows, cols, value, onCell, total, highlight }: {
         ))}
       </tbody>
     </table>
+  );
+}
+
+/** Trend line with a light area fill, value labels and a hover tooltip (e.g. quarterly secondary sales). */
+export function TrendLine<T extends Record<string, unknown>>({ data, x, y, height = 220, format = (v: number) => String(v), tooltip, color = C.brand }: {
+  data: T[]; x: keyof T & string; y: keyof T & string; height?: number; format?: (v: number) => string; tooltip?: (row: T) => string; color?: string;
+}) {
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <AreaChart data={data} margin={{ top: 24, right: 16, left: -4, bottom: 0 }}>
+        <CartesianGrid vertical={false} stroke={C.line} strokeDasharray="3 3" />
+        <XAxis dataKey={x} tick={AXIS} axisLine={{ stroke: C.line }} tickLine={false} />
+        <YAxis tick={AXIS} axisLine={false} tickLine={false} tickFormatter={(v) => format(v as number)} />
+        <Tooltip cursor={{ stroke: C.line }} content={({ active, payload }) => {
+          const row = active ? (payload?.[0]?.payload as T | undefined) : undefined;
+          return row ? <div className="toast" style={{ background: C.card, color: C.ink, border: `1px solid ${C.line}` }}>{tooltip ? tooltip(row) : format(row[y] as number)}</div> : null;
+        }} />
+        <Area type="monotone" dataKey={y} stroke={color} strokeWidth={2.5} fill={C.tint} fillOpacity={0.7} dot={{ r: 4, fill: C.card, stroke: color, strokeWidth: 2 }} isAnimationActive={false}>
+          <LabelList dataKey={y} position="top" style={{ fontSize: 12, fontWeight: 700, fill: C.ink }} formatter={(v: number) => format(v)} />
+        </Area>
+      </AreaChart>
+    </ResponsiveContainer>
+  );
+}
+
+/** Small inline trend line for table cells (no axes). */
+export function Sparkline({ values, width = 96, height = 28, label }: { values: number[]; width?: number; height?: number; label: string }) {
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const px = (i: number) => (i / (values.length - 1)) * (width - 6) + 3;
+  const py = (v: number) => height - 3 - ((v - min) / (max - min || 1)) * (height - 6);
+  const pts = values.map((v, i) => `${px(i)},${py(v)}`).join(' ');
+  return (
+    <svg width={width} height={height} role="img" aria-label={label}><title>{label}</title>
+      <polyline points={pts} fill="none" stroke={C.brand} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
+      {values.map((v, i) => <circle key={i} cx={px(i)} cy={py(v)} r={2.2} fill={C.brand} />)}
+    </svg>
   );
 }

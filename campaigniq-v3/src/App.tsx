@@ -20,6 +20,7 @@ import { AssignedThemes, ConceptComparison, ConceptStudio, PropositionDesigner }
 import { ConsolidatedPlans, PlanValidation, RevisedPlan, SkuReconciliation, ZmPerformance } from './screens/zm/Plans';
 import { ZmStoreProvider } from './store/zmStore';
 import { MhBlank } from './screens/mh/Blank';
+import { NationalOverview, PlanAlignment, RegionalOpportunity, RegionalPlanDetail, TerritoryPlanDetail } from './screens/mh/Opportunity';
 import { MhStoreProvider } from './store/mhStore';
 import { CommandCentre } from './screens/CommandCentre';
 import { Portfolio } from './screens/Portfolio';
@@ -134,11 +135,11 @@ function buildRouter(session: Session, signOut: () => void) {
         { path: 'zm/impact/diagnostics', element: <CampaignDiagnostics /> },
         { path: 'zm/impact/recommendations', element: <Recommendations /> },
         { path: 'zm/assistant', element: <ZmAssistant /> },
-        { path: 'mh/overview', element: <MhBlank n={1} /> },
-        { path: 'mh/opportunity/:region', element: <MhBlank n={2} /> },
-        { path: 'mh/plans', element: <MhBlank n={3} /> },
-        { path: 'mh/plans/:region/:crop', element: <MhBlank n={4} /> },
-        { path: 'mh/plans/territory/:territory', element: <MhBlank n={5} /> },
+        { path: 'mh/overview', element: <NationalOverview /> },
+        { path: 'mh/opportunity/:region', element: <RegionalOpportunity /> },
+        { path: 'mh/plans', element: <PlanAlignment /> },
+        { path: 'mh/plans/:region/:crop', element: <RegionalPlanDetail /> },
+        { path: 'mh/plans/territory/:territory', element: <TerritoryPlanDetail /> },
         { path: 'mh/studio/diagnosis', element: <MhBlank n={6} /> },
         { path: 'mh/studio/recommendations', element: <MhBlank n={7} /> },
         { path: 'mh/studio/investigation', element: <MhBlank n={8} /> },

@@ -592,7 +592,8 @@ export function RevisedPlan() {
   const [question, setQuestion] = useState<string | null>(null);
   const [correction, setCorrection] = useState(false);
   const [evidence, setEvidence] = useState<Evidence | null>(null);
-  const qStatus = (id: string) => zm.questions[id] ?? MH_QUESTIONS.find((q) => q.id === id)!.status;
+  const questions = [...MH_QUESTIONS, ...zm.extraQuestions];
+  const qStatus = (id: string) => zm.questions[id] ?? questions.find((q) => q.id === id)!.status;
   const status = st.plan(t);
   const isAmbad = t === 'ambad';
   const rows: { param: string; orig: string; rev: string; variation: string; changed: boolean | null }[] = isAmbad ? [
@@ -620,7 +621,7 @@ export function RevisedPlan() {
     { label: 'Portfolio SKU mapping', tone: (st.mapping(t) === 'validated' ? 'ok' : 'warn') as Tone, status: st.mapping(t) === 'validated' ? 'Validated' : 'Pending' },
   ];
   const endorse = () => { zm.decidePlan(t, 'endorsed'); bh.toast(`${p.name} revised plan endorsed and forwarded to Marketing Head`); go(Z.themes); };
-  const openQ = MH_QUESTIONS.filter((q) => qStatus(q.id) === 'open').length;
+  const openQ = questions.filter((q) => qStatus(q.id) === 'open').length;
 
   return (
     <ZmPage {...ZM_SECTION.plans} trail={p.name} title="Revised Plan Comparison and Revalidation" back={Z.planReview(t)} next={endorse} nextLabel="Endorse and forward to Marketing Head"
@@ -648,7 +649,7 @@ export function RevisedPlan() {
               <List items={tracker.map((x) => ({ label: x.label, value: <StatusChip tone={x.tone}>{x.status}</StatusChip> }))} />
             </Card>
             <Card title="Marketing Head questions" icon={MessageSquare} flush>
-              <DataTable rows={MH_QUESTIONS} rowKey={(q) => q.id}
+              <DataTable rows={questions} rowKey={(q) => q.id}
                 columns={[
                   { key: 'q', header: 'Question', render: (q) => q.topic },
                   { key: 's', header: 'Status', align: 'center', render: (q) => <StatusChip tone={Q_TONE[qStatus(q.id)]}>{Q_LABEL[qStatus(q.id)]}</StatusChip> },
@@ -682,7 +683,7 @@ export function RevisedPlan() {
             isAmbad ? `Version 2 adds ${lakh(r.rev.plan - r.orig.plan)} of onion (${r.villages.map((x) => `${x.village} +${lakh(x.rev - x.orig)}`).join(', ')}).` : 'No revised version has been submitted for this territory.',
             `Remaining gap ${crore(v2Gap)} against the ${crore(p.abp)} ABP.`,
             `${rows.filter((x) => x.changed).length} parameters changed between versions.`,
-            `${openQ} of ${MH_QUESTIONS.length} Marketing Head questions open.`,
+            `${openQ} of ${questions.length} Marketing Head questions open.`,
           ]} />
         </div>
       </div>
@@ -699,21 +700,22 @@ function ClarificationDrawer({ t, qid, setQid, onClose }: { t: ZmTerritoryId; qi
   const bh = useBhStore();
   const zm = useZmStore();
   const p = territoryPlan(t);
-  const q = MH_QUESTIONS.find((x) => x.id === qid)!;
-  const qStatus = (id: string) => zm.questions[id] ?? MH_QUESTIONS.find((x) => x.id === id)!.status;
+  const questions = [...MH_QUESTIONS, ...zm.extraQuestions];
+  const q = questions.find((x) => x.id === qid)!;
+  const qStatus = (id: string) => zm.questions[id] ?? questions.find((x) => x.id === id)!.status;
   const [type, setType] = useState(RESPONSE_TYPES[0]);
   const [owner, setOwner] = useState('Zonal Manager');
   const [due, setDue] = useState('');
   const [text, setText] = useState(zm.responses[qid] ?? '');
   const [tried, setTried] = useState(false);
   const err = text.trim().length < 10 ? 'Enter a response of at least 10 characters' : '';
-  const open = MH_QUESTIONS.filter((x) => qStatus(x.id) === 'open').length;
+  const open = questions.filter((x) => qStatus(x.id) === 'open').length;
   const submit = () => {
     setTried(true);
     if (err) return;
     zm.answer(qid, text.trim());
     bh.toast(`Response to "${q.topic}" submitted to Marketing Head`);
-    const next = MH_QUESTIONS.find((x) => x.id !== qid && qStatus(x.id) === 'open');
+    const next = questions.find((x) => x.id !== qid && qStatus(x.id) === 'open');
     if (next) { setQid(next.id); setText(''); setTried(false); } else onClose();
   };
   const pick = (id: string) => { setQid(id); setText(zm.responses[id] ?? ''); setTried(false); };
@@ -727,7 +729,7 @@ function ClarificationDrawer({ t, qid, setQid, onClose }: { t: ZmTerritoryId; qi
         <KpiCard label="Onion allocation (version 1)" value={crore(p.crops[0].proposed)} />
       </div>
       <Card title="Marketing Head questions" icon={MessageSquare} flush>
-        <DataTable selectable rows={MH_QUESTIONS} rowKey={(x) => x.id} selected={qid} onRowClick={(x) => pick(x.id)}
+        <DataTable selectable rows={questions} rowKey={(x) => x.id} selected={qid} onRowClick={(x) => pick(x.id)}
           columns={[
             { key: 'q', header: 'Question', render: (x) => x.question },
             { key: 's', header: 'Status', align: 'center', render: (x) => <StatusChip tone={Q_TONE[qStatus(x.id)]}>{Q_LABEL[qStatus(x.id)]}</StatusChip> },
@@ -749,7 +751,7 @@ function ClarificationDrawer({ t, qid, setQid, onClose }: { t: ZmTerritoryId; qi
       <Notes title="Clarification notes" items={[
         `Onion plan ${crore(p.crops[0].proposed)} in version 1; version 2 proposes ${crore(revisedPlan().rev.onion)}.`,
         `Realisation basis ₹${REALISATION}/kg and ${FUNNEL_DEFAULTS.kgPerAcre} kg/acre application rate.`,
-        `${open} of ${MH_QUESTIONS.length} questions still open.`,
+        `${open} of ${questions.length} questions still open.`,
       ]} />
     </Drawer>
   );
