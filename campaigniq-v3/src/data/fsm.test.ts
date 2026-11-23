@@ -5,7 +5,7 @@ import {
   ACTIVITY_UNITS, acresFor, budgetMix, CAMPAIGN_ACTIVITIES, clusterRows, clusterTotal, cropPlan, DEALERS, executionCounts, FARMERS_REACHED,
   funnel, impactSummary, objectiveCoverage, ONION_VILLAGE_PLAN, outletSummary, RETAILERS, scenarioOutcome, SCENARIOS, targetReconciliation,
   coverageCalc, dealersOf, lastYearMix, onionPlanOf, perfRows, retailersOf, defaultWizard, wizardScenarios, objectiveErrors, activityErrors,
-  villagePerformance, campaignFunnel, unitsWith, statusAfter, interventionEffectiveness, planActivity,
+  villagePerformance, campaignFunnel, unitsWith, statusAfter, interventionEffectiveness, planActivity, coverageDefaults, coverageResult, coverageError,
 } from './fsm';
 
 const r1 = (v: number) => Math.round(v * 10) / 10;
@@ -173,5 +173,18 @@ describe('calculated activity budget', () => {
     const four = w.activities.map((a) => (a.type === 'demonstration' ? planActivity(a.id, a.type, 4, a) : a));
     expect(four[0].cost).toBe(1.4);
     expect(budgetMix(four).total).toBe(3.35);
+  });
+});
+
+describe('coverage & volume calculator', () => {
+  it('Dhanora defaults and an 18 MT target', () => {
+    const d = coverageDefaults(ONION_VILLAGE_PLAN.find((v) => v.village === 'Dhanora')!);
+    expect(d).toEqual({ rate: 20, volume: 15, prev: 500, retention: 80, conversion: 60 });
+    const r = coverageResult(d);
+    expect([r.required, r.retained, r.newAcres, r.eligible]).toEqual([750, 400, 350, 584]);
+    const r18 = coverageResult({ ...d, volume: 18 });
+    expect([r18.required, r18.retained, r18.newAcres, r18.eligible]).toEqual([900, 400, 500, 834]);
+    expect(coverageResult({ ...d, volume: 5 }).eligible).toBe(0);
+    expect([coverageError('retention', '120'), coverageError('rate', ''), coverageError('volume', '0.5')]).toEqual(['Maximum 100', 'Enter a number', '']);
   });
 });

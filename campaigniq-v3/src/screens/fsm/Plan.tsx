@@ -1,6 +1,6 @@
 /** Screens 1–5 — My Plan: performance, territory network, outlet targets, crop plan, plan review. */
 import {
-  ArrowRight, Calculator, ChevronDown, ChevronRight, CircleAlert, CircleCheck, Download, FileSpreadsheet, History, Layers, Lightbulb, ListChecks,
+  ArrowRight, Calculator, Check, TriangleAlert, ChevronDown, ChevronRight, CircleAlert, CircleCheck, Download, FileSpreadsheet, History, Layers, Lightbulb, ListChecks,
   MapPin, MessageSquare, Network, RefreshCw, Save, Sprout, Store, Target, Trophy, Upload,
 } from 'lucide-react';
 import { useRef, useState, type ReactNode } from 'react';
@@ -8,15 +8,15 @@ import { territoryById } from '../../data/bh';
 import { crore, lakh, num, pct, sum } from '../../data/format';
 import {
   clusterRows, coverageCalc, cropPlan, dealersOf, FSM_CROPS, FSM_TERRITORY_IDS, FUNNEL_DEFAULTS, GROWTH_DRIVERS, LAST_YEAR_SNAPSHOT, lastYearMix,
-  onionPlanOf, perfRows, retailerDemand, PRODUCT_SHARE, retailersOf, SEASON_SHARE, TERRITORY_DISTRICT, territoryName, villagesOf, COVERAGE_RATES,
-  type ClusterRow, type Dealer, type Retailer,
+  onionPlanOf, perfRows, retailerDemand, PRODUCT_SHARE, retailersOf, SEASON_SHARE, TERRITORY_DISTRICT, territoryName, villagesOf,
+  coverageDefaults, coverageError, coverageResult, COVERAGE_LIMITS, type CoverageInputs, type VillageOnionPlan, type ClusterRow, type Dealer, type Retailer,
 } from '../../data/fsm';
 import { F, type FsmTerritoryId } from '../../routes';
 import { useBhStore } from '../../store/bhStore';
 import { useFsmStore } from '../../store/fsmStore';
 import { Bar, Button, Card, FilterRows, KpiCard, StatusChip, type Tone } from '../../ui/core';
 import { DataTable } from '../../ui/DataTable';
-import { Drawer } from '../../ui/overlay';
+import { Drawer, Modal } from '../../ui/overlay';
 import { PanelFooter } from '../../ui/core';
 import { ALL, useGo } from '../common';
 import { FsmPage, PlanTabs, useTerritory } from './frame';
@@ -421,11 +421,30 @@ export function CropPlanning() {
   const tg = useTargets(t);
   const op = useOnionPlan(t);
   const onionCrop = cropPlan(t)[0];
-  const [selected, setSelected] = useState(op.rows.find((v) => v.village === 'Dhanora')?.village ?? op.rows[0].village);
+  const fsm = useFsmStore();
+  const [selected, setSelectedRaw] = useState(op.rows.find((v) => v.village === 'Dhanora')?.village ?? op.rows[0].village);
   const [editing, setEditing] = useState<string | null>(null);
   const sel = op.rows.find((v) => v.village === selected)!;
-  const c = coverageCalc(sel);
-  const totals = { lastYear: sum(op.rows, (v) => v.lastYear), prev: sum(op.rows, (v) => coverageCalc(v).previousAcres), req: sum(op.rows, (v) => coverageCalc(v).requiredAcres) };
+  // Coverage calculator: saved inputs per village in the FSM store; edits go to a draft (strings, so a field can be empty).
+  const covKey = (village: string) => `${t}:${village}`;
+  const savedCov = (v: VillageOnionPlan) => fsm.coverage[covKey(v.village)] ?? coverageDefaults(v);
+  const KEYS = Object.keys(COVERAGE_LIMITS) as (keyof CoverageInputs)[];
+  const toDraft = (i: CoverageInputs) => Object.fromEntries(KEYS.map((k) => [k, String(Math.round(i[k] * 100) / 100)])) as Record<keyof CoverageInputs, string>;
+  const [draft, setDraft] = useState(() => toDraft(savedCov(sel)));
+  const [pending, setPending] = useState<string | null>(null);
+  const saved = savedCov(sel);
+  const errs = Object.fromEntries(KEYS.map((k) => [k, coverageError(k, draft[k])])) as Record<keyof CoverageInputs, string>;
+  const valid = KEYS.every((k) => !errs[k]);
+  const changed = KEYS.filter((k) => errs[k] || Number(draft[k]) !== Math.round(saved[k] * 100) / 100);
+  const dirty = changed.length > 0;
+  const parsed = Object.fromEntries(KEYS.map((k) => [k, Number(draft[k])])) as unknown as CoverageInputs;
+  const res = valid ? coverageResult(parsed) : null;
+  const savedRes = coverageResult(saved);
+  const switchTo = (village: string) => { setSelectedRaw(village); setDraft(toDraft(savedCov(op.rows.find((v) => v.village === village)!))); };
+  const setSelected = (village: string) => { if (village === selected) return; if (dirty) setPending(village); else switchTo(village); };
+  const saveCov = () => { if (!valid) return false; fsm.setCoverage(covKey(sel.village), parsed); bh.toast('Coverage plan saved'); return true; };
+  const rowCov = (v: VillageOnionPlan) => coverageResult(savedCov(v));
+  const totals = { lastYear: sum(op.rows, (v) => v.lastYear), prev: sum(op.rows, (v) => savedCov(v).prev), req: sum(op.rows, (v) => rowCov(v).required) };
   const realisationOk = FUNNEL_DEFAULTS.rupeesPerKg >= 100;
 
   return (
@@ -451,30 +470,62 @@ export function CropPlanning() {
               { key: 'p', header: 'Target', align: 'center', render: (v) => (editing === v.village
                 ? <input className="num-input" type="number" min={0} step={1} autoFocus aria-label={`Onion plan ${v.village}`} value={v.plan} onClick={(e) => e.stopPropagation()} onChange={(e) => op.set(v.village, Math.max(0, Number(e.target.value) || 0))} />
                 : `${lakh(v.plan)} / ${num(coverageCalc(v).volumeMt)} MT`) },
-              { key: 'ra', header: 'Required acres', align: 'right', render: (v) => num(coverageCalc(v).requiredAcres) },
-              { key: 'g', header: 'Coverage growth', align: 'right', render: (v) => <StatusChip tone="ok">{`+${num(coverageCalc(v).coverageGrowth)} acres`}</StatusChip> },
+              { key: 'ra', header: 'Required acres', align: 'right', render: (v) => num(rowCov(v).required) },
+              { key: 'g', header: 'Coverage growth', align: 'right', render: (v) => { const g = rowCov(v).growth; return <StatusChip tone={g >= 0 ? 'ok' : 'warn'}>{`${g >= 0 ? '+' : '–'}${num(Math.abs(g))} acres`}</StatusChip>; } },
               { key: 'a', header: 'Action', align: 'center', render: (v) => <Button small primary={editing === v.village} onClick={() => { setSelected(v.village); setEditing(editing === v.village ? null : v.village); }}>{editing === v.village ? 'Done' : 'Edit'}</Button> },
             ]}
             total={{ v: 'Total', ly: lakh(totals.lastYear), pa: num(totals.prev), p: <b>{crore(op.total)}</b>, ra: num(totals.req), g: <StatusChip tone="ok">{`+${num(totals.req - totals.prev)} acres`}</StatusChip> }} />
         </Card>
           <Notes title="Planning notes" items={[
             `Realisation check: plan uses ₹${FUNNEL_DEFAULTS.rupeesPerKg}/kg${realisationOk ? ', in line with last year' : ''}.`,
-            `Coverage: ${sel.village} needs ${num(c.eligibleNewAcres)} eligible new acres on top of ${num(c.retainedAcres)} retained acres.`,
+            `Coverage: ${sel.village} needs ${num(savedRes.eligible)} eligible new acres on top of ${num(savedRes.retained)} retained acres.`,
           ]} />
         </div>
         <div className="stack">
-          <Card title={`${sel.village} coverage & volume calculator`} icon={Calculator}>
+          <Card title={`${sel.village} coverage & volume calculator`} icon={Calculator}
+            right={<button type="button" className="text-btn" onClick={() => setDraft(toDraft(coverageDefaults(sel)))}>Reset to defaults</button>}>
+            <div className="calc-label">Assumptions</div>
+            {KEYS.map((k) => (
+              <div key={k} className="list-row calc-row">
+                <span>{COVERAGE_LIMITS[k].label}</span>
+                <span className="right stack" style={{ gap: 2, alignItems: 'flex-end' }}>
+                  <span className={`unit-input${errs[k] ? ' bad' : changed.includes(k) ? ' chg' : ''}`}>
+                    <input type="number" aria-label={COVERAGE_LIMITS[k].label} min={COVERAGE_LIMITS[k].min} max={COVERAGE_LIMITS[k].max} step={COVERAGE_LIMITS[k].step} value={draft[k]} onChange={(e) => setDraft((d) => ({ ...d, [k]: e.target.value }))} />
+                    <small>{COVERAGE_LIMITS[k].unit}</small>
+                  </span>
+                  {errs[k] && <small className="err">{errs[k]}</small>}
+                </span>
+              </div>
+            ))}
+            <div className="calc-label calc-divider">Result</div>
             <List items={[
-              { label: 'Assumed seasonal rate', value: `${FUNNEL_DEFAULTS.kgPerAcre} kg/acre` },
-              { label: 'Target volume', value: `${num(c.volumeMt)} MT` },
-              { label: 'Required effective coverage', value: `${num(c.requiredAcres)} acres` },
-              { label: 'Historical retention', value: pct(COVERAGE_RATES.retentionPct, 0) },
-              { label: 'Retained acres', value: `${num(c.retainedAcres)} acres` },
-              { label: 'New effective acres needed', value: `${num(c.newAcres)} acres` },
-              { label: 'Expected new-acre conversion', value: pct(COVERAGE_RATES.newAcreConversionPct, 0) },
-              { label: <b>Eligible new acres required</b>, value: `${num(c.eligibleNewAcres)} acres` },
+              { label: 'Required effective coverage', value: res ? `${num(res.required)} acres` : '–' },
+              { label: 'Retained acres', value: res ? `${num(res.retained)} acres` : '–' },
+              { label: 'New effective acres needed', value: res ? `${num(res.newAcres)} acres` : '–' },
             ]} />
+            <div className="list-row calc-final"><b>Eligible new acres required</b><b className="right">{!res ? '–' : res.newAcres === 0 ? 'No new acres needed' : `${num(res.eligible)} acres`}</b></div>
+            {dirty && (
+              <div className="unsaved-bar" style={{ margin: '4px 0 0', flexWrap: 'wrap' }}>
+                <TriangleAlert size={17} />
+                <b>{changed.length} input{changed.length === 1 ? '' : 's'} changed</b>
+                <span>Eligible new acres {num(savedRes.eligible)} → {res ? num(res.eligible) : '–'}</span>
+                <span className="sp" />
+                <Button small onClick={() => setDraft(toDraft(saved))}>Cancel</Button>
+                <Button small primary icon={Check} disabled={!valid} onClick={() => saveCov()}>Save changes</Button>
+              </div>
+            )}
           </Card>
+          {pending && (
+            <Modal title="Save changes before leaving?" onClose={() => setPending(null)}
+              footer={<>
+                <Button onClick={() => setPending(null)}>Stay</Button>
+                <span className="sp" />
+                <Button onClick={() => { switchTo(pending); setPending(null); }}>Discard</Button>
+                <Button primary icon={Check} disabled={!valid} onClick={() => { if (saveCov()) { switchTo(pending); setPending(null); } }}>Save</Button>
+              </>}>
+              <p style={{ margin: 0 }}>{changed.length} input{changed.length === 1 ? '' : 's'} changed for {sel.village}.</p>
+            </Modal>
+          )}
           <Card title="Product & growth-stage context" icon={Sprout}>
             <List items={[
               { label: 'Onion stage', value: 'Bulb initiation to maturation' },

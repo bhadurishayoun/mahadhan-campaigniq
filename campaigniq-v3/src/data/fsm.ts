@@ -529,3 +529,35 @@ export const interventionEffectiveness = (units: ActivityUnit[] = ACTIVITY_UNITS
     spend: (a.cost / a.units) * completed,
   };
 });
+
+// ---------------------------------------------------------------- coverage & volume calculator (editable)
+export interface CoverageInputs { rate: number; volume: number; prev: number; retention: number; conversion: number }
+export const COVERAGE_LIMITS: Record<keyof CoverageInputs, { min: number; max?: number; step: number; unit: string; label: string }> = {
+  rate: { min: 1, step: 1, unit: 'kg/acre', label: 'Assumed seasonal rate' },
+  volume: { min: 0.1, step: 0.5, unit: 'MT', label: 'Target volume' },
+  prev: { min: 0, step: 10, unit: 'acres', label: 'Previous covered acres' },
+  retention: { min: 0, max: 100, step: 1, unit: '%', label: 'Historical retention' },
+  conversion: { min: 1, max: 100, step: 1, unit: '%', label: 'Expected new-acre conversion' },
+};
+/** Calculator defaults for a village: its plan volume and previous acres, the standard rate, retention and conversion. */
+export const coverageDefaults = (v: VillageOnionPlan): CoverageInputs => {
+  const c = coverageCalc(v);
+  return { rate: FUNNEL_DEFAULTS.kgPerAcre, volume: c.volumeMt, prev: c.previousAcres, retention: COVERAGE_RATES.retentionPct, conversion: COVERAGE_RATES.newAcreConversionPct };
+};
+/** Required = volume × 1000 ÷ rate; retained = previous × retention; new = max(0, required − retained); eligible = ⌈new ÷ conversion⌉. */
+export const coverageResult = (i: CoverageInputs) => {
+  const required = (i.volume * 1000) / i.rate;
+  const retained = (i.prev * i.retention) / 100;
+  const newAcres = Math.max(0, required - retained);
+  const eligible = newAcres > 0 ? Math.ceil(newAcres / (i.conversion / 100) - 1e-9) : 0;
+  return { required, retained, newAcres, eligible, growth: required - i.prev };
+};
+/** Validation message per field ('' when valid). */
+export const coverageError = (k: keyof CoverageInputs, raw: string) => {
+  const lim = COVERAGE_LIMITS[k];
+  if (raw.trim() === '' || !Number.isFinite(Number(raw))) return 'Enter a number';
+  const v = Number(raw);
+  if (v < lim.min) return `Minimum ${lim.min}`;
+  if (lim.max !== undefined && v > lim.max) return `Maximum ${lim.max}`;
+  return '';
+};
