@@ -365,6 +365,29 @@ export const TIMINGS = ['Pre-activation', 'Crop-stage window', 'Follow-up suppor
 export const PHASE_OF: Record<string, 'Preparation' | 'Crop-stage window' | 'Follow-up'> = {
   'Pre-activation': 'Preparation', 'Crop-stage window': 'Crop-stage window', 'Follow-up support': 'Follow-up', 'Post-activity': 'Follow-up',
 };
+export const PHASES = ['Preparation', 'Crop-stage window', 'Follow-up'] as const;
+/** Onion crop stage covered by each calendar phase. */
+export const PHASE_CROP_STAGE: Record<(typeof PHASES)[number], string> = {
+  Preparation: 'Before bulb initiation', 'Crop-stage window': 'Bulb initiation to early maturation', 'Follow-up': 'After early maturation',
+};
+/** Planned campaign weeks for each activity timing. */
+export const TIMING_WEEKS: Record<string, [number, number]> = {
+  'Pre-activation': [1, 2], 'Crop-stage window': [2, 3], 'Follow-up support': [3, 4], 'Post-activity': [3, 4],
+};
+/** Budget, share, window and owners per calendar phase, from the saved planner rows. Budgets sum to the planner total. */
+export const phaseDetails = (acts: { cost: number; timing: string; owner: string }[]) => {
+  const total = sum(acts, (a) => a.cost);
+  return PHASES.map((phase) => {
+    const mine = acts.filter((a) => PHASE_OF[a.timing] === phase);
+    const budget = sum(mine, (a) => a.cost);
+    const weeks = mine.flatMap((a) => TIMING_WEEKS[a.timing] ?? []);
+    return {
+      phase, cropStage: PHASE_CROP_STAGE[phase], budget, sharePct: ratio(budget, total),
+      window: weeks.length ? [Math.min(...weeks), Math.max(...weeks)] as [number, number] : null,
+      owners: [...new Set(mine.map((a) => a.owner).filter(Boolean))],
+    };
+  });
+};
 
 export interface WizardActivity extends CampaignActivity { type: string; channel: string; timing: string; owner: string }
 

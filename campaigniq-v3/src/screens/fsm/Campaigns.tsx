@@ -10,7 +10,7 @@ import { CONTRIBUTION_MARGIN, netRoi, territoryById } from '../../data/bh';
 import { crore, lakh, num, pct, rupees, sum, times } from '../../data/format';
 import {
   activityErrors, ACTIVITY_DEFAULTS, ACTIVITY_TYPES, planActivity, AUDIENCES, budgetMix, BUSINESS_PRIORITIES, CAMPAIGN_TYPES, CAMPAIGN_VILLAGES, CHANNELS, cropPlan, defaultWizard, funnel, objectiveCoverage,
-  objectiveErrors, OBJECTIVES, OWNERS, PHASE_OF, priorityById, RETAILERS, TIMINGS, VILLAGE_FARMERS, wizardScenarios, type WizardActivity, type WizardState,
+  objectiveErrors, OBJECTIVES, OWNERS, PHASE_OF, phaseDetails, priorityById, RETAILERS, TIMINGS, VILLAGE_FARMERS, wizardScenarios, type WizardActivity, type WizardState,
   DEALERS, clusterRows, type BusinessPriority,
 } from '../../data/fsm';
 import { F } from '../../routes';
@@ -314,6 +314,14 @@ export function WizardActivities() {
                   <b>{ph === 'Crop-stage window' ? 'Onion crop-stage window' : ph}</b>
                   {w.activities.filter((a) => PHASE_OF[a.timing] === ph).map((a) => <span key={a.id}>{a.name}</span>)}
                 </div>
+              ))}
+              {phaseDetails(w.activities).map((d) => (
+                <dl key={`${d.phase}-detail`} className={`phase-detail${d.phase === 'Crop-stage window' ? ' on' : ''}`}>
+                  <div><dt>Crop stage</dt><dd>{d.cropStage}</dd></div>
+                  <div><dt>Window</dt><dd>{d.window ? (d.window[0] === d.window[1] ? `Week ${d.window[0]}` : `Weeks ${d.window[0]}–${d.window[1]}`) : 'NA'}</dd></div>
+                  <div><dt>Budget</dt><dd>{lakh(d.budget, 2)} ({pct(d.sharePct, 0)})</dd></div>
+                  <div><dt>Owners</dt><dd>{d.owners.length ? d.owners.join(', ') : 'NA'}</dd></div>
+                </dl>
               ))}
             </div>
           </Card>
