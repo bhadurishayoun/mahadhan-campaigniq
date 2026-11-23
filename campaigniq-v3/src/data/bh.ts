@@ -312,9 +312,10 @@ export interface ThemeProposal {
 }
 
 export const THEME_QUEUE: ThemeProposal[] = [
-  { id: 'croptek-next', name: 'Croptek conversion', geography: 'West / Maharashtra', state: 'Maharashtra', region: 'west', cropProduct: 'Onion / Croptek', crop: 'Onion', product: 'Croptek', proposedBy: 'Marketing Head', priority: 'High', status: 'review_pending', objective: 'Farmer conversion', cohort: 'Eligible non-adopters and trial users', focus: 'Conversion & adoption' },
+  { id: 'croptek-next', name: 'Croptek conversion', geography: 'West / Maharashtra', state: 'Maharashtra', region: 'west', cropProduct: 'Onion / Croptek', crop: 'Onion', product: 'Croptek', proposedBy: 'Marketing Head', priority: 'High', status: 'approved', objective: 'Farmer conversion', cohort: 'Eligible non-adopters and trial users', focus: 'Conversion & adoption' },
   { id: 'retailer-advocacy', name: 'Multi-region retailer advocacy', geography: 'Multi-region', state: 'Multi-region', region: 'multi', cropProduct: 'Pending validation', crop: null, product: null, proposedBy: 'Marketing Head', priority: 'High', status: 'review_pending', objective: 'Retailer advocacy', cohort: 'Priority retailers', focus: 'Retailer enablement' },
   { id: 'north-awareness', name: 'North region crop nutrition awareness', geography: 'North', state: 'North region', region: 'north', cropProduct: 'Pending', crop: null, product: null, proposedBy: 'Marketing Head', priority: 'Medium', status: 'clarification_requested', objective: 'Crop nutrition awareness', cohort: 'Pending', focus: 'Crop nutrition awareness' },
+  { id: 'paddy-south', name: 'Paddy nutrition programme', geography: 'South', state: 'South region', region: 'south', cropProduct: 'Paddy / Croptek', crop: 'Paddy', product: 'Croptek', proposedBy: 'Marketing Head', priority: 'Medium', status: 'review_pending', objective: 'Nutrition programme adoption', cohort: 'Paddy growers in mapped retailer catchments', focus: 'Conversion & adoption' },
 ];
 
 /** Theme candidates surfaced by the market opportunity view (Ambad / Onion / Croptek evidence). */
@@ -349,10 +350,9 @@ export interface Intervention {
 
 export const initialInterventions = (): Intervention[] => {
   const c = campaignMetrics(campaignById('croptek'));
-  const a = ambadMetrics();
   return [
     { id: 'croptek-review', name: 'Croptek campaign performance review', category: 'Performance', geography: 'West', trigger: `${c.execVariance} pp execution variance`.replace('-', '–'), role: 'Marketing Head', priority: 'High', status: 'draft', statusLabel: 'Draft not sent', campaign: 'croptek', deliverable: 'Campaign recovery assessment' },
-    { id: 'croptek-theme-approval', name: 'Croptek conversion theme approval', category: 'Strategic theme', geography: 'Ambad', trigger: `${a.villageGap.toFixed(1)} pp village conversion gap`, role: 'Marketing Head', priority: 'High', status: 'awaiting_response', statusLabel: 'Decision pending', deliverable: 'Theme decision' },
+    { id: 'paddy-theme-approval', name: 'Paddy nutrition programme theme approval', category: 'Strategic theme', geography: 'South', trigger: 'New theme submitted by Marketing Head', role: 'Marketing Head', priority: 'High', status: 'awaiting_response', statusLabel: 'Decision pending', deliverable: 'Theme decision' },
     { id: 'reallocation', name: 'Marketing investment reallocation', category: 'Investment', geography: 'West', trigger: `₹${DEFAULT_REALLOCATION.amount} L simulated transfer`, role: 'Marketing Head and Finance', priority: 'Medium', status: 'draft', statusLabel: 'Draft not sent', deliverable: 'Finance validation of reallocation' },
     { id: 'north-clarification', name: 'North region crop nutrition awareness clarification', category: 'Theme clarification', geography: 'North', trigger: 'Scope validation', role: 'Marketing Head', priority: 'Medium', status: 'awaiting_response', statusLabel: 'Response pending', deliverable: 'Clarified theme scope' },
     { id: 'south-paddy-review', name: 'South paddy campaign execution review', category: 'Performance', geography: 'South', trigger: '–7 pp execution variance', role: 'Marketing Head', priority: 'High', status: 'draft', statusLabel: 'Draft not sent', deliverable: 'Campaign recovery assessment' },

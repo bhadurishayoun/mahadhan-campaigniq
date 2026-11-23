@@ -137,8 +137,8 @@ describe('plan reviews (screens 1–5)', () => {
 });
 
 describe('themes, concepts and proposition (screens 6–9)', () => {
-  it('three assigned themes; Croptek awaits acknowledgement', () => {
-    expect(ZM_THEMES.map((t) => [t.crop, t.status])).toEqual([['Onion', 'acknowledgement_pending'], ['Soybean', 'under_review'], ['Cotton', 'planned']]);
+  it('three assigned themes; Croptek acknowledged (its proposals are with the Marketing Head)', () => {
+    expect(ZM_THEMES.map((t) => [t.crop, t.status])).toEqual([['Onion', 'acknowledged'], ['Soybean', 'under_review'], ['Cotton', 'planned']]);
     expect(secondaryTrend()).toBe('₹40 L → ₹43 L → ₹45 L → ₹48 L');
   });
   it('C1 rationale: 3 observed market items and 4 suitability items', () => {

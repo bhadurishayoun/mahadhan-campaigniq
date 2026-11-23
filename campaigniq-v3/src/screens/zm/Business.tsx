@@ -294,8 +294,8 @@ export function AudienceReconciliation() {
 }
 
 // ================================================================ 18 Proposal Review and Submission
-const STATUS_LABEL: Record<ProposalStatus, string> = { draft: 'Checks pending', submitted: 'Submitted · returned for revision', resubmitted: 'Resubmitted to Marketing Head' };
-const STATUS_TONE: Record<ProposalStatus, Tone> = { draft: 'warn', submitted: 'risk', resubmitted: 'ok' };
+const STATUS_LABEL: Record<ProposalStatus, string> = { draft: 'Checks pending', submitted: 'Submitted to Marketing Head', returned: 'Returned for revision', resubmitted: 'Resubmitted to Marketing Head', approved: 'Approved by Marketing Head' };
+const STATUS_TONE: Record<ProposalStatus, Tone> = { draft: 'warn', submitted: 'warn', returned: 'risk', resubmitted: 'warn', approved: 'ok' };
 function useProposalFigures() {
   const d = useDrivers();
   const zm = useZmStore();
@@ -348,7 +348,7 @@ export function ProposalReview() {
             { key: 'n', header: 'Forecast contribution', align: 'right', render: (p) => l1(f(p.id).contribution) },
             { key: 'r', header: 'Forecast net ROI', align: 'right', render: (p) => times(f(p.id).roi) },
             { key: 'v', header: 'Status', align: 'center', render: (p) => <StatusChip tone={STATUS_TONE[st(p.id)]}>{STATUS_LABEL[st(p.id)]}</StatusChip> },
-            { key: 'a', header: 'Review', align: 'center', render: (p) => (st(p.id) === 'submitted'
+            { key: 'a', header: 'Review', align: 'center', render: (p) => (st(p.id) === 'returned'
               ? <Button small primary icon={History} onClick={() => go(Z.revise(p.id))}>Revise</Button>
               : <Button small icon={Eye} onClick={() => setFocus(p.id)}>Review</Button>) },
           ]} />
@@ -477,7 +477,7 @@ export function ProposalRevision() {
   };
   return (
     <ZmPage {...ZM_SECTION.studio} trail="Returned proposals" title="Revision and Resubmission Workspace" back={Z.proposals} next={resubmit} nextLabel="Resubmit revised proposal to Marketing Head"
-      right={<StatusChip tone={status === 'resubmitted' ? 'ok' : status === 'submitted' ? 'risk' : 'neutral'}>{status === 'resubmitted' ? 'Resubmitted' : status === 'submitted' ? 'Returned for revision · not approved' : 'Not yet submitted'}</StatusChip>}>
+      right={<StatusChip tone={STATUS_TONE[status]}>{status === 'returned' ? 'Returned for revision · not approved' : STATUS_LABEL[status]}</StatusChip>}>
       <StudioTabs active={4} />
       <div className="kpis">
         <KpiCard label="Submitted investment (version 1)" value={l1(d.investment)} />

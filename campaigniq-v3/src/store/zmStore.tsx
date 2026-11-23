@@ -72,14 +72,14 @@ export interface DraftSetup { audience: string; language: string; objective: str
 
 export interface InterventionConfig { objective: string; behaviour: string; participants: string; types: string[]; channel: string; crop: string; geography: string; window: string; resources: string }
 
-const KEY = 'campaigniq.v3.zm.7';
+const KEY = 'campaigniq.v3.zm.8';
 const INITIAL: ZmState = { scope: 'zone', portfolio: 'crop-nutrition', planDecisions: {}, mapping: {}, mappingChecks: {}, comments: {}, cropValidated: {}, questions: {}, responses: {},
   themeStatus: {}, acknowledgements: {}, clarifications: [], concepts: null, selectedConcepts: ['c1'],
   workspace: { intent: 'Drive eligible first-purchase conversion under Croptek.', behaviour: 'Move from recommendation or trial to first purchase.', notes: '' },
   compareDecision: 'separate', proposition: {}, interventions: {}, readinessChecks: [], claims: {},
   template: 'detailer', draftSetup: null, versions: null, reviews: {}, submittedForReview: false, assetStatus: {}, playbookIncluded: ['detailer'], released: false,
   drivers: null, scenario: 'base', financeRequested: false, reconDecision: 'separate',
-  proposalStatus: { c1: 'draft', c2: 'draft' }, selectedProposals: ['c1'], submissionChecks: [], revision: null,
+  proposalStatus: { c1: 'submitted', c2: 'submitted' }, selectedProposals: ['c1'], submissionChecks: [], revision: null,
   approvalStatus: {}, accepted: {}, activityChecks: {}, escalated: {},
   learningSaved: false, recSelected: null, recPriority: {}, recOption: 'submit', recStatus: 'draft', asked: [] };
 

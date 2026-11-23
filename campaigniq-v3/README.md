@@ -89,6 +89,7 @@ Marketing Head personas follow the same pattern (persona id `pm` / `mh`, mockups
 | Phase | Scope | Status |
 |---|---|---|
 | 0 | Mockups (`docs/mockups/marketing-head/`, 26), routes (`M` in `src/routes.ts`), 7-item sidebar, persona switch (all four personas built), top bar (National portfolio · West · South · North · East), 22 screens with titles, Campaign Strategy Studio tabs and the Back/Next chain (`src/screens/mh/Blank.tsx`) | Done |
-| 1 | Data and tests (regions, opportunity, plans, diagnosis and investigation, recommendations, theme lifecycle shared with BH and ZM, proposals, rollout, performance); BH theme-queue alignment | Next |
-| 2–6 | Screens 1–5, 6–11, 12–16, 17–21, 22; cross-persona verification and deploy | Planned |
+| 1 | Data (`src/data/mh.ts`, tested in `mh.test.ts`): regional opportunity (₹1,350 Cr; BH region figures), theme effectiveness (BH themes), West states and the Maharashtra onion market, plans (Ambad = FSM / ZM), diagnosis funnel (1,200 → 780 → 150 → 54, 36%), 3 evidence requests, recommendations, proposals (= ZM / BH), rollout (₹12.0 L envelope), performance (= BH). Theme lifecycle is one shared record: MH reads and writes the BH and ZM stores. BH queue: Croptek conversion approved; Multi-region retailer advocacy, North awareness and the new Paddy nutrition programme pending (tracker item re-pointed to the Paddy theme). ZM: Croptek theme acknowledged, C1 and C2 submitted to the Marketing Head; proposal statuses draft · submitted · returned · resubmitted · approved | Done |
+| 2 | Screens 1–5 (overview, regional opportunity, plan reviews) | Next |
+| 3–6 | Screens 6–11, 12–16, 17–21, 22; cross-persona verification and deploy | Planned |
 
