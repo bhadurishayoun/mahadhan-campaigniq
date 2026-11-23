@@ -4,7 +4,7 @@ import { useState, type ReactNode } from 'react';
 import { netRoi } from '../../data/bh';
 import { lakh, num, pct, ratio, times } from '../../data/format';
 import {
-  activityName, allUnitsWith, AT_RISK_ACTIVITY, campaignFunnel, executionCounts, FSM_CAMPAIGN, impactSummary, interventionEffectiveness, scenarioOutcome, SCENARIOS, spendToDate,
+  activityName, allUnitsWith, AT_RISK_ACTIVITY, campaignFunnel, DEALERS, UNIT_COST, executionCounts, FSM_CAMPAIGN, impactSummary, interventionEffectiveness, scenarioOutcome, SCENARIOS, spendToDate,
   villagePerformance, BUSINESS_PRIORITIES,
 } from '../../data/fsm';
 import { F } from '../../routes';
@@ -46,7 +46,7 @@ function useImpactFilters() {
       ]}
       extras={[{ key: 'sort', label: 'Sort by', value: sortBy, onChange: (v) => setSortBy(v as ImpactSort), options: [opt('conversion', 'Trial-to-adoption'), opt('adopters', 'Adopters'), opt('trials', 'Trials'), opt('sales', 'Tracked sales')] }]} />
   );
-  return { header, view, rows, all: vp, village };
+  return { header, view, rows, all: vp, village, setVillage };
 }
 
 function VillageTable({ rows, compact }: { rows: ReturnType<typeof villagePerformance>; compact?: boolean }) {
@@ -161,6 +161,27 @@ export function VillageDiagnostic() {
   const otherAtRisk = allUnitsWith(fsm.units).filter((u) => u.status === 'at_risk' && !atRisk.some((a) => a.id === u.id)).slice(0, 2);
   const belowAvg = [...sorted].reverse().slice(1).filter((v) => v.conversionPct < s.trialToAdoptionPct).slice(0, 2);
   const salesGap = Math.round((s.forecast - s.tracked) * 10) / 10;
+  // "What to change": actions for at-risk units, replication and budget rebalance; each opens its workspace.
+  const unitNoun = (activity: string) => activityName(activity).replace(/s$/, '').toLowerCase();
+  const stockUnits = atRisk.filter((u) => /stock/i.test(u.issue ?? ''));
+  const ownerUnits = atRisk.filter((u) => /mobilis|participant|owner/i.test(u.issue ?? ''));
+  const lowest2 = [...sorted].reverse().slice(0, 2).filter((v) => v.name !== hi.name);
+  const fullType = eff.find((e) => e.planned > 0 && e.completed === e.planned);
+  const followGap = eff.find((e) => e.id === 'followup' && e.completed < e.planned);
+  const moveAmt = followGap ? UNIT_COST[followGap.id] : 0;
+  const loUnit = units.find((u) => u.village.split(', ').includes(lo.name) && u.activity === followGap?.id) ?? units.find((u) => u.village.split(', ').includes(lo.name));
+  const toChange: { label: string; to: () => void }[] = [
+    ...stockUnits.map((u) => ({
+      label: `Confirm ${FSM_CAMPAIGN.product} stock with ${DEALERS.find((d) => d.village === u.village)?.name ?? `the ${u.village} dealer`} before the week ${u.week} ${unitNoun(u.activity).split(' ').pop()}.`,
+      to: () => go(F.activity(u.id)),
+    })),
+    ...ownerUnits.map((u) => ({ label: `Reassign the ${u.village} ${unitNoun(u.activity)} if ${u.owner} cannot confirm participants by week ${u.week}.`, to: () => go(F.activity(u.id)) })),
+    ...(lowest2.length ? [{ label: `Repeat ${hi.name}'s sequence (${pct(hi.conversionPct)}) in ${lowest2.map((v) => v.name).join(' and ')}.`, to: () => { f.setVillage(lowest2[0].name); window.scrollTo(0, 0); } }] : []),
+    ...(fullType && followGap && loUnit ? [{
+      label: `Move ${lakh(moveAmt, moveAmt < 1 ? 2 : 1)} from ${fullType.name.toLowerCase()} (${fullType.completed} of ${fullType.planned} done) to an extra ${unitNoun(followGap.id).replace(/^farmer /, '')} round in ${lo.name}.`,
+      to: () => go(F.activity(loUnit.id)),
+    }] : []),
+  ];
   // "What worked": each point is shown only when its condition holds.
   const done = eff.filter((e) => e.planned > 0 && e.completed === e.planned);
   const aboveAvg = sorted.slice(1).filter((v) => v.conversionPct > s.trialToAdoptionPct).slice(0, 2);
@@ -216,11 +237,14 @@ export function VillageDiagnostic() {
           <Button small icon={Wrench} onClick={() => go(F.activity(atRisk[0]?.id ?? AT_RISK_ACTIVITY))}>Create corrective action</Button>
           <Button small icon={BotMessageSquare} onClick={() => go(F.assistant)}>Open AI Copilot workspace</Button>
         </>}>
-          <List items={[
-            { icon: Sprout, label: atRisk.length ? `Resolve ${atRisk.length} at-risk activit${atRisk.length === 1 ? 'y' : 'ies'} before the next checkpoint.` : 'All at-risk activities have corrective actions.' },
-            { icon: Sprout, label: `Close the ${s.villageGap.toFixed(1)} pp gap: reinforce follow-ups in ${lo.name}.` },
-            { icon: Sprout, label: `Tracked sales ${lakh(s.tracked, 1)} against a ${lakh(s.forecast, 1)} forecast; review the activity mix if the variance holds.` },
-          ]} />
+          <div className="notes-fill">
+            <List items={[
+              { icon: Sprout, label: atRisk.length ? `Resolve ${atRisk.length} at-risk activit${atRisk.length === 1 ? 'y' : 'ies'} before the next checkpoint.` : 'All at-risk activities have corrective actions.' },
+              { icon: Sprout, label: `Close the ${s.villageGap.toFixed(1)} pp gap: reinforce follow-ups in ${lo.name}.` },
+              { icon: Sprout, label: `Tracked sales ${lakh(s.tracked, 1)} against a ${lakh(s.forecast, 1)} forecast; review the activity mix if the variance holds.` },
+              ...toChange.map((c) => ({ icon: Sprout, label: <button type="button" className="row-link" onClick={c.to}>{c.label}</button> })),
+            ]} />
+          </div>
         </Card>
       </div>
     </FsmPage>
