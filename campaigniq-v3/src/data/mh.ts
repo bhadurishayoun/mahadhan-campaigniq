@@ -193,7 +193,7 @@ export const briefDefaults = (recId: string): ThemeBrief => {
   };
   return {
     name: r.name, objective: objective[r.id], market: 'Maharashtra · Onion', scope: 'West region · eligibility to validate',
-    audience: 'Eligible conventional nutrition and trial-interest farmers', owner: 'Zonal Manager · Marathwada zone', due: r.id === 'croptek-conversion' ? '2027-03-15' : '2027-03-31', deliverables: [...BRIEF_DELIVERABLES],
+    audience: 'Eligible Conventional Non-Saarthi Nutrition Users and trial-interest farmers', owner: 'Zonal Manager · Marathwada zone', due: r.id === 'croptek-conversion' ? '2027-03-15' : '2027-03-31', deliverables: [...BRIEF_DELIVERABLES],
   };
 };
 
@@ -270,7 +270,7 @@ export const ROLLOUT_READINESS = [
 ];
 export const PLAYBOOK = [
   { label: 'Campaign proposition', value: 'Retailer-led Croptek conversion' },
-  { label: 'Priority audience', value: 'Eligible conventional nutrition and trial-interest farmers' },
+  { label: 'Priority audience', value: 'Eligible Conventional Non-Saarthi Nutrition Users and trial-interest farmers' },
   { label: 'Approved messaging', value: 'Authorised collateral versions only' },
   { label: 'Intervention channels', value: 'Retailer education, conversion conversations, field demonstrations' },
   { label: 'Scope and guardrails', value: 'Local budgets and activities within the regional envelope' },

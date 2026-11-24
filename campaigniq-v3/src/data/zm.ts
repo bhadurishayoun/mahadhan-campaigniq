@@ -234,7 +234,7 @@ export const ZM_THEMES: ZmTheme[] = [
     id: 'croptek-conversion', name: 'Croptek conversion', crop: 'Onion', product: 'Croptek', geography: 'Maharashtra', region: 'West region', status: 'acknowledged', assignedBy: 'Marketing Head', due: '15 Mar 2027',
     objective: 'Strengthen eligible farmer conversion and Croptek adoption.',
     scope: 'Maharashtra · Onion (initial focus); other West region markets after eligibility checks.',
-    audience: 'Conventional nutrition and trial-interest farmers who meet eligibility and consent.',
+    audience: 'Conventional Non-Saarthi Nutrition Users and trial-interest farmers who meet eligibility and consent.',
     openPoints: 'Retailer influence, historical comparator, stock readiness and technical applicability.',
   },
   {
@@ -509,7 +509,7 @@ export const reconciliation = (d: Drivers = DRIVERS) => {
 /** Proposal lifecycle shared with the Marketing Head: submitted to MH, returned for revision, resubmitted, approved. */
 export type ProposalStatus = 'draft' | 'submitted' | 'returned' | 'resubmitted' | 'approved';
 export const PROPOSALS: { id: 'c1' | 'c2'; label: string; focus: string }[] = [
-  { id: 'c1', label: 'Proposal A', focus: 'Convert conventional nutrition users through retailer influence' },
+  { id: 'c1', label: 'Proposal A', focus: 'Convert Conventional Non-Saarthi Nutrition Users through retailer influence' },
   { id: 'c2', label: 'Proposal B', focus: 'Drive trials and nurture to purchase in target villages' },
 ];
 export const SUBMISSION_CHECKS = [

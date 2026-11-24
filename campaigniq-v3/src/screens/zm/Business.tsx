@@ -228,7 +228,7 @@ export function AudienceReconciliation() {
   const r = reconciliation(d);
   const [evidence, setEvidence] = useState<Evidence | null>(null);
   const rows: { p: string; a: string; b: string; span?: boolean }[] = [
-    { p: 'Priority audience', a: 'Conventional nutrition farmers', b: 'Trial / interest farmers' },
+    { p: 'Priority audience', a: 'Conventional Non-Saarthi Nutrition Users', b: 'Trial / interest farmers' },
     { p: 'First-purchase objective', a: 'Convert to Croptek', b: 'Turn trials into purchase' },
     { p: 'Intended interventions', a: 'Retailer activation, demonstrations, farmer meetings', b: 'Trial programme, advisory, follow-ups' },
     { p: 'Campaign investment', a: l1(d.investment), b: l1(c2.investment) },

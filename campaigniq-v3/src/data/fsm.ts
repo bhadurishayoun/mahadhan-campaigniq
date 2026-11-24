@@ -247,8 +247,8 @@ export interface BusinessPriority {
 }
 export const BUSINESS_PRIORITIES: BusinessPriority[] = [
   { id: 'onion-croptek', name: 'Onion · Croptek conversion', crop: 'Onion', villages: ['Dhanora', 'Wadi Gaon'], uplift: 25,
-    description: 'Convert conventional nutrition users', audience: 'Conventional nutrition users', approach: 'Retailer-led + field demonstrations',
-    objective: 'Convert conventional nutrition users', campaignType: 'Retailer-led conversion', campaignName: 'Ambad Onion Croptek conversion', scenarioSales: [8, 12, 16] },
+    description: 'Convert Conventional Non-Saarthi Nutrition Users', audience: 'Conventional Non-Saarthi Nutrition Users', approach: 'Retailer-led + field demonstrations',
+    objective: 'Convert Conventional Non-Saarthi Nutrition Users', campaignType: 'Retailer-led conversion', campaignName: 'Ambad Onion Croptek conversion', scenarioSales: [8, 12, 16] },
   { id: 'maize-expansion', name: 'Maize · portfolio expansion', crop: 'Maize', villages: ['Ambad HQ', 'Pimpalgaon'], uplift: 15,
     description: 'Expand coverage at existing outlets', audience: 'Existing maize growers', approach: 'Field demonstrations + farmer meetings',
     objective: 'Expand coverage at existing outlets', campaignType: 'Field demonstration led', campaignName: 'Ambad Maize portfolio expansion', scenarioSales: [5, 7, 9] },
@@ -358,7 +358,7 @@ export const impactSummary = () => {
 };
 
 // ---------------------------------------------------------------- campaign wizard
-export const OBJECTIVES = ['Convert conventional nutrition users', 'Expand coverage at existing outlets', 'Improve channel advocacy and reach', 'Drive repeat purchase from trial users'];
+export const OBJECTIVES = ['Convert Conventional Non-Saarthi Nutrition Users', 'Expand coverage at existing outlets', 'Improve channel advocacy and reach', 'Drive repeat purchase from trial users'];
 export const AUDIENCES = ['Verified CRM cohort (eligible)', 'Last-year trial users', 'Mapped retailers and their farmers'];
 export const CAMPAIGN_TYPES = ['Retailer-led conversion', 'Field demonstration led', 'Farmer meeting led', 'Digital advisory led'];
 export const CHANNELS = ['Dhanora / Wadi Gaon', 'Retailer channel', 'Village meetings', 'Consent-based digital', 'Field follow-up'];

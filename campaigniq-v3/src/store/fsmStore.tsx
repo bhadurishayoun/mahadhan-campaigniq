@@ -30,7 +30,7 @@ export interface FsmState {
   coverage: Record<string, CoverageInputs>;
 }
 
-const KEY = 'campaigniq.v3.fsm.7';
+const KEY = 'campaigniq.v3.fsm.8';
 const INITIAL: FsmState = { scope: 'cluster', submitted: ['ambad'], targets: {}, onionPlan: {}, notes: {}, wizard: null, campaigns: {}, units: {}, evidence: {}, asked: [], coverage: {} };
 
 function load(): FsmState {

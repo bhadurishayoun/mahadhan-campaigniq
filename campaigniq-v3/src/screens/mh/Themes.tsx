@@ -73,7 +73,7 @@ function useThemeLifecycle() {
 // ================================================================ 12 Strategic theme brief & Zonal Manager assignment
 const MARKETS = ['Maharashtra · Onion', 'Maharashtra · Onion and soybean', 'West region · Onion'];
 const SCOPES = ['West region · eligibility to validate', 'Maharashtra only', 'Marathwada zone only'];
-const AUDIENCES = ['Eligible conventional nutrition and trial-interest farmers', 'Trial users with no first purchase', 'Mapped retailers and their farmer catchments'];
+const AUDIENCES = ['Eligible Conventional Non-Saarthi Nutrition Users and trial-interest farmers', 'Trial users with no first purchase', 'Mapped retailers and their farmer catchments'];
 const FIELDS: { key: keyof Omit<ThemeBrief, 'deliverables'>; label: string }[] = [
   { key: 'name', label: 'Theme name' }, { key: 'objective', label: 'Marketing objective' }, { key: 'market', label: 'Priority market' }, { key: 'scope', label: 'Broader scope' },
   { key: 'audience', label: 'Audience direction' }, { key: 'owner', label: 'Assigned to' }, { key: 'due', label: 'Due date' },
@@ -337,7 +337,7 @@ export function ThemeTracker() {
 const DETAIL = {
   c1: {
     objective: 'Strengthen retailer recommendation and eligible farmer first-purchase conversion for Croptek.',
-    audience: 'Eligible conventional nutrition and trial-interest farmers through retailer influence',
+    audience: 'Eligible Conventional Non-Saarthi Nutrition Users and trial-interest farmers through retailer influence',
     intervention: 'Retailer education and activation with in-market support',
     content: 'Under review: key content with Brand and Technical',
   },

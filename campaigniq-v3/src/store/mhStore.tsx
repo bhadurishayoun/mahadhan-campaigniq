@@ -40,7 +40,7 @@ export interface MhState {
   optimisation: boolean;
 }
 
-const KEY = 'campaigniq.v3.mh.5';
+const KEY = 'campaigniq.v3.mh.6';
 const INITIAL: MhState = { scope: 'national', planStatus: {}, endorsed: [], shortlist: [], flagged: false,
   analysis: null, requests: null, recommendation: 'croptek-conversion', refreshed: 'croptek-conversion', briefs: {}, reviewNotes: {}, decision: null,
   verified: [], approval: {}, approvalNotes: {}, validated: [], readiness: [], published: false, optimisation: false };
