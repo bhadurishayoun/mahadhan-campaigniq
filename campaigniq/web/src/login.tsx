@@ -71,7 +71,7 @@ export function LoginPage({ onLogin, initialPersona }: { onLogin: (payload: Logi
             <span>Full name</span>
             <div className="login-input-wrap">
               <UserRound size={16} />
-              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Sayak Patil" />
+              <input value={name} onChange={(e) => setName(e.target.value)} />
             </div>
           </label>
 
@@ -127,7 +127,6 @@ export function LoginPage({ onLogin, initialPersona }: { onLogin: (payload: Logi
 
           <button type="button" className="login-cta" onClick={handleSubmit} disabled={!canSubmit}>Sign In</button>
 
-          <div className="login-note">Secure access is controlled by persona ID and password.</div>
         </section>
       </div>
     </div>
