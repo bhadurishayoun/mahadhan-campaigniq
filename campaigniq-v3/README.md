@@ -1,31 +1,203 @@
 # CampaignIQ v3
 
-Clean rebuild of Mahadhan CampaignIQ from the client-approved mockups, one persona at a time. Business Head is first
-(spec: `../business-head-prompt.md`); Marketing Head, Zonal Manager and Field Sales Manager follow in the same shell.
+Rebuild of Mahadhan CampaignIQ from the client-approved mockups. All four personas are built in one shell and share one
+data set: **Business Head** (20 screens), **Marketing Head** (22), **Zonal Manager** (26) and **Field Sales Manager** (15),
+with their drawers and modals.
 
-- **Live:** `https://bhadurishayoun.github.io/mahadhan-campaigniq/v3/#/bh/command-centre` (after the next deploy).
-- **Sign in:** the same sign-in page as the current app (copied unchanged into `src/auth/`). `MASTER001` /
-  `Mahadhan@2026` or `SH001` / `Strategy@123` open the Business Head workspace. Signing in as a persona whose
-  workspace is not built yet returns to the sign-in page with Business Head selected.
-- **Mockups:** `docs/mockups/business-head/` (downloaded from the shared Drive folder; file names ≠ screen numbers —
-  the map is in `src/routes.ts`).
+- **Live:** https://bhadurishayoun.github.io/mahadhan-campaigniq/v3/ (redeployed on every push to `main`).
+- **Sign in:** `MASTER001` / `Mahadhan@2026` opens every persona; persona logins are listed in the user guide below.
+- **User guide:** [How to use the tool](#how-to-use-the-tool-user-guide), with every screen, action and cross-persona flow.
+- **Mockups:** `docs/mockups/<persona>/` (file names ≠ screen numbers; the map is in `src/routes.ts`).
 - **Rules:** `CLAUDE.md` (hygiene, design system, data rules). Check with `npm run hygiene`.
 
 ## Run
 ```
 npm install
 npm run dev          # http://localhost:5174
-npm test             # data reconciliation (src/data/bh.test.ts)
+npm test             # data reconciliation (src/data/*.test.ts, 83 tests)
 npm run hygiene      # banned words, screen codes, hex colours, font sizes
+npm run check:blanks # needs the preview on port 4174: no empty or dash values on any route, drawer or modal
 npm run build
 npx vite preview --port 4174 & node scripts/shots.mjs [filter] [width] [height]   # screenshots → docs/screens/
 ```
 
+## How to use the tool (user guide)
+
+This section walks through the whole tool: signing in, the screen layout, every persona's screens in order, and the
+flows that connect the four personas. All figures are illustrative and come from one shared data set, so the same
+number (for example Ambad's ₹4.20 Cr ABP or the Croptek ₹12 L / ₹48 L business case) is identical wherever it appears.
+
+### 1. Open and sign in
+1. Open **https://bhadurishayoun.github.io/mahadhan-campaigniq/v3/** (or `http://localhost:5174` when running locally).
+2. On the sign-in page pick a persona tile, type your full name, user ID and password, and press **Sign in**.
+
+| Persona | User ID / password | Lands on |
+|---|---|---|
+| Business Head | `SH001` / `Strategy@123` | Marketing and Command Centre |
+| Marketing Head | `MH001` / `Marketing@123` | Marketing Overview |
+| Zonal Manager | `PM001` / `Product@123` | My Performance |
+| Field Sales Manager | `TM001` / `Territory@123` | My Plan |
+| **All personas (showcase)** | `MASTER001` / `Mahadhan@2026` | the persona tile you chose |
+
+3. With the master login, the **persona selector** in the top bar switches between all four workspaces without
+   signing in again. A persona login only opens its own workspace.
+4. Refreshing the browser returns you to the sign-in page (sign in again; your work in the current tab is kept).
+
+### 2. Screen layout (same on every page)
+- **Top bar:** logo · persona selector · financial year (FY 2026–27) · scope (Business Head and Marketing Head:
+  Portfolio / West / South / North / East; Zonal Manager: Marathwada zone or one of its 8 territories; Field Sales
+  Manager: Ambad, Ghansawangi or Badnapur) · period "YTD through Feb 2027" · help · notifications (bell) · avatar.
+- **Sidebar:** the persona's sections; the active one is highlighted. Each section opens its first screen.
+- **Page:** breadcrumb → title and status chip → filters (list screens) → KPI cards → content cards → footer.
+- **Footer:** **Back** (left) returns to the previous screen; **Next** (right) moves to the next screen in the flow
+  and is often the screen's main action (for example "Approve campaign"). Other actions are small buttons in the
+  header of the card they belong to.
+- **Tables:** click a row (or its radio button) to select it; the cards beside the table follow the selection.
+  "View", "Review" or "Open" buttons drill down or open a side drawer.
+- **Drawers and modals:** open on the right (drawers) or centre (modals). **Back** closes them; the right-hand button
+  is the drawer's one action (send, save, submit).
+- **Editing:** editable fields turn amber when changed and a bar shows "N changes · Cancel · Save changes". Leaving
+  the page with unsaved edits asks Save / Discard / Stay.
+- **Status words:** a value that does not exist yet shows a grey status word (Not started, Not submitted, Not linked,
+  None) instead of a dash. Notes cards (light-bulb icon) are computed from the data on the page.
+
+### 3. Business Head (sidebar: Marketing and Command Centre · Campaign Portfolio Performance · Marketing Investment & ROI · Strategic Themes & Approvals · Strategic Interventions · AI Copilot workspace)
+1. **Marketing and Command Centre** – national KPIs, region-wise campaign portfolio performance, regional execution
+   comparison, the strategic theme approval queue and the management attention list. Click a theme in the queue to
+   review it; click a region to explore it.
+2. **Campaign Portfolio Performance** – filter by Region · Crop · Product · Theme, switch Theme / Crop / Product views,
+   sort. Rows open the region.
+3. **West region** – the 8 West territories (Ambad, Ghansawangi, Badnapur, Jafrabad, Bhokardan, Partur, Mantha, Jalna;
+   ₹16.0 Cr ABP / ₹14.2 Cr sales), planned vs observed execution and adopters by campaign. **View** on Ambad opens the
+   territory.
+4. **Ambad territory** – crop × product performance, village trial-to-adoption, intervention execution and strategic
+   opportunities (**Approve theme** opens the theme decision).
+5. **Campaign effectiveness** – target vs recorded adoption and the performance driver matrix; **Diagnostics** opens the
+   diagnostic drawer; **Request review** adds an item to the intervention tracker.
+6. **Marketing Investment & ROI** – approved vs actual investment, financial status, campaign allocation; drill to the
+   region's **campaign investment**, **commercial returns** (forecast vs actual ROI per campaign) and the
+   **reallocation simulator** (move budget between campaigns; the result can be sent for review).
+7. **Strategic Themes & Approvals** – market opportunity, the **theme inbox** (themes the Marketing Head sent), the
+   **theme review** and the **decision modal**: Approve theme / Request clarification / Return with modifications / Reject theme. Your decision updates
+   the inbox, the command centre and the Marketing Head's theme brief.
+8. **Strategic Interventions** – the management intervention register (filters, status donut). Rows open the
+   intervention drawer to send a request; Marketing Head escalations appear here. **Portfolio learning** sets the
+   next-year strategic priorities.
+9. **AI Copilot workspace** – pick a suggested question or type one; answers are built from the data (no external
+   model) with links to the screens behind them.
+
+### 4. Marketing Head (sidebar: Marketing Overview · Market Opportunity · Business & Crop Plan Reviews · Campaign Strategy Studio · Approvals & Rollout · Portfolio Performance & Learning · AI Copilot workspace)
+1. **Marketing Opportunity & Performance** – Region-wise / Crop-wise / Product-wise views, filters and sort. **Explore**
+   on a region opens screen 2 for that region.
+2. **Regional market opportunity** – Market / Campaigns / Sales trend views (trend line with hover), state opportunity
+   and penetration, previous-campaign engagement. **View source analysis** opens the evidence drawer.
+3. **Business & crop plan alignment** – Plans / Exceptions views. **Request clarification** sends a question to the
+   Zonal Manager (shows on their revised-plan screen) and sets "Clarification requested". **Endorse marketing
+   requirements** marks the plan endorsed. **View plan** drills down.
+4. **Regional plan detail** – contributing territories with Zonal Manager statuses; **View status** opens a territory;
+   **Add to shortlist**.
+5. **Territory plan detail** – Ambad village plan (same as the Field Sales Manager's); **Flag marketing opportunity**
+   moves to the strategy studio.
+6. **Campaign Strategy Studio** (tabs: Diagnosis · Investigation · Recommendations · Theme brief · Theme tracker):
+   - **Diagnosis** – evidence tiles and growth-barrier cards. **Request further analysis** opens a drawer: question,
+     analysis modules, source availability, "Run with available data" or "Request missing evidence", scope, data
+     checklist, owner → submit opens the investigation.
+   - **Recommendations** – 7 campaign recommendations; select a row to see its suitability; **View rationale** opens
+     the detail drawer; **Design selected campaign** goes to the theme brief.
+   - **Investigation results** – farmer funnel (1,200 eligible → 780 reached → 150 trials → purchases not yet linked),
+     evidence readiness and barrier assessment. **Request missing evidence** creates 3 evidence requests (owners and
+     due dates).
+   - **Evidence tracking** – select a request and **Review validation**; once purchases are validated the funnel shows
+     54 purchases (36%). When all 3 are validated, **Updated investigation results** opens.
+   - **Updated results** and **Refreshed recommendations** – before vs after, updated barriers, refreshed confidence.
+   - **Theme brief** – edit the brief (save with the change bar) and tick the expected deliverables. The main button
+     follows the theme's state: **Send to Business Head for approval** (appears in the BH inbox) → after the Business
+     Head approves, **Assign and send to Zonal Manager** (appears on the Zonal Manager's Assigned Themes as
+     "Assigned · acknowledgement pending").
+   - **Theme tracker** – filter by Region · Theme · Assigned to · Status; the selected theme shows brief, evidence,
+     deliverables and the proposal pipeline. **Send clarification**, **Track owner**, **Update assignment**.
+7. **Approvals & Rollout**:
+   - **Proposal review** – Proposal A vs B comparison (or the list view); review notes are saved per proposal.
+   - **Proposal detail** – business case KPIs, scenario table, validation status. **Request changes** returns the
+     proposal to the Zonal Manager ("Returned for revision" in their revision workspace).
+   - **Comparison** – side-by-side evaluation; choose the review decision (Shortlist A / Shortlist B / Consider both /
+     Request consolidated revision). **Proceed to approval review**.
+   - **Approval** – approval brief, readiness checklist (**Mark verified** on each pending check), decision comments.
+     **Approve campaign** works once every mandatory check is verified → the Zonal Manager sees "Approved by Marketing
+     Head". **Return to Zonal Manager** or **Escalate to Business Head** (appears in the BH intervention tracker).
+   - **Release and rollout** – **Validate** each eligible territory, tick the 3 rollout-readiness checks, then
+     **Publish to eligible Field Sales Managers** → the playbook appears on the Field Sales Manager's My Campaigns.
+     Local plans total ₹12.60 L against the ₹12.0 L envelope; the screen states the ₹0.60 L difference.
+8. **Portfolio Performance & Learning** – portfolio performance (Campaigns / Regions views, planned vs observed chart),
+   **regional programme** (territory rollout, stage counts 12 → 8 → 6 → 4) and **driver diagnostics**: **View territory
+   impact** opens the territory explorer drawer (switch territory in the table); **Request optimisation review** opens
+   a form that sends the request to the Zonal Manager.
+9. **AI Copilot workspace** – suggested questions (follow-up lag, themes to scale, regional gaps, needs intervention)
+   or typed questions; answers include planned vs observed bars and rows that open the related screen.
+
+### 5. Zonal Manager (sidebar: My Performance · Territory Plan Reviews · Assigned Themes · Campaign Studio · Activity Approvals · Impact & Learning · AI Copilot workspace)
+1. **My Performance** – zone KPIs (8 territories), category table (Croptek, Water Soluble, Specialty Nutrition),
+   Value / Growth views, previous-year effectiveness.
+2. **Territory Plan Reviews** – consolidated plans (Plans / Exceptions views) → **SKU-to-portfolio reconciliation**
+   (validate the mapping checks, **Validate mapping**, or request a correction) → **plan review** per territory
+   (validate crops, save comments, return or **Endorse**) → **revised plan** (version 1 vs 2, exception tracker, the
+   Marketing Head's questions and your responses, endorse and forward).
+3. **Assigned Themes** – themes from the Marketing Head; **Acknowledge theme** (then develop concepts) or request clarification.
+4. **Campaign Studio** – concepts → compare → value proposition and claims → collateral (template, editor with saved
+   versions, approvals, playbook release) → business case (editable drivers with live ROI) → scenarios → audience
+   reconciliation (Proposal A vs B overlap) → proposals (readiness checklist, **Submit to Marketing Head**) →
+   **Revise** a returned proposal and resubmit.
+5. **Activity Approvals** – the territory approval queue (8 local plans, 59 units / ₹12.60 L); **Review** opens a
+   territory's activity plan with checks, exceptions and Approve / Return.
+6. **Impact & Learning** – campaign performance by territory, performance detail with the territory explorer,
+   diagnostics (villages, collateral), and **next-season learning**: the learning-to-action matrix (10 findings, each
+   with a selectable checkbox and editable priority) → **Submit recommendations to Marketing Head**.
+7. **AI Copilot workspace** – questions answered from the zone data.
+
+### 6. Field Sales Manager (sidebar: My Plan · My Campaigns · Campaign Execution · Impact & Learning · AI Copilot workspace)
+1. **My Plan** – My Business Plan → territory network & channel mapping → outlet business planning (dealer targets,
+   save draft) → village-wise crop, product & coverage planning → **Business & Crop Plan Review** (submit to the Zonal
+   Manager; their decision shows here).
+2. **My Campaigns** – select a business priority (shows the released playbook and the Zonal Manager's plan approval),
+   then the 4-step campaign wizard: Objective & Targeting → Activity & Budget Mix (activity planner with the edit
+   pattern) → Scenario & Expected Outcomes → Review & Submit.
+3. **Campaign Execution** – live control tower: activity calendar (weeks 1–4), activity units; open a unit for its
+   checklist, timeline, field evidence and corrective action.
+4. **Impact & Learning** – campaign impact (funnel, business impact, village / intervention views) and the
+   village-wise conversion diagnostic (what worked, what to investigate, what to change).
+5. **AI Copilot workspace** – questions answered from the territory data.
+
+### 7. End-to-end flow across personas (try it with the master login)
+1. **Field Sales Manager** submits the Ambad plan (My Plan → Review) → **Zonal Manager** endorses it on Territory Plan
+   Reviews → the **Marketing Head**'s plan alignment shows Maharashtra endorsed.
+2. **Marketing Head** requests clarification on a plan → the question appears on the **Zonal Manager**'s revised-plan
+   screen.
+3. **Marketing Head** runs the investigation (Diagnosis → Request further analysis → Request missing evidence → Review
+   validation ×3) → refreshed recommendations → theme brief.
+4. **Marketing Head** sends a new theme to the **Business Head** → Business Head approves it in Strategic Themes →
+   Marketing Head assigns it → **Zonal Manager** sees it in Assigned Themes.
+5. **Zonal Manager** submits Proposals A and B → **Marketing Head** reviews, compares, approves Proposal A (after
+   verifying the checks) → Zonal Manager sees "Approved by Marketing Head".
+6. **Marketing Head** validates territories and publishes → **Field Sales Manager** sees the playbook on My Campaigns.
+7. **Marketing Head** escalates or requests an optimisation review → the **Business Head**'s intervention tracker / the
+   **Zonal Manager**'s questions show it.
+
+### 8. Where your work is kept, and how to reset
+- Business Head actions are kept in the browser's local storage; Marketing Head, Zonal Manager and Field Sales Manager
+  work is kept for the browser tab (session storage). Nothing is sent to a server.
+- To start the demo again from the seeded data, sign out, close the tab (or clear the site data for
+  `bhadurishayoun.github.io`) and sign in again.
+
+### 9. Checks for developers
+`npm test` (data reconciliation, 83 tests) · `npm run build` · `npm run hygiene` (wording, colours, fonts; must be 0) ·
+`npm run check:blanks` (with `npx vite preview --port 4174` running: every route, drawer and modal has no empty or dash
+values; must be 0) · `node scripts/shots.mjs [filter]` (screenshots at 1440×900 into `docs/screens/`).
+
 ## Structure
 | Path | What |
 |---|---|
-| `src/data/bh.ts` | Every figure (money in lakh); totals and percentages computed; `bh.test.ts` reconciles them |
-| `src/store/bhStore.tsx` | Shared state (scope, theme decisions, interventions, recommendations, scenarios) in localStorage |
+| `src/data/bh.ts`, `fsm.ts`, `zm.ts`, `mh.ts` | Every figure (money in lakh) per persona; totals computed; the `*.test.ts` files reconcile them |
+| `src/store/*Store.tsx` | Shared state: Business Head in localStorage; Marketing Head, Zonal Manager and Field Sales Manager in sessionStorage |
 | `src/shell/` | Top bar, sidebar, notifications (management attention) |
 | `src/ui/` | KpiCard, Card, DataTable, StatusChip, FilterBar, SegmentedControl, WorkflowStepper, Drawer, Modal, EvidenceDrawer, charts |
 | `src/screens/` | One file per screen |

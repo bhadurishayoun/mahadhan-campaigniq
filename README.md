@@ -9,12 +9,12 @@ sign in with `MASTER001` / `Mahadhan@2026`
 
 All data in the tool is illustrative (mockup figures and a synthetic data workbook), not Mahadhan's actual data.
 
-> **CampaignIQ v3 (rebuild in progress, persona by persona):** `campaigniq-v3/` rebuilds the tool from the
-> client-approved mockups (Google Drive "Mahadhan_Mockups", copied to `campaigniq-v3/docs/mockups/`). Business Head
-> comes first, following `business-head-prompt.md`; the Field Sales Manager persona (`/v3/#/fsm/plan`, login TM001) is built as a
-> drill-down of the same data; the Zonal Manager persona (`/v3/#/zm/performance`, login PM001) is built with all 26 screens (Marathwada zone = the 8 Jalna territories, equal to BH West); the Marketing Head persona (`/v3/#/mh/overview`, login MH001) is built with all 22 screens; `npm run check:blanks` in campaigniq-v3 confirms no empty or dash values on any route. All are published at `/v3/` next to the current site
-> (`…/mahadhan-campaigniq/v3/#/bh/command-centre`, same `MASTER001` sign-in page). Status and next steps:
-> [campaigniq-v3/README.md](campaigniq-v3/README.md).
+> **CampaignIQ v3 (all four personas built):** `campaigniq-v3/` rebuilds the tool from the client-approved mockups.
+> Live at **https://bhadurishayoun.github.io/mahadhan-campaigniq/v3/** (same `MASTER001` / `Mahadhan@2026` sign-in):
+> Business Head (20 screens), Marketing Head (22), Zonal Manager (26) and Field Sales Manager (15), sharing one data set
+> (West = the 8 Jalna territories, ₹16.0 Cr ABP). **Step-by-step user guide and the cross-persona flow:**
+> [campaigniq-v3/README.md → How to use the tool](campaigniq-v3/README.md#how-to-use-the-tool-user-guide).
+> Checks: `npm test`, `npm run build`, `npm run hygiene` and `npm run check:blanks` (all clean).
 
 > **New developer? Start with [Project status & next steps](campaigniq/README.md#0-project-status--next-steps-start-here)**:
 > what is done, what is still illustrative, known limitations and the prioritised to-do list.
