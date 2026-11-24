@@ -7,7 +7,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { campaignById, netRoi, THEMES } from '../../data/bh';
 import { lakh, num, pct, sum, times } from '../../data/format';
 import {
-  APPROVAL_ITEMS, APPROVAL_LABEL, REVIEW_DECISIONS, INTERVENTION_PERFORMANCE, OPTIMISATION_FOCUS, PERFORMANCE_DRIVERS, PLAYBOOK, proposals, regionRows, ROLLOUT_ENVELOPE, ROLLOUT_LABEL,
+  APPROVAL_ITEMS, APPROVAL_LABEL, envelopeFit, REVIEW_DECISIONS, INTERVENTION_PERFORMANCE, OPTIMISATION_FOCUS, PERFORMANCE_DRIVERS, PLAYBOOK, proposals, regionRows, ROLLOUT_ENVELOPE, ROLLOUT_LABEL,
   ROLLOUT_READINESS, rolloutTerritories, STAGE_COUNTS, territoryImpact, westCampaigns, type RolloutStatus,
 } from '../../data/mh';
 import { PROPOSALS } from '../../data/zm';
@@ -101,7 +101,7 @@ export function ApprovalDecision() {
             <div className="kv"><span>Owner</span><b>Zonal Manager · Marathwada zone</b></div>
             <div className="kv"><span>Proposal</span><b>{p.label}: {p.name}</b></div>
             <div className="kv"><span>Review decision</span><b>{mh.decision ? REVIEW_DECISIONS.find((d) => d.id === mh.decision)!.label : 'Not recorded'}</b></div>
-            <div className="kv"><span>Regional envelope</span><b>{lakh(ROLLOUT_ENVELOPE())} (territory budgets reconcile to it)</b></div>
+            <div className="kv"><span>Regional envelope</span><b>{lakh(ROLLOUT_ENVELOPE())}; {envelopeFit().text}</b></div>
             <div className="kv"><span>Net ROI basis</span><b>({lakh(p.contribution, 1)} − {lakh(p.investment)}) / {lakh(p.investment)} = {times(p.roi)}</b></div>
           </Card>
           <Card title="Approval readiness and exceptions" icon={ShieldCheck} flush style={{ flex: 1 }}>
@@ -127,7 +127,7 @@ export function ApprovalDecision() {
           <Notes title="Approval notes" items={[
             ap.mandatoryOpen.length ? `${ap.mandatoryOpen.length} mandatory check${ap.mandatoryOpen.length === 1 ? '' : 's'} still open.` : 'All mandatory checks verified; approval can be completed.',
             `Forecast ${lakh(p.sales)} sales on ${lakh(p.investment)}, ${times(p.roi)} net ROI.`,
-            `${lakh(ROLLOUT_ENVELOPE())} is the regional envelope; territory budgets reconcile to it.`,
+            `${lakh(ROLLOUT_ENVELOPE())} is the regional envelope; ${envelopeFit().text}.`,
           ]} />
         </div>
       </div>

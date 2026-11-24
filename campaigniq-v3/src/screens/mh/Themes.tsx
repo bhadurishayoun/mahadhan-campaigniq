@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { CONTRIBUTION_MARGIN, type ThemeProposal } from '../../data/bh';
 import { lakh, num, pct, times } from '../../data/format';
 import {
-  APPROVAL_ITEMS, BRIEF_GUARDRAILS, BRIEF_OWNERS, briefDefaults, displayDate, funnel, PROPOSAL_LABEL, proposals, RECOMMENDATIONS, REVIEW_DECISIONS, THEME_LINKS, type ThemeBrief,
+  APPROVAL_ITEMS, BRIEF_GUARDRAILS, envelopeFit, BRIEF_OWNERS, briefDefaults, displayDate, funnel, PROPOSAL_LABEL, proposals, RECOMMENDATIONS, REVIEW_DECISIONS, THEME_LINKS, type ThemeBrief,
 } from '../../data/mh';
 import {
   allZmThemes, AUDIENCE, PROPOSALS, reconciliation, SCENARIO_FACTOR, scenarioRow, ZM_THEME_STATUS_LABEL, type ProposalStatus, type ZmTheme,
@@ -507,7 +507,7 @@ export function ProposalDetail() {
           <div style={{ padding: 16 }}>
             <List items={[
               { label: `Base case: (${lakh(base.contribution, 1)} − ${lakh(base.investment)}) / ${lakh(base.investment)} = ${times(base.netRoi)}` },
-              { label: `${lakh(p.investment)} is a regional envelope; territory allocations reconcile to it and are not added again` },
+              { label: `${lakh(p.investment)} is a regional envelope that territory allocations draw on (not added again); ${envelopeFit().text}` },
               { label: 'Campaign sales sit over and above the sales already in approved territory ABPs' },
             ]} />
           </div>

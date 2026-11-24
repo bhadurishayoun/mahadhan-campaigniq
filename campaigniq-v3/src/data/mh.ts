@@ -234,6 +234,14 @@ export const APPROVAL_ITEMS: { id: string; item: string; mandatory: boolean; bas
 
 // ---------------------------------------------------------------- rollout
 export const ROLLOUT_ENVELOPE = () => REGIONAL_ENVELOPE();
+/** Local plan budgets against the envelope: total, gap (positive = over) and a short statement. */
+export const envelopeFit = () => {
+  const env = REGIONAL_ENVELOPE();
+  const local = Math.round(sum(approvalQueue(), (q) => q.budget) * 100) / 100;
+  const gap = Math.round((local - env) * 100) / 100;
+  const text = gap > 0 ? `local plans total ₹${local.toFixed(2)} L, ₹${gap.toFixed(2)} L above it` : `local plans total ₹${local.toFixed(2)} L, within it`;
+  return { env, local, gap, text };
+};
 export type RolloutStatus = 'running' | 'eligible' | 'pending' | 'not_eligible';
 export const ROLLOUT_LABEL: Record<RolloutStatus, string> = { running: 'Running', eligible: 'Eligible', pending: 'Plan pending', not_eligible: 'Not eligible' };
 export const rolloutTerritories = () => {
