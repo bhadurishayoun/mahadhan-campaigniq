@@ -64,7 +64,7 @@ export function ApprovalInbox() {
         <KpiCard label={`Local budgets vs ${lakh(REGIONAL_ENVELOPE(), 1)} envelope`} value={l2(committed)} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 330px' }}>
-        <Card title="Territory campaign approval queue" icon={ClipboardCheck} flush>
+        <Card title="Territory campaign approval queue" icon={ClipboardCheck} flush className="tbl-fill">
           <DataTable selectable rows={rows} rowKey={(q) => q.territory} selected={sel} onRowClick={(q) => setSel(q.territory)}
             columns={[
               { key: 't', header: 'Territory', render: (q) => <b>{zmTerritoryName(q.territory)}</b> },

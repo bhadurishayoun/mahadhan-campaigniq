@@ -18,23 +18,23 @@ const r2 = (x: number) => Math.round(x * 100) / 100;
 describe('zone', () => {
   it('territories match BH and sum to the zone', () => {
     const z = zoneTerritories();
-    expect(z.map((t) => [t.abp, t.ytdSales])).toEqual([[420, 362], [340, 295], [240, 210], [180, 166], [160, 148]]);
-    expect(zoneTotal().abp).toBe(1340);
+    expect(z.map((t) => [t.abp, t.ytdSales])).toEqual([[420, 362], [340, 295], [240, 210], [180, 166], [160, 148], [90, 83], [80, 74], [90, 82]]);
+    expect(zoneTotal().abp).toBe(1600);
     expect(zoneTotal().ytdSales).toBe(sum(z, (t) => t.ytdSales));
   });
-  it('BH West = zone + Aurangabad = ₹16.0 Cr / ₹14.2 Cr', () => {
+  it('BH West = the 8 zone territories = ₹16.0 Cr / ₹14.2 Cr', () => {
     const w = territoriesOf('west');
     const rest = w.filter((t) => !ZM_TERRITORY_IDS.includes(t.id as never));
-    expect(rest.map((t) => [t.id, t.abp, t.ytdSales])).toEqual([['aurangabad', 260, 239]]);
+    expect(rest).toEqual([]);
     expect([sum(w, (t) => t.abp), sum(w, (t) => t.ytdSales)]).toEqual([1600, 1420]);
   });
 });
 
 describe('crop nutrition portfolio', () => {
   it('category totals and growth', () => {
-    expect(portfolioRows().map((r) => [r.lastYear, r.abp, r1(r.growthPct)])).toEqual([[240, 320, 33.3], [150, 180, 20], [90, 100, 11.1]]);
+    expect(portfolioRows().map((r) => [r.lastYear, r.abp, r1(r.growthPct)])).toEqual([[276, 368, 33.3], [178, 214, 20.2], [107, 120, 12.1]]);
     const t = portfolioTotal();
-    expect([t.lastYear, t.abp, r1(t.growthPct)]).toEqual([480, 600, 25]);
+    expect([t.lastYear, t.abp, r1(t.growthPct)]).toEqual([561, 702, 25.1]);
   });
   it('territory split sums to each category and to the total', () => {
     for (const c of CATEGORIES) {
@@ -42,7 +42,7 @@ describe('crop nutrition portfolio', () => {
       expect(sum(ZM_TERRITORY_IDS, (t) => portfolioRows(t).find((r) => r.id === c.id)!.abp)).toBe(zone.abp);
       expect(sum(ZM_TERRITORY_IDS, (t) => portfolioRows(t).find((r) => r.id === c.id)!.lastYear)).toBe(zone.lastYear);
     }
-    expect(sum(portfolioByTerritory(), (t) => t.abp)).toBe(600);
+    expect(sum(portfolioByTerritory(), (t) => t.abp)).toBe(702);
   });
 });
 
@@ -56,7 +56,7 @@ describe('territory plans', () => {
   });
   it('statuses: Ambad received from FSM, one endorsed, one pending, two awaiting', () => {
     const st = ZM_TERRITORY_IDS.map((t) => planStatus(t, ['ambad']));
-    expect(st).toEqual(['submitted', 'awaiting', 'awaiting', 'endorsed', 'submitted']);
+    expect(st).toEqual(['submitted', 'awaiting', 'awaiting', 'endorsed', 'submitted', 'submitted', 'endorsed', 'awaiting']);
     expect(planStatus('ghansawangi', ['ambad', 'ghansawangi'])).toBe('submitted');
     expect(planStatus('ambad', [], { ambad: 'endorsed' })).toBe('endorsed');
     expect(territoryPlans().every((p) => p.plan > 0 && p.plan <= p.abp)).toBe(true);
@@ -120,9 +120,9 @@ describe('impact', () => {
 });
 
 describe('plan reviews (screens 1–5)', () => {
-  it('plan portfolio contributions stay within each category ABP and total ₹5.70 Cr', () => {
+  it('plan portfolio contributions stay within each category ABP and total ₹6.72 Cr', () => {
     for (const t of ZM_TERRITORY_IDS) for (const c of planPortfolio(t)) expect(c.contribution).toBeLessThanOrEqual(c.abp);
-    expect(sum(ZM_TERRITORY_IDS, planContribution)).toBe(570);
+    expect(sum(ZM_TERRITORY_IDS, planContribution)).toBe(672);
     expect(planPortfolio('ambad')[0].contribution).toBe(territoryPlan('ambad').croptekSku);
   });
   it('crop growth uses last-year sales per crop', () => {
@@ -204,9 +204,10 @@ describe('activity approvals (screens 20–21)', () => {
       expect(p.every((a) => a.units >= 1)).toBe(true);
     }
   });
-  it('local budgets stay within the ₹12.0 L regional envelope; 7 checks, 3 exception types', () => {
+  it('8 local plans total 59 units / ₹12.60 L against the ₹12.0 L regional envelope; 7 checks, 3 exception types', () => {
     expect(REGIONAL_ENVELOPE()).toBe(12);
-    expect(sum(approvalQueue(), (q) => q.budget)).toBeLessThanOrEqual(12);
+    expect(approvalQueue().length).toBe(8);
+    expect([sum(approvalQueue(), (q) => q.units), r2(sum(approvalQueue(), (q) => q.budget))]).toEqual([59, 12.6]);
     expect([ACTIVITY_CHECKS.length, PLAN_EXCEPTIONS.length]).toEqual([7, 3]);
   });
 });

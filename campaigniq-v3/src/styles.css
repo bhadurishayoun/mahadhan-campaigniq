@@ -411,3 +411,6 @@ textarea.input { height: auto; min-height: 60px; padding: 8px 10px; resize: vert
 .tbl th.col-on, .tbl td.col-on { background: var(--tint); font-weight: 700; }
 .tbl tbody tr.on td { background: var(--tint); }
 .bridge-value { font-size: 18px; font-weight: 700; color: var(--dark); font-variant-numeric: tabular-nums; }
+/* Table spreads its rows over the card height (no empty space under the last row). */
+.card.tbl-fill .card-body > .tbl { flex: 1; height: 100%; }
+.card.tbl-fill .card-body > .tbl thead tr, .card.tbl-fill .card-body > .tbl tr.total { height: 1px; }

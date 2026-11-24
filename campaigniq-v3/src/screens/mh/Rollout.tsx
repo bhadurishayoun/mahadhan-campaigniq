@@ -344,7 +344,7 @@ export function ProgrammePerformance() {
             { key: 'st', header: 'Activation', render: (r) => <StatusChip tone={ROLL_TONE[r.status]}>{ROLLOUT_LABEL[r.status]}</StatusChip> },
             { key: 'prog', header: 'Execution', align: 'right', render: (r) => (r.impact?.done != null ? `${r.impact.done} / ${r.impact.planned}` : <span className="na">NA</span>) },
             { key: 'conf', header: 'Outcome confidence', render: (r) => (r.impact ? <StatusChip tone={CONF_TONE[r.impact.confidence]}>{r.impact.confidence}</StatusChip> : <span className="na">NA</span>) },
-            { key: 'v', header: 'View', render: (r) => (r.id === 'other' ? <span className="na">NA</span> : <Button small onClick={() => go(`${M.drivers(region)}?explore=${r.id}`)}>View</Button>) },
+            { key: 'v', header: 'View', render: (r) => (<Button small onClick={() => go(`${M.drivers(region)}?explore=${r.id}`)}>View</Button>) },
           ]} />
         </Card>
         <div className="stack">

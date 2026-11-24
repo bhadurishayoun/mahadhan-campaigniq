@@ -3,7 +3,7 @@
  * business case, activity approvals and impact. Figures shared with BH and FSM are read from bh.ts / fsm.ts.
  * Money in ₹ lakh unless noted.
  */
-import type { ZmTerritoryId } from '../routes';
+import type { FsmTerritoryId, ZmTerritoryId } from '../routes';
 import { AMBAD, ambadMetrics, businessCase, campaignById, CONTRIBUTION_MARGIN, netRoi, territoryById } from './bh';
 import { ratio, sum } from './format';
 import { ACTIVITY_DEFAULTS, ACTIVITY_UNITS, budgetMix, CAMPAIGN_ACTIVITIES, campaignFunnel, cropLastYear, cropPlan, FSM_CROPS, impactSummary, interventionEffectiveness, ONION_VILLAGE_PLAN } from './fsm';
@@ -17,19 +17,25 @@ export const ZM_SCOPES: { id: ZmScope; label: string }[] = [
   { id: 'badnapur', label: 'Badnapur' },
   { id: 'jafrabad', label: 'Jafrabad' },
   { id: 'bhokardan', label: 'Bhokardan' },
+  { id: 'partur', label: 'Partur' },
+  { id: 'mantha', label: 'Mantha' },
+  { id: 'jalna', label: 'Jalna' },
 ];
 
 export const ZM_PORTFOLIOS = [{ id: 'crop-nutrition', label: 'Crop nutrition portfolio' }] as const;
 export type ZmPortfolio = (typeof ZM_PORTFOLIOS)[number]['id'];
 
 export const ZONE_NAME = 'Marathwada zone';
-export const ZM_TERRITORY_IDS: ZmTerritoryId[] = ['ambad', 'ghansawangi', 'badnapur', 'jafrabad', 'bhokardan'];
-const ZM_NAME: Record<ZmTerritoryId, string> = { ambad: 'Ambad', ghansawangi: 'Ghansawangi', badnapur: 'Badnapur', jafrabad: 'Jafrabad', bhokardan: 'Bhokardan' };
+export const ZM_TERRITORY_IDS: ZmTerritoryId[] = ['ambad', 'ghansawangi', 'badnapur', 'jafrabad', 'bhokardan', 'partur', 'mantha', 'jalna'];
+const ZM_NAME: Record<ZmTerritoryId, string> = { ambad: 'Ambad', ghansawangi: 'Ghansawangi', badnapur: 'Badnapur', jafrabad: 'Jafrabad', bhokardan: 'Bhokardan', partur: 'Partur', mantha: 'Mantha', jalna: 'Jalna' };
 export const zmTerritoryName = (t: ZmTerritoryId) => ZM_NAME[t];
+/** Named Field Sales Managers where known. */
+const FSM_NAMES: Partial<Record<ZmTerritoryId, string>> = { partur: 'A. Deshmukh', mantha: 'K. More', jalna: 'V. Shinde' };
+export const fsmOwner = (t: ZmTerritoryId) => `Field Sales Manager · ${ZM_NAME[t]}${FSM_NAMES[t] ? ` (${FSM_NAMES[t]})` : ''}`;
 
 // ---------------------------------------------------------------- zone territories (all-product ABP, from BH)
 /** Last-year all-product sales; Ambad, Ghansawangi and Badnapur match the Field Sales Manager cluster. */
-const ZONE_LAST_YEAR: Record<ZmTerritoryId, number> = { ambad: 320, ghansawangi: 280, badnapur: 200, jafrabad: 150, bhokardan: 135 };
+const ZONE_LAST_YEAR: Record<ZmTerritoryId, number> = { ambad: 320, ghansawangi: 280, badnapur: 200, jafrabad: 150, bhokardan: 135, partur: 78, mantha: 70, jalna: 80 };
 
 export const zoneTerritories = () => ZM_TERRITORY_IDS.map((id) => {
   const t = territoryById(id)!;
@@ -53,11 +59,11 @@ export const CATEGORIES: { id: CategoryId; name: string }[] = [
   { id: 'specialty', name: 'Specialty Nutrition' },
 ];
 
-/** Portfolio split by territory (Ambad, Ghansawangi, Badnapur, Jafrabad, Bhokardan); rows sum to the zone figures. */
+/** Portfolio split by territory (Ambad, Ghansawangi, Badnapur, Jafrabad, Bhokardan, Partur, Mantha, Jalna); rows sum to the zone figures. */
 const PORTFOLIO_SPLIT: Record<CategoryId, { lastYear: number[]; abp: number[]; ytd: number[] }> = {
-  croptek: { lastYear: [140, 38, 27, 20, 15], abp: [190, 50, 35, 25, 20], ytd: [162, 42, 29, 21, 16] },
-  'water-soluble': { lastYear: [38, 42, 29, 23, 18], abp: [45, 50, 35, 28, 22], ytd: [39, 43, 31, 25, 20] },
-  specialty: { lastYear: [22, 23, 18, 14, 13], abp: [25, 25, 20, 16, 14], ytd: [21, 22, 17, 14, 12] },
+  croptek: { lastYear: [140, 38, 27, 20, 15, 12, 10, 14], abp: [190, 50, 35, 25, 20, 16, 14, 18], ytd: [162, 42, 29, 21, 16, 14, 12, 15] },
+  'water-soluble': { lastYear: [38, 42, 29, 23, 18, 10, 9, 9], abp: [45, 50, 35, 28, 22, 12, 11, 11], ytd: [39, 43, 31, 25, 20, 11, 10, 10] },
+  specialty: { lastYear: [22, 23, 18, 14, 13, 6, 5, 6], abp: [25, 25, 20, 16, 14, 7, 6, 7], ytd: [21, 22, 17, 14, 12, 6, 5, 6] },
 };
 
 export const portfolioCell = (c: CategoryId, t: ZmTerritoryId) => {
@@ -107,13 +113,17 @@ export const PLAN_STATUS_LABEL: Record<PlanStatus, string> = {
 };
 
 /** Crop split of each territory plan (Onion, Maize, Other crops). FSM territories read the FSM crop plan. */
-const OTHER_CROP_PLAN: Record<'jafrabad' | 'bhokardan', { lastYear: number[]; abp: number[]; proposed: number[] }> = {
+type OtherPlanTerritory = 'jafrabad' | 'bhokardan' | 'partur' | 'mantha' | 'jalna';
+const OTHER_CROP_PLAN: Record<OtherPlanTerritory, { lastYear: number[]; abp: number[]; proposed: number[] }> = {
   jafrabad: { lastYear: [54, 46, 50], abp: [65, 55, 60], proposed: [60, 52, 60] },
   bhokardan: { lastYear: [42, 44, 49], abp: [50, 52, 58], proposed: [45, 50, 55] },
+  partur: { lastYear: [26, 24, 28], abp: [30, 28, 32], proposed: [28, 27, 31] },
+  mantha: { lastYear: [23, 22, 24], abp: [27, 25, 28], proposed: [25, 24, 27] },
+  jalna: { lastYear: [27, 23, 26], abp: [32, 27, 31], proposed: [30, 26, 30] },
 };
 /** Portfolio contribution inside each plan (Croptek, Water Soluble, Specialty Nutrition). */
 const PLAN_PORTFOLIO: Record<ZmTerritoryId, number[]> = {
-  ambad: [190, 40, 22], ghansawangi: [48, 46, 23], badnapur: [33, 32, 18], jafrabad: [25, 26, 15], bhokardan: [19, 20, 13],
+  ambad: [190, 40, 22], ghansawangi: [48, 46, 23], badnapur: [33, 32, 18], jafrabad: [25, 26, 15], bhokardan: [19, 20, 13], partur: [16, 12, 7], mantha: [14, 11, 6], jalna: [18, 11, 7],
 };
 export const planPortfolio = (t: ZmTerritoryId) => CATEGORIES.map((c, i) => ({ ...c, abp: portfolioCell(c.id, t).abp, contribution: PLAN_PORTFOLIO[t][i] }));
 export const planContribution = (t: ZmTerritoryId) => sum(PLAN_PORTFOLIO[t], (x) => x);
@@ -121,8 +131,8 @@ export const planContribution = (t: ZmTerritoryId) => sum(PLAN_PORTFOLIO[t], (x)
 /** SKU mapping: base validation status and SKU lines without a portfolio category (₹ L). */
 export type MappingStatus = 'validated' | 'needs_review' | 'awaiting' | 'requested';
 export const MAPPING_STATUS_LABEL: Record<MappingStatus, string> = { validated: 'Validated', needs_review: 'Review required', awaiting: 'Awaiting submission', requested: 'Mapping correction requested' };
-const BASE_MAPPING: Record<ZmTerritoryId, MappingStatus> = { ambad: 'needs_review', ghansawangi: 'awaiting', badnapur: 'awaiting', jafrabad: 'validated', bhokardan: 'needs_review' };
-export const UNMAPPED_SKU: Record<ZmTerritoryId, number> = { ambad: 6, ghansawangi: 0, badnapur: 0, jafrabad: 0, bhokardan: 3 };
+const BASE_MAPPING: Record<ZmTerritoryId, MappingStatus> = { ambad: 'needs_review', ghansawangi: 'awaiting', badnapur: 'awaiting', jafrabad: 'validated', bhokardan: 'needs_review', partur: 'validated', mantha: 'validated', jalna: 'awaiting' };
+export const UNMAPPED_SKU: Record<ZmTerritoryId, number> = { ambad: 6, ghansawangi: 0, badnapur: 0, jafrabad: 0, bhokardan: 3, partur: 0, mantha: 0, jalna: 0 };
 export const mappingStatus = (t: ZmTerritoryId, overrides: Partial<Record<ZmTerritoryId, MappingStatus>> = {}): MappingStatus => overrides[t] ?? BASE_MAPPING[t];
 export const MAPPING_CHECKS: { id: string; label: string }[] = [
   { id: 'sku-ids', label: 'SKU identifiers present' },
@@ -135,20 +145,21 @@ export const MAPPING_CHECKS: { id: string; label: string }[] = [
 /** Checks already passed before review (by territory). */
 export const BASE_CHECKS: Record<ZmTerritoryId, string[]> = {
   ambad: ['basis', 'dates', 'complete'], ghansawangi: [], badnapur: [], jafrabad: MAPPING_CHECKS.map((c) => c.id), bhokardan: ['sku-ids', 'basis', 'dates'],
+  partur: MAPPING_CHECKS.map((c) => c.id), mantha: MAPPING_CHECKS.map((c) => c.id), jalna: [],
 };
 
 /** Crop and season shares of portfolio sales (%), used by the My Performance filters. */
 export const PORTFOLIO_CROP_SHARE: Record<string, number> = { Onion: 45, Maize: 25, 'Other crops': 30 };
 export const PORTFOLIO_SEASON_SHARE: Record<string, number> = { Kharif: 55, Rabi: 45 };
 /** Croptek SKU contribution inside each plan. */
-const CROPTEK_SKU: Record<ZmTerritoryId, number> = { ambad: 190, ghansawangi: 48, badnapur: 33, jafrabad: 25, bhokardan: 19 };
+const CROPTEK_SKU: Record<ZmTerritoryId, number> = { ambad: 190, ghansawangi: 48, badnapur: 33, jafrabad: 25, bhokardan: 19, partur: 16, mantha: 14, jalna: 18 };
 /** Status before any action in this session; FSM territories follow the FSM store once submitted there. */
-const BASE_STATUS: Record<ZmTerritoryId, PlanStatus> = { ambad: 'submitted', ghansawangi: 'awaiting', badnapur: 'awaiting', jafrabad: 'endorsed', bhokardan: 'submitted' };
+const BASE_STATUS: Record<ZmTerritoryId, PlanStatus> = { ambad: 'submitted', ghansawangi: 'awaiting', badnapur: 'awaiting', jafrabad: 'endorsed', bhokardan: 'submitted', partur: 'submitted', mantha: 'endorsed', jalna: 'awaiting' };
 const FSM_PLAN_TERRITORIES: ZmTerritoryId[] = ['ambad', 'ghansawangi', 'badnapur'];
 
-export const planCrops = (t: ZmTerritoryId) => (t === 'jafrabad' || t === 'bhokardan'
-  ? FSM_CROPS.map((crop, i) => ({ crop, lastYear: OTHER_CROP_PLAN[t].lastYear[i], abp: OTHER_CROP_PLAN[t].abp[i], proposed: OTHER_CROP_PLAN[t].proposed[i] }))
-  : cropPlan(t).map((c, i) => ({ ...c, lastYear: cropLastYear(t)[i] })))
+export const planCrops = (t: ZmTerritoryId) => (t in OTHER_CROP_PLAN
+  ? FSM_CROPS.map((crop, i) => { const o = OTHER_CROP_PLAN[t as OtherPlanTerritory]; return { crop, lastYear: o.lastYear[i], abp: o.abp[i], proposed: o.proposed[i] }; })
+  : cropPlan(t as FsmTerritoryId).map((c, i) => ({ ...c, lastYear: cropLastYear(t as FsmTerritoryId)[i] })))
   .map((c) => ({ ...c, growthPct: ratio(c.proposed - c.lastYear, c.lastYear) }));
 
 /** Plan status: ZM decisions win; otherwise an FSM submission marks it received; otherwise the base status. */
@@ -536,6 +547,9 @@ export const approvalQueue = () => {
     { territory: 'badnapur' as ZmTerritoryId, campaign: 'Badnapur soybean nutrient programme', owner: 'Field Sales Manager · Badnapur', units: 8, budget: 1.8, submitted: '08 Feb 2027', status: 'returned' as ApprovalStatus },
     { territory: 'jafrabad' as ZmTerritoryId, campaign: 'Jafrabad cotton balanced nutrition', owner: 'Field Sales Manager · Jafrabad', units: 7, budget: 1.5, submitted: 'NA', status: 'awaiting' as ApprovalStatus },
     { territory: 'bhokardan' as ZmTerritoryId, campaign: 'Bhokardan onion Croptek farmer meetings', owner: 'Field Sales Manager · Bhokardan', units: 6, budget: 1.2, submitted: '14 Feb 2027', status: 'pending' as ApprovalStatus },
+    { territory: 'partur' as ZmTerritoryId, campaign: 'Partur cotton Croptek retailer activation', owner: fsmOwner('partur'), units: 5, budget: 1.0, submitted: '10 Feb 2027', status: 'pending' as ApprovalStatus },
+    { territory: 'mantha' as ZmTerritoryId, campaign: 'Mantha soybean nutrition demonstrations', owner: fsmOwner('mantha'), units: 6, budget: 1.1, submitted: '11 Feb 2027', status: 'approved' as ApprovalStatus },
+    { territory: 'jalna' as ZmTerritoryId, campaign: 'Jalna onion farmer follow-up programme', owner: fsmOwner('jalna'), units: 4, budget: 0.8, submitted: 'NA', status: 'awaiting' as ApprovalStatus },
   ];
 };
 /** Regional campaign envelope (C1 investment) that local plans draw on. */
@@ -554,8 +568,13 @@ export const territoryActivityPlan = (t: ZmTerritoryId): PlanActivity[] => {
     for (let k = 0; left > 0; k = (k + 1) % order.length, left--) base[order[k][1]] += step;
     return base.map((b) => Math.round(b / step) * step);
   };
-  const unitSplit = split(q.units, CAMPAIGN_ACTIVITIES.map((a) => a.units), 1, 1);
-  const budgetSplit = split(Math.round(q.budget * 100), CAMPAIGN_ACTIVITIES.map((a) => a.cost), 1, 1).map((x) => x / 100);
+  // With fewer units than activities, the lowest-weight activities are left out of the plan.
+  const keepIdx = CAMPAIGN_ACTIVITIES.map((a, i) => [a.units, i] as const).sort((x, y) => y[0] - x[0]).slice(0, Math.min(q.units, CAMPAIGN_ACTIVITIES.length)).map(([, i]) => i);
+  const kept = CAMPAIGN_ACTIVITIES.filter((_, i) => keepIdx.includes(i));
+  const unitKept = split(q.units, kept.map((a) => a.units), 1, 1);
+  const budgetKept = split(Math.round(q.budget * 100), kept.map((a) => a.cost), 1, 1).map((x) => x / 100);
+  const unitSplit = CAMPAIGN_ACTIVITIES.map((a) => (kept.includes(a) ? unitKept[kept.indexOf(a)] : 0));
+  const budgetSplit = CAMPAIGN_ACTIVITIES.map((a) => (kept.includes(a) ? budgetKept[kept.indexOf(a)] : 0));
   return CAMPAIGN_ACTIVITIES.map((a, i) => {
     const def = ACTIVITY_DEFAULTS[a.id];
     if (t === 'ambad') {
@@ -566,7 +585,7 @@ export const territoryActivityPlan = (t: ZmTerritoryId): PlanActivity[] => {
     }
     const units = unitSplit[i];
     return { id: a.id, name: a.name, units, unitLabel: a.unitLabel, budget: budgetSplit[i], villages: [{ village: `${zmTerritoryName(t)} HQ`, units }], timing: def.timing, owner: `${zmTerritoryName(t)} field team`, ownerReady: false };
-  });
+  }).filter((a) => a.units > 0);
 };
 export const ACTIVITY_CHECKS = [
   'Product / crop / region scope', 'Crop-stage / agronomy timing', 'Activity owner confirmation', 'Stock availability (Croptek)',

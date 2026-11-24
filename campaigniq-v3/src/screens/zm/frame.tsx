@@ -3,10 +3,11 @@ import { Calculator, FileStack, FileText, Lightbulb, Palette, PenLine, Send, Shi
 import { useParams } from 'react-router-dom';
 import { Z, type ZmTerritoryId } from '../../routes';
 import { StepTabs } from '../../ui/core';
+import { ZM_TERRITORY_IDS } from '../../data/zm';
 import { useGo } from '../common';
 export { FsmPage as ZmPage } from '../fsm/frame';
 
-export const ZM_TERRITORIES: ZmTerritoryId[] = ['ambad', 'ghansawangi', 'badnapur', 'jafrabad', 'bhokardan'];
+export const ZM_TERRITORIES: ZmTerritoryId[] = ZM_TERRITORY_IDS;
 
 /** Territory from the route (`:territory`), Ambad when missing or unknown. */
 export function useZmTerritory(): ZmTerritoryId {

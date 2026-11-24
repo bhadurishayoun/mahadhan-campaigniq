@@ -85,8 +85,8 @@ describe('territories and Ambad', () => {
     expect(sum(ts, (x) => x.abp)).toBe(1600);
     expect(Math.round(sum(ts, (x) => x.ytdSales))).toBe(1420);
     expect(sum(ts, (x) => x.campaigns)).toBe(4);
-    expect(ts.map((x) => x.id)).toEqual(['ambad', 'ghansawangi', 'badnapur', 'jafrabad', 'bhokardan', 'aurangabad']);
-    expect(ts.map((x) => x.ytdSales)).toEqual([362, 295, 210, 166, 148, 239]);
+    expect(ts.map((x) => x.id)).toEqual(['ambad', 'ghansawangi', 'badnapur', 'jafrabad', 'bhokardan', 'partur', 'mantha', 'jalna']);
+    expect(ts.map((x) => x.ytdSales)).toEqual([362, 295, 210, 166, 148, 83, 74, 82]);
     expect(ts.slice(0, 3).map((x) => x.abp)).toEqual([420, 340, 240]);
   });
   it('Ambad metrics', () => {

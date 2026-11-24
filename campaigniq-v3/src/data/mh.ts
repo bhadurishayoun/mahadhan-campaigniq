@@ -9,7 +9,7 @@ import { ratio, sum } from './format';
 import { coverageCalc, ONION_VILLAGE_PLAN } from './fsm';
 import {
   approvalQueue, businessCaseC1, businessCaseC2, CROPTEK_EVIDENCE, impactRows, REGIONAL_ENVELOPE, scenariosFor, territoryPlan, trialToPurchasePct,
-  ZM_TERRITORY_IDS, zmTerritoryName,
+  fsmOwner, ZM_TERRITORY_IDS, zmTerritoryName,
 } from './zm';
 
 // ---------------------------------------------------------------- regions (national view)
@@ -212,10 +212,9 @@ export type RolloutStatus = 'running' | 'eligible' | 'pending' | 'not_eligible';
 export const ROLLOUT_LABEL: Record<RolloutStatus, string> = { running: 'Running', eligible: 'Eligible', pending: 'Plan pending', not_eligible: 'Not eligible' };
 export const rolloutTerritories = () => {
   const q = approvalQueue();
-  const base: Record<string, RolloutStatus> = { ambad: 'running', ghansawangi: 'eligible', badnapur: 'pending', jafrabad: 'pending', bhokardan: 'eligible' };
+  const base: Record<string, RolloutStatus> = { ambad: 'running', ghansawangi: 'eligible', badnapur: 'pending', jafrabad: 'pending', bhokardan: 'eligible', partur: 'eligible', mantha: 'eligible', jalna: 'pending' };
   return [
-    ...ZM_TERRITORY_IDS.map((t) => ({ id: t, name: zmTerritoryName(t), fsm: `Field Sales Manager · ${zmTerritoryName(t)}`, budget: q.find((x) => x.territory === t)!.budget, status: base[t] })),
-    { id: 'other', name: 'Other Maharashtra territories', fsm: 'Field Sales Managers (4)', budget: 2.3, status: 'pending' as RolloutStatus },
+    ...ZM_TERRITORY_IDS.map((t) => ({ id: t, name: zmTerritoryName(t), fsm: fsmOwner(t), budget: q.find((x) => x.territory === t)!.budget, status: base[t] })),
   ];
 };
 export const STAGE_COUNTS = [{ stage: 'Published', n: 12 }, { stage: 'Submitted', n: 8 }, { stage: 'Approved', n: 6 }, { stage: 'Running', n: 4 }];

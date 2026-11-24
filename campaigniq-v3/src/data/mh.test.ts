@@ -4,7 +4,7 @@ import { sum } from './format';
 import { ONION_VILLAGE_PLAN } from './fsm';
 import {
   ambadPlan, ambadVillages, APPROVAL_ITEMS, EVIDENCE_REQUESTS, funnel, NATIONAL_MARKET, nationalRow, nextRequestStatus, proposals, RECOMMENDATIONS,
-  REGION_OPPORTUNITY, regionRows, rolloutTerritories, ROLLOUT_ENVELOPE, STAGE_COUNTS, themeEffectiveness, WEST_STATES, westCampaigns, westSalesTotal,
+  REGION_OPPORTUNITY, regionRows, rolloutTerritories, STAGE_COUNTS, themeEffectiveness, WEST_STATES, westCampaigns, westSalesTotal,
   programmeVariance, INTERVENTION_PERFORMANCE,
 } from './mh';
 import { businessCaseC1, ZM_THEMES, zmImpact } from './zm';
@@ -68,8 +68,9 @@ describe('theme lifecycle and proposals', () => {
 });
 
 describe('rollout and performance', () => {
-  it('rollout budgets fill the ₹12.0 L envelope; Ambad running; stage counts 12 → 8 → 6 → 4', () => {
-    expect(r2(sum(rolloutTerritories(), (t) => t.budget))).toBe(ROLLOUT_ENVELOPE());
+  it('rollout covers the 8 zone territories (₹12.60 L of local plans); Ambad running; stage counts 12 → 8 → 6 → 4', () => {
+    expect(rolloutTerritories().length).toBe(8);
+    expect(r2(sum(rolloutTerritories(), (t) => t.budget))).toBe(12.6);
     expect(rolloutTerritories().find((t) => t.id === 'ambad')!.status).toBe('running');
     expect(STAGE_COUNTS.map((s) => s.n)).toEqual([12, 8, 6, 4]);
   });

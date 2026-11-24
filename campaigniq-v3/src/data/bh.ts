@@ -220,7 +220,9 @@ export const TERRITORIES: Territory[] = [
   { id: 'badnapur', name: 'Badnapur', region: 'west', abp: 240, ytdSales: 210, campaigns: 0, activitiesDone: null, activitiesPlanned: null, adopters: null },
   { id: 'jafrabad', name: 'Jafrabad', region: 'west', abp: 180, ytdSales: 166, campaigns: 0, activitiesDone: null, activitiesPlanned: null, adopters: null },
   { id: 'bhokardan', name: 'Bhokardan', region: 'west', abp: 160, ytdSales: 148, campaigns: 0, activitiesDone: null, activitiesPlanned: null, adopters: null },
-  { id: 'aurangabad', name: 'Aurangabad', region: 'west', abp: 260, ytdSales: 239, campaigns: 1, activitiesDone: null, activitiesPlanned: null, adopters: null },
+  { id: 'partur', name: 'Partur', region: 'west', abp: 90, ytdSales: 83, campaigns: 1, activitiesDone: null, activitiesPlanned: null, adopters: null },
+  { id: 'mantha', name: 'Mantha', region: 'west', abp: 80, ytdSales: 74, campaigns: 0, activitiesDone: null, activitiesPlanned: null, adopters: null },
+  { id: 'jalna', name: 'Jalna', region: 'west', abp: 90, ytdSales: 82, campaigns: 0, activitiesDone: null, activitiesPlanned: null, adopters: null },
 ];
 export const territoriesOf = (region: RegionId) => TERRITORIES.filter((t) => t.region === region);
 export const territoryById = (id: string) => TERRITORIES.find((t) => t.id === id);

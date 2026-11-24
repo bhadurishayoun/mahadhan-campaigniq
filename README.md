@@ -12,7 +12,7 @@ All data in the tool is illustrative (mockup figures and a synthetic data workbo
 > **CampaignIQ v3 (rebuild in progress, persona by persona):** `campaigniq-v3/` rebuilds the tool from the
 > client-approved mockups (Google Drive "Mahadhan_Mockups", copied to `campaigniq-v3/docs/mockups/`). Business Head
 > comes first, following `business-head-prompt.md`; the Field Sales Manager persona (`/v3/#/fsm/plan`, login TM001) is built as a
-> drill-down of the same data; the Zonal Manager persona (`/v3/#/zm/performance`, login PM001) is built with all 26 screens; the Marketing Head persona (`/v3/#/mh/overview`, login MH001) is being built in phases. All are published at `/v3/` next to the current site
+> drill-down of the same data; the Zonal Manager persona (`/v3/#/zm/performance`, login PM001) is built with all 26 screens (Marathwada zone = the 8 Jalna territories, equal to BH West); the Marketing Head persona (`/v3/#/mh/overview`, login MH001) is being built in phases. All are published at `/v3/` next to the current site
 > (`…/mahadhan-campaigniq/v3/#/bh/command-centre`, same `MASTER001` sign-in page). Status and next steps:
 > [campaigniq-v3/README.md](campaigniq-v3/README.md).
 

@@ -72,7 +72,7 @@ export function fsmNavKeyOf(path: string): FsmNavKey {
 
 /** Persona whose workspace a path belongs to, and each persona's landing page. */
 // ---------------------------------------------------------------- Zonal Manager (mockups: docs/mockups/zonal-manager/<file>)
-export type ZmTerritoryId = 'ambad' | 'ghansawangi' | 'badnapur' | 'jafrabad' | 'bhokardan';
+export type ZmTerritoryId = 'ambad' | 'ghansawangi' | 'badnapur' | 'jafrabad' | 'bhokardan' | 'partur' | 'mantha' | 'jalna';
 export const Z = {
   performance: '/zm/performance', // 1  ZM.1.png
   plans: '/zm/plans', // 2  ZM.1a.png

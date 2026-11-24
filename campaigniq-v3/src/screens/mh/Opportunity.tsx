@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { AMBAD, NATIONAL, planCampaignsOf, mixBy, type Season } from '../../data/bh';
 import { crore, lakh, num, pct, times } from '../../data/format';
 import { FUNNEL_DEFAULTS } from '../../data/fsm';
-import { planCrops, planStatus as zmPlanStatus } from '../../data/zm';
+import { planCrops, planStatus as zmPlanStatus, ZM_TERRITORY_IDS } from '../../data/zm';
 import { useFsmStore } from '../../store/fsmStore';
 import {
   ambadPlan, ambadVillages, MH_PLAN_LABEL, otherMaharashtra, PREVIOUS_CAMPAIGNS, REGION_OPPORTUNITY, regionName, regionRows, themeEffectiveness, WEST_PLANS,
@@ -489,7 +489,7 @@ export function TerritoryPlanDetail() {
   const mh = useMhStore();
   const zm = useZmStore();
   const { territory } = useParams();
-  const t = (['ambad', 'ghansawangi', 'badnapur', 'jafrabad', 'bhokardan'].includes(territory ?? '') ? territory : 'ambad') as ZmTerritoryId;
+  const t = ((ZM_TERRITORY_IDS as string[]).includes(territory ?? '') ? territory : 'ambad') as ZmTerritoryId;
   const a = ambadPlan();
   const villages = ambadVillages();
   const additionalVillages = AMBAD.villages.filter((record) => !villages.some((plan) => plan.village === record.name));
