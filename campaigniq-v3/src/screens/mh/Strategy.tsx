@@ -217,7 +217,7 @@ function RecommendationTable({ refreshed }: { refreshed: boolean }) {
           { key: 'c', header: 'Evidence confidence', align: 'center', render: (r) => <StatusChip tone={CONF_TONE[refreshed ? r.after : r.before]}>{refreshed ? r.after : r.before}</StatusChip> },
           { key: 'r', header: 'Rationale', render: (r) => r.rationale },
           { key: 'm', header: 'Missing validations', render: (r) => r.missing.join(' · ') },
-          { key: 'v', header: 'Rationale', align: 'center', render: (r) => <Button small icon={FileSearch} onClick={() => setEvidence(rationale(r.id))}>View rationale</Button> },
+          { key: 'v', header: 'Detail', align: 'center', render: (r) => <Button small icon={FileSearch} onClick={() => setEvidence(rationale(r.id))}>View rationale</Button> },
         ]} />
       {evidence && <EvidenceDrawer evidence={evidence} onClose={() => setEvidence(null)} />}
     </>
@@ -256,7 +256,7 @@ export function Recommendations() {
         <KpiCard label="Recommendations" value={num(RECOMMENDATIONS.length)} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 330px' }}>
-        <Card title="Campaign recommendations (output of diagnosis)" icon={ListChecks} flush right={<Button small icon={PenLine} onClick={() => go(M.themeBrief)}>Design selected campaign</Button>}><RecommendationTable refreshed={false} /></Card>
+        <Card title="Campaign recommendations (output of diagnosis)" icon={ListChecks} flush className="tbl-fill" right={<Button small icon={PenLine} onClick={() => go(M.themeBrief)}>Design selected campaign</Button>}><RecommendationTable refreshed={false} /></Card>
         <div className="stack">
           <Suitability id={r.id} refreshed={false} />
           <Notes title="Recommendation summary" items={[
@@ -515,7 +515,7 @@ export function RefreshedRecommendations() {
         <KpiCard label="Trial-to-purchase" value={f.trialToPurchasePct === null ? 'NA' : pct(f.trialToPurchasePct, 0)} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 330px' }}>
-        <Card title="Refreshed campaign recommendations" icon={ListChecks} flush right={<Button small icon={MessageSquare} onClick={() => go(`${M.diagnosis}?analysis=1`)}>Request further analysis</Button>}><RecommendationTable refreshed /></Card>
+        <Card title="Refreshed campaign recommendations" icon={ListChecks} flush className="tbl-fill" right={<Button small icon={MessageSquare} onClick={() => go(`${M.diagnosis}?analysis=1`)}>Request further analysis</Button>}><RecommendationTable refreshed /></Card>
         <div className="stack">
           <Suitability id={r.id} refreshed />
           <Notes title="Recommendation notes" items={[

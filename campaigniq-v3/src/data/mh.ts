@@ -6,7 +6,7 @@
 import type { MhRegionId } from '../routes';
 import { AMBAD, ambadMetrics, CAMPAIGNS, campaignById, netRoi, NATIONAL, REGIONS, regionById, regionRoi, THEMES, type ThemeId } from './bh';
 import { ratio, sum } from './format';
-import { coverageCalc, ONION_VILLAGE_PLAN } from './fsm';
+import { coverageCalc, interventionEffectiveness, ONION_VILLAGE_PLAN } from './fsm';
 import {
   approvalQueue, businessCaseC1, businessCaseC2, CROPTEK_EVIDENCE, impactRows, REGIONAL_ENVELOPE, scenariosFor, territoryPlan, trialToPurchasePct,
   fsmOwner, ZM_TERRITORY_IDS, zmTerritoryName,
@@ -135,11 +135,37 @@ export const STATUS_AFTER_CREATE: Record<string, RequestStatus> = { purchases: '
 export const nextRequestStatus = (s: RequestStatus): RequestStatus => (s === 'draft' ? 'requested' : s === 'requested' ? 'received' : 'validated');
 
 // ---------------------------------------------------------------- recommendations
-export interface Recommendation { id: string; name: string; theme: ThemeId; leading: boolean; before: 'Medium' | 'Low' | 'Medium-low'; after: 'High' | 'Medium' | 'Medium-low'; rationale: string; missing: string[]; suitability: string }
+export interface Recommendation { id: string; name: string; theme: ThemeId; leading: boolean; before: 'Medium' | 'Low' | 'Medium-low'; after: 'High' | 'Medium' | 'Medium-low' | 'Low'; rationale: string; missing: string[]; suitability: string }
+/** Programme intervention progress (%), shared by the recommendations and the performance screens. */
+const RETAILER_PROGRESS = { planned: 80, observed: 72 };
+const FOLLOWUP_PROGRESS = { planned: 70, observed: 48 };
+const village = (name: string) => AMBAD.villages.find((v) => v.name === name)!;
+const villagePct = (name: string) => ratio(village(name).adopters, village(name).trials);
+const fullyDone = () => interventionEffectiveness().filter((e) => e.planned > 0 && e.completed === e.planned);
 export const RECOMMENDATIONS: Recommendation[] = [
   { id: 'croptek-conversion', name: 'Croptek conversion', theme: 'conversion', leading: true, before: 'Medium', after: 'High', rationale: 'Large onion market with 14–18% penetration, rising secondary sales and a measured trial-to-purchase gap.', missing: ['Comparable baseline', 'Retailer stock norms'], suitability: 'Fits the Ambad onion growth objective and the conversion theme (+0.40× historical ROI).' },
   { id: 'product-awareness', name: 'Product awareness', theme: 'awareness', leading: false, before: 'Medium-low', after: 'Medium-low', rationale: 'Reach is already 65% of eligible farmers; awareness alone shows the lowest historical return.', missing: ['Awareness lift measure'], suitability: 'Supports conversion but returns +0.10× on its own.' },
   { id: 'retailer-advocacy', name: 'Retailer advocacy', theme: 'retailer', leading: false, before: 'Low', after: 'Medium', rationale: 'Retailer recommendation evidence links to higher offtake at participating outlets.', missing: ['Retailer participation plan'], suitability: 'Pairs with conversion as its channel lever (+0.40× historical ROI).' },
+  {
+    id: 'trial-nurture', name: 'Trial-to-purchase farmer nurture', theme: 'trial', leading: false, before: 'Medium', after: 'Medium',
+    rationale: `${Math.round(ratio(CROPTEK_EVIDENCE.purchases, CROPTEK_EVIDENCE.trials))}% of trial farmers buy (${CROPTEK_EVIDENCE.purchases} of ${CROPTEK_EVIDENCE.trials}); structured nurture can lift conversion of the remaining trial users.`,
+    missing: ['Cohort CRM matching', 'Consent coverage'], suitability: 'Targets the trial cohort directly; needs distinct cohorts from retailer-led conversion.',
+  },
+  {
+    id: 'followup-strengthening', name: 'Farmer follow-up strengthening', theme: 'trial', leading: false, before: 'Medium', after: 'Medium',
+    rationale: `Follow-up runs at ${FOLLOWUP_PROGRESS.observed}% against ${FOLLOWUP_PROGRESS.planned}% planned (−${FOLLOWUP_PROGRESS.planned - FOLLOWUP_PROGRESS.observed} pp), the largest gap in the West programme.`,
+    missing: ['Field owner coverage', 'Follow-up records'], suitability: 'Closes the largest execution gap inside the running Croptek programme.',
+  },
+  {
+    id: 'village-conversion', name: 'Village conversion focus', theme: 'conversion', leading: false, before: 'Medium-low', after: 'Medium-low',
+    rationale: `Dhanora converts at ${villagePct('Dhanora').toFixed(1)}% vs ${villagePct('Wadi Gaon').toFixed(1)}% in Wadi Gaon, a ${(villagePct('Wadi Gaon') - villagePct('Dhanora')).toFixed(1)} pp gap within the same territory.`,
+    missing: ['Village stock check', 'Demonstration timing'], suitability: 'A local fix inside Ambad; scale depends on village evidence.',
+  },
+  {
+    id: 'digital-scale-up', name: 'Opt-in digital advisory scale-up', theme: 'awareness', leading: false, before: 'Low', after: 'Low',
+    rationale: `${fullyDone().length === 1 ? 'Digital advisory is the only activity' : 'Digital advisory is one of the activities'} at 100% completion; reach can extend to all eligible villages.`,
+    missing: ['Consent base', 'Engagement measure'], suitability: 'Low-cost reach extension; awareness alone shows the lowest historical return.',
+  },
 ];
 export const themeRoi = (t: ThemeId) => { const x = THEMES.find((y) => y.id === t)!; return netRoi(x.sales, x.investment); };
 
@@ -223,8 +249,8 @@ export const STAGE_COUNTS = [{ stage: 'Published', n: 12 }, { stage: 'Submitted'
 export const westCampaigns = () => CAMPAIGNS.map((c) => ({ ...c, variance: c.observedExec - c.plannedExec, roi: netRoi(c.sales, c.actual) }));
 export const programmeVariance = () => { const c = campaignById('croptek'); return c.observedExec - c.plannedExec; };
 export const INTERVENTION_PERFORMANCE: { id: string; name: string; planned: number; observed: number }[] = [
-  { id: 'retailer', name: 'Retailer-led activation', planned: 80, observed: 72 },
-  { id: 'followup', name: 'Farmer follow-up', planned: 70, observed: 48 },
+  { id: 'retailer', name: 'Retailer-led activation', ...RETAILER_PROGRESS },
+  { id: 'followup', name: 'Farmer follow-up', ...FOLLOWUP_PROGRESS },
 ];
 export const territoryImpact = () => impactRows();
 export const ambadSummary = () => ambadMetrics();

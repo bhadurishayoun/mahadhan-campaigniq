@@ -46,6 +46,9 @@ describe('plans, diagnosis and recommendations', () => {
     expect(EVIDENCE_REQUESTS).toHaveLength(3);
     expect(['draft', 'requested', 'received'].map((s) => nextRequestStatus(s as never))).toEqual(['requested', 'received', 'validated']);
     expect(RECOMMENDATIONS.filter((r) => r.leading).map((r) => r.name)).toEqual(['Croptek conversion']);
+    expect(RECOMMENDATIONS.length).toBe(7);
+    expect(RECOMMENDATIONS.slice(3).map((r) => r.rationale.match(/\d+(\.\d+)?%/)![0])).toEqual(['36%', '48%', '38.7%', '100%']);
+    expect(RECOMMENDATIONS[6].rationale.startsWith('Digital advisory is the only activity')).toBe(true);
   });
 });
 

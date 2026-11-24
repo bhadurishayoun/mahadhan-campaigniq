@@ -179,7 +179,7 @@ type TrackerView = 'all' | 'assigned' | 'pending';
 function useTrackerRows(): TrackerRow[] {
   const zm = useZmStore();
   const life = useThemeLifecycle();
-  const fromRecs = RECOMMENDATIONS.map((r): TrackerRow => {
+  const fromRecs = RECOMMENDATIONS.filter((r) => r.id in THEME_LINKS).map((r): TrackerRow => {
     const b = life.brief(r.id);
     const t = life.zmTheme(r.id);
     const st = life.stage(r.id);
