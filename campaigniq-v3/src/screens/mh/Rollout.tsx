@@ -108,8 +108,8 @@ export function ApprovalDecision() {
             <DataTable rows={APPROVAL_ITEMS} rowKey={(a) => a.id} columns={[
               { key: 'item', header: 'Check', render: (a) => <b>{a.item}</b> },
               { key: 'm', header: 'Type', render: (a) => (a.mandatory ? 'Mandatory' : 'Optional') },
-              { key: 's', header: 'Status', render: (a) => <StatusChip tone={ap.isVerified(a) ? 'ok' : 'warn'}>{ap.isVerified(a) ? 'Verified' : 'Pending'}</StatusChip> },
-              { key: 'a', header: 'Action', render: (a) => (ap.isVerified(a) ? <span className="na">NA</span> : <Button small icon={CircleCheck} onClick={() => { mh.verify(a.id); bh.toast(`Verified: ${a.item}`); }}>Mark verified</Button>) },
+              { key: 's', header: 'Status', render: (a) => <StatusChip tone={ap.isVerified(a) ? 'ok' : 'warn'}>{ap.isVerified(a) ? 'Verified' : 'Not verified'}</StatusChip> },
+              { key: 'a', header: 'Action', render: (a) => (ap.isVerified(a) ? <span className="na">Done</span> : <Button small icon={CircleCheck} onClick={() => { mh.verify(a.id); bh.toast(`Verified: ${a.item}`); }}>Mark verified</Button>) },
             ]} />
           </Card>
         </div>
@@ -177,7 +177,7 @@ export function ReleaseRollout() {
         <KpiCard label="Approved regional envelope" value={lakh(ROLLOUT_ENVELOPE())} />
         <KpiCard label="Eligible territories" value={num(eligible.length)} />
         <KpiCard label="Territories validated" value={mh.validated.length ? `${mh.validated.length} of ${eligible.length}` : 'None yet'} />
-        <KpiCard label="Approval" value={ap.state === "approved" ? "Approved" : ap.state === "escalated" ? "Escalated" : ap.state === "returned" ? "Returned" : "Pending"} />
+        <KpiCard label="Approval" value={ap.state === "approved" ? "Approved" : ap.state === "escalated" ? "Escalated" : ap.state === "returned" ? "Returned" : "Awaiting decision"} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 320px' }}>
         <Card title="Territory campaign recommendation distribution" icon={MapPin} flush right={<Button small icon={FileText} onClick={() => setProposal(true)}>View approved proposal</Button>}>
@@ -190,7 +190,7 @@ export function ReleaseRollout() {
             {
               key: 'act', header: 'Action', render: (r) => (ELIGIBLE.includes(r.status) && !mh.validated.includes(r.id)
                 ? <Button small icon={CircleCheck} onClick={() => { mh.validate(r.id); bh.toast(`${r.name} validated for release`); }}>Validate</Button>
-                : <span className="na">NA</span>),
+                : <span className="na">{mh.validated.includes(r.id) ? 'Validated' : 'Not eligible'}</span>),
             },
           ]} />
         </Card>
@@ -233,7 +233,7 @@ export function PortfolioPerformance() {
   const worst = [...INTERVENTION_PERFORMANCE].sort((a, b) => a.observed - a.planned - (b.observed - b.planned))[0];
   const themeName = (id: string) => THEMES.find((t) => t.id === id)?.name ?? id;
   return (
-    <MhPage {...MH_SECTION.performance} trail="National portfolio" title="National & Regional Campaign Portfolio Performance" back={M.rollout()} next={M.programme('west')} nextLabel="View regional programme"
+    <MhPage {...MH_SECTION.performance} trail="Portfolio" title="Regional Campaign Portfolio Performance" back={M.rollout()} next={M.programme('west')} nextLabel="View regional programme"
       right={<StatusChip tone={mh.published ? 'ok' : 'neutral'}>{mh.published ? 'Croptek playbook published' : 'Croptek playbook not yet published'}</StatusChip>}>
       <div className="kpis">
         <KpiCard label="Croptek programme execution" value={pct(ct.observedExec, 0)} />
@@ -250,7 +250,7 @@ export function PortfolioPerformance() {
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 360px' }}>
         {view === 'campaigns' ? (
           <Card title="Campaign performance by theme" icon={Target} flush>
-            <DataTable rows={shown} rowKey={(c) => c.id} total={{ theme: <b>Total</b>, ad: <b>{num(sum(shown, (c) => c.adopters))}</b>, roi: <b>{times(netRoi(sum(shown, (c) => c.sales), sum(shown, (c) => c.actual)))}</b> }} onRowClick={(c) => c.id === 'croptek' && go(M.programme('west'))} columns={[
+            <DataTable rows={shown} rowKey={(c) => c.id} total={{ theme: <b>Total</b>, exec: <b>{pct(sum(shown, (c) => c.observedExec) / Math.max(1, shown.length), 0)} avg</b>, var: <b>{pp(Math.round(sum(shown, (c) => c.variance) / Math.max(1, shown.length)))} avg</b>, ad: <b>{num(sum(shown, (c) => c.adopters))}</b>, roi: <b>{times(netRoi(sum(shown, (c) => c.sales), sum(shown, (c) => c.actual)))}</b> }} onRowClick={(c) => c.id === 'croptek' && go(M.programme('west'))} columns={[
               { key: 'theme', header: 'Theme', render: (c) => themeName(c.theme) },
               { key: 'name', header: 'Campaign', render: (c) => <b>{c.name}</b> },
               { key: 'exec', header: 'Execution', render: (c) => <div className="row"><div style={{ flex: 1, minWidth: 60 }}><Bar value={c.observedExec} /></div><b>{pct(c.observedExec, 0)}</b></div> },
@@ -340,10 +340,10 @@ export function ProgrammePerformance() {
         <Card title="Territory-wise programme rollout" icon={MapPin} flush right={<Button small icon={MapPin} onClick={() => go(`${M.drivers(region)}?explore=ambad`)}>View territory impact</Button>}>
           <DataTable rows={rows} rowKey={(r) => r.id} columns={[
             { key: 'name', header: 'Territory', render: (r) => <b>{r.name}</b> },
-            { key: 'link', header: 'Campaign linkage', render: (r) => r.impact?.campaign ?? <span className="na">NA</span> },
+            { key: 'link', header: 'Campaign linkage', render: (r) => r.impact?.campaign ?? <span className="na">No campaign</span> },
             { key: 'st', header: 'Activation', render: (r) => <StatusChip tone={ROLL_TONE[r.status]}>{ROLLOUT_LABEL[r.status]}</StatusChip> },
-            { key: 'prog', header: 'Execution', align: 'right', render: (r) => (r.impact?.done != null ? `${r.impact.done} / ${r.impact.planned}` : <span className="na">NA</span>) },
-            { key: 'conf', header: 'Outcome confidence', render: (r) => (r.impact ? <StatusChip tone={CONF_TONE[r.impact.confidence]}>{r.impact.confidence}</StatusChip> : <span className="na">NA</span>) },
+            { key: 'prog', header: 'Execution', align: 'right', render: (r) => (r.impact?.done != null ? `${r.impact.done} / ${r.impact.planned}` : <span className="na">Not started</span>) },
+            { key: 'conf', header: 'Outcome confidence', render: (r) => (r.impact ? <StatusChip tone={CONF_TONE[r.impact.confidence]}>{r.impact.confidence}</StatusChip> : <span className="na">Not started</span>) },
             { key: 'v', header: 'View', render: (r) => (<Button small onClick={() => go(`${M.drivers(region)}?explore=${r.id}`)}>View</Button>) },
           ]} />
         </Card>
@@ -382,7 +382,7 @@ function TerritoryImpactDrawer({ initial, onClose }: { initial: string; onClose:
   const r = rows.find((x) => x.id === t)!;
   const i = r.impact;
   const conv = i?.trials && i.adopters !== null ? (i.adopters / i.trials) * 100 : null;
-  const NA = <span className="na">NA</span>;
+  const NA = <span className="na">Not started</span>;
   const clarify = () => {
     zm.addQuestion({ id: `mh-territory-${t}-${Date.now()}`, question: `Please clarify campaign progress and next steps in ${r.name}.`, topic: 'Territory clarification' });
     bh.toast(`Territory clarification requested · ${r.name}`);

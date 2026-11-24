@@ -359,7 +359,7 @@ export function ProposalReview() {
             <label key={c} className="list-row" style={{ cursor: 'pointer' }}>
               <input type="checkbox" checked={zm.submissionChecks.includes(c)} onChange={() => toggleCheck(c)} aria-label={c} />
               <span>{c}</span>
-              <b className="right"><StatusChip tone={zm.submissionChecks.includes(c) ? 'ok' : 'warn'}>{zm.submissionChecks.includes(c) ? 'Complete' : 'Pending'}</StatusChip></b>
+              <b className="right"><StatusChip tone={zm.submissionChecks.includes(c) ? 'ok' : 'warn'}>{zm.submissionChecks.includes(c) ? 'Complete' : 'Not complete'}</StatusChip></b>
             </label>
           ))}
         </Card>
@@ -427,7 +427,7 @@ function SubmitModal({ onClose }: { onClose: () => void }) {
       <div className="grid g2" style={{ marginTop: 12 }}>
         <Card title="Submission package" icon={ClipboardCheck}><List items={PACKAGE.map((x) => ({ icon: CircleCheck, label: x }))} /></Card>
         <Card title="Validation readiness" icon={ShieldCheck}>
-          <List items={SUBMISSION_CHECKS.map((c) => ({ label: c, value: <StatusChip tone={zm.submissionChecks.includes(c) ? 'ok' : 'warn'}>{zm.submissionChecks.includes(c) ? 'Complete' : 'Pending'}</StatusChip> }))} />
+          <List items={SUBMISSION_CHECKS.map((c) => ({ label: c, value: <StatusChip tone={zm.submissionChecks.includes(c) ? 'ok' : 'warn'}>{zm.submissionChecks.includes(c) ? 'Complete' : 'Not complete'}</StatusChip> }))} />
           {tried && !ready && <small className="err">Complete the readiness checklist before submitting</small>}
           {tried && !sel.length && <small className="err">Select at least one proposal</small>}
         </Card>
@@ -504,7 +504,7 @@ export function ProposalRevision() {
               <tr><td colSpan={5} className="calc-label" style={{ textAlign: 'left' }}>Returned observations (to address in the revision)</td></tr>
               {MH_RETURN.observations.map((o) => (
                 <tr key={o.id} className={sel === o.id ? 'on' : undefined} onClick={() => setSel(o.id)} style={{ cursor: 'pointer' }}>
-                  <td><b>{o.label}</b></td><td><span className="na">NA</span></td>
+                  <td><b>{o.label}</b></td><td><span className="na">Not addressed</span></td>
                   <td><input className={`input${changed.includes(o.id) ? ' chg' : ''}`} aria-label={`Revision for ${o.label}`} value={r.observations[o.id] ?? ''} onChange={(e) => setR({ ...r, observations: { ...r.observations, [o.id]: e.target.value } })} /></td>
                   <td>{o.comment}</td><td>{stTone(o.id, false)}</td>
                 </tr>

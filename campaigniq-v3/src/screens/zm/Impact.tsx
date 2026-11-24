@@ -25,7 +25,7 @@ import { TEMPLATE_IMG } from './Collateral';
 import { ZmPage, ZM_SECTION } from './frame';
 import { List, Notes } from './parts';
 
-const NA = <span className="na">NA</span>;
+const NA = <span className="na">Not started</span>;
 const l1 = (x: number) => lakh(Math.round(x * 10) / 10, 1);
 const CONF_TONE: Record<ImpactRow['confidence'], Tone> = { Medium: 'warn', Low: 'warn', 'Not started': 'neutral' };
 const PRIORITY_TONE: Record<Priority, Tone> = { High: 'risk', Medium: 'warn', Low: 'neutral' };
@@ -179,15 +179,15 @@ export function PerformanceDetail() {
   const ytd = portfolioCell(r.category, r.territory).ytd;
   const conv = r.trials && r.adopters !== null ? (r.adopters / r.trials) * 100 : null;
   const metrics: { m: string; ref: string; obs: string; src: string; conf: string; tone: Tone; drill: 'explorer' | 'source' }[] = [
-    { m: `${r.product}-specific historical sales`, ref: lakh(r.lastYear), obs: '–', src: 'ERP / SKU mapping', conf: 'High', tone: 'ok', drill: 'source' },
+    { m: `${r.product}-specific historical sales`, ref: lakh(r.lastYear), obs: lakh(portfolioCell(r.category, r.territory).ytd), src: 'ERP / SKU mapping', conf: 'High', tone: 'ok', drill: 'source' },
     { m: `${r.product}-specific current ABP`, ref: lakh(r.abp), obs: lakh(ytd), src: 'Portfolio mapping', conf: 'High', tone: 'ok', drill: 'source' },
-    { m: `All-product ${zmTerritoryName(r.territory)} ${r.crop.toLowerCase()} allocation`, ref: crore(onionAbp), obs: '–', src: 'Approved plan', conf: 'High', tone: 'ok', drill: 'source' },
-    { m: 'Qualified reach', ref: '–', obs: r.reached === null ? 'NA' : num(r.reached), src: 'Execution records', conf: 'Medium', tone: 'warn', drill: 'explorer' },
-    { m: 'Trials', ref: '–', obs: r.trials === null ? 'NA' : num(r.trials), src: 'Execution records', conf: 'Medium', tone: 'warn', drill: 'explorer' },
-    { m: 'Recorded adopters', ref: '–', obs: r.adopters === null ? 'NA' : num(r.adopters), src: 'Execution records', conf: 'Medium', tone: 'warn', drill: 'explorer' },
-    { m: 'Trial-to-adoption', ref: '–', obs: conv === null ? 'NA' : pct(conv), src: 'Calculated from recorded data', conf: 'Medium', tone: 'warn', drill: 'explorer' },
-    { m: 'Activities completed', ref: `${r.planned} planned`, obs: r.done === null ? 'NA' : `${r.done} completed`, src: 'Execution records', conf: 'High', tone: 'ok', drill: 'explorer' },
-    { m: 'Provisional campaign-linked sales', ref: '–', obs: r.sales === null ? 'NA' : l1(r.sales), src: 'Campaign-linked transactions', conf: 'Low / provisional', tone: 'warn', drill: 'source' },
+    { m: `All-product ${zmTerritoryName(r.territory)} ${r.crop.toLowerCase()} allocation`, ref: crore(onionAbp), obs: 'Not tracked', src: 'Approved plan', conf: 'High', tone: 'ok', drill: 'source' },
+    { m: 'Qualified reach', ref: 'No baseline', obs: r.reached === null ? 'Not started' : num(r.reached), src: 'Execution records', conf: 'Medium', tone: 'warn', drill: 'explorer' },
+    { m: 'Trials', ref: 'No baseline', obs: r.trials === null ? 'Not started' : num(r.trials), src: 'Execution records', conf: 'Medium', tone: 'warn', drill: 'explorer' },
+    { m: 'Recorded adopters', ref: 'No baseline', obs: r.adopters === null ? 'Not started' : num(r.adopters), src: 'Execution records', conf: 'Medium', tone: 'warn', drill: 'explorer' },
+    { m: 'Trial-to-adoption', ref: 'No baseline', obs: conv === null ? 'Not started' : pct(conv), src: 'Calculated from recorded data', conf: 'Medium', tone: 'warn', drill: 'explorer' },
+    { m: 'Activities completed', ref: `${r.planned} planned`, obs: r.done === null ? 'Not started' : `${r.done} completed`, src: 'Execution records', conf: 'High', tone: 'ok', drill: 'explorer' },
+    { m: 'Provisional campaign-linked sales', ref: 'No baseline', obs: r.sales === null ? 'Not started' : l1(r.sales), src: 'Campaign-linked transactions', conf: 'Low / provisional', tone: 'warn', drill: 'source' },
     { m: 'Validated incremental sales (Croptek, West)', ref: l1(businessCaseC1().forecastSales), obs: l1(i.regionalValidatedSales), src: 'Business Head validation', conf: 'High', tone: 'ok', drill: 'source' },
     { m: 'Actual net ROI (Croptek, West)', ref: times(businessCaseC1().netRoi), obs: times(i.regionalRoi), src: 'Business Head validation', conf: 'High', tone: 'ok', drill: 'source' },
   ];
@@ -197,7 +197,7 @@ export function PerformanceDetail() {
       <div className="kpis">
         <KpiCard label={`${r.crop} all-product ABP`} value={crore(onionAbp)} />
         <KpiCard label={`${r.product} YTD sales`} value={crore(ytd)} />
-        <KpiCard label="Campaign-linked transactions" value={r.sales === null ? 'NA' : l1(r.sales)} />
+        <KpiCard label="Campaign-linked transactions" value={r.sales === null ? 'Not started' : l1(r.sales)} />
         <KpiCard label="Validated incremental sales (West)" value={l1(i.regionalValidatedSales)} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 320px' }}>
@@ -210,7 +210,7 @@ export function PerformanceDetail() {
               columns={[
                 { key: 'm', header: 'Metric', render: (x) => <b>{x.m}</b> },
                 { key: 'r', header: 'Historical / ABP', align: 'right', render: (x) => x.ref },
-                { key: 'o', header: 'Observed to date', align: 'right', render: (x) => (x.obs === 'NA' ? NA : x.obs) },
+                { key: 'o', header: 'Observed to date', align: 'right', render: (x) => (x.obs === 'Not started' ? NA : x.obs) },
                 { key: 's', header: 'Source', render: (x) => x.src },
                 { key: 'c', header: 'Confidence', align: 'center', render: (x) => <StatusChip tone={x.tone}>{x.conf}</StatusChip> },
                 { key: 'd', header: 'Drilldown', align: 'center', render: (x) => <Button small onClick={() => (x.drill === 'explorer' ? setExplorer(true) : setSource(true))}>{x.drill === 'explorer' ? 'View territory' : 'View source'}</Button> },
@@ -293,15 +293,15 @@ function SourceEvidence({ r, onClose }: { r: ImpactRow; onClose: () => void }) {
       footer={<PanelFooter onBack={onClose} action={<Button primary icon={Send} onClick={() => bh.toast('Data validation requested for linked sales and purchase matching')}>Request data validation</Button>} />}>
       <Card title="Evidence reconciliation" icon={FileSearch} flush>
         <DataTable rows={[
-          { m: 'Qualified reach', v: r.reached === null ? 'NA' : num(r.reached), s: 'CRM / field app', st: 'Cohort linkage' },
-          { m: 'Documented trials', v: r.trials === null ? 'NA' : num(r.trials), s: 'Field records', st: 'Validation' },
-          { m: 'Recorded adopters', v: r.adopters === null ? 'NA' : num(r.adopters), s: 'CRM / purchase linkage', st: 'Purchase match' },
-          { m: 'Campaign-linked sales', v: r.sales === null ? 'NA' : l1(r.sales), s: 'ERP / DMS', st: 'Attribution' },
-          { m: 'Completed activities', v: r.done === null ? 'NA' : `${r.done} / ${r.planned}`, s: 'Execution logs', st: 'Source review' },
+          { m: 'Qualified reach', v: r.reached === null ? 'Not started' : num(r.reached), s: 'CRM / field app', st: 'Cohort linkage' },
+          { m: 'Documented trials', v: r.trials === null ? 'Not started' : num(r.trials), s: 'Field records', st: 'Validation' },
+          { m: 'Recorded adopters', v: r.adopters === null ? 'Not started' : num(r.adopters), s: 'CRM / purchase linkage', st: 'Purchase match' },
+          { m: 'Campaign-linked sales', v: r.sales === null ? 'Not started' : l1(r.sales), s: 'ERP / DMS', st: 'Attribution' },
+          { m: 'Completed activities', v: r.done === null ? 'Not started' : `${r.done} / ${r.planned}`, s: 'Execution logs', st: 'Source review' },
         ]} rowKey={(x) => x.m}
           columns={[
             { key: 'm', header: 'Measure', render: (x) => <b>{x.m}</b> },
-            { key: 'v', header: 'Recorded value', align: 'right', render: (x) => (x.v === 'NA' ? NA : x.v) },
+            { key: 'v', header: 'Recorded value', align: 'right', render: (x) => (x.v === 'Not started' ? NA : x.v) },
             { key: 's', header: 'Candidate source', render: (x) => x.s },
             { key: 't', header: 'Matching / validation', align: 'center', render: (x) => <StatusChip tone="warn">{`${x.st} pending`}</StatusChip> },
           ]} />
@@ -311,13 +311,13 @@ function SourceEvidence({ r, onClose }: { r: ImpactRow; onClose: () => void }) {
           {PURCHASE.map((c) => (
             <label key={c} className="list-row" style={{ cursor: 'pointer' }}>
               <input type="checkbox" checked={checks.includes(c)} onChange={() => setChecks((x) => (x.includes(c) ? x.filter((y) => y !== c) : [...x, c]))} aria-label={c} />
-              <span>{c}</span><b className="right"><StatusChip tone={checks.includes(c) ? 'ok' : 'warn'}>{checks.includes(c) ? 'Verified' : 'Pending'}</StatusChip></b>
+              <span>{c}</span><b className="right"><StatusChip tone={checks.includes(c) ? 'ok' : 'warn'}>{checks.includes(c) ? 'Verified' : 'Not verified'}</StatusChip></b>
             </label>
           ))}
         </Card>
         <Card title="Incrementality method" icon={ShieldCheck}>
           <List items={[
-            { label: 'Eligible exposed cohort', value: <StatusChip tone="warn">Pending</StatusChip> },
+            { label: 'Eligible exposed cohort', value: <StatusChip tone="warn">Not defined</StatusChip> },
             { label: 'Comparable baseline / control', value: <StatusChip tone="ok">West region baseline</StatusChip> },
             { label: 'Validated incremental sales (West)', value: l1(i.regionalValidatedSales) },
             { label: 'Contribution margin', value: '35%' },
@@ -512,7 +512,7 @@ export function Recommendations() {
         <KpiCard label="Recommendations selected" value={`${selected.length} of ${recs.length}`} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 330px' }}>
-        <Card title="Learning-to-action matrix" icon={ListChecks} flush>
+        <Card title="Learning-to-action matrix" icon={ListChecks} flush className="tbl-fill">
           <DataTable rows={recs} rowKey={(r) => r.id}
             columns={[
               { key: 'x', header: '', width: 44, render: (r) => <input type="checkbox" checked={selected.includes(r.id)} onChange={() => toggle(r.id)} aria-label={`Select ${r.action}`} /> },

@@ -82,6 +82,7 @@ export function ControlTower() {
                   key: `w${w}`, header: `Week ${w}`, align: 'center' as const,
                   render: (a: (typeof CAMPAIGN_ACTIVITIES)[number]) => (
                     <span className="row" style={{ justifyContent: 'center', flexWrap: 'wrap', gap: 4 }}>
+                      {!sorted.some((u) => u.activity === a.id && u.week === w) && <span className="na">No activity</span>}
                       {sorted.filter((u) => u.activity === a.id && u.week === w).map((u) => {
                         const I = ICON[u.status];
                         return <button key={u.id} type="button" className={`cal-cell ${u.status}`} title={`${u.village} · ${UNIT_STATUS_LABEL[u.status]}`} onClick={() => go(F.activity(u.id))}><I size={13} />{u.village.split(', ')[0]}</button>;
@@ -252,7 +253,7 @@ function ActivityWorkspace({ unit, all, choices, village, onPick }: { unit: Acti
           <Card title="Execution readiness checklist" icon={ListChecks}>
             <List items={[...checklist, { item: 'Field evidence', sub: 'Photos, attendance and notes after execution', status: evidence.length ? `${evidence.length} uploaded` : unit.status === 'completed' ? 'Submitted' : 'Not submitted' }].map((c) => {
               const st = done && c.item !== 'Field evidence' ? 'Done' : c.status;
-              const warn = st === 'Pending' || st === 'Not submitted';
+              const warn = st === 'Not confirmed' || st === 'Not submitted';
               return { icon: warn ? CircleAlert : CircleCheck, tone: warn ? 'warn' as const : undefined, label: <span className="stack" style={{ gap: 0 }}><b>{c.item}</b><small>{c.sub}</small></span>, value: <StatusChip tone={warn ? 'warn' : st === 'Done' || st === 'Submitted' ? 'ok' : 'neutral'}>{st}</StatusChip> };
             })} />
           </Card>

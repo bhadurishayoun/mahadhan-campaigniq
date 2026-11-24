@@ -85,6 +85,8 @@ Marketing Head personas follow the same pattern (persona id `pm` / `mh`, mockups
 
 **Next steps (Zonal Manager):** the Marketing Head persona is not built yet, so its return of the C1 proposal is represented by the ZM notification "Marketing Head returned C1 for revision" (after submission) and its review notes in the data; wire it to the Marketing Head screens when that persona is built. Village figures follow the shared Ambad data (9 villages), not the older mockup values. Collateral artwork is cropped from the approved mockups; replace it with brand-approved files when available.
 
+**Blank values:** `npm run check:blanks` (`scripts/find-blanks.mjs`, headless Chrome over CDP with the preview on port 4174) visits every route of every persona, opens each drawer and modal, and lists any table cell, KPI, card value or chip that is empty or only a dash, NA, N/A, Pending, TBD or 0; it reports 0. Values that do not exist yet show a grey status word (Not started, Not submitted, Not linked, None); total rows carry computed totals. Titles no longer say "National" (top-bar scope: Portfolio). The ZM learning-to-action matrix has 10 computed findings.
+
 ## Marketing Head (persona `mh`, login MH001 / Marketing@123 or the master login)
 | Phase | Scope | Status |
 |---|---|---|

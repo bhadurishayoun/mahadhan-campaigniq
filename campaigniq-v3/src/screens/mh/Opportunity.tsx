@@ -113,7 +113,7 @@ export function NationalOverview() {
   const low = [...themes].sort((a, b) => a.roi - b.roi)[0];
   const under = regionRows().filter((r) => r.level === 'High' && r.penetration[1] <= 20);
   return (
-    <MhPage {...MH_SECTION.overview} title="National Marketing Opportunity & Performance" back={M.assistant} next={M.opportunity(region === ALL ? 'west' : (region as MhRegionId))} nextLabel="Explore regional opportunity and sales trends">
+    <MhPage {...MH_SECTION.overview} title="Marketing Opportunity & Performance" back={M.assistant} next={M.opportunity(region === ALL ? 'west' : (region as MhRegionId))} nextLabel="Explore regional opportunity and sales trends">
       <FilterRows<OverviewView> view={view} setView={setView}
         views={[opt('region', 'Region-wise'), opt('crop', 'Crop-wise'), opt('product', 'Product-wise')] as { value: OverviewView; label: string }[]}
         filters={[
@@ -125,12 +125,12 @@ export function NationalOverview() {
         extras={[{ key: 'sort', label: 'Sort by', value: sortBy, onChange: setSortBy, options: [opt('market', 'Market opportunity'), opt('growth', 'Sales momentum'), opt('roi', 'Net ROI'), opt('name', 'Region name')] }]} />
       <div className="kpis">
         <KpiCard label="Addressable market opportunity" value={cr(n.market)} />
-        <KpiCard label="Sales momentum in priority markets" value={`${signed(Math.min(...growths))} to ${signed(Math.max(...growths))}`} />
+        <KpiCard label="Sales momentum in priority markets" value={signed(growths.reduce((a, b) => a + b, 0) / growths.length)} />
         <KpiCard label="Validated incremental sales" value={crore(n.validatedSales)} />
-        <KpiCard label="National campaign net ROI" value={times(n.roi)} />
+        <KpiCard label="Campaign ROI" value={times(n.roi)} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 320px' }}>
-        <Card title={view === 'region' ? 'National and regional opportunity pulse' : view === 'crop' ? 'Crop-wise campaign performance' : 'Product-wise campaign performance'} icon={Layers} flush>
+        <Card title={view === 'region' ? 'Opportunity pulse' : view === 'crop' ? 'Crop-wise campaign performance' : 'Product-wise campaign performance'} icon={Layers} flush>
           {view === 'region' ? (
             <DataTable rows={rows} rowKey={(r) => r.id} onRowClick={(r) => go(M.opportunity(r.id))}
               columns={[
@@ -143,7 +143,7 @@ export function NationalOverview() {
                 { key: 'o', header: 'Net ROI', align: 'right', render: (r) => times(r.roi) },
                 { key: 'x', header: 'Explore', align: 'center', render: (r) => <Button small primary={r.id === 'west'} icon={ArrowRight} onClick={() => go(M.opportunity(r.id))}>Explore</Button> },
               ]}
-              total={{ r: 'Total', m: cr(rows.reduce((s, r) => s + r.market, 0)), c: num(rows.reduce((s, r) => s + r.campaigns, 0)) }} />
+              total={{ r: 'Total', m: cr(rows.reduce((s, r) => s + r.market, 0)), c: num(rows.reduce((s, r) => s + r.campaigns, 0)), o: times(n.roi) }} />
           ) : (
             <DataTable rows={mix} rowKey={(m) => m.id}
               columns={[
@@ -161,7 +161,7 @@ export function NationalOverview() {
           `${top.name} has the strongest sales momentum (${signed(top.trendGrowthPct)} Q1 to Q4) in ${top.crop} · ${top.product}.`,
           `${under.map((r) => r.name).join(' and ')} combine high opportunity with ${range(under[0].penetration)} penetration: under-indexing.`,
           `${best.name} returned ${times(best.roi)} historically; ${low.name.toLowerCase()} returned ${times(low.roi)}.`,
-          `National validated incremental sales ${crore(n.validatedSales)} on ${crore(n.investment)} invested.`,
+          `Validated incremental sales ${crore(n.validatedSales)} on ${crore(n.investment)} invested.`,
           `${num(NATIONAL.campaigns)} campaigns reached ${num(NATIONAL.adopters)} adopters across ${MH_REGIONS.length} regions.`,
         ]} />
       </div>
@@ -439,7 +439,7 @@ export function RegionalPlanDetail() {
                 { key: 'r', header: 'Zonal Manager review', align: 'center', render: (t) => { const s = ZM_LABEL[zmStatus(t.id)]; return <StatusChip tone={s.tone}>{s.label}</StatusChip>; } },
                 { key: 'v', header: 'View', align: 'center', render: (t) => <Button small icon={Eye} onClick={() => go(M.planTerritory(t.id))}>{t.id === 'ambad' ? 'View details' : 'View status'}</Button> },
               ]}
-              total={{ t: 'Total', a: crore(terr.reduce((s, t) => s + t.abp, 0)), p: crore(terr.reduce((s, t) => s + t.plan, 0)) }} />
+              total={{ t: 'Total', a: crore(terr.reduce((s, t) => s + t.abp, 0)), p: crore(terr.reduce((s, t) => s + t.plan, 0)), o: crore(terr.reduce((s, t) => s + (t.id === 'ambad' ? a.onionAllocation : planCrops(t.id)[0].abp), 0)) }} />
           ) : (
             <DataTable rows={[plan]} rowKey={(p) => p.id}
               columns={[
@@ -524,9 +524,9 @@ export function TerritoryPlanDetail() {
             <DataTable selectable rows={tableRows} rowKey={(x) => x.village} selected={sel} onRowClick={(x) => setSel(x.village)}
               columns={[
                 { key: 'v', header: 'Village', render: (x) => <b>{x.village}</b> },
-                { key: 'l', header: 'Last year (value / volume)', align: 'right', render: (x) => x.calc ? `${lakh(x.lastYear)} / ${num(x.calc.lastVolumeMt)} MT` : <span className="na">NA</span> },
-                { key: 't', header: 'Current-year target', align: 'right', render: (x) => x.calc ? `${lakh(x.plan)} / ${num(x.calc.volumeMt)} MT` : <span className="na">NA</span> },
-                { key: 'c', header: 'Coverage (acres)', align: 'right', render: (x) => x.calc ? `${num(x.calc.previousAcres)} → ${num(x.calc.requiredAcres)}` : <span className="na">NA</span> },
+                { key: 'l', header: 'Last year (value / volume)', align: 'right', render: (x) => x.calc ? `${lakh(x.lastYear)} / ${num(x.calc.lastVolumeMt)} MT` : <span className="na">Not planned</span> },
+                { key: 't', header: 'Current-year target', align: 'right', render: (x) => x.calc ? `${lakh(x.plan)} / ${num(x.calc.volumeMt)} MT` : <span className="na">Not planned</span> },
+                { key: 'c', header: 'Coverage (acres)', align: 'right', render: (x) => x.calc ? `${num(x.calc.previousAcres)} → ${num(x.calc.requiredAcres)}` : <span className="na">Not planned</span> },
                 { key: 's', header: 'Zonal Manager validation', align: 'center', render: (x) => x.calc ? <StatusChip tone={PLAN_TONE[vstatus(x.village)]}>{VILLAGE_LABEL[vstatus(x.village)]}</StatusChip> : <StatusChip tone="neutral">No separate plan</StatusChip> },
                 { key: 'd', header: 'View', align: 'center', render: (x) => <Button small onClick={() => setSel(x.village)}>View details</Button> },
               ]}
@@ -560,7 +560,7 @@ export function TerritoryPlanDetail() {
               </div>
               <List items={[
                 { label: 'Product applicability (onion)', value: <StatusChip tone="ok">Reviewed</StatusChip> },
-                { label: `Application rate ${FUNNEL_DEFAULTS.kgPerAcre} kg/acre`, value: <StatusChip tone={onionOk ? 'ok' : 'warn'}>{onionOk ? 'Validated' : 'Pending'}</StatusChip> },
+                { label: `Application rate ${FUNNEL_DEFAULTS.kgPerAcre} kg/acre`, value: <StatusChip tone={onionOk ? 'ok' : 'warn'}>{onionOk ? 'Validated' : 'Not validated'}</StatusChip> },
                 { label: `Realisation ₹${FUNNEL_DEFAULTS.rupeesPerKg}/kg`, value: <StatusChip tone="ok">Unchanged</StatusChip> },
               ]} />
             </Card>

@@ -45,12 +45,12 @@ export function TerritoryPerformance() {
             columns={[
               { key: 'crop', header: 'Crop', render: (r) => <b>{r.crop}</b> },
               { key: 'product', header: 'Product', render: (r) => r.product },
-              { key: 'abp', header: 'All-product crop ABP', align: 'right', render: (r) => (r.allProductAbp !== null ? <b>{crore(r.allProductAbp)}</b> : <StatusChip tone="neutral">Pending</StatusChip>) },
-              { key: 'pabp', header: 'Product-specific ABP', align: 'center', render: (r) => <StatusChip tone={r.allProductAbp !== null ? 'warn' : 'neutral'}>{r.allProductAbp !== null ? 'SKU mapping pending' : 'Pending'}</StatusChip> },
-              { key: 'sales', header: 'Sales', align: 'center', render: (r) => <StatusChip tone={r.allProductAbp !== null ? 'warn' : 'neutral'}>{r.allProductAbp !== null ? 'SKU mapping pending' : 'Pending'}</StatusChip> },
-              { key: 'trials', header: 'Trials', align: 'right', render: (r) => (r.trials !== null ? num(r.trials) : '–') },
-              { key: 'adopt', header: 'Recorded adopters', align: 'right', render: (r) => (r.adopters !== null ? num(r.adopters) : '–') },
-              { key: 'conv', header: 'Conversion', align: 'right', render: (r) => (r.trials ? <span className="ok-text">{pct(ratio(r.adopters ?? 0, r.trials))}</span> : '–') },
+              { key: 'abp', header: 'All-product crop ABP', align: 'right', render: (r) => (r.allProductAbp !== null ? <b>{crore(r.allProductAbp)}</b> : <StatusChip tone="neutral">Not planned</StatusChip>) },
+              { key: 'pabp', header: 'Product-specific ABP', align: 'center', render: (r) => <StatusChip tone={r.allProductAbp !== null ? 'warn' : 'neutral'}>{r.allProductAbp !== null ? 'Not mapped' : 'Not mapped'}</StatusChip> },
+              { key: 'sales', header: 'Sales', align: 'center', render: (r) => <StatusChip tone={r.allProductAbp !== null ? 'warn' : 'neutral'}>{r.allProductAbp !== null ? 'Not mapped' : 'Not mapped'}</StatusChip> },
+              { key: 'trials', header: 'Trials', align: 'right', render: (r) => (r.trials !== null ? num(r.trials) : <span className="na">None</span>) },
+              { key: 'adopt', header: 'Recorded adopters', align: 'right', render: (r) => (r.adopters !== null ? num(r.adopters) : <span className="na">None</span>) },
+              { key: 'conv', header: 'Conversion', align: 'right', render: (r) => (r.trials ? <span className="ok-text">{pct(ratio(r.adopters ?? 0, r.trials))}</span> : <span className="na">None</span>) },
             ]}
           />
         </Card>

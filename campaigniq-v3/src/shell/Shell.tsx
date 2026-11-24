@@ -43,7 +43,7 @@ const NAV_ZM: NavItem[] = [
 ];
 
 const NAV_MH: NavItem[] = [
-  { key: 'overview', label: 'National Marketing Overview', icon: LayoutDashboard, to: M.overview },
+  { key: 'overview', label: 'Marketing Overview', icon: LayoutDashboard, to: M.overview },
   { key: 'opportunity', label: 'Market Opportunity', icon: TrendingUp, to: M.opportunity('west') },
   { key: 'mh-plans', label: 'Business & Crop Plan Reviews', icon: ClipboardCheck, to: M.plans },
   { key: 'mh-studio', label: 'Campaign Strategy Studio', icon: Lightbulb, to: M.diagnosis },

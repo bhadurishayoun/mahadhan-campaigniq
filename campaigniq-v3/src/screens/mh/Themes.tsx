@@ -114,7 +114,7 @@ export function ThemeBriefScreen() {
         <KpiCard label="Reached" value={num(f.reached)} />
         <KpiCard label="Documented trials" value={num(f.trials)} />
         <KpiCard label="Matched purchases" value={num(f.purchases ?? f.trials)} />
-        <KpiCard label="Trial-to-purchase" value={f.trialToPurchasePct === null ? 'NA' : pct(f.trialToPurchasePct, 0)} />
+        <KpiCard label="Trial-to-purchase" value={f.trialToPurchasePct === null ? 'Not linked' : pct(f.trialToPurchasePct, 0)} />
       </div>
       <EditBar count={changed.length} impact={`Brief for ${d.name}`} onCancel={() => setD(saved)} onSave={save} />
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)' }}>
@@ -133,7 +133,7 @@ export function ThemeBriefScreen() {
           <Card title="Evidence-led opportunity rationale" icon={ListChecks} style={{ flex: 1 }}>
             <List items={[
               { label: r.rationale },
-              { label: `Pilot cohort: ${num(f.purchases ?? 0)} purchases from ${num(f.trials)} trials (${f.trialToPurchasePct === null ? 'NA' : pct(f.trialToPurchasePct, 0)})` },
+              { label: `Pilot cohort: ${num(f.purchases ?? 0)} purchases from ${num(f.trials)} trials (${f.trialToPurchasePct === null ? 'not linked' : pct(f.trialToPurchasePct, 0)})` },
               { label: r.suitability },
               { label: `Confidence ${r.before.toLowerCase()} → ${r.after.toLowerCase()} after evidence validation` },
             ]} />
@@ -311,9 +311,9 @@ export function ThemeTracker() {
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
         <Card title={`Selected theme: ${row.name}`} icon={FileText}>
-          <div className="kv"><span>Objective</span><b>{brief?.objective ?? zt?.objective ?? 'NA'}</b></div>
-          <div className="kv"><span>Scope</span><b>{brief?.scope ?? zt?.scope ?? 'NA'}</b></div>
-          <div className="kv"><span>Audience</span><b>{brief?.audience ?? zt?.audience ?? 'NA'}</b></div>
+          <div className="kv"><span>Objective</span><b>{brief?.objective ?? zt?.objective ?? 'Not defined'}</b></div>
+          <div className="kv"><span>Scope</span><b>{brief?.scope ?? zt?.scope ?? 'Not defined'}</b></div>
+          <div className="kv"><span>Audience</span><b>{brief?.audience ?? zt?.audience ?? 'Not defined'}</b></div>
           <div className="kv"><span>Due date</span><b>{row.due}</b></div>
         </Card>
         <Card title="Evidence and deliverables" icon={ListChecks}>
@@ -515,7 +515,7 @@ export function ProposalDetail() {
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.2fr)' }}>
         <Card title="Validation status" icon={ShieldCheck} style={{ flex: 1 }}>
-          <List items={APPROVAL_ITEMS.map((a) => ({ label: a.item, value: <StatusChip tone={valTone(a.base)}>{a.base === 'verified' ? 'Verified' : 'Pending'}</StatusChip> }))} />
+          <List items={APPROVAL_ITEMS.map((a) => ({ label: a.item, value: <StatusChip tone={valTone(a.base)}>{a.base === 'verified' ? 'Verified' : 'Not verified'}</StatusChip> }))} />
         </Card>
         <ReviewNotes id={p.id} rows={8} right={<Button small icon={Send} disabled={p.status === 'returned'} onClick={requestChanges}>{p.status === 'returned' ? 'Returned for revision' : 'Request changes'}</Button>} />
       </div>

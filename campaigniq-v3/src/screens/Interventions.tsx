@@ -183,14 +183,14 @@ export function PortfolioLearning() {
   return (
     <div className="page">
       <Breadcrumb items={[{ label: 'Strategic interventions', onClick: () => go(R.tracker) }, { label: 'Portfolio learning' }, { label: 'Next-year priorities' }]} />
-      <PageHeader title="National Campaign Portfolio Learning & Next-Year Strategic Priorities" right={<StatusChip tone={store.learningSubmitted ? 'ok' : 'warn'}>{store.learningSubmitted ? 'Submitted for assessment' : 'Draft priorities'}</StatusChip>} />
+      <PageHeader title="Campaign Portfolio Learning & Next-Year Strategic Priorities" right={<StatusChip tone={store.learningSubmitted ? 'ok' : 'warn'}>{store.learningSubmitted ? 'Submitted for assessment' : 'Draft priorities'}</StatusChip>} />
       <div className="kpis">
         <KpiCard label="Active campaigns" value={NATIONAL.campaigns} />
         <KpiCard label="Actual investment" value={crore(NATIONAL.actual)} />
         <KpiCard label="Recorded adopters" value={num(NATIONAL.adopters)} />
         <KpiCard label="Actual net ROI" value={times(nationalReturns().roi)} />
       </div>
-      <Card title="National strategic theme performance and learning" icon={Layers} flush>
+      <Card title="Strategic theme performance and learning" icon={Layers} flush>
         <DataTable rows={THEMES} rowKey={(t) => t.id} selected={themesSel[0]} onRowClick={(t) => toggle(themesSel, setThemesSel, t.id)}
           columns={[
             { key: 'n', header: 'Theme', render: (t) => <b>{t.name}</b> },
@@ -201,7 +201,7 @@ export function PortfolioLearning() {
             { key: 'd', header: 'Proposed review direction', align: 'center', render: (t) => <StatusChip tone={t.direction === 'Redesign' ? 'warn' : t.direction === 'Assess' ? 'neutral' : 'ok'}>{t.direction}</StatusChip> },
             { key: 's', header: 'Select', align: 'center', render: (t) => checkbox(themesSel.includes(t.id)) },
           ]}
-          total={{ n: 'Total', c: NATIONAL.campaigns, i: lakh(NATIONAL.actual), a: num(NATIONAL.adopters), r: <span className="na">NA</span>, d: <span className="na">NA</span> }}
+          total={{ n: 'Total', c: NATIONAL.campaigns, i: lakh(NATIONAL.actual), a: num(NATIONAL.adopters), r: <StatusChip tone="ok">{times(nationalReturns().roi)}</StatusChip>, d: '' }}
         />
       </Card>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.5fr)' }}>
@@ -279,7 +279,7 @@ export function DecisionAssistant() {
   const back = useBack(R.learning);
   return (
     <div className="page">
-      <Breadcrumb items={[{ label: 'AI Copilot workspace' }, { label: 'National portfolio' }, { label: 'Strategic priorities' }]} />
+      <Breadcrumb items={[{ label: 'AI Copilot workspace' }, { label: 'Portfolio' }, { label: 'Strategic priorities' }]} />
       <PageHeader title="AI Copilot workspace" />
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1.75fr) minmax(0, 1fr)' }}>
         <Card>
@@ -317,7 +317,7 @@ export function DecisionAssistant() {
         </Card>
         <div className="stack">
           <Card title="Current context" icon={Folder}>
-            <div className="list-row"><Folder size={15} />National portfolio</div>
+            <div className="list-row"><Folder size={15} />Portfolio</div>
             <div className="list-row"><FileText size={15} />{FY} · {periodLbl}</div>
             <div className="list-row"><Layers size={15} /><b>{NATIONAL.campaigns}</b>&nbsp;active campaigns</div>
             <div className="list-row"><Coins size={15} /><b>{crore(NATIONAL.actual)}</b>&nbsp;actual marketing investment</div>

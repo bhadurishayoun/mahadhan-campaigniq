@@ -54,13 +54,13 @@ function VillageTable({ rows, compact }: { rows: ReturnType<typeof villagePerfor
     <DataTable rows={rows} rowKey={(v) => v.name}
       columns={[
         { key: 'n', header: 'Village', render: (v) => <span className="row" style={{ justifyContent: 'center' }}><b>{v.name}</b>{v.campaign && <StatusChip tone="info">Campaign</StatusChip>}</span> },
-        { key: 'f', header: 'Farmers reached', align: 'right', render: (v) => (v.farmers === null ? '–' : num(v.farmers)) },
+        { key: 'f', header: 'Farmers reached', align: 'right', render: (v) => (v.farmers === null ? <span className="na">No campaign</span> : num(v.farmers)) },
         { key: 't', header: 'Trials', align: 'right', render: (v) => num(v.trials) },
         { key: 'a', header: 'Adopters', align: 'right', render: (v) => num(v.adopters) },
         { key: 'c', header: 'Trial-to-adoption', align: 'right', render: (v) => pct(v.conversionPct) },
-        ...(compact ? [] : [{ key: 'u', header: 'Units planned / done', align: 'right', render: (v: Row) => (v.planned ? `${v.planned} / ${v.completed}` : '–') },
-        { key: 's', header: 'Tracked sales', align: 'right', render: (v: Row) => (v.sales ? lakh(v.sales, 1) : '–') },
-        { key: 'r', header: 'Status', align: 'center', render: (v: Row) => (v.atRisk.length ? <StatusChip tone="warn">{`${v.atRisk.length} at risk`}</StatusChip> : v.planned ? <StatusChip tone="ok">On track</StatusChip> : '–') }] as Column<Row>[]),
+        ...(compact ? [] : [{ key: 'u', header: 'Units planned / done', align: 'right', render: (v: Row) => (v.planned ? `${v.planned} / ${v.completed}` : <span className="na">No campaign</span>) },
+        { key: 's', header: 'Tracked sales', align: 'right', render: (v: Row) => (v.sales ? lakh(v.sales, 1) : <span className="na">Not linked</span>) },
+        { key: 'r', header: 'Status', align: 'center', render: (v: Row) => (v.atRisk.length ? <StatusChip tone="warn">{`${v.atRisk.length} at risk`}</StatusChip> : v.planned ? <StatusChip tone="ok">On track</StatusChip> : <span className="na">No campaign</span>) }] as Column<Row>[]),
       ]}
       total={rows.length > 1 ? {
         n: 'Total', f: num(rows.reduce((s, v) => s + (v.farmers ?? 0), 0)), t: num(rows.reduce((s, v) => s + v.trials, 0)), a: num(rows.reduce((s, v) => s + v.adopters, 0)),

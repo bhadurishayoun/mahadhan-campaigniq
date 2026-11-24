@@ -181,7 +181,7 @@ function OutletDrawer({ t, outlet, onClose }: { t: FsmTerritoryId; outlet: Outle
         ] : [
           { label: 'Linked dealer', value: dealer.name },
           { label: 'Village', value: outlet.r.village },
-          { label: 'Indicative secondary demand', value: outlet.r.active ? lakh(outlet.r.secondaryDemand) : '–' },
+          { label: 'Indicative secondary demand', value: outlet.r.active ? lakh(outlet.r.secondaryDemand) : 'Inactive retailer' },
           { label: 'Mapping status', value: outlet.r.mapping },
         ]} />
       </Card>
@@ -189,7 +189,7 @@ function OutletDrawer({ t, outlet, onClose }: { t: FsmTerritoryId; outlet: Outle
         <DataTable rows={mapped} rowKey={(r) => r.id}
           columns={[
             { key: 'n', header: 'Retailer', render: (r) => r.name },
-            { key: 'd', header: 'Indicative secondary demand', align: 'right', render: (r) => (r.active ? lakh(r.secondaryDemand) : '–') },
+            { key: 'd', header: 'Indicative secondary demand', align: 'right', render: (r) => (r.active ? lakh(r.secondaryDemand) : <span className="na">Inactive</span>) },
             { key: 's', header: 'Status', align: 'center', render: (r) => <StatusChip tone={r.active ? 'ok' : 'warn'}>{r.active ? 'Active' : 'Mapping to verify'}</StatusChip> },
           ]} />
       </Card>
@@ -280,7 +280,7 @@ export function TerritoryNetwork() {
               { key: 'ty', header: 'Type', align: 'center', render: (o) => <StatusChip tone={o.kind === 'dealer' ? 'info' : 'neutral'}>{o.kind === 'dealer' ? 'Dealer' : 'Retailer'}</StatusChip> },
               ...(view === 'retailers' ? [{ key: 'ld', header: 'Linked dealer', render: (o: OutletRow) => (o.kind === 'retailer' ? dealersOf(t).find((d) => d.id === o.r.dealerId)!.name : '–') }] : []),
               { key: 'v', header: 'Village', render: (o) => (o.kind === 'dealer' ? o.d.village : o.r.village) },
-              { key: 's', header: 'Primary / secondary sales', align: 'right', render: (o) => (o.kind === 'dealer' ? lakh(o.d.lastYear) : o.r.active ? lakh(o.r.secondaryDemand) : '–') },
+              { key: 's', header: 'Primary / secondary sales', align: 'right', render: (o) => (o.kind === 'dealer' ? lakh(o.d.lastYear) : o.r.active ? lakh(o.r.secondaryDemand) : <span className="na">Inactive</span>) },
               { key: 'st', header: 'Status', align: 'center', render: (o) => (o.kind === 'dealer' || o.r.active ? <StatusChip tone="ok">Active</StatusChip> : <StatusChip tone="warn">Mapping to verify</StatusChip>) },
               { key: 'vw', header: 'View', align: 'center', render: (o) => <Button small onClick={() => setOpen(o)}>View</Button> },
             ]} />
@@ -382,11 +382,11 @@ export function OutletPlanning() {
                 ? <button type="button" className="row" style={{ fontWeight: 700 }} onClick={() => toggle(r.d.id)}>{expanded.includes(r.d.id) ? <ChevronDown size={15} /> : <ChevronRight size={15} />}{r.d.name}</button>
                 : <span style={{ paddingLeft: 22 }}>{r.r.name}</span>) },
               { key: 'v', header: 'Village', render: (r) => (r.kind === 'dealer' ? r.d.village : r.r.village) },
-              { key: 'ly', header: 'Last-year primary sales', align: 'right', render: (r) => (r.kind === 'dealer' ? lakh(r.d.lastYear) : '') },
+              { key: 'ly', header: 'Last-year primary sales', align: 'right', render: (r) => (r.kind === 'dealer' ? lakh(r.d.lastYear) : <span className="na">Via dealer</span>) },
               { key: 'p', header: 'Proposed target (₹ L)', align: 'center', render: (r) => (r.kind === 'dealer'
                 ? <input className="num-input" type="number" min={0} step={1} aria-label={`Proposed target ${r.d.name}`} value={tg.of(r.d)} onChange={(e) => fsm.setTargets({ [r.d.id]: Math.max(0, Number(e.target.value) || 0) })} />
-                : r.r.active ? <small>{lakh(demand(r.r))} secondary</small> : '–') },
-              { key: 'g', header: 'Growth', align: 'right', render: (r) => (r.kind === 'dealer' ? <StatusChip tone="ok">{signed(((tg.of(r.d) - r.d.lastYear) / r.d.lastYear) * 100)}</StatusChip> : '') },
+                : r.r.active ? <small>{lakh(demand(r.r))} secondary</small> : <span className="na">Inactive</span>) },
+              { key: 'g', header: 'Growth', align: 'right', render: (r) => (r.kind === 'dealer' ? <StatusChip tone="ok">{signed(((tg.of(r.d) - r.d.lastYear) / r.d.lastYear) * 100)}</StatusChip> : <span className="na">Via dealer</span>) },
               { key: 's', header: 'Planning status', align: 'center', render: (r) => (r.kind === 'dealer' ? <StatusChip tone={tg.of(r.d) > 0 ? 'ok' : 'warn'}>{tg.of(r.d) > 0 ? 'Planned' : 'Not planned'}</StatusChip> : <StatusChip tone={r.r.active ? 'ok' : 'warn'}>{r.r.active ? 'Active' : 'Inactive'}</StatusChip>) },
               { key: 'd', header: 'Details', align: 'center', render: (r) => <Button small onClick={() => setOpen(r)}>View</Button> },
             ]}
@@ -518,16 +518,16 @@ export function CropPlanning() {
             ))}
             <div className="calc-label calc-divider">Result</div>
             <List items={[
-              { label: 'Required effective coverage', value: res ? `${num(res.required)} acres` : '–' },
-              { label: 'Retained acres', value: res ? `${num(res.retained)} acres` : '–' },
-              { label: 'New effective acres needed', value: res ? `${num(res.newAcres)} acres` : '–' },
+              { label: 'Required effective coverage', value: res ? `${num(res.required)} acres` : 'Not calculated' },
+              { label: 'Retained acres', value: res ? `${num(res.retained)} acres` : 'Not calculated' },
+              { label: 'New effective acres needed', value: res ? `${num(res.newAcres)} acres` : 'Not calculated' },
             ]} />
-            <div className="list-row calc-final"><b>Eligible new acres required</b><b className="right">{!res ? '–' : res.newAcres === 0 ? 'No new acres needed' : `${num(res.eligible)} acres`}</b></div>
+            <div className="list-row calc-final"><b>Eligible new acres required</b><b className="right">{!res ? 'Not calculated' : res.newAcres === 0 ? 'No new acres needed' : `${num(res.eligible)} acres`}</b></div>
             {dirty && (
               <div className="unsaved-bar" style={{ margin: '4px 0 0', flexWrap: 'wrap' }}>
                 <TriangleAlert size={17} />
                 <b>{changed.length} input{changed.length === 1 ? '' : 's'} changed</b>
-                <span>Eligible new acres {num(savedRes.eligible)} → {res ? num(res.eligible) : '–'}</span>
+                <span>Eligible new acres {num(savedRes.eligible)} → {res ? num(res.eligible) : 'not calculated'}</span>
                 <span className="sp" />
                 <Button small onClick={() => setDraft(toDraft(saved))}>Cancel</Button>
                 <Button small primary icon={Check} disabled={!valid} onClick={() => saveCov()}>Save changes</Button>
@@ -606,7 +606,7 @@ export function PlanReview() {
               { key: 'c', header: 'Crop', render: (c) => c.crop },
               { key: 'a', header: 'ABP', align: 'right', render: (c) => crore(c.abp) },
               { key: 'p', header: 'Plan value', align: 'right', render: (c) => crore(c.proposed) },
-              { key: 'u', header: 'Plan-linked uplift', align: 'right', render: (c) => (c.abp - c.proposed > 0 ? `+${lakh(c.abp - c.proposed)}` : '–') },
+              { key: 'u', header: 'Plan-linked uplift', align: 'right', render: (c) => (c.abp - c.proposed > 0 ? `+${lakh(c.abp - c.proposed)}` : <span className="na">No uplift</span>) },
             ]}
             total={{ c: 'Total', a: crore(sum(crops, (c) => c.abp)), p: crore(cropTotal), u: `+${lakh(sum(crops, (c) => Math.max(0, c.abp - c.proposed)))}` }} />
         </Card>

@@ -7,7 +7,7 @@ import type { MhPlanStatus, RequestStatus, ThemeBrief } from '../data/mh';
 
 export type MhScope = 'national' | 'west' | 'south' | 'north' | 'east';
 export const MH_SCOPES: { id: MhScope; label: string }[] = [
-  { id: 'national', label: 'National portfolio' },
+  { id: 'national', label: 'Portfolio' },
   { id: 'west', label: 'West' },
   { id: 'south', label: 'South' },
   { id: 'north', label: 'North' },

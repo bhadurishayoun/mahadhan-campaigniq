@@ -16,7 +16,7 @@ export function useMhRegion(): MhRegionId {
 
 /** Sidebar sections: breadcrumb root label and target. */
 export const MH_SECTION = {
-  overview: { section: 'National marketing overview', sectionTo: M.overview },
+  overview: { section: 'Marketing overview', sectionTo: M.overview },
   opportunity: { section: 'Market opportunity', sectionTo: M.opportunity('west') },
   plans: { section: 'Business & crop plan reviews', sectionTo: M.plans },
   studio: { section: 'Campaign strategy studio', sectionTo: M.diagnosis },

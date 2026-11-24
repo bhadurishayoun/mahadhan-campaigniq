@@ -37,7 +37,7 @@ function PerAdopterCard({ scope, rowOf = regionInvRow, overall }: { scope: Regio
   return (
     <RegionBarsCard title="Investment per recorded adopter" icon={Users} sub="Actual investment ÷ recorded adopters, selected period" scope={scope}
       value={(r) => perAdopterOf(rowOf(r.id))} format={rupees}
-      reference={{ value: avg, label: `National avg ${rupees(avg)}` }}
+      reference={{ value: avg, label: `Average ${rupees(avg)}` }}
       tooltip={(r) => { const m = rowOf(r.id); return `Investment ${lakh(m.actual)} · Adopters ${num(m.adopters)} · ${rupees(perAdopterOf(m))} per adopter`; }} />
   );
 }
@@ -78,7 +78,7 @@ export function InvestmentRoi() {
   const back = useBack(R.effectiveness(region === ALL ? drill : (region as RegionId)));
   return (
     <div className="page">
-      <Breadcrumb items={[{ label: 'Marketing investment & ROI' }, { label: region === ALL ? 'National portfolio' : `${regionById(region as never).name} region` }]} />
+      <Breadcrumb items={[{ label: 'Marketing investment & ROI' }, { label: region === ALL ? 'Portfolio' : `${regionById(region as never).name} region` }]} />
       <PageHeader title="Marketing Investment & ROI" />
       <FilterHeader<InvView, InvSort> f={f} view={view} setView={setView}
         views={[{ value: 'region', label: 'Region-wise' }, { value: 'crop', label: 'Crop-wise' }, { value: 'product', label: 'Product-wise' }, { value: 'theme', label: 'Theme-wise' }, { value: 'campaign', label: 'Campaign-wise' }]}
@@ -113,9 +113,9 @@ export function InvestmentRoi() {
             series={[{ key: 'approved', label: 'Approved', color: SERIES.planned }, { key: 'actual', label: 'Actual', color: SERIES.observed }]} />
         </Card>
         <PerAdopterCard scope={region === ALL ? null : (region as RegionId)} rowOf={regionRow} overall={group('all', 'All', tagged)} />
-        <Card title="Financial status" note={region === ALL ? 'National' : undefined} icon={ShieldCheck} right={
+        <Card title="Financial status" note={region === ALL ? 'All regions' : undefined} icon={ShieldCheck} right={
 <Button small icon={FileSearch} onClick={() => setEvidence({
-          title: 'ROI evidence: national portfolio', owner: 'Zonal Manager attribution records',
+          title: 'ROI evidence: portfolio', owner: 'Zonal Manager attribution records',
           status: <StatusChip tone="ok">Attribution complete</StatusChip>,
           facts: [
             { label: 'Campaigns with a business case', value: `${CAMPAIGNS.filter((c) => businessCase(c.id)).length} of ${NATIONAL.campaigns}` },
@@ -197,8 +197,8 @@ export function CampaignInvestment() {
           <Card title="Reallocation readiness" icon={ArrowLeftRight}>
             <StatusList items={[
               { icon: Coins, label: 'Unspent budget', value: <StatusChip tone="ok">{lakh(regionMetrics(r).unspent)}</StatusChip> },
-              { icon: CalendarDays, label: 'Outstanding commitments', value: <StatusChip tone="neutral">Pending</StatusChip> },
-              { icon: CalendarClock, label: 'Future planned expenditure', value: <StatusChip tone="neutral">Pending</StatusChip> },
+              { icon: CalendarDays, label: 'Outstanding commitments', value: <StatusChip tone="neutral">Not reported</StatusChip> },
+              { icon: CalendarClock, label: 'Future planned expenditure', value: <StatusChip tone="neutral">Not reported</StatusChip> },
               { icon: ArrowLeftRight, label: 'Available for reallocation', value: <StatusChip tone="warn">Not determined</StatusChip> },
             ]} />
           </Card>
@@ -247,7 +247,7 @@ export function CommercialReturns() {
               { key: 'as', header: 'Actual incremental sales', align: 'right', render: (c) => lakh(c.sales) },
               { key: 'ar', header: 'Actual net ROI', align: 'center', render: (c) => <StatusChip tone="ok">{times(netRoi(c.sales, c.actual))}</StatusChip> },
             ]}
-            total={{ n: 'Total', ap: lakh(t.approved), ac: lakh(t.actual), ad: num(t.adopters), fs: '–', fc: '–', fr: '–', as: lakh(r.sales), ar: <StatusChip tone="ok">{times(regionRoi(r))}</StatusChip> }}
+            total={{ n: 'Total', ap: lakh(t.approved), ac: lakh(t.actual), ad: num(t.adopters), fs: lakh(sum(camps, (c) => businessCase(c.id).forecastSales)), fc: lakh(sum(camps, (c) => businessCase(c.id).contribution)), fr: <StatusChip tone="ok">{times((sum(camps, (c) => businessCase(c.id).contribution) - sum(camps, (c) => businessCase(c.id).investment)) / sum(camps, (c) => businessCase(c.id).investment))}</StatusChip>, as: lakh(r.sales), ar: <StatusChip tone="ok">{times(regionRoi(r))}</StatusChip> }}
           />
         ) : <div style={{ padding: '6px 16px 10px' }}><StatusChip tone="neutral">Campaign-level records pending</StatusChip></div>}
       </Card>
@@ -437,13 +437,13 @@ export function Reallocation() {
         <Card title="Financial impact and validation" icon={ShieldCheck}>
           <StatusList items={[
             { icon: Coins, label: `${r.name} budget`, value: <StatusChip tone="ok">{lakh(sum(rows, (x) => x.revised))} · unchanged</StatusChip> },
-            { icon: Coins, label: 'National budget', value: <StatusChip tone="ok">{crore(NATIONAL.approved)} · unchanged</StatusChip> },
+            { icon: Coins, label: 'Total budget', value: <StatusChip tone="ok">{crore(NATIONAL.approved)} · unchanged</StatusChip> },
             { icon: ArrowLeftRight, label: 'Net adjustment', value: <StatusChip tone="ok">{lakh(net)}</StatusChip> },
-            { icon: CalendarDays, label: 'Outstanding commitments', value: <StatusChip tone="neutral">Pending</StatusChip> },
-            { icon: CalendarClock, label: 'Future planned expenditure', value: <StatusChip tone="neutral">Pending</StatusChip> },
+            { icon: CalendarDays, label: 'Outstanding commitments', value: <StatusChip tone="neutral">Not reported</StatusChip> },
+            { icon: CalendarClock, label: 'Future planned expenditure', value: <StatusChip tone="neutral">Not reported</StatusChip> },
             { icon: ChartColumn, label: 'Revised incremental sales forecast', value: <StatusChip tone="warn">Recalculate</StatusChip> },
             { icon: Target, label: 'Revised ROI', value: <StatusChip tone="warn">Recalculate</StatusChip> },
-            { icon: ShieldCheck, label: 'Finance validation', value: <StatusChip tone="neutral">Pending</StatusChip> },
+            { icon: ShieldCheck, label: 'Finance validation', value: <StatusChip tone="neutral">Not validated</StatusChip> },
           ]} />
         </Card>
       </div>

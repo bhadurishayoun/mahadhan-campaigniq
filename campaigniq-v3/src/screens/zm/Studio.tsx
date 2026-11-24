@@ -24,7 +24,7 @@ import { Attach, EditBar, Field, LeaveGuard, List, Notes } from './parts';
 
 const THEME_TONE: Record<ThemeStatus, Tone> = { acknowledgement_pending: 'warn', acknowledged: 'ok', under_review: 'warn', planned: 'neutral', clarification_requested: 'warn' };
 const CLAIM_TONE: Record<ClaimStatus, Tone> = { pending: 'warn', unvalidated: 'risk', review_requested: 'warn', validated: 'ok' };
-const ASSESS_TONE: Record<Assessment, Tone> = { Observed: 'ok', Unverified: 'risk', 'Awaiting validation': 'warn', Unavailable: 'neutral', Pending: 'warn' };
+const ASSESS_TONE: Record<Assessment, Tone> = { Observed: 'ok', Unverified: 'risk', 'Awaiting validation': 'warn', Unavailable: 'neutral', 'Not assessed': 'warn' };
 const OWNER = 'Zonal Manager · Marathwada zone';
 const growthPct = () => { const s = CROPTEK_EVIDENCE.secondarySales; return ((s[s.length - 1].v - s[0].v) / s[0].v) * 100; };
 
@@ -78,7 +78,7 @@ export function AssignedThemes() {
       right={<StatusChip tone={THEME_TONE[status]}>{ZM_THEME_STATUS_LABEL[status]}</StatusChip>}>
       <div className="kpis">
         <KpiCard label="Themes assigned" value={num(allZmThemes().length)} />
-        <KpiCard label="Awaiting acknowledgement" value={num(pending)} />
+        <KpiCard label="Awaiting acknowledgement" value={pending ? num(pending) : 'None'} />
         <KpiCard label="Croptek penetration in onion" value={`${CROPTEK_EVIDENCE.penetrationRange[0]}–${CROPTEK_EVIDENCE.penetrationRange[1]}%`} />
         <KpiCard label="Trial-to-purchase" value={pct(trialToPurchasePct(), 0)} />
       </div>
@@ -227,7 +227,7 @@ function ThemeClarificationDrawer({ id, onClose }: { id: string; onClose: () => 
               <label key={c.id} className="list-row" style={{ cursor: 'pointer' }}>
                 <input type="checkbox" checked={topics.includes(c.id)} onChange={() => toggle(c.id)} aria-label={c.topic} />
                 <span>{c.topic}</span>
-                <b className="right"><StatusChip tone={history.some((h) => h.topics.includes(c.id)) ? 'ok' : 'warn'}>{history.some((h) => h.topics.includes(c.id)) ? 'Sent' : 'Pending'}</StatusChip></b>
+                <b className="right"><StatusChip tone={history.some((h) => h.topics.includes(c.id)) ? 'ok' : 'warn'}>{history.some((h) => h.topics.includes(c.id)) ? 'Sent' : 'Not sent'}</StatusChip></b>
               </label>
             ))}
             {tried && errors.topics && <small className="err">{errors.topics}</small>}
@@ -384,7 +384,7 @@ export function ConceptStudio() {
                         <span>{f.label}</span>
                         {isEdit
                           ? <b><textarea className={`input${changed.includes(f.key) ? ' chg' : ''}`} rows={2} aria-label={`${c.code} ${f.label}`} value={val(f.key)} onChange={(e) => setDraft({ ...draft!, [f.key]: e.target.value })} /></b>
-                          : <b>{val(f.key) || <span className="na">NA</span>}</b>}
+                          : <b>{val(f.key) || <span className="na">Not set</span>}</b>}
                       </Fragment>
                     ))}
                     <span>Evidence confidence</span><b><StatusChip tone={CONFIDENCE_TONE[c.confidence]}>{c.confidence}</StatusChip></b>
@@ -625,7 +625,7 @@ export function PropositionDesigner() {
           <Card title="Activation readiness" icon={ListChecks}>
             <div className="recon compact" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
               <div><span>Audience eligibility</span><StatusChip tone="warn">Pending validation</StatusChip></div>
-              <div><span>Consent status</span><StatusChip tone="warn">Pending</StatusChip></div>
+              <div><span>Consent status</span><StatusChip tone="warn">Not confirmed</StatusChip></div>
               <div><span>Stage-linked activation window</span><b>{cropWindow()}</b></div>
               <div><span>Preferred channels</span><b>{(cfg?.channel) ?? defaultConfig(s).channel}</b></div>
             </div>
@@ -706,7 +706,7 @@ function InterventionDrawer({ stage, onClose }: { stage: JourneyStage; onClose: 
             <label key={c} className="list-row" style={{ cursor: 'pointer' }}>
               <input type="checkbox" checked={zm.readinessChecks.includes(c)} aria-label={c} onChange={() => zm.setReadinessChecks(zm.readinessChecks.includes(c) ? zm.readinessChecks.filter((x) => x !== c) : [...zm.readinessChecks, c])} />
               <span>{c}</span>
-              <b className="right"><StatusChip tone={zm.readinessChecks.includes(c) ? 'ok' : 'warn'}>{zm.readinessChecks.includes(c) ? 'Confirmed' : 'Pending'}</StatusChip></b>
+              <b className="right"><StatusChip tone={zm.readinessChecks.includes(c) ? 'ok' : 'warn'}>{zm.readinessChecks.includes(c) ? 'Confirmed' : 'Not confirmed'}</StatusChip></b>
             </label>
           ))}
         </Card>
@@ -772,8 +772,8 @@ function ClaimsDrawer({ onClose }: { onClose: () => void }) {
               columns={[
                 { key: 's', header: 'Onion stage', render: (st) => <b>{st}</b> },
                 { key: 'a', header: 'Proposed activation stage', align: 'center', render: (st) => <StatusChip tone={c.stages.includes(st) ? 'ok' : 'neutral'}>{c.stages.includes(st) ? 'Yes' : 'No'}</StatusChip> },
-                { key: 'f', header: 'Product fit', align: 'center', render: (st) => (c.stages.includes(st) ? <StatusChip tone={c.status === 'validated' ? 'ok' : 'warn'}>{c.status === 'validated' ? 'Validated' : 'Pending'}</StatusChip> : <span className="na">NA</span>) },
-                { key: 'r', header: 'Application rate', align: 'center', render: (st) => (c.stages.includes(st) ? <StatusChip tone={c.status === 'validated' ? 'ok' : 'warn'}>{c.status === 'validated' ? 'Validated' : 'Pending'}</StatusChip> : <span className="na">NA</span>) },
+                { key: 'f', header: 'Product fit', align: 'center', render: (st) => (c.stages.includes(st) ? <StatusChip tone={c.status === 'validated' ? 'ok' : 'warn'}>{c.status === 'validated' ? 'Validated' : 'Not validated'}</StatusChip> : <span className="na">Outside window</span>) },
+                { key: 'r', header: 'Application rate', align: 'center', render: (st) => (c.stages.includes(st) ? <StatusChip tone={c.status === 'validated' ? 'ok' : 'warn'}>{c.status === 'validated' ? 'Validated' : 'Not validated'}</StatusChip> : <span className="na">Outside window</span>) },
               ]} />
           </Card>
           <Notes title="Technical validation checks" icon={ShieldCheck} items={[

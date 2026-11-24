@@ -495,13 +495,13 @@ export const statusAfter = (action: string): UnitStatus => (action === 'Escalate
 /** Execution readiness checklist for each activity type. */
 export const READINESS: Record<string, { item: string; sub: string; status: string }[]> = {
   demonstration: [
-    { item: 'Stock confirmation', sub: 'Product available for the demonstration', status: 'Pending' },
+    { item: 'Stock confirmation', sub: 'Product available for the demonstration', status: 'Not confirmed' },
     { item: 'Retailer coordination', sub: 'Retailer support for venue and logistics', status: 'To verify' },
     { item: 'Venue readiness', sub: 'Demonstration plot prepared', status: 'To verify' },
     { item: 'Farmer mobilisation', sub: 'Participants informed of the schedule', status: 'To verify' },
   ],
   meeting: [
-    { item: 'Participant mobilisation', sub: 'Target farmers confirmed', status: 'Pending' },
+    { item: 'Participant mobilisation', sub: 'Target farmers confirmed', status: 'Not confirmed' },
     { item: 'Venue readiness', sub: 'Meeting place booked', status: 'To verify' },
     { item: 'Content readiness', sub: 'Approved advisory material', status: 'To verify' },
   ],

@@ -73,7 +73,7 @@ function CampaignKpis({ w, extra }: { w: WizardState; extra?: ReactNode }) {
     <div className="kpis">
       <KpiCard label="Campaign budget" value={lakh(budgetMix(w.activities).total, 2)} />
       <KpiCard label="Selected villages" value={num(w.villages.length)} />
-      <KpiCard label="Linked retailers" value={num(w.retailers.length)} />
+      <KpiCard label="Linked retailers" value={w.retailers.length ? num(w.retailers.length) : 'None linked'} />
       {extra ?? <KpiCard label="Plan-linked growth objective" value={p.uplift ? lakh(p.uplift) : lakh(0)} />}
     </div>
   );
@@ -115,7 +115,7 @@ export function SelectPriority() {
               columns={[
                 { key: 'n', header: 'Growth priority', render: (x) => <span className="stack" style={{ gap: 2 }}><b>{x.name}</b><small>{x.description}</small></span> },
                 { key: 'g', header: 'Focus geography', render: (x) => x.villages.join(' · ') },
-                { key: 'u', header: 'Plan-linked uplift', align: 'right', render: (x) => (x.uplift ? <b>{lakh(x.uplift)}</b> : '–') },
+                { key: 'u', header: 'Plan-linked uplift', align: 'right', render: (x) => (x.uplift ? <b>{lakh(x.uplift)}</b> : <span className="na">No uplift</span>) },
                 { key: 's', header: 'Campaign', align: 'center', render: status },
                 { key: 'a', header: 'Action', align: 'center', render: (x) => <Button small primary={x.id === sel} onClick={() => setSel(x.id)}>{x.id === sel ? 'Selected' : 'Select'}</Button> },
               ]}
@@ -128,7 +128,7 @@ export function SelectPriority() {
         </div>
         <Card title={p.name} icon={Sprout}>
           <List items={[
-            { label: 'Linked business uplift', value: p.uplift ? lakh(p.uplift) : '–' },
+            { label: 'Linked business uplift', value: p.uplift ? lakh(p.uplift) : 'No uplift' },
             { label: 'Coverage focus', value: p.villages.join(' & ') },
             { label: 'Farmers in focus villages', value: num(farmers) },
             { label: 'Primary audience', value: p.audience },
@@ -291,7 +291,7 @@ export function WizardActivities() {
               { key: 'b', header: 'Budget (₹ L)', align: 'right', render: (a) => { const s = savedOf(a.id); return <span className="stack" style={{ gap: 0, alignItems: 'center' }}><b aria-label={`Budget ${a.name}`}>{lakh(a.cost, 2)}</b>{s && s.cost !== a.cost && <small className="was">was {lakh(s.cost, 2)}</small>}</span>; } },
               { key: 'x', header: 'Remove', align: 'center', render: (a) => <><Button small icon={Trash2} title={`Remove ${a.name}`} onClick={() => remove(a.id)}>{''}</Button>{errors[a.id] && <small className="err">{errors[a.id]}</small>}</> },
             ]}
-            total={{ n: 'Total', u: num(sum(draft, (a) => a.units)), b: <b>{lakh(draftTotal, 2)}</b> }} />
+            total={{ n: 'Total', u: num(sum(draft, (a) => a.units)), uc: `${lakh(sum(draft, (a) => a.units) ? draftTotal / sum(draft, (a) => a.units) : 0, 2)} avg`, b: <b>{lakh(draftTotal, 2)}</b> }} />
           {errors.list && <small className="err" style={{ padding: 12 }}>{errors.list}</small>}
           {dirty && (
             <div className="unsaved-bar">
@@ -328,9 +328,9 @@ export function WizardActivities() {
               {phaseDetails(w.activities).map((d) => (
                 <dl key={`${d.phase}-detail`} className={`phase-detail${d.phase === 'Crop-stage window' ? ' on' : ''}`}>
                   <div><dt>Crop stage</dt><dd>{d.cropStage}</dd></div>
-                  <div><dt>Window</dt><dd>{d.window ? (d.window[0] === d.window[1] ? `Week ${d.window[0]}` : `Weeks ${d.window[0]}–${d.window[1]}`) : 'NA'}</dd></div>
+                  <div><dt>Window</dt><dd>{d.window ? (d.window[0] === d.window[1] ? `Week ${d.window[0]}` : `Weeks ${d.window[0]}–${d.window[1]}`) : 'Not scheduled'}</dd></div>
                   <div><dt>Budget</dt><dd>{lakh(d.budget, 2)} ({pct(d.sharePct, 0)})</dd></div>
-                  <div><dt>Owners</dt><dd>{d.owners.length ? d.owners.join(', ') : 'NA'}</dd></div>
+                  <div><dt>Owners</dt><dd>{d.owners.length ? d.owners.join(', ') : 'Not assigned'}</dd></div>
                 </dl>
               ))}
             </div>
@@ -338,9 +338,9 @@ export function WizardActivities() {
           <Card title="Campaign readiness" icon={ListChecks}>
             <List items={[
               { icon: unassigned ? CircleAlert : CircleCheck, tone: unassigned ? 'warn' : undefined, label: 'Owner assignment', value: unassigned ? `${unassigned} pending` : 'Complete' },
-              { icon: CircleAlert, tone: 'warn', label: 'Agronomy content approval', value: 'Pending' },
+              { icon: CircleAlert, tone: 'warn', label: 'Agronomy content approval', value: 'Not approved' },
               { icon: CircleAlert, tone: 'warn', label: 'Stock readiness', value: 'Not verified' },
-              { icon: CircleAlert, tone: 'warn', label: 'Digital consent', value: 'Pending' },
+              { icon: CircleAlert, tone: 'warn', label: 'Digital consent', value: 'Not confirmed' },
             ]} />
           </Card>
         </div>
@@ -454,7 +454,7 @@ export function WizardScenario() {
             <Card title="Scenario notes" icon={Lightbulb}>
               <div className="notes-fill">
                 {notes.map((t) => <div key={t} className="list-row">{t}</div>)}
-                <small className="muted">Cost per adopter: {f.adopters ? rupees((budget * 100000) / f.adopters) : '–'}</small>
+                <small className="muted">Cost per adopter: {f.adopters ? rupees((budget * 100000) / f.adopters) : 'no adopters yet'}</small>
               </div>
             </Card>
           );
@@ -509,7 +509,7 @@ export function WizardReview() {
             { label: 'Campaign', value: w.name },
             { label: 'Objective', value: w.objective },
             { label: 'Villages', value: w.villages.join(', ') },
-            { label: 'Linked retailers', value: num(w.retailers.length) },
+            { label: 'Linked retailers', value: w.retailers.length ? num(w.retailers.length) : 'None linked' },
             { label: 'Target audience', value: w.audience },
             { label: 'Campaign type', value: w.campaignType },
             { label: 'Plan linkage', value: `${lakh(chosen.sales)} of ${lakh(objective)} (${pct(Math.min(100, cov.coveredPct), 0)})` },
@@ -522,10 +522,10 @@ export function WizardReview() {
               { key: 'u', header: 'Planned units', align: 'right', render: (a) => `${a.units} ${a.unitLabel}` },
               { key: 'b', header: 'Budget', align: 'right', render: (a) => lakh(a.cost, 2) },
             ]}
-            total={{ n: 'Total', b: lakh(mix.total, 2) }} />
+            total={{ n: 'Total', u: `${num(sum(w.activities, (a) => a.units))} units`, b: lakh(mix.total, 2) }} />
         </Card>
         <Card title="Readiness & validation" icon={ListChecks} right={<Button small onClick={() => { set({ readinessResolved: true }); bh.toast('Readiness checks confirmed'); }}>Resolve readiness</Button>}>
-          <List items={checks.map((c) => ({ icon: c.ok ? CircleCheck : CircleAlert, tone: c.ok ? undefined : 'warn' as const, label: <span className="stack" style={{ gap: 0 }}><b>{c.label}</b><small>{c.sub}</small></span>, value: <StatusChip tone={c.ok ? 'ok' : 'warn'}>{c.ok ? 'Complete' : 'Pending'}</StatusChip> }))} />
+          <List items={checks.map((c) => ({ icon: c.ok ? CircleCheck : CircleAlert, tone: c.ok ? undefined : 'warn' as const, label: <span className="stack" style={{ gap: 0 }}><b>{c.label}</b><small>{c.sub}</small></span>, value: <StatusChip tone={c.ok ? 'ok' : 'warn'}>{c.ok ? 'Complete' : 'Not complete'}</StatusChip> }))} />
         </Card>
       </div>
       <Card title="Submission rationale & references" icon={Paperclip} right={<>

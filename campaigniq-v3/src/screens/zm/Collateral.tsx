@@ -257,7 +257,7 @@ export function CollateralEditor() {
             </div>
             <List items={[
               { label: 'Product master reference', value: 'Croptek product information' },
-              { label: 'Claims validation', value: <StatusChip tone={claims.every((c) => c.status === 'validated') ? 'ok' : 'warn'}>{claims.every((c) => c.status === 'validated') ? 'Validated' : 'Pending'}</StatusChip> },
+              { label: 'Claims validation', value: <StatusChip tone={claims.every((c) => c.status === 'validated') ? 'ok' : 'warn'}>{claims.every((c) => c.status === 'validated') ? 'Validated' : 'Not validated'}</StatusChip> },
             ]} />
           </Card>
           <Card title="Version history" icon={History} flush>
@@ -482,7 +482,7 @@ export function PlaybookRelease() {
       <div className="kpis">
         <KpiCard label="Assets in library" value={num(TEMPLATES.length)} />
         <KpiCard label="Included in playbook" value={num(included.length)} />
-        <KpiCard label="Approved versions" value={num(TEMPLATES.filter((t) => assetStatus(t.id) === 'approved').length)} />
+        <KpiCard label="Approved versions" value={TEMPLATES.some((t) => assetStatus(t.id) === 'approved') ? num(TEMPLATES.filter((t) => assetStatus(t.id) === 'approved').length) : 'None yet'} />
         <KpiCard label="Release checklist ready" value={`${checklist.filter((c) => c.ok).length} of ${checklist.length}`} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 340px' }}>
@@ -516,7 +516,7 @@ export function PlaybookRelease() {
           <Card title="Release readiness" icon={ShieldCheck}>
             <List items={[{ label: 'Scope', value: 'Maharashtra · Onion' }, { label: 'Campaign', value: CAMPAIGN }]} />
             <div className="calc-label">Release checklist</div>
-            <List items={checklist.map((c) => ({ label: c.label, value: <StatusChip tone={c.ok ? 'ok' : 'warn'}>{c.ok ? 'Ready' : 'Pending'}</StatusChip> }))} />
+            <List items={checklist.map((c) => ({ label: c.label, value: <StatusChip tone={c.ok ? 'ok' : 'warn'}>{c.ok ? 'Ready' : 'Not ready'}</StatusChip> }))} />
             <Button primary icon={Send} disabled={!ready || zm.released} onClick={publish}>{zm.released ? 'Released' : 'Publish to Field Sales Managers'}</Button>
           </Card>
           <Card title="Role and ownership" icon={Users}>

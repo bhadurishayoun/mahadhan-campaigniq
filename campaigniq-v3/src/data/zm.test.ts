@@ -114,8 +114,13 @@ describe('impact', () => {
   });
   it('next-season findings use the computed figures', () => {
     const n = nextSeason();
-    expect(n).toHaveLength(5);
+    expect(n).toHaveLength(10);
     expect(n[0].finding).toContain('10.3 pp');
+    expect(n.slice(5).map((r) => r.finding)).toEqual([
+      'Farmer follow-up at 48% vs 70% planned (−22 pp)', 'Campaign-linked sales ₹5.4 L vs ₹12.0 L base case', '36% trial-to-purchase (54 of 150 trial farmers)',
+      'Retailer activation 2 of 3 sessions (66.7%)', 'Opt-in digital advisory 1 of 1 completed',
+    ]);
+    expect(n.slice(5).map((r) => r.priority)).toEqual(['High', 'High', 'Medium', 'Medium', 'Low']);
   });
 });
 

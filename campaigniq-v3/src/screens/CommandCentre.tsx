@@ -59,7 +59,7 @@ export function CommandCentre() {
         <KpiCard label="Portfolio net ROI" value={times(netRoi(sales, t.actual))} />
       </div>
 
-      <Card title="National campaign portfolio performance (region-wise)" icon={Layers} flush>
+      <Card title="Campaign portfolio performance (region-wise)" icon={Layers} flush>
         <DataTable
           rows={rows}
           rowKey={(r) => r.id}
@@ -105,7 +105,7 @@ export function CommandCentre() {
             columns={[
               { key: 'theme', header: 'Strategic theme', render: (q) => q.name },
               { key: 'mh', header: 'Marketing Head', align: 'center', render: (q) => { const s = THEME_STATUS[store.themeStatus[q.id]]; return <StatusChip tone={s.tone === 'risk' ? 'risk' : 'ok'}>{s.mh}</StatusChip>; } },
-              { key: 'bh', header: 'Business Head', align: 'center', render: (q) => { const s = THEME_STATUS[store.themeStatus[q.id]]; return s.bh === 'NA' ? <span className="na">NA</span> : <StatusChip tone={s.tone}>{s.bh}</StatusChip>; } },
+              { key: 'bh', header: 'Business Head', align: 'center', render: (q) => { const s = THEME_STATUS[store.themeStatus[q.id]]; return s.bh === 'NA' ? <span className="na">Not reviewed</span> : <StatusChip tone={s.tone}>{s.bh}</StatusChip>; } },
             ]}
           />
         </Card>

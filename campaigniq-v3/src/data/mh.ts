@@ -8,7 +8,7 @@ import { AMBAD, ambadMetrics, CAMPAIGNS, campaignById, netRoi, NATIONAL, REGIONS
 import { ratio, sum } from './format';
 import { coverageCalc, interventionEffectiveness, ONION_VILLAGE_PLAN } from './fsm';
 import {
-  approvalQueue, businessCaseC1, businessCaseC2, CROPTEK_EVIDENCE, impactRows, REGIONAL_ENVELOPE, scenariosFor, territoryPlan, trialToPurchasePct,
+  approvalQueue, FOLLOWUP_PROGRESS, RETAILER_PROGRESS, businessCaseC1, businessCaseC2, CROPTEK_EVIDENCE, impactRows, REGIONAL_ENVELOPE, scenariosFor, territoryPlan, trialToPurchasePct,
   fsmOwner, ZM_TERRITORY_IDS, zmTerritoryName,
 } from './zm';
 
@@ -137,8 +137,6 @@ export const nextRequestStatus = (s: RequestStatus): RequestStatus => (s === 'dr
 // ---------------------------------------------------------------- recommendations
 export interface Recommendation { id: string; name: string; theme: ThemeId; leading: boolean; before: 'Medium' | 'Low' | 'Medium-low'; after: 'High' | 'Medium' | 'Medium-low' | 'Low'; rationale: string; missing: string[]; suitability: string }
 /** Programme intervention progress (%), shared by the recommendations and the performance screens. */
-const RETAILER_PROGRESS = { planned: 80, observed: 72 };
-const FOLLOWUP_PROGRESS = { planned: 70, observed: 48 };
 const village = (name: string) => AMBAD.villages.find((v) => v.name === name)!;
 const villagePct = (name: string) => ratio(village(name).adopters, village(name).trials);
 const fullyDone = () => interventionEffectiveness().filter((e) => e.planned > 0 && e.completed === e.planned);

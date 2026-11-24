@@ -71,7 +71,7 @@ export function ApprovalInbox() {
               { key: 'c', header: 'Local activity plan', render: (q) => q.campaign },
               { key: 'u', header: 'Planned units', align: 'right', render: (q) => num(q.units) },
               { key: 'b', header: 'Local budget', align: 'right', render: (q) => l2(q.budget) },
-              { key: 'd', header: 'Submitted', render: (q) => (q.submitted === 'NA' ? <span className="na">NA</span> : q.submitted) },
+              { key: 'd', header: 'Submitted', render: (q) => (q.submitted === 'Not submitted' ? <span className="na">Not submitted</span> : q.submitted) },
               { key: 's', header: 'Submission state', align: 'center', render: (q) => chip(q.status) },
               { key: 'r', header: 'Review', align: 'center', render: (q) => <Button small primary={q.status === 'pending'} icon={Eye} disabled={q.status === 'awaiting'} onClick={() => go(Z.approval(q.territory))}>Review</Button> },
             ]}
@@ -118,10 +118,10 @@ export function TerritoryActivityReview() {
   const compliance: { label: string; tone: Tone; status: string }[] = [
     { label: 'Product / crop / geography scope', tone: 'ok', status: 'Aligned' },
     { label: `Local budget ${l2(q.budget)} within the ${lakh(REGIONAL_ENVELOPE(), 1)} envelope (${l2(used)} committed)`, tone: used <= REGIONAL_ENVELOPE() ? 'ok' : 'risk', status: used <= REGIONAL_ENVELOPE() ? 'Within envelope' : 'Over envelope' },
-    { label: 'Crop-stage / agronomy timing', tone: 'warn', status: 'Pending' },
+    { label: 'Crop-stage / agronomy timing', tone: 'warn', status: 'Not verified' },
     { label: 'Collateral (approved playbook version)', tone: released ? 'ok' : 'warn', status: released ? 'Released' : 'Technical review' },
-    { label: 'Stock readiness', tone: 'warn', status: 'Pending' },
-    { label: 'Participant eligibility and consent', tone: 'warn', status: 'Pending' },
+    { label: 'Stock readiness', tone: 'warn', status: 'Not verified' },
+    { label: 'Participant eligibility and consent', tone: 'warn', status: 'Not verified' },
   ];
   const sel = plan.find((a) => a.id === detail);
   return (
@@ -135,7 +135,7 @@ export function TerritoryActivityReview() {
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 320px' }}>
         <div className="stack">
-          <Card title={`Territory activity plan · ${q.owner}`} note={q.submitted === 'NA' ? undefined : `Submitted ${q.submitted}`} icon={ClipboardCheck} flush>
+          <Card title={`Territory activity plan · ${q.owner}`} note={q.submitted === 'Not submitted' ? undefined : `Submitted ${q.submitted}`} icon={ClipboardCheck} flush>
             <DataTable rows={plan} rowKey={(a) => a.id} selected={detail} onRowClick={(a) => setDetail(a.id)}
               columns={[
                 { key: 'a', header: 'Activity', render: (a) => <b>{a.name}</b> },
@@ -233,7 +233,7 @@ function ActivityDrawer({ t, a, onClose, onCorrection, onException }: { t: ZmTer
             <label key={c} className="list-row" style={{ cursor: 'pointer' }}>
               <input type="checkbox" checked={checks.includes(c)} onChange={() => toggle(c)} aria-label={c} />
               <span>{c === 'Budget allocation within the local plan' ? `Budget allocation (${l2(a.budget)} within the local plan)` : c}</span>
-              <b className="right"><StatusChip tone={checks.includes(c) ? 'ok' : 'warn'}>{checks.includes(c) ? 'Verified' : 'Pending'}</StatusChip></b>
+              <b className="right"><StatusChip tone={checks.includes(c) ? 'ok' : 'warn'}>{checks.includes(c) ? 'Verified' : 'Not verified'}</StatusChip></b>
             </label>
           ))}
           <Notes title="Activity review notes" items={[
@@ -336,7 +336,7 @@ function ExceptionDrawer({ t, onClose }: { t: ZmTerritoryId; onClose: () => void
             { key: 'a', header: 'Activity', render: (x) => x.activity },
             { key: 'd', header: 'Potential deviation', render: (x) => x.deviation },
             { key: 'r', header: 'Required authority', render: (x) => x.authority },
-            { key: 's', header: 'Status', align: 'center', render: (x) => <StatusChip tone={x.correction ? 'neutral' : escalated.includes(x.id) ? 'ok' : 'warn'}>{x.correction ? 'Field Sales Manager correction' : escalated.includes(x.id) ? 'Escalated' : 'Pending'}</StatusChip> },
+            { key: 's', header: 'Status', align: 'center', render: (x) => <StatusChip tone={x.correction ? 'neutral' : escalated.includes(x.id) ? 'ok' : 'warn'}>{x.correction ? 'Field Sales Manager correction' : escalated.includes(x.id) ? 'Escalated' : 'Open'}</StatusChip> },
           ]} />
       </Card>
       <div className="grid g2">

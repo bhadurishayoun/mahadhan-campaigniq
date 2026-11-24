@@ -122,7 +122,7 @@ function exceptionsOf(t: ZmTerritoryId, plan: PlanStatus, mapping: string, cropV
   const out: { exception: string; value: string; tone: Tone; status: string }[] = [];
   if (p.gap > 0) out.push({ exception: 'All-product planning gap', value: crore(p.gap), tone: plan === 'endorsed' ? 'ok' : 'warn', status: plan === 'endorsed' ? 'Accepted at endorsement' : 'Open' });
   if (mapping !== 'validated') out.push({ exception: 'Portfolio SKU mapping', value: UNMAPPED_SKU[t] ? `${lakh(UNMAPPED_SKU[t])} unmapped` : 'Not validated', tone: mapping === 'requested' ? 'risk' : 'warn', status: mapping === 'requested' ? 'Correction requested' : 'Review required' });
-  if (t === 'ambad' && !cropValidated.includes('Onion')) out.push({ exception: 'Onion application-rate validation', value: `${FUNNEL_DEFAULTS.kgPerAcre} kg/acre`, tone: 'warn', status: 'Pending' });
+  if (t === 'ambad' && !cropValidated.includes('Onion')) out.push({ exception: 'Onion application-rate validation', value: `${FUNNEL_DEFAULTS.kgPerAcre} kg/acre`, tone: 'warn', status: 'Not validated' });
   return out;
 }
 
@@ -266,7 +266,7 @@ export function SkuReconciliation() {
               { label: 'Portfolio category', value: selRow.c.name },
               { label: 'Submitted plan', value: crore(territoryPlan(selT).plan) },
               { label: 'Mapped contribution', value: lakh(selRow.contribution) },
-              { label: 'Unmapped SKU value', value: UNMAPPED_SKU[selT] ? lakh(UNMAPPED_SKU[selT]) : <span className="na">NA</span> },
+              { label: 'Unmapped SKU value', value: UNMAPPED_SKU[selT] ? lakh(UNMAPPED_SKU[selT]) : <span className="na">None</span> },
               { label: 'Sales basis', value: 'Primary' },
               { label: 'Time period', value: 'FY 2026–27' },
               { label: 'Source', value: ownerOf(selT) },
@@ -276,7 +276,7 @@ export function SkuReconciliation() {
               <label key={c.id} className="list-row" style={{ cursor: 'pointer' }}>
                 <input type="checkbox" checked={checks.includes(c.id)} onChange={() => toggle(c.id)} aria-label={c.label} />
                 <span>{c.label}</span>
-                <b className="right"><StatusChip tone={checks.includes(c.id) ? 'ok' : 'warn'}>{checks.includes(c.id) ? 'Verified' : 'Pending'}</StatusChip></b>
+                <b className="right"><StatusChip tone={checks.includes(c.id) ? 'ok' : 'warn'}>{checks.includes(c.id) ? 'Verified' : 'Not verified'}</StatusChip></b>
               </label>
             ))}
             <div className="stack" style={{ gap: 8 }}>
@@ -329,12 +329,12 @@ function MappingCorrectionDrawer({ t, category, checks, onClose }: { t: ZmTerrit
         <KpiCard label="All-product territory ABP" value={crore(p.abp)} />
         <KpiCard label="Submitted all-product plan" value={crore(p.plan)} />
         <KpiCard label="ABP planning gap" value={crore(p.gap)} />
-        <KpiCard label="Unmapped SKU value" value={UNMAPPED_SKU[t] ? lakh(UNMAPPED_SKU[t]) : 'NA'} />
+        <KpiCard label="Unmapped SKU value" value={UNMAPPED_SKU[t] ? lakh(UNMAPPED_SKU[t]) : 'None'} />
       </div>
       <div className="grid g2">
         <div className="stack">
           <Card title="Correction checklist" icon={ListChecks}>
-            <List items={MAPPING_CHECKS.map((c) => ({ label: c.label, value: <StatusChip tone={checks.includes(c.id) ? 'ok' : 'warn'}>{checks.includes(c.id) ? 'Verified' : 'Pending'}</StatusChip> }))} />
+            <List items={MAPPING_CHECKS.map((c) => ({ label: c.label, value: <StatusChip tone={checks.includes(c.id) ? 'ok' : 'warn'}>{checks.includes(c.id) ? 'Verified' : 'Not verified'}</StatusChip> }))} />
           </Card>
           <Card title="Source references" icon={FileText}>
             {SOURCES.map((s) => (
@@ -346,7 +346,7 @@ function MappingCorrectionDrawer({ t, category, checks, onClose }: { t: ZmTerrit
           </Card>
           <Notes title="Data quality checks" items={[
             `${crore(p.abp)} ABP and ${crore(p.plan)} plan are all-product figures, not ${category} contributions.`,
-            `The ${crore(p.gap)} gap is plan vs ABP; unmapped SKU value is ${UNMAPPED_SKU[t] ? lakh(UNMAPPED_SKU[t]) : 'NA'}.`,
+            `The ${crore(p.gap)} gap is plan vs ABP; unmapped SKU value is ${UNMAPPED_SKU[t] ? lakh(UNMAPPED_SKU[t]) : 'none'}.`,
             `${pending.length} of ${MAPPING_CHECKS.length} mapping checks pending${pending.length ? `: ${pending.map((c) => c.label.toLowerCase()).join(', ')}` : ''}.`,
             `${sources.length} source reference${sources.length === 1 ? '' : 's'} selected for the correction.`,
           ]} />
@@ -425,7 +425,7 @@ export function PlanValidation() {
                 { key: 'l', header: 'Last year', align: 'right', render: (x) => crore(x.lastYear) },
                 { key: 'p', header: 'Proposed business', align: 'right', render: (x) => crore(x.proposed) },
                 { key: 'g', header: 'Growth assumption', align: 'right', render: (x) => signed(x.growthPct) },
-                { key: 'v', header: 'Zonal Manager validation', align: 'center', render: (x) => <StatusChip tone={validatedCrops.includes(x.crop) ? 'ok' : 'warn'}>{validatedCrops.includes(x.crop) ? 'Validated' : 'Pending'}</StatusChip> },
+                { key: 'v', header: 'Zonal Manager validation', align: 'center', render: (x) => <StatusChip tone={validatedCrops.includes(x.crop) ? 'ok' : 'warn'}>{validatedCrops.includes(x.crop) ? 'Validated' : 'Not validated'}</StatusChip> },
               ]}
               total={{ c: 'Total', l: crore(sum(p.crops, (x) => x.lastYear)), p: crore(p.plan), g: signed(((p.plan - sum(p.crops, (x) => x.lastYear)) / sum(p.crops, (x) => x.lastYear)) * 100) }} />
           </Card>
@@ -455,7 +455,7 @@ export function PlanValidation() {
           <div className="grid g2">
             <Card title="Product feasibility assessment" icon={ListChecks}>
               <List items={[
-                { label: 'Agronomic / application-rate validation', value: <StatusChip tone={onionOk ? 'ok' : 'warn'}>{onionOk ? 'Validated' : 'Pending'}</StatusChip> },
+                { label: 'Agronomic / application-rate validation', value: <StatusChip tone={onionOk ? 'ok' : 'warn'}>{onionOk ? 'Validated' : 'Not validated'}</StatusChip> },
                 { label: `Price / mix realisation (₹${FUNNEL_DEFAULTS.rupeesPerKg}/kg)`, value: <StatusChip tone="ok">Verified</StatusChip> },
                 { label: 'Portfolio SKU mapping', value: st.mappingChip(t) },
                 { label: `${crore(p.gap)} all-product allocation gap`, value: <StatusChip tone={p.gap > 0 && status !== 'endorsed' ? 'warn' : 'ok'}>{p.gap > 0 && status !== 'endorsed' ? 'Unresolved' : 'Accepted'}</StatusChip> },
@@ -516,7 +516,7 @@ function PlanCorrectionDrawer({ t, onClose }: { t: ZmTerritoryId; onClose: () =>
     ...(calc ? [{ id: 'volume', exception: 'Dhanora proposed volume growth', current: `${num(calc.lastVolumeMt)} → ${num(calc.volumeMt)} MT`, need: 'Validate growth driver and basis', tone: 'warn' as Tone, status: 'Review required' }] : []),
     { id: 'realisation', exception: 'Implied realisation', current: `₹${FUNNEL_DEFAULTS.rupeesPerKg}/kg`, need: 'Confirm price and mix assumption', tone: 'ok' as Tone, status: 'Verified' },
     { id: 'application', exception: 'Application assumption', current: `${FUNNEL_DEFAULTS.kgPerAcre} kg/acre`, need: 'Agronomy validation required', tone: (onionOk ? 'ok' : 'risk') as Tone, status: onionOk ? 'Validated' : 'Not verified' },
-    { id: 'source', exception: 'Supporting source evidence', current: 'Not attached', need: 'Attach source evidence', tone: 'warn' as Tone, status: 'Pending' },
+    { id: 'source', exception: 'Supporting source evidence', current: 'Not attached', need: 'Attach source evidence', tone: 'warn' as Tone, status: 'Not attached' },
   ];
   const [sel, setSel] = useState(items[0].id);
   const [reason, setReason] = useState('');
@@ -576,7 +576,7 @@ function PlanCorrectionDrawer({ t, onClose }: { t: ZmTerritoryId; onClose: () =>
 
 // ================================================================ 5 Revised Plan Comparison and Revalidation
 const Q_TONE: Record<QuestionStatus, Tone> = { open: 'warn', responded: 'ok', closed: 'ok' };
-const Q_LABEL: Record<QuestionStatus, string> = { open: 'Pending', responded: 'Responded', closed: 'Closed' };
+const Q_LABEL: Record<QuestionStatus, string> = { open: 'Awaiting response', responded: 'Responded', closed: 'Closed' };
 
 export function RevisedPlan() {
   const go = useGo();
@@ -615,10 +615,10 @@ export function RevisedPlan() {
   const v2Gap = isAmbad ? r.rev.gap : p.gap;
   const tracker = [
     { label: `${crore(v2Gap)} all-product planning gap`, tone: (exception ? 'ok' : 'warn') as Tone, status: exception ? 'Authorised exception' : 'Exception requested' },
-    { label: 'Onion volume basis', tone: 'ok' as Tone, status: isAmbad ? 'Resolved in version 2' : 'Pending' },
+    { label: 'Onion volume basis', tone: 'ok' as Tone, status: isAmbad ? 'Resolved in version 2' : 'Not resolved' },
     { label: 'Price / mix realisation', tone: 'ok' as Tone, status: 'Verified' },
-    { label: 'Application-rate validation', tone: (isAmbad ? 'ok' : 'warn') as Tone, status: isAmbad ? 'Validated' : 'Pending' },
-    { label: 'Portfolio SKU mapping', tone: (st.mapping(t) === 'validated' ? 'ok' : 'warn') as Tone, status: st.mapping(t) === 'validated' ? 'Validated' : 'Pending' },
+    { label: 'Application-rate validation', tone: (isAmbad ? 'ok' : 'warn') as Tone, status: isAmbad ? 'Validated' : 'Not validated' },
+    { label: 'Portfolio SKU mapping', tone: (st.mapping(t) === 'validated' ? 'ok' : 'warn') as Tone, status: st.mapping(t) === 'validated' ? 'Validated' : 'Not validated' },
   ];
   const endorse = () => { zm.decidePlan(t, 'endorsed'); bh.toast(`${p.name} revised plan endorsed and forwarded to Marketing Head`); go(Z.themes); };
   const openQ = questions.filter((q) => qStatus(q.id) === 'open').length;

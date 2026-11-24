@@ -2,6 +2,7 @@
 import { ChartColumn, MapPin, Users } from 'lucide-react';
 import { campaignsOf, REGIONS, regionById, territoriesOf } from '../data/bh';
 import { crore, num, pct, ratio, sum } from '../data/format';
+import { approvalQueue, impactRows } from '../data/zm';
 import { R } from '../routes';
 import { SERIES } from '../theme';
 import { GroupedBars, HBars } from '../ui/charts';
@@ -16,6 +17,15 @@ export function RegionalPerformance() {
   const terrs = territoriesOf(id);
   const camps = campaignsOf(id);
   const hasDetail = (t: (typeof terrs)[number]) => t.activitiesDone !== null;
+  // Territories without BH detail read the Zonal Manager local plans and impact records (same figures as the ZM screens).
+  const impact = impactRows();
+  const queue = approvalQueue();
+  const acts = (t: (typeof terrs)[number]) => {
+    if (hasDetail(t)) return { done: t.activitiesDone!, planned: t.activitiesPlanned! };
+    const i = impact.find((x) => x.territory === t.id); const q = queue.find((x) => x.territory === t.id);
+    return i?.done != null ? { done: i.done, planned: i.planned } : q ? { done: 0, planned: q.units } : null;
+  };
+  const adopters = (t: (typeof terrs)[number]) => t.adopters ?? impact.find((x) => x.territory === t.id)?.adopters ?? null;
   const firstDetail = terrs.find(hasDetail);
 
   const back = useBack(R.portfolio);
@@ -41,12 +51,13 @@ export function RegionalPerformance() {
               { key: 'abp', header: 'ABP', align: 'right', render: (t) => crore(t.abp) },
               { key: 'sales', header: 'Sales', align: 'right', render: (t) => crore(t.ytdSales) },
               { key: 'ach', header: 'Achievement', align: 'right', render: (t) => <StatusChip tone={t.ytdSales >= t.abp ? 'ok' : 'warn'}>{pct(ratio(t.ytdSales, t.abp))}</StatusChip> },
-              { key: 'camp', header: 'Campaigns', align: 'right', render: (t) => t.campaigns },
-              { key: 'act', header: 'Activities', align: 'center', render: (t) => (hasDetail(t) ? `${t.activitiesDone} / ${t.activitiesPlanned}` : <StatusChip tone="neutral">Pending</StatusChip>) },
-              { key: 'adopt', header: 'Adopters', align: 'right', render: (t) => (t.adopters !== null ? num(t.adopters) : <StatusChip tone="neutral">Pending</StatusChip>) },
-              { key: 'view', header: 'View', align: 'center', render: (t) => (hasDetail(t) ? <Button small onClick={() => go(R.territory(t.id))}>View</Button> : <StatusChip tone="neutral">Pending</StatusChip>) },
+              { key: 'camp', header: 'Campaigns', align: 'right', render: (t) => (t.campaigns ? t.campaigns : <span className="na">None</span>) },
+              { key: 'act', header: 'Activities', align: 'center', render: (t) => { const a = acts(t); return a ? `${a.done} / ${a.planned}` : <span className="na">No local plan</span>; } },
+              { key: 'adopt', header: 'Adopters', align: 'right', render: (t) => { const a = adopters(t); return a !== null ? num(a) : <span className="na">Not started</span>; } },
+              { key: 'view', header: 'View', align: 'center', render: (t) => (hasDetail(t) ? <Button small onClick={() => go(R.territory(t.id))}>View</Button> : <span className="na">Summary only</span>) },
             ]}
-            total={{ name: 'Total', abp: crore(sum(terrs, (t) => t.abp)), sales: crore(sum(terrs, (t) => t.ytdSales)), ach: pct(ratio(sum(terrs, (t) => t.ytdSales), sum(terrs, (t) => t.abp))), camp: sum(terrs, (t) => t.campaigns) }}
+            total={{ name: 'Total', abp: crore(sum(terrs, (t) => t.abp)), sales: crore(sum(terrs, (t) => t.ytdSales)), ach: pct(ratio(sum(terrs, (t) => t.ytdSales), sum(terrs, (t) => t.abp))), camp: sum(terrs, (t) => t.campaigns),
+              act: `${sum(terrs, (t) => acts(t)?.done ?? 0)} / ${sum(terrs, (t) => acts(t)?.planned ?? 0)}`, adopt: num(sum(terrs, (t) => adopters(t) ?? 0)) }}
           />
         ) : <div style={{ padding: '6px 16px 10px' }}><StatusChip tone="neutral">Territory plans pending</StatusChip></div>}
       </Card>

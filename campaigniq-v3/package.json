@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "hygiene": "node scripts/hygiene.mjs"
+    "hygiene": "node scripts/hygiene.mjs",
+    "check:blanks": "node scripts/find-blanks.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

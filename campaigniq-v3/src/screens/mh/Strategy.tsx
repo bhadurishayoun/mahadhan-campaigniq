@@ -421,7 +421,7 @@ export function EvidenceTracking() {
             <List items={[
               { label: 'Farmer outreach and trial counts', value: <StatusChip tone="warn">Partial</StatusChip> },
               { label: 'Purchase / adoption data', value: <StatusChip tone={inv.linked ? 'ok' : 'risk'}>{inv.linked ? 'Linked: 54 purchases' : 'Not linked'}</StatusChip> },
-              { label: 'Awareness analysis', value: <StatusChip tone={inv.statusOf('awareness') === 'validated' ? 'ok' : 'warn'}>{inv.statusOf('awareness') === 'validated' ? 'Validated' : 'Pending'}</StatusChip> },
+              { label: 'Awareness analysis', value: <StatusChip tone={inv.statusOf('awareness') === 'validated' ? 'ok' : 'warn'}>{inv.statusOf('awareness') === 'validated' ? 'Validated' : 'Not validated'}</StatusChip> },
               { label: 'Primary conversion barrier', value: <StatusChip tone={inv.allValidated ? 'warn' : 'neutral'}>{inv.allValidated ? 'Conversion friction supported' : 'Unconfirmed'}</StatusChip> },
             ]} />
           </Card>
@@ -473,7 +473,7 @@ export function UpdatedInvestigation() {
           <div className="calc-label">Before (initial analysis)</div>
           <List items={[{ label: 'Purchases', value: 'Not linked' }, { label: 'Primary barrier', value: 'Unconfirmed' }]} />
           <div className="calc-label">Now (after validation)</div>
-          <List items={[{ label: 'Trial-to-purchase', value: inv.linked ? `${pct(f.trialToPurchasePct!, 0)} (${f.purchases} of ${f.trials})` : 'NA' }, { label: 'Barrier', value: inv.linked ? 'Conversion friction; needs a benchmark' : 'Unconfirmed' }]} />
+          <List items={[{ label: 'Trial-to-purchase', value: inv.linked ? `${pct(f.trialToPurchasePct!, 0)} (${f.purchases} of ${f.trials})` : 'Not linked' }, { label: 'Barrier', value: inv.linked ? 'Conversion friction; needs a benchmark' : 'Unconfirmed' }]} />
         </Card>
         <Card title="Growth barrier assessment" icon={ShieldCheck} flush>
           <DataTable rows={BARRIERS} rowKey={(b) => b.id}
@@ -512,7 +512,7 @@ export function RefreshedRecommendations() {
         <KpiCard label="Reached" value={num(f.reached)} />
         <KpiCard label="Documented trials" value={num(f.trials)} />
         <KpiCard label="Matched purchases" value={f.purchases === null ? 'Not linked' : num(f.purchases)} />
-        <KpiCard label="Trial-to-purchase" value={f.trialToPurchasePct === null ? 'NA' : pct(f.trialToPurchasePct, 0)} />
+        <KpiCard label="Trial-to-purchase" value={f.trialToPurchasePct === null ? 'Not linked' : pct(f.trialToPurchasePct, 0)} />
       </div>
       <div className="grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 330px' }}>
         <Card title="Refreshed campaign recommendations" icon={ListChecks} flush className="tbl-fill" right={<Button small icon={MessageSquare} onClick={() => go(`${M.diagnosis}?analysis=1`)}>Request further analysis</Button>}><RecommendationTable refreshed /></Card>

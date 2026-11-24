@@ -256,8 +256,8 @@ export const AMBAD = {
   ],
   cropRows: [
     { crop: 'Onion', product: 'Croptek', allProductAbp: 190 as number | null, mapped: false, trials: 160 as number | null, adopters: 72 as number | null },
-    { crop: 'Maize', product: 'All products', allProductAbp: null, mapped: false, trials: null, adopters: null },
-    { crop: 'Other crops', product: 'All products', allProductAbp: null, mapped: false, trials: null, adopters: null },
+    { crop: 'Maize', product: 'All products', allProductAbp: 125 as number | null, mapped: false, trials: null, adopters: null },
+    { crop: 'Other crops', product: 'All products', allProductAbp: 105 as number | null, mapped: false, trials: null, adopters: null },
   ],
 };
 
@@ -316,7 +316,7 @@ export interface ThemeProposal {
 export const THEME_QUEUE: ThemeProposal[] = [
   { id: 'croptek-next', name: 'Croptek conversion', geography: 'West / Maharashtra', state: 'Maharashtra', region: 'west', cropProduct: 'Onion / Croptek', crop: 'Onion', product: 'Croptek', proposedBy: 'Marketing Head', priority: 'High', status: 'approved', objective: 'Farmer conversion', cohort: 'Eligible non-adopters and trial users', focus: 'Conversion & adoption' },
   { id: 'retailer-advocacy', name: 'Multi-region retailer advocacy', geography: 'Multi-region', state: 'Multi-region', region: 'multi', cropProduct: 'Pending validation', crop: null, product: null, proposedBy: 'Marketing Head', priority: 'High', status: 'review_pending', objective: 'Retailer advocacy', cohort: 'Priority retailers', focus: 'Retailer enablement' },
-  { id: 'north-awareness', name: 'North region crop nutrition awareness', geography: 'North', state: 'North region', region: 'north', cropProduct: 'Pending', crop: null, product: null, proposedBy: 'Marketing Head', priority: 'Medium', status: 'clarification_requested', objective: 'Crop nutrition awareness', cohort: 'Pending', focus: 'Crop nutrition awareness' },
+  { id: 'north-awareness', name: 'North region crop nutrition awareness', geography: 'North', state: 'North region', region: 'north', cropProduct: 'Not defined', crop: null, product: null, proposedBy: 'Marketing Head', priority: 'Medium', status: 'clarification_requested', objective: 'Crop nutrition awareness', cohort: 'Pending', focus: 'Crop nutrition awareness' },
   { id: 'paddy-south', name: 'Paddy nutrition programme', geography: 'South', state: 'South region', region: 'south', cropProduct: 'Paddy / Croptek', crop: 'Paddy', product: 'Croptek', proposedBy: 'Marketing Head', priority: 'Medium', status: 'review_pending', objective: 'Nutrition programme adoption', cohort: 'Paddy growers in mapped retailer catchments', focus: 'Conversion & adoption' },
 ];
 
@@ -393,7 +393,7 @@ export const DEFAULT_REALLOCATION = { from: 'trial' as CampaignId, to: 'croptek'
 
 // ---------------------------------------------------------------- scope labels
 export const SCOPES: { id: RegionId | 'national'; label: string }[] = [
-  { id: 'national', label: 'National portfolio' },
+  { id: 'national', label: 'Portfolio' },
   ...REGIONS.map((r) => ({ id: r.id, label: `${r.name} region` })),
 ];
 
@@ -445,8 +445,8 @@ export const themeEvidence = (themeId: string): { value: string; label: string }
 /** Business Head recommended direction per proposal parameter (decision modal). */
 export const themeDirections = (t: ThemeProposal) => [
   { parameter: 'Geography', proposal: t.state, direction: 'Retain' },
-  { parameter: 'Crop', proposal: t.crop ?? 'Pending', direction: t.crop ? 'Retain' : 'Define crop scope' },
-  { parameter: 'Product', proposal: t.product ?? 'Pending', direction: t.product ? 'Retain' : 'Define product scope' },
+  { parameter: 'Crop', proposal: t.crop ?? 'Not defined', direction: t.crop ? 'Retain' : 'Define crop scope' },
+  { parameter: 'Product', proposal: t.product ?? 'Not defined', direction: t.product ? 'Retain' : 'Define product scope' },
   { parameter: 'Strategic objective', proposal: t.objective, direction: 'Retain' },
   { parameter: 'Target cohort', proposal: t.cohort, direction: 'Validate eligibility' },
   { parameter: 'Strategic focus', proposal: t.focus, direction: t.id === 'croptek-next' ? 'Evaluate structured farmer follow-up' : 'Retain' },

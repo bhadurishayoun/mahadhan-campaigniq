@@ -53,7 +53,7 @@ export function MarketOpportunity() {
       { icon: CircleCheck, label: 'Observed execution', value: `${selRegion.observedExec}%` },
       { icon: Users, label: 'Recorded adopters', value: num(selRegion.adopters) },
       { icon: Layers, label: 'Active campaigns', value: String(selRegion.campaigns) },
-      { icon: Sprout, label: 'Crop and product records', value: 'Pending' },
+      { icon: Sprout, label: 'Crop and product records', value: 'Not defined' },
     ];
 
   const back = useBack(R.reallocation(region === ALL ? 'west' : (region as RegionId)));
@@ -84,7 +84,7 @@ export function MarketOpportunity() {
             { key: 'e', header: 'Observed execution', align: 'right', render: (r) => `${r.observedExec}%` },
             { key: 'x', header: 'Explore', align: 'center', render: (r) => <Button small onClick={() => go(R.region(r.id))}>Explore</Button> },
           ]}
-          total={{ n: 'Total', abp: crore(NATIONAL.abp, 1), ach: crore(NATIONAL.achieved, 1), gap: crore(NATIONAL_METRICS.gap, 1), c: `${NATIONAL.campaigns} campaigns`, e: '–' }}
+          total={{ n: 'Total', abp: crore(NATIONAL.abp, 1), ach: crore(NATIONAL.achieved, 1), gap: crore(NATIONAL_METRICS.gap, 1), c: `${NATIONAL.campaigns} campaigns`, e: `${Math.round(REGIONS.reduce((s, x) => s + x.observedExec * x.campaigns, 0) / REGIONS.reduce((s, x) => s + x.campaigns, 0))}%` }}
         />
       </Card>
       <div className="grid" style={{ gridTemplateColumns: '.9fr 1fr 1.25fr' }}>
@@ -186,7 +186,7 @@ export function ThemeInbox() {
             <div className="kv">
               <span>Objective</span><b>{sel.objective}</b>
               <span>Priority (state / crop)</span><b>{sel.state}{sel.crop ? ` / ${sel.crop}` : ''}</b>
-              <span>Product</span><b>{sel.product ?? 'Pending'}</b>
+              <span>Product</span><b>{sel.product ?? 'Not defined'}</b>
               <span>Financial business case</span><b>To be developed by Zonal Manager</b>
             </div>
           </Card>
@@ -217,7 +217,7 @@ export function ThemeReview() {
   const rows = [
     { p: 'West region business gap', v: crore(regionMetrics(west).gap, 2), scope: 'Regional business', st: 'Review', facts: [{ label: 'West ABP', value: crore(west.abp, 1) }, { label: 'West achievement', value: crore(west.achieved, 1) }] },
     { p: 'Ambad all-product onion ABP', v: crore(AMBAD.onionAbp), scope: 'Territory / all-product', st: 'Review', facts: [{ label: 'Territory all-product ABP', value: crore(TERRITORIES[0].abp) }, { label: 'Onion all-product ABP', value: crore(AMBAD.onionAbp) }] },
-    { p: 'Croptek-specific allocation', v: 'Pending', scope: 'Product-specific', st: 'Pending', facts: [{ label: 'SKU mapping', value: 'Pending' }] },
+    { p: 'Croptek-specific allocation', v: 'Not mapped', scope: 'Product-specific', st: 'Not mapped', facts: [{ label: 'SKU mapping', value: 'Not mapped' }] },
     { p: `${MARKET.state} penetration`, v: MARKET.penetration, scope: 'State market signal', st: 'Validate', facts: [{ label: 'Source validation', value: 'Required' }] },
     { p: 'Existing campaign adoption', v: `${c.adopters} / ${c.adoptionTarget} = ${pct(cm.adoptionPct, 0)}`, scope: 'Prior regional campaign', st: 'Review', facts: [{ label: 'Campaign', value: c.name }, { label: 'Adoption target', value: num(c.adoptionTarget) }, { label: 'Recorded adopters', value: num(c.adopters) }] },
     { p: 'Regional execution', v: `${c.observedExec}% vs ${c.plannedExec}% planned`, scope: 'Prior regional campaign', st: 'Review', facts: [{ label: 'Planned execution', value: `${c.plannedExec}%` }, { label: 'Observed execution', value: `${c.observedExec}%` }] },
@@ -246,7 +246,7 @@ export function ThemeReview() {
                 { key: 'p', header: 'Parameter', render: (r) => r.p },
                 { key: 'v', header: 'Current value', render: (r) => <b className="ok-text">{r.v}</b> },
                 { key: 's', header: 'Scope', render: (r) => <StatusChip tone="neutral">{r.scope}</StatusChip> },
-                { key: 'st', header: 'Review status', align: 'center', render: (r) => <StatusChip tone={r.st === 'Pending' ? 'neutral' : 'warn'}>{r.st}</StatusChip> },
+                { key: 'st', header: 'Review status', align: 'center', render: (r) => <StatusChip tone={r.st === 'Not mapped' ? 'neutral' : 'warn'}>{r.st}</StatusChip> },
                 { key: 'x', header: 'View', align: 'center', render: (r) => <button type="button" className="link-btn" onClick={() => showEvidence(r.p, r.facts)}>View</button> },
               ]} />
           </Card>
@@ -261,8 +261,8 @@ export function ThemeReview() {
             <div className="kv">
               <span>Strategic objective</span><b>{t.objective}</b>
               <span>Priority geography</span><b>{t.state}</b>
-              <span>Crop</span><b>{t.crop ?? 'Pending'}</b>
-              <span>Product</span><b>{t.product ?? 'Pending'}</b>
+              <span>Crop</span><b>{t.crop ?? 'Not defined'}</b>
+              <span>Product</span><b>{t.product ?? 'Not defined'}</b>
               <span>Target cohort</span><b>{t.cohort} <StatusChip tone="warn">Validate</StatusChip></b>
               <span>Campaign investment</span><b>Zonal Manager to develop</b>
             </div>
@@ -316,7 +316,7 @@ function DecisionModal({ t, onClose, onShowOriginal, initialChoice }: { t: Theme
               { key: 'p', header: 'Parameter', render: (r) => r.parameter },
               { key: 'o', header: 'Original Marketing Head proposal', render: (r) => r.proposal },
               { key: 'd', header: 'Business Head recommended direction', render: (r) => <b className="ok-text">{r.direction}</b> },
-              { key: 's', header: 'Review status', align: 'center', render: (r) => <StatusChip tone={r.direction === 'Validate eligibility' ? 'neutral' : 'warn'}>{r.direction === 'Validate eligibility' ? 'Pending' : 'Review'}</StatusChip> },
+              { key: 's', header: 'Review status', align: 'center', render: (r) => <StatusChip tone={r.direction === 'Validate eligibility' ? 'neutral' : 'warn'}>{r.direction === 'Validate eligibility' ? 'Not reviewed' : 'Review'}</StatusChip> },
             ]} />
         </Card>
         <Card title="Approval-readiness checklist">

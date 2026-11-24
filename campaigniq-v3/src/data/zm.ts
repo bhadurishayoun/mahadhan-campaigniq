@@ -6,7 +6,7 @@
 import type { FsmTerritoryId, ZmTerritoryId } from '../routes';
 import { AMBAD, ambadMetrics, businessCase, campaignById, CONTRIBUTION_MARGIN, netRoi, territoryById } from './bh';
 import { ratio, sum } from './format';
-import { ACTIVITY_DEFAULTS, ACTIVITY_UNITS, budgetMix, CAMPAIGN_ACTIVITIES, campaignFunnel, cropLastYear, cropPlan, FSM_CROPS, impactSummary, interventionEffectiveness, ONION_VILLAGE_PLAN } from './fsm';
+import { ACTIVITY_DEFAULTS, ACTIVITY_UNITS, budgetMix, CAMPAIGN_ACTIVITIES, campaignFunnel, cropLastYear, cropPlan, FSM_CROPS, impactSummary, interventionEffectiveness, ONION_VILLAGE_PLAN, SCENARIOS } from './fsm';
 
 export type ZmScope = 'zone' | ZmTerritoryId;
 
@@ -317,7 +317,7 @@ export const COMPARE_DIMENSIONS: { key: keyof Concept; label: string }[] = [
   { key: 'technical', label: 'Technical / agronomy dependencies' },
   { key: 'nextAction', label: 'Next development action' },
 ];
-export type Assessment = 'Observed' | 'Unverified' | 'Awaiting validation' | 'Unavailable' | 'Pending';
+export type Assessment = 'Observed' | 'Unverified' | 'Awaiting validation' | 'Unavailable' | 'Not assessed';
 /** Evidence behind a concept, grouped as market attractiveness and intervention suitability. */
 export const conceptRationale = (id: string): { group: 'Market attractiveness' | 'Intervention suitability'; item: string; source: string; finding: string; assessment: Assessment }[] => {
   const market = [
@@ -328,12 +328,12 @@ export const conceptRationale = (id: string): { group: 'Market attractiveness' |
   const suit = id === 'c2' ? [
     { item: 'Historical comparable benchmark', source: 'Past programmes', finding: 'No comparable programme on record', assessment: 'Unavailable' as Assessment },
     { item: 'CRM matching of trial farmers', source: 'CRM records', finding: `${CROPTEK_EVIDENCE.trials} trial farmers to match`, assessment: 'Awaiting validation' as Assessment },
-    { item: 'Contact consent', source: 'Programme eligibility', finding: 'Consent status per farmer', assessment: 'Pending' as Assessment },
+    { item: 'Contact consent', source: 'Programme eligibility', finding: 'Consent status per farmer', assessment: 'Not assessed' as Assessment },
   ] : [
     { item: 'Historical comparable benchmark', source: 'Past programmes', finding: 'No comparable programme on record', assessment: 'Unavailable' as Assessment },
     { item: 'Retailer recommendation influence', source: 'Retailer survey', finding: 'Influence share not measured', assessment: 'Unverified' as Assessment },
     { item: 'Stock / channel readiness', source: 'Theme brief · supply check', finding: 'Stock at mapped retailers', assessment: 'Awaiting validation' as Assessment },
-    { item: 'Cohort eligibility / consent', source: 'Evidence review', finding: 'Eligibility rules per cohort', assessment: 'Pending' as Assessment },
+    { item: 'Cohort eligibility / consent', source: 'Evidence review', finding: 'Eligibility rules per cohort', assessment: 'Not assessed' as Assessment },
   ];
   return [...market, ...suit.map((s) => ({ group: 'Intervention suitability' as const, ...s }))];
 };
@@ -355,18 +355,18 @@ export const JOURNEY: JourneyStage[] = [
   { id: 'purchase', stage: 'Verified first purchase', summary: 'Farmer purchase verification and follow-up', objective: 'Convert trials into verified first purchases.', participants: 'Trial farmers and their retailers.', channels: 'Field follow-ups and retailer purchase verification.', expectedAction: 'Farmers make a retailer-verified first purchase.', collateral: 'Follow-up script and purchase verification slip.', kpi: 'Verified first purchases.' },
 ];
 /** KPI configuration for the intervention (targets match the Ambad plan and the C1 business case). */
-export const INTERVENTION_KPIS: { id: string; kpi: string; measure: string; source: string; target: string; status: 'Pending' | 'Conditional' | 'Defined' }[] = [
-  { id: 'trained', kpi: 'Retailer training completion', measure: 'Retailers trained ÷ eligible retailers assigned', source: 'Field app / CRM', target: '3 retailer sessions', status: 'Pending' },
-  { id: 'reach', kpi: 'Farmers reached', measure: 'Distinct eligible farmers with a qualified interaction', source: 'CRM / field app', target: '640 farmers', status: 'Pending' },
+export const INTERVENTION_KPIS: { id: string; kpi: string; measure: string; source: string; target: string; status: 'Not defined' | 'Conditional' | 'Defined' }[] = [
+  { id: 'trained', kpi: 'Retailer training completion', measure: 'Retailers trained ÷ eligible retailers assigned', source: 'Field app / CRM', target: '3 retailer sessions', status: 'Not defined' },
+  { id: 'reach', kpi: 'Farmers reached', measure: 'Distinct eligible farmers with a qualified interaction', source: 'CRM / field app', target: '640 farmers', status: 'Not defined' },
   { id: 'trials', kpi: 'Trials', measure: 'Farmers recorded at a demonstration or with a trial pack', source: 'Field app', target: '160 trials', status: 'Defined' },
-  { id: 'purchases', kpi: 'Verified first purchases', measure: 'Farmer-linked purchase records matched to trials', source: 'Linked sales / CRM', target: '72 adopters', status: 'Pending' },
+  { id: 'purchases', kpi: 'Verified first purchases', measure: 'Farmer-linked purchase records matched to trials', source: 'Linked sales / CRM', target: '72 adopters', status: 'Not defined' },
   { id: 'sales', kpi: 'Attributable incremental sales', measure: 'Campaign-linked sales against comparable cohorts', source: 'Validated sales', target: '₹48.0 L', status: 'Conditional' },
 ];
 export const READINESS_CHECKS = ['Historical benchmark', 'Retailer influence', 'Stock / channel readiness', 'Technical claims', 'Purchase linkage'];
 export const INTERVENTION_TYPES = ['Retailer briefing', 'Product education', 'Field demonstration support', 'Authorised material distribution', 'Farmer follow-up'];
 
 export type ClaimStatus = 'pending' | 'unvalidated' | 'review_requested' | 'validated';
-export const CLAIM_STATUS_LABEL: Record<ClaimStatus, string> = { pending: 'Pending', unvalidated: 'Unvalidated', review_requested: 'Technical review requested', validated: 'Validated' };
+export const CLAIM_STATUS_LABEL: Record<ClaimStatus, string> = { pending: 'Pending review', unvalidated: 'Unvalidated', review_requested: 'Technical review requested', validated: 'Validated' };
 export const CROP_STAGES = ['Early growth', 'Vegetative', 'Bulb initiation', 'Bulb development'] as const;
 export type CropStage = (typeof CROP_STAGES)[number];
 export interface Claim { id: string; text: string; category: string; evidence: string; stages: CropStage[]; reviewer: string; status: ClaimStatus; substantiation: string }
@@ -474,12 +474,12 @@ export const businessCaseC2 = () => ({ ...C2_CASE, contribution: C2_CASE.forecas
 /** Assumption rows on the business case: inputs are editable, derived rows follow the bridge. */
 export type DriverKey = keyof Drivers;
 export const DRIVER_ROWS: { key: DriverKey | 'buyers' | 'volumeMt' | 'sales'; label: string; unit: string; logic: string; source: string; validation: string; input: boolean; step?: number }[] = [
-  { key: 'eligibleFarmers', label: 'Eligible target farmers', unit: 'farmers', logic: 'Eligible farmers in the C1 cohort', source: 'CRM', validation: 'Pending', input: true, step: 50 },
+  { key: 'eligibleFarmers', label: 'Eligible target farmers', unit: 'farmers', logic: 'Eligible farmers in the C1 cohort', source: 'CRM', validation: 'Not validated', input: true, step: 50 },
   { key: 'conversionUpliftPct', label: 'Incremental conversion', unit: '%', logic: 'Uplift over a comparable baseline', source: 'Concept evidence', validation: 'Benchmark pending', input: true, step: 1 },
   { key: 'buyers', label: 'Incremental purchasers', unit: 'buyers', logic: 'Eligible farmers × incremental conversion', source: 'Derived', validation: 'Derived', input: false },
-  { key: 'volumePerBuyerMt', label: 'Volume per buyer', unit: 'MT', logic: 'Average quantity per first purchase', source: 'Product master', validation: 'Pending', input: true, step: 0.05 },
+  { key: 'volumePerBuyerMt', label: 'Volume per buyer', unit: 'MT', logic: 'Average quantity per first purchase', source: 'Product master', validation: 'Not validated', input: true, step: 0.05 },
   { key: 'volumeMt', label: 'Incremental volume', unit: 'MT', logic: 'Incremental purchasers × volume per buyer', source: 'Derived', validation: 'Derived', input: false },
-  { key: 'realisationPerMt', label: 'Net realisation', unit: '₹/MT', logic: 'Weighted average realisation', source: 'Sales / ERP', validation: 'Pending', input: true, step: 5000 },
+  { key: 'realisationPerMt', label: 'Net realisation', unit: '₹/MT', logic: 'Weighted average realisation', source: 'Sales / ERP', validation: 'Not validated', input: true, step: 5000 },
   { key: 'sales', label: 'Incremental sales', unit: '₹ L', logic: 'Incremental volume × net realisation', source: 'Derived', validation: 'Not yet reconciled', input: false },
   { key: 'marginPct', label: 'Contribution margin', unit: '%', logic: 'Product P&L guidance', source: 'Finance / P&L', validation: 'Finance validation', input: true, step: 1 },
   { key: 'investment', label: 'Campaign investment', unit: '₹ L', logic: 'Regional envelope (not additive to territory budgets)', source: 'Business case', validation: 'Draft', input: true, step: 0.5 },
@@ -545,11 +545,11 @@ export const approvalQueue = () => {
     { territory: 'ambad' as ZmTerritoryId, campaign: 'Ambad Onion Croptek conversion', owner: 'Field Sales Manager · Ambad', units: sum(CAMPAIGN_ACTIVITIES, (a) => a.units), budget: mix.total, submitted: '12 Feb 2027', status: 'pending' as ApprovalStatus },
     { territory: 'ghansawangi' as ZmTerritoryId, campaign: 'Ghansawangi maize nutrition demonstrations', owner: 'Field Sales Manager · Ghansawangi', units: 10, budget: 2.2, submitted: '05 Feb 2027', status: 'approved' as ApprovalStatus },
     { territory: 'badnapur' as ZmTerritoryId, campaign: 'Badnapur soybean nutrient programme', owner: 'Field Sales Manager · Badnapur', units: 8, budget: 1.8, submitted: '08 Feb 2027', status: 'returned' as ApprovalStatus },
-    { territory: 'jafrabad' as ZmTerritoryId, campaign: 'Jafrabad cotton balanced nutrition', owner: 'Field Sales Manager · Jafrabad', units: 7, budget: 1.5, submitted: 'NA', status: 'awaiting' as ApprovalStatus },
+    { territory: 'jafrabad' as ZmTerritoryId, campaign: 'Jafrabad cotton balanced nutrition', owner: 'Field Sales Manager · Jafrabad', units: 7, budget: 1.5, submitted: 'Not submitted', status: 'awaiting' as ApprovalStatus },
     { territory: 'bhokardan' as ZmTerritoryId, campaign: 'Bhokardan onion Croptek farmer meetings', owner: 'Field Sales Manager · Bhokardan', units: 6, budget: 1.2, submitted: '14 Feb 2027', status: 'pending' as ApprovalStatus },
     { territory: 'partur' as ZmTerritoryId, campaign: 'Partur cotton Croptek retailer activation', owner: fsmOwner('partur'), units: 5, budget: 1.0, submitted: '10 Feb 2027', status: 'pending' as ApprovalStatus },
     { territory: 'mantha' as ZmTerritoryId, campaign: 'Mantha soybean nutrition demonstrations', owner: fsmOwner('mantha'), units: 6, budget: 1.1, submitted: '11 Feb 2027', status: 'approved' as ApprovalStatus },
-    { territory: 'jalna' as ZmTerritoryId, campaign: 'Jalna onion farmer follow-up programme', owner: fsmOwner('jalna'), units: 4, budget: 0.8, submitted: 'NA', status: 'awaiting' as ApprovalStatus },
+    { territory: 'jalna' as ZmTerritoryId, campaign: 'Jalna onion farmer follow-up programme', owner: fsmOwner('jalna'), units: 4, budget: 0.8, submitted: 'Not submitted', status: 'awaiting' as ApprovalStatus },
   ];
 };
 /** Regional campaign envelope (C1 investment) that local plans draw on. */
@@ -641,15 +641,28 @@ export const impactRows = (): ImpactRow[] => {
 // ---------------------------------------------------------------- next-season recommendations
 export type Priority = 'High' | 'Medium' | 'Low';
 /** Findings are computed from the Ambad results; actions and priorities are the Zonal Manager's proposal. */
+/** West programme intervention progress (%), shared with the Marketing Head screens. */
+export const RETAILER_PROGRESS = { planned: 80, observed: 72 };
+export const FOLLOWUP_PROGRESS = { planned: 70, observed: 48 };
+
 export const nextSeason = (): { id: string; finding: string; action: string; priority: Priority }[] => {
   const a = ambadMetrics();
   const fu = interventionEffectiveness().find((e) => e.id === 'followup')!;
   const top = [...COLLATERAL_EFFECTIVENESS].sort((x, y) => y.trials - x.trials)[0];
+  const eff = interventionEffectiveness();
+  const ret = eff.find((e) => e.id === 'retailer')!;
+  const dig = eff.find((e) => e.id === 'digital')!;
+  const baseSales = SCENARIOS.find((s) => s.id === 'base')!.sales;
   return [
     { id: 'ns-village-gap', finding: `Village conversion gap of ${a.villageGap.toFixed(1)} pp between ${a.highest.name} and ${a.lowest.name}`, action: `Repeat ${a.highest.name}'s demonstration-then-follow-up sequence in the lowest villages`, priority: 'High' },
     { id: 'ns-stock', finding: `Demonstration blocked by stock confirmation in ${a.lowest.name}`, action: 'Confirm dealer stock two weeks before each demonstration', priority: 'High' },
     { id: 'ns-followup', finding: `Follow-up rounds ${fu.completed} of ${fu.planned} completed`, action: 'Plan two follow-up rounds per village and assign one owner', priority: 'Medium' },
     { id: 'ns-leaflet', finding: `${top.asset} drove the most trials (${top.trials})`, action: 'Make it the lead asset and print by village', priority: 'Medium' },
     { id: 'ns-retailer', finding: 'Ambad retailers still awaiting mapping verification', action: 'Complete retailer mapping before allocating targets', priority: 'Low' },
+    { id: 'ns-followup-gap', finding: `Farmer follow-up at ${FOLLOWUP_PROGRESS.observed}% vs ${FOLLOWUP_PROGRESS.planned}% planned (−${FOLLOWUP_PROGRESS.planned - FOLLOWUP_PROGRESS.observed} pp)`, action: 'Assign one field owner per village and track follow-ups weekly', priority: 'High' },
+    { id: 'ns-linked-sales', finding: `Campaign-linked sales ₹${AMBAD.campaignLinkedSales.toFixed(1)} L vs ₹${baseSales.toFixed(1)} L base case`, action: 'Revisit volume and realisation assumptions before next season', priority: 'High' },
+    { id: 'ns-nurture', finding: `${Math.round(ratio(CROPTEK_EVIDENCE.purchases, CROPTEK_EVIDENCE.trials))}% trial-to-purchase (${CROPTEK_EVIDENCE.purchases} of ${CROPTEK_EVIDENCE.trials} trial farmers)`, action: 'Run a structured nurture programme for trial users', priority: 'Medium' },
+    { id: 'ns-retailer-sessions', finding: `Retailer activation ${ret.completed} of ${ret.planned} sessions (${ratio(ret.completed, ret.planned).toFixed(1)}%)`, action: 'Complete the third retailer session before sowing', priority: 'Medium' },
+    { id: 'ns-digital', finding: `Opt-in digital advisory ${dig.completed} of ${dig.planned} completed`, action: 'Extend consent-based advisory to all eligible villages', priority: 'Low' },
   ];
 };
